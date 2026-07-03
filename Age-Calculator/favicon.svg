@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#007AFF"/>
+      <stop offset="100%" stop-color="#5856D6"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="url(#bg)"/>
+  <circle cx="50" cy="50" r="32" fill="white"/>
+  <text x="50" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="700" fill="#007AFF" text-anchor="middle" dominant-baseline="middle">Age</text>
+</svg>

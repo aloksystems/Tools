@@ -1,295 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Age Calculator - Calculate Age in Years, Months, Days</title>
-    <meta name="description"
-        content="Enter your date of birth and calculate your exact age in years, months, and days. Free online age calculator with birthday countdown, zodiac signs, and life statistics.">
-    <meta name="keywords" content="age calculator, birthday calculator, zodiac sign, age in days, birthday countdown">
-    <meta name="author" content="Age Calculator Pro">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Age Calculator – Calculate Your Exact Age Instantly</title>
+  <meta name="description" content="Calculate your exact age in years, months, weeks, days, hours, minutes, and seconds. Accurate, instant, and beautifully simple age calculator.">
+  <meta name="keywords" content="age calculator, exact age, birthday, calculate age, age in years, age in days, age tool">
+  <meta name="author" content="Age Calculator">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
 
-    <!-- Favicon -->
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Age Calculator – Calculate Your Exact Age Instantly">
+  <meta property="og:description" content="Calculate your exact age in years, months, weeks, days, hours, minutes, and seconds.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/Age-Calculator/">
+  <meta property="og:image" content="https://yourdomain.com/Age-Calculator/icons/icon-512x512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:site_name" content="Age Calculator">
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Age Calculator – Calculate Your Exact Age Instantly">
+  <meta name="twitter:description" content="Calculate your exact age in years, months, weeks, days, hours, minutes, and seconds.">
+  <meta name="twitter:image" content="https://yourdomain.com/Age-Calculator/icons/icon-512x512.png">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css">
+  <!-- Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Age Calculator",
+    "description": "Calculate your exact age instantly with complete accuracy.",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
 
-    <!-- Open Graph Tags -->
-    <meta property="og:title" content="Free Age Calculator - Calculate Your Exact Age">
-    <meta property="og:description"
-        content="Calculate your age in years, months, days with birthday countdown and zodiac signs.">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://via.placeholder.com/1200x630/4f46e5/ffffff?text=Age+Calculator">
+  <!-- Canonical -->
+  <link rel="canonical" href="https://yourdomain.com/Age-Calculator/">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#007AFF">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AgeCalc">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Age Calculator">
+  <meta name="msapplication-TileColor" content="#007AFF">
+  <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
+
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="icons/icon-48x48.png">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <!-- Language Toggle -->
-    <div class="language-toggle">
-        <button id="langToggle" onclick="toggleLanguage()">
-            <i class="fas fa-globe"></i> EN
-        </button>
-    </div>
 
-    <!-- Theme Toggle -->
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
-        <i class="fas fa-moon" id="themeIcon"></i>
+  <header class="top-bar">
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path id="themeIconSun" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
     </button>
+  </header>
 
-    <!-- Voice Toggle -->
-    <button class="voice-toggle" onclick="toggleVoice()" title="Toggle Voice Announcements">
-        <i class="fas fa-volume-up" id="voiceIcon"></i>
-    </button>
+  <main class="container">
+    <section class="hero">
+      <h1 class="hero-title">Age Calculator</h1>
+      <p class="hero-subtitle">Calculate your exact age instantly with complete accuracy.</p>
+    </section>
 
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <h1 class="title" data-en="🎂 Age Calculator Pro" data-hi="🎂 आयु गणना उपकरण">
-                    🎂 Age Calculator Pro
-                </h1>
-                <p class="subtitle" data-en="Discover your exact age and amazing life statistics"
-                    data-hi="अपनी सटीक आयु और जीवन के आंकड़े जानें">
-                    Discover your exact age and amazing life statistics
-                </p>
+    <section class="calculator" aria-label="Age calculator">
+      <div class="card">
+        <div class="field">
+          <label class="field-label">Date of Birth</label>
+          <div class="date-fields">
+            <div class="date-field-group">
+              <input type="text" id="dobDay" class="date-field" placeholder="DD" maxlength="2" inputmode="numeric" autocomplete="off">
+              <span class="field-hint">Day</span>
             </div>
-        </header>
-
-        <!-- Input Section -->
-        <section class="input-section">
-            <div class="input-container">
-                <div class="input-group">
-                    <label for="dobInput" data-en="Enter Your Date of Birth" data-hi="अपनी जन्म तिथि दर्ज करें">
-                        Enter Your Date of Birth
-                    </label>
-                    <div class="date-input-wrapper">
-                        <input type="date" id="dobInput" class="date-input" max="">
-                        <i class="fas fa-calendar-alt input-icon"></i>
-                    </div>
-                </div>
-
-                <button id="calculateBtn" class="calculate-btn" onclick="calculateAge()">
-                    <i class="fas fa-calculator"></i>
-                    <span data-en="Calculate My Age" data-hi="मेरी आयु गणना करें">Calculate My Age</span>
-                </button>
+            <span class="field-sep"></span>
+            <div class="date-field-group">
+              <input type="text" id="dobMonth" class="date-field" placeholder="MM" maxlength="2" inputmode="numeric" autocomplete="off">
+              <span class="field-hint">Month</span>
             </div>
-        </section>
-
-        <!-- Results Section -->
-        <section id="resultsSection" class="results-section hidden">
-            <!-- Quick Stats -->
-            <div class="quick-stats">
-                <div class="stat-card primary">
-                    <div class="stat-icon">🎈</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="mainAge">-</div>
-                        <div class="stat-label" data-en="Years Old" data-hi="साल के">Years Old</div>
-                    </div>
-                </div>
-
-                <div class="stat-card secondary">
-                    <div class="stat-icon">📅</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="nextBirthdayDays">-</div>
-                        <div class="stat-label" data-en="Days to Birthday" data-hi="जन्मदिन में दिन">Days to Birthday
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card accent">
-                    <div class="stat-icon">⭐</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="zodiacSign">-</div>
-                        <div class="stat-label" data-en="Zodiac Sign" data-hi="राशि">Zodiac Sign</div>
-                    </div>
-                </div>
+            <span class="field-sep"></span>
+            <div class="date-field-group">
+              <input type="text" id="dobYear" class="date-field" placeholder="YYYY" maxlength="4" inputmode="numeric" autocomplete="off">
+              <span class="field-hint">Year</span>
             </div>
-
-            <!-- Detailed Age -->
-            <div class="age-details">
-                <h3 data-en="Detailed Age Breakdown" data-hi="विस्तृत आयु विवरण">Detailed Age Breakdown</h3>
-                <div class="age-breakdown">
-                    <div class="age-item">
-                        <span class="age-number" id="years">0</span>
-                        <span class="age-unit" data-en="Years" data-hi="साल">Years</span>
-                    </div>
-                    <div class="age-separator">+</div>
-                    <div class="age-item">
-                        <span class="age-number" id="months">0</span>
-                        <span class="age-unit" data-en="Months" data-hi="महीने">Months</span>
-                    </div>
-                    <div class="age-separator">+</div>
-                    <div class="age-item">
-                        <span class="age-number" id="days">0</span>
-                        <span class="age-unit" data-en="Days" data-hi="दिन">Days</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Alternative Age Formats -->
-            <div class="alternative-formats">
-                <h3 data-en="Your Age in Different Ways" data-hi="विभिन्न तरीकों से आपकी आयु">Your Age in Different Ways
-                </h3>
-                <div class="format-grid">
-                    <div class="format-item">
-                        <i class="fas fa-sun"></i>
-                        <span id="totalDays">0</span>
-                        <small data-en="Total Days" data-hi="कुल दिन">Total Days</small>
-                    </div>
-                    <div class="format-item">
-                        <i class="fas fa-clock"></i>
-                        <span id="totalHours">0</span>
-                        <small data-en="Hours Lived" data-hi="जीए गए घंटे">Hours Lived</small>
-                    </div>
-                    <div class="format-item">
-                        <i class="fas fa-stopwatch"></i>
-                        <span id="totalMinutes">0</span>
-                        <small data-en="Minutes Lived" data-hi="जीए गए मिनट">Minutes Lived</small>
-                    </div>
-                    <div class="format-item">
-                        <i class="fas fa-bolt"></i>
-                        <span id="totalSeconds">0</span>
-                        <small data-en="Seconds Lived" data-hi="जीए गए सेकेंड">Seconds Lived</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Life Statistics -->
-            <div class="life-stats">
-                <h3 data-en="Amazing Life Statistics" data-hi="अद्भुत जीवन आंकड़े">Amazing Life Statistics</h3>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <i class="fas fa-heart heartbeat"></i>
-                        <div class="stat-info">
-                            <span class="stat-number" id="heartbeats">0</span>
-                            <span class="stat-desc" data-en="Heartbeats" data-hi="दिल की धड़कन">Heartbeats</span>
-                        </div>
-                    </div>
-                    <div class="stat-box">
-                        <i class="fas fa-wind"></i>
-                        <div class="stat-info">
-                            <span class="stat-number" id="breaths">0</span>
-                            <span class="stat-desc" data-en="Breaths Taken" data-hi="सांसें ली">Breaths Taken</span>
-                        </div>
-                    </div>
-                    <div class="stat-box">
-                        <i class="fas fa-moon"></i>
-                        <div class="stat-info">
-                            <span class="stat-number" id="sleepHours">0</span>
-                            <span class="stat-desc" data-en="Hours Slept" data-hi="सोए गए घंटे">Hours Slept</span>
-                        </div>
-                    </div>
-                    <div class="stat-box">
-                        <i class="fas fa-utensils"></i>
-                        <div class="stat-info">
-                            <span class="stat-number" id="meals">0</span>
-                            <span class="stat-desc" data-en="Meals Eaten" data-hi="खाए गए भोजन">Meals Eaten</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Birth Information -->
-            <div class="birth-info">
-                <h3 data-en="Birth Information" data-hi="जन्म की जानकारी">Birth Information</h3>
-                <div class="birth-details">
-                    <div class="birth-item">
-                        <i class="fas fa-calendar-day"></i>
-                        <div>
-                            <span class="birth-label" data-en="Day of Week:" data-hi="सप्ताह का दिन:">Day of
-                                Week:</span>
-                            <span class="birth-value" id="dayOfWeek">-</span>
-                        </div>
-                    </div>
-                    <div class="birth-item">
-                        <i class="fas fa-leaf"></i>
-                        <div>
-                            <span class="birth-label" data-en="Season:" data-hi="मौसम:">Season:</span>
-                            <span class="birth-value" id="season">-</span>
-                        </div>
-                    </div>
-                    <div class="birth-item">
-                        <i class="fas fa-globe"></i>
-                        <div>
-                            <span class="birth-label" data-en="Chinese Zodiac:" data-hi="चीनी राशि:">Chinese
-                                Zodiac:</span>
-                            <span class="birth-value" id="chineseZodiac">-</span>
-                        </div>
-                    </div>
-                    <div class="birth-item">
-                        <i class="fas fa-gem"></i>
-                        <div>
-                            <span class="birth-label" data-en="Birthstone:" data-hi="जन्म रत्न:">Birthstone:</span>
-                            <span class="birth-value" id="birthstone">-</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Milestones -->
-            <div class="milestones">
-                <h3 data-en="Upcoming Milestones" data-hi="आगामी पड़ाव">Upcoming Milestones</h3>
-                <div id="milestonesContainer" class="milestones-container">
-                    <!-- Dynamically generated milestones -->
-                </div>
-            </div>
-
-            <!-- Fun Facts -->
-            <div class="fun-facts">
-                <h3 data-en="Fun Facts About Your Age" data-hi="आपकी आयु के रोचक तथ्य">Fun Facts About Your Age</h3>
-                <div id="funFactsContainer" class="fun-facts-container">
-                    <!-- Dynamically generated fun facts -->
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="action-btn primary" onclick="shareResults()">
-                    <i class="fas fa-share-alt"></i>
-                    <span data-en="Share Results" data-hi="परिणाम साझा करें">Share Results</span>
-                </button>
-                <button class="action-btn secondary" onclick="printResults()">
-                    <i class="fas fa-print"></i>
-                    <span data-en="Print Results" data-hi="परिणाम प्रिंट करें">Print Results</span>
-                </button>
-                <button class="action-btn accent" onclick="downloadPDF()">
-                    <i class="fas fa-download"></i>
-                    <span data-en="Download PDF" data-hi="PDF डाउनलोड करें">Download PDF</span>
-                </button>
-                <button class="action-btn" onclick="resetCalculator()">
-                    <i class="fas fa-refresh"></i>
-                    <span data-en="Calculate Again" data-hi="फिर से गणना करें">Calculate Again</span>
-                </button>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p data-en="© 2025 Age Calculator Pro. Calculate your age with precision and discover amazing life statistics."
-                data-hi="© 2025 आयु गणना उपकरण। सटीकता के साथ अपनी आयु की गणना करें।">
-                © 2025 Age Calculator Pro. Calculate your age with precision and discover amazing life statistics.
-            </p>
-        </footer>
-    </div>
-
-    <!-- Loading Animation -->
-    <div id="loadingOverlay" class="loading-overlay hidden">
-        <div class="loading-spinner">
-            <div class="spinner"></div>
-            <p data-en="Calculating your amazing life journey..."
-                data-hi="आपकी अद्भुत जीवन यात्रा की गणना कर रहे हैं...">Calculating your amazing life journey...</p>
+          </div>
         </div>
-    </div>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
+        <div class="specific-date-toggle">
+          <button type="button" id="toggleSpecificDate" class="toggle-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+            </svg>
+            <span>Calculate age on a specific date</span>
+          </button>
+        </div>
+
+        <div class="field hidden" id="specificDateField">
+          <label class="field-label">Calculate Age On</label>
+          <div class="date-fields">
+            <div class="date-field-group">
+              <input type="text" id="targetDay" class="date-field" placeholder="DD" maxlength="2" inputmode="numeric" autocomplete="off">
+              <span class="field-hint">Day</span>
+            </div>
+            <span class="field-sep"></span>
+            <div class="date-field-group">
+              <input type="text" id="targetMonth" class="date-field" placeholder="MM" maxlength="2" inputmode="numeric" autocomplete="off">
+              <span class="field-hint">Month</span>
+            </div>
+            <span class="field-sep"></span>
+            <div class="date-field-group">
+              <input type="text" id="targetYear" class="date-field" placeholder="YYYY" maxlength="4" inputmode="numeric" autocomplete="off">
+              <span class="field-hint">Year</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="calculateBtn" class="calc-btn">
+          <span class="btn-text">Calculate Age</span>
+        </button>
+
+        <div class="error-message hidden" id="errorMessage" role="alert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+          </svg>
+          <span id="errorText"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="results hidden" id="resultsSection" aria-label="Age results">
+
+      <div class="age-hero">
+        <div class="age-main">
+          <span class="age-number" id="displayYears">0</span>
+          <span class="age-unit">Years</span>
+        </div>
+        <div class="age-breakdown">
+          <span class="age-part">
+            <span class="age-part-number" id="displayMonths">0</span>
+            <span class="age-part-label">Months</span>
+          </span>
+          <span class="age-part-sep">·</span>
+          <span class="age-part">
+            <span class="age-part-number" id="displayDays">0</span>
+            <span class="age-part-label">Days</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="details-card">
+        <div class="details-grid">
+          <div class="detail-cell">
+            <span class="detail-value" id="detailYears">0</span>
+            <span class="detail-label">Years</span>
+          </div>
+          <div class="detail-cell">
+            <span class="detail-value" id="detailMonths">0</span>
+            <span class="detail-label">Months</span>
+          </div>
+          <div class="detail-cell">
+            <span class="detail-value" id="detailWeeks">0</span>
+            <span class="detail-label">Weeks</span>
+          </div>
+          <div class="detail-cell">
+            <span class="detail-value" id="detailDays">0</span>
+            <span class="detail-label">Days</span>
+          </div>
+          <div class="detail-cell">
+            <span class="detail-value" id="detailHours">0</span>
+            <span class="detail-label">Hours</span>
+          </div>
+          <div class="detail-cell">
+            <span class="detail-value" id="detailMinutes">0</span>
+            <span class="detail-label">Minutes</span>
+          </div>
+          <div class="detail-cell">
+            <span class="detail-value live" id="detailSeconds">0</span>
+            <span class="detail-label">Seconds</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="next-birthday-card">
+        <div class="next-birthday-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>
+          </svg>
+          <span>Next Birthday</span>
+        </div>
+        <div class="next-birthday-count">
+          <span class="next-birthday-days" id="nextBirthdayDays">—</span>
+          <span class="next-birthday-label">Days Left</span>
+        </div>
+        <div class="next-birthday-date" id="nextBirthdayDate"><span class="date-dmy">—</span></div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-row">
+          <span class="info-label">Day Born</span>
+          <span class="info-value" id="dayBorn">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Zodiac Sign</span>
+          <span class="info-value" id="zodiacSign">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Leap Year</span>
+          <span class="info-value" id="leapYear">—</span>
+        </div>
+      </div>
+
+      <button class="reset-btn" id="resetBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+        <span>Calculate Again</span>
+      </button>
+    </section>
+
+    <footer class="footer">
+      <p>&copy; 2026 Age Calculator. All rights reserved.</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
 </body>
-
 </html>
