@@ -9,6 +9,15 @@
 
     const tools = [
         {
+            id: 'pdf-size-reducer',
+            title: 'PDF Size Reducer',
+            description: 'Reduce PDF file size to a target KB or MB while keeping the best possible quality.',
+            category: 'organize',
+            icon: 'minimize-2',
+            href: 'Pdf-Size-Reducer/index.html',
+            keywords: ['compress', 'reduce', 'size', 'kb', 'mb', 'optimize']
+        },
+        {
             id: 'merge-pdfs',
             title: 'Merge PDF',
             description: 'Combine multiple PDFs and reorder pages.',
