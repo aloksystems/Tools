@@ -49,7 +49,7 @@ const projectsData = [
         pinned: true,
         featured: true,
     },
-    
+
     {
         name: "Age Calculator",
         category: "Productivity",
@@ -68,6 +68,22 @@ const projectsData = [
     },
 
     // Media Tools
+    {
+        name: "Image Pixel Resizer",
+        category: "Media Tools",
+        description: "A privacy-friendly, browser-based image resizing tool that lets users resize images to exact pixel dimensions while maintaining aspect ratio when needed. All processing happens locally in the browser without uploading images to any server.",
+        tags: ["JavaScript", "Image Processing", "Resizer"],
+        demo: "https://aloksystems.github.io/Tools//Image-Pixel-Resizer/",
+        featured: true,
+    },
+    {
+        name: "Passport Size Image Maker",
+        category: "Media Tools",
+        description: "A browser-based passport photo maker that allows users to create properly sized passport and ID photos, adjust dimensions, crop images, and generate printable photo sheets. All image processing happens locally in the browser without uploading photos to any server.",
+        tags: ["JavaScript", "Image Processing", "Passport Photo"],
+        demo: "https://aloksystems.github.io/Tools//Passport-Size-Image-Maker/",
+        featured: true,
+    },
     {
         name: "Image Compressor",
         category: "Media Tools",
