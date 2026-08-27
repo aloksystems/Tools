@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Pixel Resizer - Alok Systems Tools</title>
+    <meta name="description" content="Resize images to exact pixel dimensions locally in your browser. No uploads, no server, fully private.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-brand">
+                <span class="brand-icon" aria-hidden="true">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
+                        <line x1="2" y1="10" x2="22" y2="10"></line>
+                        <line x1="10" y1="2" x2="10" y2="22"></line>
+                    </svg>
+                </span>
+                <div class="header-text">
+                    <span class="tool-label">Alok Systems Tools</span>
+                    <h1>Image Pixel Resizer</h1>
+                </div>
+            </div>
+            <p class="header-subtitle">Resize images to exact pixel dimensions — quickly, privately, and entirely in your browser.</p>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <!-- Error Banner -->
+        <div id="errorBanner" class="error-banner" role="alert" aria-live="polite" hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span id="errorMessage"></span>
+            <button id="errorCloseBtn" class="error-close" aria-label="Dismiss error">&times;</button>
+        </div>
+
+        <!-- Step 1: Upload -->
+        <section class="card upload-card" aria-label="Image upload">
+            <div class="step-badge">Step 1</div>
+            <h2 class="card-title">Upload Your Image</h2>
+            <div id="uploadArea" class="upload-area" tabindex="0" role="button" aria-label="Upload image. Click or drag and drop.">
+                <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
+                <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <p class="upload-main-text">Drag &amp; drop your image here</p>
+                <p class="upload-divider">— or —</p>
+                <button id="chooseBtn" class="btn btn-secondary" type="button">Choose Image</button>
+                <p class="upload-hint">Supports JPG, JPEG, PNG, and WebP</p>
+            </div>
+                <div id="uploadDragOverlay" class="upload-overlay" hidden>
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <p>Drop your image here</p>
+                </div>
+            </div>
+            <div id="originalInfoContainer" class="original-info" hidden>
+                <div class="original-info-header">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    <h3>Original Image Details</h3>
+                </div>
+                <div class="info-grid" id="originalInfoGrid">
+                    <div class="info-item">
+                        <span class="info-label">Filename</span>
+                        <span class="info-value" id="origFileName">—</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Format</span>
+                        <span class="info-value" id="origFormat">—</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Dimensions</span>
+                        <span class="info-value" id="origDimensions">—</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">File Size</span>
+                        <span class="info-value" id="origFileSize">—</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Resize Settings -->
+        <section class="card settings-card" aria-label="Resize settings">
+            <div class="step-badge">Step 2</div>
+            <h2 class="card-title">Resize Settings</h2>
+            <div class="settings-body" id="settingsBody">
+                <div class="dimensions-row">
+                    <div class="input-group">
+                        <label for="widthInput">Width (px)</label>
+                        <input type="number" id="widthInput" min="1" max="8000" value="1920" inputmode="numeric" disabled>
+                    </div>
+                    <span class="dimension-separator" aria-hidden="true">&times;</span>
+                    <div class="input-group">
+                        <label for="heightInput">Height (px)</label>
+                        <input type="number" id="heightInput" min="1" max="8000" value="1080" inputmode="numeric" disabled>
+                    </div>
+                </div>
+                <div class="aspect-ratio-row">
+                    <label class="toggle-wrapper" for="lockAspectToggle">
+                        <input type="checkbox" id="lockAspectToggle" checked disabled>
+                        <span class="toggle-slider" aria-hidden="true"></span>
+                        <span class="toggle-label">Lock aspect ratio</span>
+                    </label>
+                </div>
+                <div class="presets-row">
+                    <label class="field-label">Preset Sizes</label>
+                    <div class="preset-buttons" id="presetButtons">
+                        <button type="button" class="preset-btn" data-width="100" data-height="100" disabled>100&times;100</button>
+                        <button type="button" class="preset-btn" data-width="200" data-height="200" disabled>200&times;200</button>
+                        <button type="button" class="preset-btn" data-width="300" data-height="300" disabled>300&times;300</button>
+                        <button type="button" class="preset-btn" data-width="500" data-height="500" disabled>500&times;500</button>
+                        <button type="button" class="preset-btn" data-width="1280" data-height="720" disabled>1280&times;720</button>
+                        <button type="button" class="preset-btn" data-width="1920" data-height="1080" disabled>1920&times;1080</button>
+                    </div>
+                </div>
+                <div class="format-row">
+                    <div class="input-group">
+                        <label for="formatSelect">Output Format</label>
+                        <select id="formatSelect" disabled>
+                            <option value="image/jpeg">JPG</option>
+                            <option value="image/png">PNG</option>
+                            <option value="image/webp">WebP</option>
+                        </select>
+                    </div>
+                    <div class="input-group quality-group" id="qualityGroup">
+                        <label for="qualitySlider">Quality: <span id="qualityValue">90</span>%</label>
+                        <input type="range" id="qualitySlider" min="10" max="100" value="90" disabled>
+                    </div>
+                </div>
+                <div class="settings-note" id="settingsNote">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="11" x2="12" y2="17"></line>
+                        <line x1="12" y1="7" x2="12.01" y2="7"></line>
+                    </svg>
+                    <span>Upload an image to enable resize settings.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 3: Preview -->
+        <section class="card preview-card" aria-label="Preview">
+            <div class="step-badge">Step 3</div>
+            <h2 class="card-title">Preview</h2>
+            <div class="preview-grid" id="previewGrid">
+                <div class="preview-panel">
+                    <h3 class="preview-label">Original</h3>
+                    <div class="preview-image-container" id="originalPreviewContainer">
+                        <div class="preview-placeholder" id="originalPlaceholder">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <span>No image uploaded</span>
+                        </div>
+                        <img id="originalPreviewImg" class="preview-img" alt="Original image preview" hidden>
+                    </div>
+                    <div class="preview-stats" id="originalPreviewStats">—</div>
+                </div>
+                <div class="preview-panel">
+                    <h3 class="preview-label">Resized</h3>
+                    <div class="preview-image-container" id="resizedPreviewContainer">
+                        <div class="preview-placeholder" id="resizedPlaceholder">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="2" y1="10" x2="22" y2="10"></line>
+                                <line x1="10" y1="2" x2="10" y2="22"></line>
+                            </svg>
+                            <span>Resized preview will appear here</span>
+                        </div>
+                        <img id="resizedPreviewImg" class="preview-img" alt="Resized image preview" hidden>
+                    </div>
+                    <div class="preview-stats" id="resizedPreviewStats">—</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 4: Actions -->
+        <section class="card actions-card" aria-label="Actions">
+            <div class="actions-row">
+                <button id="downloadBtn" class="btn btn-primary" type="button" disabled>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download Resized Image
+                </button>
+                <button id="resetBtn" class="btn btn-outline" type="button">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="1 4 1 10 7 10"></polyline>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                    </svg>
+                    Reset
+                </button>
+            </div>
+            <p class="privacy-inline" aria-label="Privacy notice">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Your image is processed locally in your browser. Nothing is uploaded to a server.
+            </p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>All processing happens locally in your browser. Your images never leave your device.</p>
+            <p class="footer-meta">&copy; <span id="currentYear"></span> Alok Systems Tools. Built for privacy and performance.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
