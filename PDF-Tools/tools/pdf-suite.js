@@ -221,56 +221,6 @@ const handlers = {
         }, `protected-${sanitizeFilename(file.name, 'document.pdf')}`);
         setStatus('Protected-copy metadata added. Native PDF password encryption is limited in current browser libraries.', 'success');
     },
-    'word-to-pdf': async ({ getFiles, setStatus, setBusy }) => {
-        const file = getFiles()[0];
-        if (!file) throw new Error('Choose a DOCX or text file.');
-        setBusy(true, 'Converting document text...');
-        const text = await file.text().catch(() => '');
-        const lines = (text || `${file.name}\n\nDOCX binary text extraction is browser-limited without a parser. Paste/export plain text for best results.`).split(/\r?\n/);
-        await createBlankPdf(lines, `${sanitizeFilename(file.name.replace(/\.[^.]+$/, ''), 'document')}.pdf`);
-        setStatus('PDF created from available text.', 'success');
-    },
-    'excel-to-pdf': async ({ getFiles, setStatus, setBusy }) => {
-        const file = getFiles()[0];
-        if (!file) throw new Error('Choose a CSV or spreadsheet export.');
-        setBusy(true, 'Rendering table to PDF...');
-        const text = await file.text();
-        const lines = text.split(/\r?\n/).slice(0, 42).map((row) => row.split(',').join('    '));
-        await createBlankPdf(lines, `${sanitizeFilename(file.name.replace(/\.[^.]+$/, ''), 'spreadsheet')}.pdf`);
-        setStatus('Table PDF downloaded.', 'success');
-    },
-    'ppt-to-pdf': async ({ getFiles, setStatus, setBusy }) => {
-        const file = getFiles()[0];
-        if (!file) throw new Error('Choose a slide outline text file.');
-        setBusy(true, 'Creating slide PDF...');
-        const text = await file.text().catch(() => file.name);
-        await createBlankPdf(text.split(/\r?\n/), `${sanitizeFilename(file.name.replace(/\.[^.]+$/, ''), 'slides')}.pdf`);
-        setStatus('Slide PDF downloaded.', 'success');
-    },
-    'image-compression': async ({ getFiles, panel, setStatus, setBusy }) => {
-        const file = getFiles()[0];
-        if (!file || !file.type.startsWith('image/')) throw new Error('Choose a JPG or PNG image.');
-        const quality = Number(panel.querySelector('[name="quality"]').value || 0.78);
-        setBusy(true, 'Compressing image...');
-        const bitmap = await createImageBitmap(file);
-        const canvas = document.createElement('canvas');
-        const maxWidth = Number(panel.querySelector('[name="maxWidth"]').value || bitmap.width);
-        const scale = Math.min(1, maxWidth / bitmap.width);
-        canvas.width = Math.round(bitmap.width * scale);
-        canvas.height = Math.round(bitmap.height * scale);
-        canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-        await new Promise((resolve, reject) => {
-            canvas.toBlob((blob) => {
-                if (!blob) {
-                    reject(new Error('Image compression failed.'));
-                    return;
-                }
-                downloadBlob(blob, `compressed-${sanitizeFilename(file.name.replace(/\.[^.]+$/, ''), 'image')}.jpg`);
-                setStatus(`Compressed ${bytesToSize(file.size)} to ${bytesToSize(blob.size)}.`, 'success');
-                resolve();
-            }, 'image/jpeg', quality);
-        });
-    },
     'scan-to-pdf': async ({ getFiles, setStatus, setBusy }) => {
         const files = getFiles().filter((file) => file.type.startsWith('image/'));
         if (!files.length) throw new Error('Choose one or more scan images.');
@@ -286,13 +236,6 @@ const handlers = {
         const output = await pdfDoc.save();
         downloadBlob(new Blob([output], { type: 'application/pdf' }), 'scans.pdf');
         setStatus('Scan PDF downloaded.', 'success');
-    },
-    'qr-barcode-to-pdf': async ({ panel, setStatus, setBusy }) => {
-        const value = panel.querySelector('[name="value"]').value.trim();
-        if (!value) throw new Error('Enter QR or barcode content.');
-        setBusy(true, 'Generating label PDF...');
-        await createBlankPdf(['QR / Barcode Label', '', value, '', 'Use a dedicated barcode scanner app for machine-grade barcode encoding.'], 'qr-barcode-label.pdf');
-        setStatus('Label PDF downloaded.', 'success');
     },
     'ocr-pdf': async ({ getFiles, setStatus, setBusy }) => {
         const file = getFiles()[0];
@@ -317,12 +260,7 @@ const fieldTemplates = {
     'highlight-pdf': '<div class="tool-field"><label>Pages</label><input class="tool-input" name="pages" placeholder="All pages, or 1,3-5"></div><div class="tool-field"><label>Highlight note</label><input class="tool-input" name="note" value="Review"></div>',
     'edit-pdf-text': '<div class="tool-field"><label>Replacement text overlay</label><input class="tool-input" name="text" placeholder="Approved for release"></div>',
     'protect-pdf': '<div class="tool-field"><label>Owner / author</label><input class="tool-input" name="owner" value="PDF Studio"></div>',
-    'word-to-pdf': '<p class="suite-note">For best fidelity, export DOCX content as plain text before converting. Complex Word layout is not fully exposed to native browser APIs.</p>',
-    'excel-to-pdf': '<p class="suite-note">Upload CSV for reliable browser-only table rendering.</p>',
-    'ppt-to-pdf': '<p class="suite-note">Upload a text outline to generate simple slide-style PDF pages.</p>',
-    'image-compression': '<div class="tool-field"><label>JPEG quality</label><input class="tool-input" name="quality" type="number" min="0.1" max="1" step="0.05" value="0.78"></div><div class="tool-field"><label>Max width</label><input class="tool-input" name="maxWidth" type="number" min="320" value="1600"></div>',
     'scan-to-pdf': '<p class="suite-note">Upload camera scans or images. Multi-select is supported.</p>',
-    'qr-barcode-to-pdf': '<div class="tool-field"><label>Code content</label><textarea class="tool-textarea" name="value" placeholder="https://example.com or inventory code"></textarea></div>',
     'ocr-pdf': '<p class="suite-note">Uses native browser text detection when available. Unsupported browsers receive a clear fallback file.</p>'
 };
 
@@ -332,7 +270,7 @@ export function render(panel, context) {
     const workspace = makeWorkspace(panel, tool, fields, tool.title);
     const input = workspace.input;
     input.multiple = tool.id === 'scan-to-pdf';
-    input.accept = tool.id === 'image-compression' || tool.id === 'scan-to-pdf' || tool.id === 'ocr-pdf' ? 'image/*,.pdf' : '.pdf,.txt,.csv,.docx,.xlsx,.pptx';
+    input.accept = tool.id === 'scan-to-pdf' || tool.id === 'ocr-pdf' ? 'image/*,.pdf' : '.pdf,.txt,.csv';
     panel.querySelector('[data-run]').addEventListener('click', async () => {
         try {
             await handlers[tool.id](workspace);

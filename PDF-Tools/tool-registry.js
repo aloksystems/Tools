@@ -4,7 +4,7 @@
         { id: 'convert', label: 'Convert', description: 'Convert PDFs to and from browser-supported formats.' },
         { id: 'edit-review', label: 'Edit & Review', description: 'Sign, watermark, highlight, crop, annotate, and inspect PDFs.' },
         { id: 'secure', label: 'Secure', description: 'Unlock authorized files, protect documents, and add usage metadata.' },
-        { id: 'media', label: 'Media', description: 'Prepare images, scans, QR codes, and barcodes for PDFs.' }
+        { id: 'media', label: 'Media', description: 'Prepare images and scans for PDFs.' }
     ];
 
     const tools = [
@@ -154,7 +154,7 @@
         },
         {
             id: 'extract-text',
-            title: 'PDF to Word/Text',
+            title: 'PDF to Text',
             description: 'Pull text from PDFs and export as TXT or RTF.',
             category: 'convert',
             icon: 'file-text',
@@ -213,46 +213,6 @@
             keywords: ['ocr', 'scan', 'text recognition']
         },
         {
-            id: 'word-to-pdf',
-            title: 'Word to PDF',
-            description: 'Convert DOCX text content to a clean PDF locally.',
-            category: 'convert',
-            icon: 'file-type-docx',
-            href: 'tool.html?tool=word-to-pdf',
-            module: true,
-            keywords: ['word', 'docx', 'document', 'convert']
-        },
-        {
-            id: 'excel-to-pdf',
-            title: 'Excel to PDF',
-            description: 'Render CSV or spreadsheet-style tables into PDF pages.',
-            category: 'convert',
-            icon: 'file-spreadsheet',
-            href: 'tool.html?tool=excel-to-pdf',
-            module: true,
-            keywords: ['excel', 'xlsx', 'csv', 'spreadsheet']
-        },
-        {
-            id: 'ppt-to-pdf',
-            title: 'PPT to PDF',
-            description: 'Create PDF slide pages from presentation text outlines.',
-            category: 'convert',
-            icon: 'presentation',
-            href: 'tool.html?tool=ppt-to-pdf',
-            module: true,
-            keywords: ['ppt', 'powerpoint', 'slides']
-        },
-        {
-            id: 'image-compression',
-            title: 'Image Compression',
-            description: 'Compress JPG and PNG images before PDF creation.',
-            category: 'media',
-            icon: 'photo-down',
-            href: 'tool.html?tool=image-compression',
-            module: true,
-            keywords: ['image', 'compress', 'jpg', 'png', 'webp']
-        },
-        {
             id: 'scan-to-pdf',
             title: 'Scan to PDF',
             description: 'Use camera captures or uploaded scans to build a PDF.',
@@ -261,16 +221,6 @@
             href: 'tool.html?tool=scan-to-pdf',
             module: true,
             keywords: ['scan', 'camera', 'pdf']
-        },
-        {
-            id: 'qr-barcode-to-pdf',
-            title: 'QR/Barcode to PDF',
-            description: 'Generate QR-style labels and export them to PDF.',
-            category: 'media',
-            icon: 'qrcode',
-            href: 'tool.html?tool=qr-barcode-to-pdf',
-            module: true,
-            keywords: ['qr', 'barcode', 'label', 'pdf']
         }
     ];
 
