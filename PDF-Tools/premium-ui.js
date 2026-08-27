@@ -96,8 +96,25 @@
             return registry.getToolById ? registry.getToolById(toolId) : null;
         }
 
-        var path = window.location.pathname.split('/').pop() || 'index.html';
-        return registry.getToolByHref ? registry.getToolByHref(path) : null;
+        if (!registry.tools) {
+            return null;
+        }
+        return registry.tools.find(function (tool) {
+            var toolUrl = new URL(tool.href, getAppRootUrl());
+            return toolUrl.pathname === url.pathname;
+        }) || null;
+    }
+
+    function getAppRootUrl() {
+        var script = Array.prototype.slice.call(document.scripts).find(function (item) {
+            return /(?:^|\/)premium-ui\.js(?:\?|$)/.test(item.src);
+        });
+        return script ? new URL('./', script.src) : new URL('./', window.location.href);
+    }
+
+    function appHref(href) {
+        var target = new URL(href, getAppRootUrl());
+        return target.pathname + target.search + target.hash;
     }
 
     function ensureToastStack() {
@@ -469,19 +486,19 @@
         nav.className = 'topbar topbar--tool';
         nav.innerHTML =
             '<div class="topbar__left">' +
-                '<a class="logo" href="index.html" aria-label="PDF Studio home">' +
+                '<a class="logo" href="' + appHref('index.html') + '" aria-label="PDF Studio home">' +
                     '<span class="logo-mark">' + iconSvg('layers') + '</span>' +
                     '<span class="logo-text">PDF Studio</span>' +
                 '</a>' +
                 '<div class="nav-links">' +
-                    '<a class="nav-link" href="index.html#tools">Tools</a>' +
-                    '<a class="nav-link" href="merge_pdfs.html">Workflows</a>' +
-                    '<a class="nav-link" href="edit_metadata.html">Metadata</a>' +
+                    '<a class="nav-link" href="' + appHref('index.html#tools') + '">Tools</a>' +
+                    '<a class="nav-link" href="' + appHref('Merge-PDF/index.html') + '">Workflows</a>' +
+                    '<a class="nav-link" href="' + appHref('PDF-Metadata-Editor/index.html') + '">Metadata</a>' +
                 '</div>' +
             '</div>' +
             '<div class="topbar__center topbar__center--breadcrumb">' +
                 '<div class="breadcrumb">' +
-                    '<a href="index.html">Home</a>' +
+                    '<a href="' + appHref('index.html') + '">Home</a>' +
                     '<span>/</span>' +
                     '<span>' + breadcrumb + '</span>' +
                     '<span>/</span>' +
@@ -528,7 +545,7 @@
             if (window.history.length > 1) {
                 window.history.back();
             } else {
-                window.location.href = 'index.html';
+                window.location.href = appHref('index.html');
             }
         });
     }
@@ -541,11 +558,11 @@
         var drawer = document.createElement('div');
         drawer.className = 'nav-drawer';
         var links = registry.categories.map(function (category) {
-            return '<a class="drawer-link" href="index.html#' + category.id + '">' + category.label + '</a>';
+            return '<a class="drawer-link" href="' + appHref('index.html#' + category.id) + '">' + category.label + '</a>';
         }).join('');
 
         var featured = registry.tools.slice(0, 8).map(function (tool) {
-            return '<a class="drawer-link drawer-link--tool" href="' + tool.href + '">' + iconSvg(tool.icon || 'file-text') + '<span>' + tool.title + '</span></a>';
+            return '<a class="drawer-link drawer-link--tool" href="' + appHref(tool.href) + '">' + iconSvg(tool.icon || 'file-text') + '<span>' + tool.title + '</span></a>';
         }).join('');
 
         drawer.innerHTML =
@@ -563,7 +580,7 @@
                 '<div class="drawer-section-label">Popular tools</div>' +
                 '<div class="drawer-links">' + featured + '</div>' +
                 '<div class="drawer-links">' +
-                    '<a class="drawer-link" href="index.html">All tools</a>' +
+                    '<a class="drawer-link" href="' + appHref('index.html') + '">All tools</a>' +
                 '</div>' +
             '</div>';
 
@@ -1063,7 +1080,7 @@
         });
 
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js').catch(function () {
+            navigator.serviceWorker.register(appHref('service-worker.js')).catch(function () {
                 return;
             });
         }

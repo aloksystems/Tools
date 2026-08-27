@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>HTML to PDF Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Tools
+            </a>
+            <h1><i class="fas fa-file-code"></i> HTML to PDF</h1>
+            <p>Convert HTML snippets and templates into polished PDFs - fully client side</p>
+        </header>
+
+        <div class="content">
+            <div id="status"></div>
+
+            <div id="htmlTab">
+                <div class="info-box">
+                    <p><i class="fas fa-lightbulb"></i> Paste your HTML and convert instantly. URL scraping mode was removed for reliability and privacy.</p>
+                </div>
+
+                <div class="sample-templates">
+                    <strong>Quick Templates:</strong>
+                    <span class="template-btn" onclick="loadTemplate('basic')">Basic Document</span>
+                    <span class="template-btn" onclick="loadTemplate('invoice')">Invoice</span>
+                    <span class="template-btn" onclick="loadTemplate('resume')">Resume</span>
+                </div>
+
+                <label>HTML Content</label>
+                <textarea id="htmlContent" placeholder="Enter your HTML code here..."><!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #2563eb; }
+        .content { margin: 20px 0; }
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Sample PDF Document</h1>
+    <div class="content">
+        <p>This is a sample HTML to PDF conversion.</p>
+        <ul>
+            <li>Easy to use</li>
+            <li>Supports CSS styling</li>
+            <li>Client-side processing</li>
+        </ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html></textarea>
+
+                <div class="options-grid">
+                    <div class="option-item">
+                        <label>Page Size</label>
+                        <select id="pageSize">
+                            <option value="a4">A4</option>
+                            <option value="letter">Letter</option>
+                            <option value="legal">Legal</option>
+                            <option value="a3">A3</option>
+                        </select>
+                    </div>
+
+                    <div class="option-item">
+                        <label>Orientation</label>
+                        <select id="orientation">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
+                    </div>
+
+                    <div class="option-item">
+                        <label>Margin (mm)</label>
+                        <select id="margin">
+                            <option value="10">10mm</option>
+                            <option value="15" selected>15mm</option>
+                            <option value="20">20mm</option>
+                            <option value="25">25mm</option>
+                        </select>
+                    </div>
+
+                    <div class="option-item">
+                        <label>Filename</label>
+                        <input type="text" id="filename" value="document.pdf">
+                    </div>
+                </div>
+
+                <button id="convertBtn">
+                    <i class="fas fa-file-pdf"></i>
+                    Convert to PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+
+

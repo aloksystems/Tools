@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>Add Watermark to PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+      <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+  <body>
+    <div class="container">
+      <header>
+        <h1><i class="fas fa-tint"></i> Add Watermark to PDF</h1>
+        <p>Add a watermark or text as protection to your PDF files</p>
+      </header>
+
+      <div class="content">
+        <label for="fileInput">
+          <div id="dropZone">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Drop your PDF here or click to browse</span>
+            <small>Supports all PDF files - Add text or image watermarks</small>
+            <div id="fileName"></div>
+          </div>
+        </label>
+        <input type="file" id="fileInput" accept=".pdf" />
+
+        <div id="info"></div>
+
+        <div class="watermark-options" id="watermarkOptions">
+          <h3>Watermark Options</h3>
+
+          <div class="watermark-type-selector">
+            <div
+              class="watermark-type active"
+              data-type="text"
+              id="textWatermarkType"
+            >
+              <i class="fas fa-font"></i>
+              <div>Text Watermark</div>
+            </div>
+            <div
+              class="watermark-type"
+              data-type="image"
+              id="imageWatermarkType"
+            >
+              <i class="fas fa-image"></i>
+              <div>Image Watermark</div>
+            </div>
+          </div>
+
+          <div class="options-grid">
+            <div class="option-group">
+              <label for="watermarkText">Watermark Text:</label>
+              <input
+                type="text"
+                id="watermarkText"
+                value="CONFIDENTIAL"
+                placeholder="Enter watermark text"
+              />
+            </div>
+
+            <div class="option-group">
+              <label for="fontSize">Font Size:</label>
+              <input
+                type="number"
+                id="fontSize"
+                value="50"
+                min="10"
+                max="200"
+              />
+            </div>
+
+            <div class="option-group">
+              <label>Text Color:</label>
+              <div class="color-picker">
+                <input type="color" id="textColor" value="#ff0000" />
+                <div
+                  class="color-preview"
+                  id="textColorPreview"
+                  style="background-color: #ff0000"
+                ></div>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <label for="opacity">Opacity (0-1):</label>
+              <input
+                type="number"
+                id="opacity"
+                value="0.3"
+                min="0"
+                max="1"
+                step="0.1"
+              />
+            </div>
+
+            <div class="option-group">
+              <label for="rotation">Rotation (degrees):</label>
+              <input
+                type="number"
+                id="rotation"
+                value="45"
+                min="-360"
+                max="360"
+              />
+            </div>
+
+            <div class="option-group">
+              <label for="position">Position:</label>
+              <select id="position">
+                <option value="center">Center</option>
+                <option value="top-left">Top Left</option>
+                <option value="top-right">Top Right</option>
+                <option value="bottom-left">Bottom Left</option>
+                <option value="bottom-right">Bottom Right</option>
+                <option value="tile">Tile (Repeat)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="preview-container">
+            <h4>Preview (Page 1)</h4>
+            <canvas id="previewCanvas"></canvas>
+          </div>
+
+          <div class="btn-group">
+            <button id="previewBtn" onclick="previewWatermark()">
+              <i class="fas fa-eye"></i> Preview Watermark
+            </button>
+            <button
+              id="downloadBtn"
+              onclick="downloadWatermarkedPDF()"
+              disabled
+            >
+              <i class="fas fa-download"></i> Download Watermarked PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+      <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+

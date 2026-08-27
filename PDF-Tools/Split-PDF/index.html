@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>PDF Splitter (JS Edition)</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cut"></i> PDF Splitter</h1>
+            <p>Split PDFs by range or into individual pages, then download a ZIP.</p>
+        </header>
+
+        <div class="content">
+            <label for="fileInput">
+                <div id="dropZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Drop your PDF here or click to browse</span>
+                    <small>Split long PDFs by page range.</small>
+                    <div id="fileName"></div>
+                </div>
+            </label>
+            <input type="file" id="fileInput" accept=".pdf">
+
+            <div id="info"></div>
+
+            <label>Split Mode:</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="mode" value="all" checked>
+                    <span>Split All Pages (individual files)</span>
+                </label>
+                <label>
+                    <input type="radio" name="mode" value="custom">
+                    <span>Custom Range (e.g., 1-5,10 or 3-)</span>
+                </label>
+            </div>
+            <input type="text" id="rangeEntry" placeholder="e.g., 1-5,10">
+
+            <label>Output: (Downloads as ZIP â€“ browser auto-save!)</label>
+            <input type="text" placeholder="Auto-downloads 'split_pages.zip'" disabled>
+
+            <button id="splitBtn" onclick="splitPDF()">
+                <i class="fas fa-expand-arrows-alt"></i> Split PDF
+            </button>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+

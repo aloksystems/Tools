@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>Extract Text from PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-file-lines"></i> Extract Text from PDF</h1>
+            <p>Convert PDF pages into plain text or Word-compatible RTF format in your browser.</p>
+        </header>
+
+        <div class="content">
+            <label for="fileInput">
+                <div id="dropZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Drop your PDF here or click to browse</span>
+                    <small>No upload needed. Text is extracted locally and kept private.</small>
+                    <div id="fileName"></div>
+                </div>
+            </label>
+            <input type="file" id="fileInput" accept=".pdf">
+
+            <div id="info"></div>
+
+            <!-- Text/Document Conversion Section -->
+            <div class="conversion-section">
+                <h3><i class="fas fa-file-alt"></i> Text Extraction Options</h3>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="textFormat" value="txt" checked>
+                        <span>Plain Text (.txt)</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="textFormat" value="doc">
+                        <span>RTF Document (.rtf) - Word Compatible</span>
+                    </label>
+                </div>
+                
+                <div class="note">
+                    <h4><i class="fas fa-info-circle"></i> Text Extraction Mode</h4>
+                    <p>This tool extracts the readable text layer from PDF pages. Visual layout and advanced formatting are not preserved.</p>
+                </div>
+                
+                <button id="textConvertBtn" onclick="convertToText()" disabled>
+                    <i class="fas fa-file-export"></i> EXTRACT TEXT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+

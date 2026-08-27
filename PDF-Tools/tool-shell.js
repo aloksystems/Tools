@@ -20,7 +20,7 @@
 
     function getToolId() {
         var url = new URL(window.location.href);
-        return url.searchParams.get('tool');
+        return url.searchParams.get('tool') || document.body.dataset.toolId;
     }
 
     function getCategoryLabel(categoryId) {

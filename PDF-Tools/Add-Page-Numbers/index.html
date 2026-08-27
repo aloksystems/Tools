@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>Add Page Numbers to PDF</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Tools
+            </a>
+            <h1><i class="fas fa-hashtag"></i> Add Page Numbers</h1>
+            <p>Add page numbering to your PDF documents</p>
+        </header>
+
+        <div class="content">
+            <label for="pdfFile">
+                <i class="fas fa-file-pdf"></i> Select PDF File
+            </label>
+            <div id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p><span class="highlight">Click to upload</span> or drag and drop</p>
+                <p style="font-size: 0.9em;">Only PDF files are accepted</p>
+            </div>
+            <input type="file" id="pdfFile" accept=".pdf">
+
+            <div id="status"></div>
+
+            <div class="options-section" id="optionsSection">
+                <h3 style="margin-bottom: 15px; color: var(--primary-color);">
+                    <i class="fas fa-cog"></i> Page Number Settings
+                </h3>
+
+                <div class="option-group">
+                    <label>Position</label>
+                    <div class="position-grid">
+                        <div class="position-option" data-position="top-left">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Top Left</span>
+                        </div>
+                        <div class="position-option" data-position="top-center">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Top Center</span>
+                        </div>
+                        <div class="position-option" data-position="top-right">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Top Right</span>
+                        </div>
+                        <div class="position-option" data-position="bottom-left">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>Bottom Left</span>
+                        </div>
+                        <div class="position-option active" data-position="bottom-center">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>Bottom Center</span>
+                        </div>
+                        <div class="position-option" data-position="bottom-right">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>Bottom Right</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label>Format</label>
+                    <div class="format-options">
+                        <div class="format-btn active" data-format="{n}">Page {n}</div>
+                        <div class="format-btn" data-format="{n} of {total}">{n} of {total}</div>
+                        <div class="format-btn" data-format="Page {n} / {total}">Page {n} / {total}</div>
+                        <div class="format-btn" data-format="{n}">{n}</div>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label>Font Size</label>
+                    <div class="size-control">
+                        <input type="range" id="fontSize" min="8" max="24" value="12">
+                        <span class="size-value"><span id="fontSizeValue">12</span>pt</span>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label>Start From Page</label>
+                    <input type="number" id="startPage" min="1" value="1">
+                </div>
+
+                <div class="preview-box">
+                    <strong>Preview:</strong>
+                    <div class="preview-text" id="previewText">Page 1</div>
+                </div>
+
+                <button id="addNumbersBtn">
+                    <i class="fas fa-plus-circle"></i>
+                    Add Page Numbers
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+
+

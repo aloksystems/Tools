@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Size Reducer – Alok Systems Tools</title>
+    <meta name="description" content="Reduce PDF file size to a target KB or MB — privately and directly in your browser. No uploads, no servers.">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-badge">Alok Systems Tools</div>
+            <h1>PDF Size Reducer</h1>
+            <p class="subtitle">Reduce PDF file size to a target KB or MB — privately and directly in your browser.</p>
+        </header>
+
+        <!-- Main Card -->
+        <main class="tool-card">
+
+            <!-- Step 1: Upload -->
+            <section class="step-section" id="upload-section">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    <h2>Upload PDF</h2>
+                </div>
+
+                <!-- Drop Zone -->
+                <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="Upload PDF file">
+                    <div class="drop-zone-inner">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <p class="drop-text">Drag &amp; drop your PDF here</p>
+                        <p class="drop-subtext">or</p>
+                        <button class="btn btn-secondary" id="choose-file-btn" type="button">Choose PDF</button>
+                        <input type="file" id="file-input" accept=".pdf,application/pdf" hidden>
+                    </div>
+                </div>
+
+                <!-- File Info -->
+                <div id="file-info" class="file-info hidden">
+                    <div class="file-info-details">
+                        <div class="file-icon">PDF</div>
+                        <div class="file-meta">
+                            <span id="file-name" class="file-name">document.pdf</span>
+                            <span id="file-size" class="file-size">0 KB</span>
+                            <span id="file-pages" class="file-pages">0 pages</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" id="change-file-btn" type="button">Change</button>
+                </div>
+
+                <div id="upload-error" class="error-message hidden"></div>
+            </section>
+
+            <!-- Step 2: Target Size -->
+            <section class="step-section" id="target-section">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    <h2>Select Target Size</h2>
+                </div>
+
+                <div class="preset-grid" id="preset-buttons">
+                    <button class="preset-btn" data-kb="100" type="button">100 KB</button>
+                    <button class="preset-btn" data-kb="200" type="button">200 KB</button>
+                    <button class="preset-btn" data-kb="300" type="button">300 KB</button>
+                    <button class="preset-btn" data-kb="400" type="button">400 KB</button>
+                    <button class="preset-btn" data-kb="500" type="button">500 KB</button>
+                    <button class="preset-btn" data-kb="1024" type="button">1 MB</button>
+                    <button class="preset-btn" data-kb="2048" type="button">2 MB</button>
+                </div>
+
+                <div class="custom-size-row">
+                    <label for="custom-size" class="sr-only">Custom target size</label>
+                    <input type="number" id="custom-size" class="custom-size-input" placeholder="Custom size" min="1" step="1">
+                    <select id="size-unit" class="size-unit-select" aria-label="Size unit">
+                        <option value="kb">KB</option>
+                        <option value="mb">MB</option>
+                    </select>
+                </div>
+
+                <div id="target-display" class="target-display hidden">
+                    Target: <strong id="target-display-text">500 KB</strong>
+                </div>
+            </section>
+
+            <!-- Step 3: Compression Level -->
+            <section class="step-section" id="level-section">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    <h2>Compression Level</h2>
+                </div>
+
+                <div class="level-group" role="radiogroup" aria-label="Compression level">
+                    <label class="level-option">
+                        <input type="radio" name="compression-level" value="balanced" checked>
+                        <span class="level-label">Balanced</span>
+                        <span class="level-desc">Good quality, moderate compression</span>
+                    </label>
+                    <label class="level-option">
+                        <input type="radio" name="compression-level" value="strong">
+                        <span class="level-label">Strong</span>
+                        <span class="level-desc">Higher compression, some quality loss</span>
+                    </label>
+                    <label class="level-option">
+                        <input type="radio" name="compression-level" value="maximum">
+                        <span class="level-label">Maximum</span>
+                        <span class="level-desc">Smallest size, noticeable quality loss</span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Action Button -->
+            <section class="action-section">
+                <button id="reduce-btn" class="btn btn-primary btn-lg" type="button" disabled>
+                    Reduce PDF Size
+                </button>
+                <button id="reset-btn" class="btn btn-ghost btn-lg" type="button" disabled>
+                    Reset
+                </button>
+            </section>
+
+            <!-- Progress -->
+            <section id="progress-section" class="progress-section hidden">
+                <div class="progress-bar-track">
+                    <div id="progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+                <p id="progress-text" class="progress-text">Preparing PDF...</p>
+            </section>
+
+            <!-- Result -->
+            <section id="result-section" class="result-section hidden">
+                <h2 class="result-title">Compression Result</h2>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span class="result-label">Original Size</span>
+                        <span id="result-original" class="result-value">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Target Size</span>
+                        <span id="result-target" class="result-value">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Compressed Size</span>
+                        <span id="result-compressed" class="result-value">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Size Reduced</span>
+                        <span id="result-reduced" class="result-value">—</span>
+                    </div>
+                    <div class="result-item result-item-full">
+                        <span class="result-label">Percentage Reduced</span>
+                        <span id="result-percent" class="result-value">—</span>
+                    </div>
+                </div>
+                <div id="result-status" class="result-status">
+                    <span id="status-icon" class="status-icon">✓</span>
+                    <span id="status-text">Target reached</span>
+                </div>
+                <p id="result-note" class="result-note"></p>
+                <button id="download-btn" class="btn btn-primary btn-lg" type="button">
+                    Download Compressed PDF
+                </button>
+            </section>
+
+            <!-- Privacy Message -->
+            <div class="privacy-banner">
+                <svg class="privacy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <span>Your PDF is processed locally in your browser. Nothing is uploaded to a server.</span>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>All processing happens locally in your browser. Your documents never leave your device.</p>
+            <p class="footer-brand">Alok Systems Tools &middot; Privacy-First Utilities</p>
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

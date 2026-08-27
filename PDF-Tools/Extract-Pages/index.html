@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>Extract PDF Pages</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Tools
+            </a>
+            <h1><i class="fas fa-file-export"></i> Extract PDF Pages</h1>
+            <p>Select and extract specific pages from your PDF</p>
+        </header>
+
+        <div class="content">
+            <div class="info-box">
+                <p><i class="fas fa-info-circle"></i> Click on pages to select them, or use the controls below for quick selection.</p>
+            </div>
+
+            <label for="pdfFile">
+                <i class="fas fa-file-pdf"></i> Select PDF File
+            </label>
+            <div id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p><span class="highlight">Click to upload</span> or drag and drop</p>
+                <p style="font-size: 0.9em;">Only PDF files are accepted</p>
+            </div>
+            <input type="file" id="pdfFile" accept=".pdf">
+
+            <div id="status"></div>
+
+            <div class="selection-controls" id="selectionControls">
+                <div class="control-buttons">
+                    <button class="control-btn" onclick="selectAll()">
+                        <i class="fas fa-check-double"></i> Select All
+                    </button>
+                    <button class="control-btn secondary" onclick="deselectAll()">
+                        <i class="fas fa-times"></i> Deselect All
+                    </button>
+                    <button class="control-btn" onclick="selectOdd()">
+                        <i class="fas fa-list-ol"></i> Odd Pages
+                    </button>
+                    <button class="control-btn" onclick="selectEven()">
+                        <i class="fas fa-list-ol"></i> Even Pages
+                    </button>
+                </div>
+
+                <input type="text" class="page-input" id="pageRangeInput" 
+                       placeholder="Enter page numbers (e.g., 1,3,5-8,10)">
+                <button class="control-btn" style="width: auto;" onclick="selectByRange()">
+                    <i class="fas fa-check"></i> Apply Selection
+                </button>
+
+                <div class="selected-count" id="selectedCount">
+                    No pages selected
+                </div>
+            </div>
+
+            <div class="pages-grid" id="pagesGrid"></div>
+
+            <button id="extractBtn" disabled>
+                <i class="fas fa-file-export"></i>
+                Extract Selected Pages
+            </button>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+
+

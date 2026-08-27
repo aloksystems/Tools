@@ -1,0 +1,122 @@
+﻿        :root {
+            --primary: #2563eb;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --bg: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        #dropZone {
+            border: 2px dashed #ccc;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        #dropZone:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        #dropZone.dragover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        #info {
+            padding: 12px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .success {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        #previewContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .page-preview {
+            text-align: center;
+            border: 1px solid #f3f4f6;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .page-canvas {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #d1d5db;
+        }
+
+        .checkbox-row {
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #b91c1c;
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    

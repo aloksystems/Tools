@@ -14,7 +14,7 @@
             description: 'Combine multiple PDFs and reorder pages.',
             category: 'organize',
             icon: 'files',
-            href: 'merge_pdfs.html',
+            href: 'Merge-PDF/index.html',
             keywords: ['merge', 'combine', 'organize']
         },
         {
@@ -23,7 +23,7 @@
             description: 'Split a PDF into smaller files by range.',
             category: 'organize',
             icon: 'cut',
-            href: 'split_pdf.html',
+            href: 'Split-PDF/index.html',
             keywords: ['split', 'range', 'extract']
         },
         {
@@ -32,7 +32,7 @@
             description: 'Rewrite and optimize PDFs in the browser.',
             category: 'organize',
             icon: 'file-zip',
-            href: 'compress_pdf.html',
+            href: 'Compress-PDF/index.html',
             keywords: ['compress', 'optimize', 'size']
         },
         {
@@ -41,7 +41,7 @@
             description: 'Rotate pages 90, 180, or 270 degrees.',
             category: 'organize',
             icon: 'rotate',
-            href: 'rotate_pdf.html',
+            href: 'Rotate-PDF/index.html',
             keywords: ['rotate', 'pages']
         },
         {
@@ -50,7 +50,7 @@
             description: 'Remove password protection from authorized files.',
             category: 'secure',
             icon: 'lock-open',
-            href: 'unlock_pdf.html',
+            href: 'Unlock-PDF/index.html',
             keywords: ['unlock', 'password']
         },
         {
@@ -59,7 +59,7 @@
             description: 'Protect documents with text or image marks.',
             category: 'edit-review',
             icon: 'droplet',
-            href: 'add_watermark.html',
+            href: 'Watermark-PDF/index.html',
             keywords: ['watermark', 'protect']
         },
         {
@@ -68,7 +68,7 @@
             description: 'Number pages with flexible position and style.',
             category: 'edit-review',
             icon: 'list-numbers',
-            href: 'add_page_numbers.html',
+            href: 'Add-Page-Numbers/index.html',
             keywords: ['page numbers', 'paginate', 'footer', 'header']
         },
         {
@@ -77,7 +77,7 @@
             description: 'Select and export only the pages you need.',
             category: 'organize',
             icon: 'file-export',
-            href: 'extract_pages.html',
+            href: 'Extract-Pages/index.html',
             keywords: ['extract', 'pages', 'export']
         },
         {
@@ -86,7 +86,7 @@
             description: 'Delete selected pages from a PDF in seconds.',
             category: 'organize',
             icon: 'trash',
-            href: 'remove_pdf.html',
+            href: 'Delete-Pages/index.html',
             keywords: ['delete', 'pages', 'remove']
         },
         {
@@ -95,7 +95,7 @@
             description: 'Reorder pages with a drag-and-drop flow.',
             category: 'organize',
             icon: 'arrows-up-down',
-            href: 'rearrange_pdf.html',
+            href: 'Reorder-PDF-Pages/index.html',
             keywords: ['reorder', 'pages', 'organize']
         },
         {
@@ -104,7 +104,7 @@
             description: 'Add a typed or drawn signature in seconds.',
             category: 'edit-review',
             icon: 'signature',
-            href: 'sign_pdf.html',
+            href: 'Sign-PDF/index.html',
             keywords: ['sign', 'signature']
         },
         {
@@ -113,7 +113,7 @@
             description: 'Update title, author, and keywords.',
             category: 'edit-review',
             icon: 'info-circle',
-            href: 'edit_metadata.html',
+            href: 'PDF-Metadata-Editor/index.html',
             keywords: ['metadata', 'info']
         },
         {
@@ -122,7 +122,7 @@
             description: 'Review metadata, page count, and document stats.',
             category: 'edit-review',
             icon: 'file-info',
-            href: 'pdf_info.html',
+            href: 'PDF-Info/index.html',
             keywords: ['info', 'metadata', 'stats']
         },
         {
@@ -131,7 +131,7 @@
             description: 'Export PDF pages as high-quality PNG or JPG files.',
             category: 'convert',
             icon: 'photo-scan',
-            href: 'pdf_to_image.html',
+            href: 'PDF-to-JPG/index.html',
             keywords: ['pdf', 'png', 'jpg', 'export']
         },
         {
@@ -140,7 +140,7 @@
             description: 'Combine JPG or PNG files into a single ordered PDF.',
             category: 'convert',
             icon: 'photo',
-            href: 'images_to_pdf.html',
+            href: 'JPG-to-PDF/index.html',
             keywords: ['jpg', 'png', 'combine', 'convert', 'merge']
         },
         {
@@ -149,7 +149,7 @@
             description: 'Render HTML and CSS into a print-ready PDF.',
             category: 'convert',
             icon: 'code',
-            href: 'html_to_pdf.html',
+            href: 'HTML-to-PDF/index.html',
             keywords: ['html', 'css', 'render', 'convert']
         },
         {
@@ -158,7 +158,7 @@
             description: 'Pull text from PDFs and export as TXT or RTF.',
             category: 'convert',
             icon: 'file-text',
-            href: 'pdf_to_file.html',
+            href: 'PDF-to-Text/index.html',
             keywords: ['pdf', 'text', 'rtf', 'txt']
         },
         {
@@ -167,7 +167,7 @@
             description: 'Add owner metadata and download a protected-copy workflow.',
             category: 'secure',
             icon: 'lock',
-            href: 'tool.html?tool=protect-pdf',
+            href: 'Protect-PDF/index.html',
             module: true,
             status: 'browser-supported',
             keywords: ['protect', 'password', 'security', 'encrypt']
@@ -178,7 +178,7 @@
             description: 'Apply page crop margins to trim whitespace or headers.',
             category: 'edit-review',
             icon: 'crop',
-            href: 'tool.html?tool=crop-pdf',
+            href: 'Crop-PDF/index.html',
             module: true,
             keywords: ['crop', 'trim', 'margins']
         },
@@ -188,7 +188,7 @@
             description: 'Place translucent highlights on selected pages.',
             category: 'edit-review',
             icon: 'highlight',
-            href: 'tool.html?tool=highlight-pdf',
+            href: 'Highlight-PDF/index.html',
             module: true,
             keywords: ['highlight', 'annotate', 'review']
         },
@@ -198,7 +198,7 @@
             description: 'Overlay replacement text blocks on PDF pages.',
             category: 'edit-review',
             icon: 'text-recognition',
-            href: 'tool.html?tool=edit-pdf-text',
+            href: 'Edit-PDF-Text/index.html',
             module: true,
             keywords: ['edit', 'text', 'overlay']
         },
@@ -208,7 +208,7 @@
             description: 'Run browser OCR when supported and export recognized text.',
             category: 'convert',
             icon: 'scan-eye',
-            href: 'tool.html?tool=ocr-pdf',
+            href: 'OCR-PDF/index.html',
             module: true,
             keywords: ['ocr', 'scan', 'text recognition']
         },
@@ -218,7 +218,7 @@
             description: 'Use camera captures or uploaded scans to build a PDF.',
             category: 'media',
             icon: 'scan',
-            href: 'tool.html?tool=scan-to-pdf',
+            href: 'Scan-to-PDF/index.html',
             module: true,
             keywords: ['scan', 'camera', 'pdf']
         }

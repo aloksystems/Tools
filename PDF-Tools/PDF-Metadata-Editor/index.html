@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>Edit PDF Metadata</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Tools
+            </a>
+            <h1><i class="fas fa-info-circle"></i> Edit PDF Metadata</h1>
+            <p>Edit document properties and information</p>
+        </header>
+
+        <div class="content">
+            <div class="info-box">
+                <p><i class="fas fa-lightbulb"></i> You can view and edit PDF metadata including title, author, subject, keywords, and more.</p>
+            </div>
+
+            <label for="pdfFile">
+                <i class="fas fa-file-pdf"></i> Select PDF File
+            </label>
+            <div id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p><span class="highlight">Click to upload</span> or drag and drop</p>
+                <p style="font-size: 0.9em;">Only PDF files are accepted</p>
+            </div>
+            <input type="file" id="pdfFile" accept=".pdf">
+
+            <div id="fileInfo">
+                <p><strong>Selected File:</strong> <span id="fileName"></span></p>
+                <p><strong>Size:</strong> <span id="fileSize"></span></p>
+            </div>
+
+            <div id="status"></div>
+
+            <div class="metadata-section" id="metadataSection">
+                <h3 style="margin-bottom: 15px; color: var(--primary-color);">
+                    <i class="fas fa-database"></i> Document Metadata
+                </h3>
+
+                <div class="input-group">
+                    <label>Title</label>
+                    <input type="text" id="title" placeholder="Enter document title">
+                    <div class="current-value" id="currentTitle"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>Author</label>
+                    <input type="text" id="author" placeholder="Enter author name">
+                    <div class="current-value" id="currentAuthor"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>Subject</label>
+                    <input type="text" id="subject" placeholder="Enter document subject">
+                    <div class="current-value" id="currentSubject"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>Keywords</label>
+                    <input type="text" id="keywords" placeholder="Enter keywords (comma-separated)">
+                    <div class="current-value" id="currentKeywords"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>Creator/Producer</label>
+                    <input type="text" id="creator" placeholder="Enter creator application">
+                    <div class="current-value" id="currentCreator"></div>
+                </div>
+
+                <div class="metadata-grid">
+                    <div class="input-group">
+                        <label>Creation Date</label>
+                        <input type="date" id="creationDate">
+                        <div class="current-value" id="currentCreationDate"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Modification Date</label>
+                        <input type="date" id="modificationDate">
+                        <div class="current-value" id="currentModDate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="saveBtn" disabled>
+                <i class="fas fa-save"></i>
+                Save Metadata
+            </button>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+
+

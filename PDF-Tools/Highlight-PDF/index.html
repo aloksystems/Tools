@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Run private PDF tools locally in your browser with PDF Studio.">
+    <meta name="robots" content="index,follow">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#f8fafc">
+    <title>PDF Studio Tool</title>
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-tool-id="highlight-pdf">
+    <div class="page">
+        <main class="tool-shell" data-tool-shell>
+            <header class="tool-hero">
+                <div class="tool-hero__icon" data-tool-icon></div>
+                <div class="tool-hero__content">
+                    <span class="tool-hero__eyebrow" data-tool-category></span>
+                    <h1 data-tool-title>Tool</h1>
+                    <p data-tool-description></p>
+                </div>
+                <div class="tool-hero__actions">
+                    <button class="btn btn-ghost" type="button" data-tool-favorite>
+                        <i class="ti ti-star"></i> Pin
+                    </button>
+                    <span class="tool-chip"><i class="ti ti-lock"></i> Local-first</span>
+                </div>
+            </header>
+            <section class="tool-body">
+                <div class="tool-panel" data-tool-panel></div>
+                <aside class="tool-sidebar">
+                    <div class="sidebar-card" data-tool-tips></div>
+                    <div class="sidebar-card" data-tool-recents></div>
+                </aside>
+            </section>
+        </main>
+    </div>
+    <script src="../tool-registry.js"></script>
+    <script type="module" src="../tool-shell.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>Rearrange PDF Pages</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-exchange-alt"></i> Rearrange PDF Pages</h1>
+            <p>Easy to use app for moving pages in PDF files quickly and easily</p>
+        </header>
+
+        <div class="content">
+            <label for="fileInput">
+                <div id="dropZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Drop your PDF here or click to browse</span>
+                    <small>Free Online - No limits - Secure</small>
+                    <div id="fileName"></div>
+                </div>
+            </label>
+            <input type="file" id="fileInput" accept=".pdf">
+
+            <div id="info"></div>
+
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> How to Use</h3>
+                <ol>
+                    <li>Upload a PDF file using the drop zone above</li>
+                    <li>Drag and drop pages to rearrange their order</li>
+                    <li>Click "Download Rearranged PDF" when finished</li>
+                </ol>
+            </div>
+
+            <div id="pagesContainer">
+                <h3>PDF Pages <span id="pageCount"></span></h3>
+                <div class="pages-grid" id="pagesGrid"></div>
+                
+                <div class="btn-group">
+                    <button id="downloadBtn" onclick="downloadRearrangedPDF()" disabled>
+                        <i class="fas fa-download"></i> Download Rearranged PDF
+                    </button>
+                    <button onclick="resetAll()">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+

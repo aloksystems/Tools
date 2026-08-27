@@ -15,29 +15,29 @@ A comprehensive suite of 17 browser-based PDF manipulation tools that allow you 
 ## Available Tools
 
 ### 🔁 Conversion Tools
-- **[Images to PDF](images_to_pdf.html)** - Convert JPG/PNG images to a multi-page PDF document with drag-and-drop support
-- **[PDF to Images](pdf_to_image.html)** - Extract pages from PDF files as PNG/JPG images with batch download
-- **[Extract Text from PDF](pdf_to_file.html)** - Extract text content from PDF files and save as plain text or Word-compatible RTF
-- **[HTML to PDF](html_to_pdf.html)** - Convert HTML content to PDF documents with full CSS styling support
+- **[Images to PDF](JPG-to-PDF/index.html)** - Convert JPG/PNG images to a multi-page PDF document with drag-and-drop support
+- **[PDF to Images](PDF-to-JPG/index.html)** - Extract pages from PDF files as PNG/JPG images with batch download
+- **[Extract Text from PDF](PDF-to-Text/index.html)** - Extract text content from PDF files and save as plain text or Word-compatible RTF
+- **[HTML to PDF](HTML-to-PDF/index.html)** - Convert HTML content to PDF documents with full CSS styling support
 
 ### ✂️ Editing Tools
-- **[Merge PDFs](merge_pdfs.html)** - Combine multiple PDF files into a single document with drag-and-drop reordering
-- **[Split PDF](split_pdf.html)** - Divide a PDF file into multiple smaller documents by page ranges
-- **[Extract Pages](extract_pages.html)** - Select and extract specific pages (including non-consecutive pages) from a PDF
-- **[Rearrange Pages](rearrange_pdf.html)** - Reorder pages within a PDF document using an intuitive drag-and-drop interface
-- **[Remove Pages](remove_pdf.html)** - Delete specific pages from a PDF document
-- **[Rotate PDF](rotate_pdf.html)** - Rotate pages in a PDF document (90°, 180°, 270°)
+- **[Merge PDFs](Merge-PDF/index.html)** - Combine multiple PDF files into a single document with drag-and-drop reordering
+- **[Split PDF](Split-PDF/index.html)** - Divide a PDF file into multiple smaller documents by page ranges
+- **[Extract Pages](Extract-Pages/index.html)** - Select and extract specific pages (including non-consecutive pages) from a PDF
+- **[Rearrange Pages](Reorder-PDF-Pages/index.html)** - Reorder pages within a PDF document using an intuitive drag-and-drop interface
+- **[Remove Pages](Delete-Pages/index.html)** - Delete specific pages from a PDF document
+- **[Rotate PDF](Rotate-PDF/index.html)** - Rotate pages in a PDF document (90°, 180°, 270°)
 
 ### 🛡️ Security & Optimization Tools
-- **[Add Watermark](add_watermark.html)** - Add text or image watermarks to protect your PDF documents
-- **[Compress PDF](compress_pdf.html)** - Reduce the file size of PDF documents while maintaining quality
-- **[Unlock PDF](unlock_pdf.html)** - Remove password protection from PDF files you have permission to unlock
+- **[Add Watermark](Watermark-PDF/index.html)** - Add text or image watermarks to protect your PDF documents
+- **[Compress PDF](Compress-PDF/index.html)** - Reduce the file size of PDF documents while maintaining quality
+- **[Unlock PDF](Unlock-PDF/index.html)** - Remove password protection from PDF files you have permission to unlock
 
 ### ✨ Advanced Tools
-- **[Sign PDF](sign_pdf.html)** - Add your digital signature to PDFs by drawing or typing
-- **[Add Page Numbers](add_page_numbers.html)** - Add customizable page numbering with various formats and positions
-- **[Edit Metadata](edit_metadata.html)** - Edit PDF document properties (title, author, subject, keywords, dates)
-- **[PDF Insights](pdf_info.html)** - Inspect PDF metadata, page dimensions, and useful document statistics
+- **[Sign PDF](Sign-PDF/index.html)** - Add your digital signature to PDFs by drawing or typing
+- **[Add Page Numbers](Add-Page-Numbers/index.html)** - Add customizable page numbering with various formats and positions
+- **[Edit Metadata](PDF-Metadata-Editor/index.html)** - Edit PDF document properties (title, author, subject, keywords, dates)
+- **[PDF Insights](PDF-Info/index.html)** - Inspect PDF metadata, page dimensions, and useful document statistics
 
 ## How to Use
 
@@ -128,29 +128,29 @@ PDF-Tools/
 ├── index.html              # Main landing page with all tools
 │
 ├── Conversion Tools:
-├── images_to_pdf.html      # Convert images to PDF
-├── pdf_to_image.html       # Convert PDF to images
-├── pdf_to_file.html        # Extract text from PDF
-├── html_to_pdf.html        # Convert HTML to PDF
+├── JPG-to-PDF/index.html   # Convert images to PDF
+├── PDF-to-JPG/index.html   # Convert PDF to images
+├── PDF-to-Text/index.html  # Extract text from PDF
+├── HTML-to-PDF/index.html  # Convert HTML to PDF
 │
 ├── Editing Tools:
-├── merge_pdfs.html         # Combine multiple PDFs
-├── split_pdf.html          # Split PDF into parts
-├── extract_pages.html      # Extract specific pages
-├── rearrange_pdf.html      # Reorder PDF pages
-├── remove_pdf.html         # Delete pages from PDF
-├── rotate_pdf.html         # Rotate PDF pages
+├── Merge-PDF/index.html           # Combine multiple PDFs
+├── Split-PDF/index.html           # Split PDF into parts
+├── Extract-Pages/index.html       # Extract specific pages
+├── Reorder-PDF-Pages/index.html   # Reorder PDF pages
+├── Delete-Pages/index.html        # Delete pages from PDF
+├── Rotate-PDF/index.html          # Rotate PDF pages
 │
 ├── Security & Optimization:
-├── compress_pdf.html       # Reduce PDF file size
-├── add_watermark.html      # Add watermarks to PDF
-├── unlock_pdf.html         # Remove PDF password
+├── Compress-PDF/index.html       # Reduce PDF file size
+├── Watermark-PDF/index.html      # Add watermarks to PDF
+├── Unlock-PDF/index.html         # Remove PDF password
 │
 ├── Advanced Tools:
-├── sign_pdf.html           # Add digital signatures
-├── add_page_numbers.html   # Add page numbering
-├── edit_metadata.html      # Edit PDF properties
-├── pdf_info.html           # Show metadata and document insights
+├── Sign-PDF/index.html                 # Add digital signatures
+├── Add-Page-Numbers/index.html         # Add page numbering
+├── PDF-Metadata-Editor/index.html      # Edit PDF properties
+├── PDF-Info/index.html                 # Show metadata and document insights
 ├── premium-theme.css       # Shared premium UI theme
 ├── premium-ui.js           # Shared UI behavior enhancements
 │

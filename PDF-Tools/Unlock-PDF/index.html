@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>Unlock PDF - Remove Password</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Tools
+            </a>
+            <h1><i class="fas fa-unlock"></i> Unlock PDF</h1>
+            <p>Remove password protection from PDF files</p>
+        </header>
+
+        <div class="content">
+            <div class="info-box">
+                <div class="info-title"><i class="fas fa-info-circle"></i> Important Note</div>
+                <p>This tool can only remove passwords from PDFs that you have permission to unlock. If the PDF is password-protected, you'll need the correct password to proceed.</p>
+            </div>
+
+            <label for="pdfFile">
+                <i class="fas fa-file-pdf"></i> Select Protected PDF File
+            </label>
+            <div id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p><span class="highlight">Click to upload</span> or drag and drop</p>
+                <p style="font-size: 0.9em;">Only PDF files are accepted</p>
+            </div>
+            <input type="file" id="pdfFile" accept=".pdf">
+
+            <div id="fileInfo">
+                <p><strong>Selected File:</strong> <span id="fileName"></span></p>
+                <p><strong>Size:</strong> <span id="fileSize"></span></p>
+                <p id="protectionStatus"></p>
+            </div>
+
+            <div id="status"></div>
+
+            <div class="password-section" id="passwordSection">
+                <div class="input-group">
+                    <label>Enter PDF Password *</label>
+                    <input type="password" id="pdfPassword" placeholder="Enter the PDF password">
+                </div>
+            </div>
+
+            <button id="unlockBtn" disabled>
+                <i class="fas fa-unlock-alt"></i>
+                Unlock PDF
+            </button>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+
+

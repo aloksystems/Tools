@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>PDF Merger (JS Edition)</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-compress"></i> PDF Merger</h1>
+            <p>Merge multiple PDFs into one file and download instantly.</p>
+        </header>
+
+        <div class="content">
+            <label for="fileInput">
+                <div id="dropZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Drop your PDFs here or click to browse (multiple OK!)</span>
+                    <small>Supports multiple PDF files.</small>
+                </div>
+            </label>
+            <input type="file" id="fileInput" accept=".pdf" multiple>
+
+            <div id="fileList"></div>
+
+            <div class="btn-group">
+                <button onclick="addFiles()"><i class="fas fa-plus"></i> Add Files</button>
+                <button onclick="clearList()"><i class="fas fa-trash"></i> Clear List</button>
+            </div>
+
+            <div id="info"></div>
+
+            <label>Output: (Downloads 'merged.pdf' â€“ browser auto-save!)</label>
+            <input type="text" placeholder="Auto-downloads to Downloads" disabled>
+
+            <button id="mergeBtn" onclick="mergePDFs()" disabled>
+                <i class="fas fa-merge"></i> Merge PDFs
+            </button>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+

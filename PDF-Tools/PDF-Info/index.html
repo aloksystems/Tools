@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#2f4a76">
+    <title>PDF Insights - Metadata and Stats</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <script src="../theme-init.js"></script>
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../premium-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Tools
+            </a>
+            <h1><i class="fas fa-chart-line"></i> PDF Insights</h1>
+            <p>Inspect metadata, page dimensions, and document statistics instantly.</p>
+        </header>
+
+        <div class="content">
+            <label for="pdfFile">
+                <div id="dropZone">
+                    <i class="fas fa-file-circle-info"></i>
+                    <p><strong>Click to upload</strong> or drag and drop a PDF file</p>
+                    <small>Metadata and page analytics are generated locally in your browser</small>
+                </div>
+            </label>
+            <input type="file" id="pdfFile" accept=".pdf,application/pdf">
+
+            <div id="status" class="status"></div>
+
+            <div id="reportSection" style="display:none;">
+                <div class="cards">
+                    <div class="card" id="fileCard">
+                        <h3><i class="fas fa-file-pdf"></i> File Details</h3>
+                    </div>
+                    <div class="card" id="docCard">
+                        <h3><i class="fas fa-layer-group"></i> Document Stats</h3>
+                    </div>
+                    <div class="card" id="metaCard">
+                        <h3><i class="fas fa-tags"></i> Metadata</h3>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Page</th>
+                                <th>Width (pt)</th>
+                                <th>Height (pt)</th>
+                                <th>Orientation</th>
+                                <th>Rotation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pageTableBody"></tbody>
+                    </table>
+                </div>
+
+                <p class="muted" id="tableCaption">Showing page metrics.</p>
+
+                <div class="actions">
+                    <button id="downloadJsonBtn" disabled>
+                        <i class="fas fa-download"></i> Download JSON Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="../tool-registry.js"></script>
+    <script src="../premium-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+
