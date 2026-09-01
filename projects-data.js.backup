@@ -41,6 +41,15 @@ const projectsData = [
 
     // Productivity & Utilities
     {
+    name: "Todo",
+    category: "Productivity",
+    description: "A modern task management app designed for simplicity and focus, featuring secure authentication, task search, priority-based organization, completion tracking, filtering, and sorting.",
+    tags: ["React", "TypeScript", "Supabase", "Productivity", "Task Management"],
+    demo: "YOUR_TODO_DEMO_URL",
+    pinned: true,
+    featured: true,
+    },
+    {
         name: "SnapShare",
         category: "Productivity",
         description: "A secure temporary file sharing platform with password protection, auto-expiry, one-time viewing, and download restrictions built using Express, Vite, and TypeScript.",
