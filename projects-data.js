@@ -45,7 +45,7 @@ const projectsData = [
         category: "Productivity",
         description: "A modern task management app designed for simplicity and focus, featuring secure authentication, task search, priority-based organization, completion tracking, filtering, and sorting.",
         tags: ["React", "TypeScript", "Supabase", "Productivity", "Task Management"],
-        demo: "YOUR_TODO_DEMO_URL",
+        demo: "https://todo-murex-omega-74.vercel.app/",
         pinned: true,
         featured: true,
     },
