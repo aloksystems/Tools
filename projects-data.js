@@ -41,6 +41,15 @@ const projectsData = [
 
     // Productivity & Utilities
     {
+        name: "One Page Print",
+        category: "Productivity",
+        description: "A smart PDF and image printing tool for fitting multiple pages onto fewer physical sheets with customizable N-up grid layouts, live print preview, page reordering, paper settings, automatic sheet calculation, and PDF export.",
+        tags: ["React", "TypeScript", "PDF", "Image Tools", "N-up Printing", "Productivity"],
+        demo: "YOUR_DEMO_URL",
+        pinned: true,
+        featured: true,
+    },
+    {
         name: "Todo",
         category: "Productivity",
         description: "A modern task management app designed for simplicity and focus, featuring secure authentication, task search, priority-based organization, completion tracking, filtering, and sorting.",

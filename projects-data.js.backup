@@ -41,13 +41,22 @@ const projectsData = [
 
     // Productivity & Utilities
     {
-    name: "Todo",
-    category: "Productivity",
-    description: "A modern task management app designed for simplicity and focus, featuring secure authentication, task search, priority-based organization, completion tracking, filtering, and sorting.",
-    tags: ["React", "TypeScript", "Supabase", "Productivity", "Task Management"],
-    demo: "https://todo-murex-omega-74.vercel.app/",
-    pinned: true,
-    featured: true,
+        name: "One Page Print",
+        category: "Productivity",
+        description: "A smart PDF and image printing tool for fitting multiple pages onto fewer physical sheets with customizable N-up grid layouts, live print preview, page reordering, paper settings, automatic sheet calculation, and PDF export.",
+        tags: ["React", "TypeScript", "PDF", "Image Tools", "N-up Printing", "Productivity"],
+        demo: "YOUR_DEMO_URL",
+        pinned: true,
+        featured: true,
+    },
+    {
+        name: "Todo",
+        category: "Productivity",
+        description: "A modern task management app designed for simplicity and focus, featuring secure authentication, task search, priority-based organization, completion tracking, filtering, and sorting.",
+        tags: ["React", "TypeScript", "Supabase", "Productivity", "Task Management"],
+        demo: "https://todo-murex-omega-74.vercel.app/",
+        pinned: true,
+        featured: true,
     },
     {
         name: "SnapShare",
@@ -58,7 +67,7 @@ const projectsData = [
         pinned: true,
         featured: true,
     },
-    
+
     {
         name: "Age Calculator",
         category: "Productivity",
@@ -77,6 +86,22 @@ const projectsData = [
     },
 
     // Media Tools
+    {
+        name: "Image Pixel Resizer",
+        category: "Media Tools",
+        description: "A privacy-friendly, browser-based image resizing tool that lets users resize images to exact pixel dimensions while maintaining aspect ratio when needed. All processing happens locally in the browser without uploading images to any server.",
+        tags: ["JavaScript", "Image Processing", "Resizer"],
+        demo: "https://aloksystems.github.io/Tools//Image-Pixel-Resizer/",
+        featured: true,
+    },
+    {
+        name: "Passport Size Image Maker",
+        category: "Media Tools",
+        description: "A browser-based passport photo maker that allows users to create properly sized passport and ID photos, adjust dimensions, crop images, and generate printable photo sheets. All image processing happens locally in the browser without uploading photos to any server.",
+        tags: ["JavaScript", "Image Processing", "Passport Photo"],
+        demo: "https://aloksystems.github.io/Tools//Passport-Size-Image-Maker/",
+        featured: true,
+    },
     {
         name: "Image Compressor",
         category: "Media Tools",
