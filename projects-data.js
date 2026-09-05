@@ -45,7 +45,7 @@ const projectsData = [
         category: "Productivity",
         description: "A smart PDF and image printing tool for fitting multiple pages onto fewer physical sheets with customizable N-up grid layouts, live print preview, page reordering, paper settings, automatic sheet calculation, and PDF export.",
         tags: ["React", "TypeScript", "PDF", "Image Tools", "N-up Printing", "Productivity"],
-        demo: "YOUR_DEMO_URL",
+        demo: "https://aloksystems.github.io/Tools//one-page-print/",
         pinned: true,
         featured: true,
     },
