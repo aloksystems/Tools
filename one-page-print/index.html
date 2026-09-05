@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One Page Print — N-up Print Layout Generator</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="header">
+    <div class="header-brand">
+      <h1 class="header-title">One Page Print</h1>
+      <p class="header-subtitle">Fit multiple PDF pages &amp; images onto fewer sheets</p>
+    </div>
+  </header>
+
+  <!-- Upload Area -->
+  <section class="upload-section" id="uploadSection">
+    <div class="upload-area" id="uploadArea">
+      <div class="upload-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="12" y1="18" x2="12" y2="12"/>
+          <polyline points="9 15 12 12 15 15"/>
+        </svg>
+      </div>
+      <p class="upload-text">Drop PDFs or images here</p>
+      <p class="upload-hint">Supports PDF, JPG, PNG, WEBP — multiple files at once</p>
+      <button class="upload-btn" id="browseBtn">Browse Files</button>
+      <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.webp" hidden>
+    </div>
+  </section>
+
+  <!-- Main Workspace -->
+  <main class="workspace" id="workspace" style="display:none;">
+    <!-- Left Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Paper Settings -->
+      <div class="settings-card">
+        <h3 class="settings-title">Paper</h3>
+        <div class="control-row">
+          <label class="control-label">Size</label>
+          <select class="control-select" id="paperSize">
+            <option value="a4" selected>A4</option>
+            <option value="a3">A3</option>
+            <option value="letter">Letter</option>
+            <option value="legal">Legal</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label class="control-label">Orientation</label>
+          <div class="orientation-btns">
+            <button class="orient-btn active" data-orient="portrait" id="orientPortrait">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+              Portrait
+            </button>
+            <button class="orient-btn" data-orient="landscape" id="orientLandscape">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/></svg>
+              Landscape
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Selector -->
+      <div class="settings-card grid-card">
+        <h3 class="settings-title">Grid Layout</h3>
+        <p class="settings-desc">Select how many pages per sheet</p>
+        <div class="grid-presets" id="gridPresets">
+          <button class="grid-btn" data-rows="1" data-cols="1">1×1</button>
+          <button class="grid-btn" data-rows="1" data-cols="2">1×2</button>
+          <button class="grid-btn" data-rows="2" data-cols="1">2×1</button>
+          <button class="grid-btn active" data-rows="2" data-cols="2">2×2</button>
+          <button class="grid-btn" data-rows="2" data-cols="3">2×3</button>
+          <button class="grid-btn" data-rows="3" data-cols="2">3×2</button>
+          <button class="grid-btn" data-rows="3" data-cols="3">3×3</button>
+          <button class="grid-btn" data-rows="2" data-cols="4">2×4</button>
+          <button class="grid-btn" data-rows="4" data-cols="2">4×2</button>
+          <button class="grid-btn" data-rows="3" data-cols="4">3×4</button>
+          <button class="grid-btn" data-rows="4" data-cols="3">4×3</button>
+          <button class="grid-btn" data-rows="4" data-cols="4">4×4</button>
+          <button class="grid-btn" data-rows="5" data-cols="5">5×5</button>
+          <button class="grid-btn grid-btn-custom" id="customGridBtn">Custom</button>
+        </div>
+        <div class="custom-grid-form" id="customGridForm" style="display:none;">
+          <div class="custom-grid-inputs">
+            <div class="custom-input-group">
+              <label>Rows</label>
+              <input type="number" id="customRows" min="1" max="10" value="3">
+            </div>
+            <span class="custom-x">×</span>
+            <div class="custom-input-group">
+              <label>Cols</label>
+              <input type="number" id="customCols" min="1" max="10" value="5">
+            </div>
+            <button class="custom-apply-btn" id="customApplyBtn">Apply</button>
+          </div>
+        </div>
+        <div class="grid-info">
+          <span class="grid-info-value" id="gridInfo">2 × 2 = <strong>4</strong> pages/sheet</span>
+        </div>
+      </div>
+
+      <!-- Scaling -->
+      <div class="settings-card">
+        <h3 class="settings-title">Scaling</h3>
+        <div class="control-row">
+          <label class="control-label">Mode</label>
+          <select class="control-select" id="scaleMode">
+            <option value="fit" selected>Fit — preserve ratio</option>
+            <option value="fill">Fill — crop to fit</option>
+            <option value="original">Original — no resize</option>
+            <option value="stretch">Stretch — distort</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Spacing & Borders -->
+      <div class="settings-card">
+        <h3 class="settings-title">Spacing &amp; Borders</h3>
+        <div class="control-row">
+          <label class="control-label">Margin</label>
+          <input type="range" class="control-range" id="pageMargin" min="0" max="40" value="10">
+          <span class="range-value" id="pageMarginVal">10mm</span>
+        </div>
+        <div class="control-row">
+          <label class="control-label">Gap</label>
+          <input type="range" class="control-range" id="cellGap" min="0" max="20" value="4">
+          <span class="range-value" id="cellGapVal">4mm</span>
+        </div>
+        <div class="control-row">
+          <label class="control-label">Border</label>
+          <input type="range" class="control-range" id="borderThickness" min="0" max="3" step="0.5" value="0">
+          <span class="range-value" id="borderThicknessVal">0</span>
+        </div>
+      </div>
+
+      <!-- Reset -->
+      <button class="reset-btn" id="resetBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Reset All Settings
+      </button>
+    </aside>
+
+    <!-- Center Preview -->
+    <div class="preview-area">
+      <div class="preview-header">
+        <div class="sheet-nav">
+          <button class="nav-btn" id="prevSheet" disabled>&lsaquo; Prev</button>
+          <span class="sheet-info" id="sheetInfo">Sheet 1 / 1</span>
+          <button class="nav-btn" id="nextSheet" disabled>Next &rsaquo;</button>
+        </div>
+        <div class="sheet-stats" id="sheetStats">
+          <span>11 items</span> · <span>2 × 3</span> · <span>6 / sheet</span> · <span>2 sheets</span>
+        </div>
+      </div>
+      <div class="preview-canvas-wrapper" id="previewWrapper">
+        <canvas id="previewCanvas"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Thumbnails Strip -->
+  <section class="thumb-strip" id="thumbStrip" style="display:none;">
+    <div class="thumb-strip-header">
+      <h3 class="thumb-strip-title">Pages <span id="thumbCount">(0)</span></h3>
+      <div class="thumb-strip-actions">
+        <button class="strip-action-btn" id="autoArrangeBtn" title="Auto Arrange">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Auto Arrange
+        </button>
+      </div>
+    </div>
+    <div class="thumb-list" id="thumbList"></div>
+  </section>
+
+  <!-- Bottom Actions -->
+  <footer class="bottom-actions" id="bottomActions" style="display:none;">
+    <button class="action-btn action-btn-secondary" id="addMoreBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add More
+    </button>
+    <button class="action-btn action-btn-primary" id="printBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print
+    </button>
+    <button class="action-btn action-btn-accent" id="downloadBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download PDF
+    </button>
+  </footer>
+
+  <!-- Hidden print container -->
+  <div id="printContainer" class="print-container"></div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+    <div class="loading-spinner"></div>
+    <p class="loading-text" id="loadingText">Processing files...</p>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Application -->
+  <script src="js/fileManager.js"></script>
+  <script src="js/gridCalculator.js"></script>
+  <script src="js/previewRenderer.js"></script>
+  <script src="js/dragManager.js"></script>
+  <script src="js/printManager.js"></script>
+  <script src="js/downloadManager.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

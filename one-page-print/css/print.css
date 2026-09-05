@@ -1,0 +1,51 @@
+@page {
+  margin: 0;
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  .print-container,
+  .print-container * {
+    visibility: visible !important;
+  }
+
+  .print-container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 99999;
+  }
+
+  .print-sheet {
+    page-break-after: always;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .print-sheet:last-child {
+    page-break-after: auto;
+  }
+
+  .print-cell {
+    position: absolute;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .print-cell img,
+  .print-cell canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .print-cell.border-on {
+    border: 1px solid #000;
+  }
+}
