@@ -11,8 +11,10 @@ class DownloadManager {
     const { jsPDF } = window.jspdf;
     const { rows, cols } = settings.grid;
     const {
-      paperSize, orientation, margin, gap, borderThickness, scaleMode
+      paperSize, orientation, margin, margins: marginsArg, gap, borderThickness, scaleMode
     } = settings;
+
+    const margins = marginsArg || ((typeof margin === 'object') ? margin : { top: margin, right: margin, bottom: margin, left: margin });
 
     const paper = gridCalc.getPaperDimensions(paperSize, orientation);
     const calc = gridCalc.calculate(rows, cols, pages.length);
@@ -31,7 +33,7 @@ class DownloadManager {
     if (showLoading) showLoading('Generating PDF...');
 
     const cellSize = gridCalc.calculateCellSize(
-      pdfW, pdfH, rows, cols, margin, gap
+      pdfW, pdfH, rows, cols, margins, gap
     );
 
     for (let s = 0; s < calc.sheetsRequired; s++) {
@@ -42,12 +44,10 @@ class DownloadManager {
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           const itemIdx = sheet.startIdx + r * cols + c;
-          if (itemIdx >= pages.length) continue;
+          const page = pages[itemIdx % pages.length];
 
-          const page = pages[itemIdx];
-
-          const cellX = margin + c * (cellSize.cellWidth + gap);
-          const cellY = margin + r * (cellSize.cellHeight + gap);
+          const cellX = margins.left + c * (cellSize.cellWidth + gap);
+          const cellY = margins.top + r * (cellSize.cellHeight + gap);
 
           // Render page to a temporary canvas for the export
           const exportCanvas = await this._renderPageToCanvas(

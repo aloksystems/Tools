@@ -19,6 +19,8 @@
     paperSize: 'a4',
     orientation: 'portrait',
     margin: 10,
+    customMargins: false,
+    margins: { top: 10, right: 10, bottom: 10, left: 10 },
     gap: 4,
     borderThickness: 0,
     scaleMode: 'fit',
@@ -61,6 +63,12 @@
     cellGapVal: $('#cellGapVal'),
     borderThickness: $('#borderThickness'),
     borderThicknessVal: $('#borderThicknessVal'),
+    customMarginsToggle: $('#customMarginsToggle'),
+    customMarginsPanel: $('#customMargins'),
+    marginTop: $('#marginTop'),
+    marginRight: $('#marginRight'),
+    marginBottom: $('#marginBottom'),
+    marginLeft: $('#marginLeft'),
     autoArrangeBtn: $('#autoArrangeBtn'),
     resetBtn: $('#resetBtn'),
     printBtn: $('#printBtn'),
@@ -148,7 +156,35 @@
     els.pageMargin.addEventListener('input', () => {
       state.margin = parseInt(els.pageMargin.value, 10);
       els.pageMarginVal.textContent = state.margin + 'mm';
+      if (!state.customMargins) {
+        state.margins = { top: state.margin, right: state.margin, bottom: state.margin, left: state.margin };
+      }
       updatePreview();
+    });
+
+    // Custom margins toggle
+    els.customMarginsToggle.addEventListener('change', () => {
+      state.customMargins = els.customMarginsToggle.checked;
+      els.customMarginsPanel.style.display = state.customMargins ? 'block' : 'none';
+      if (state.customMargins) {
+        state.margins = {
+          top: parseInt(els.marginTop.value, 10) || state.margin,
+          right: parseInt(els.marginRight.value, 10) || state.margin,
+          bottom: parseInt(els.marginBottom.value, 10) || state.margin,
+          left: parseInt(els.marginLeft.value, 10) || state.margin
+        };
+      } else {
+        state.margins = { top: state.margin, right: state.margin, bottom: state.margin, left: state.margin };
+      }
+      updatePreview();
+    });
+
+    // Per-side margin inputs
+    ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'].forEach(key => {
+      els[key].addEventListener('input', () => {
+        state.margins[key.replace('margin', '').toLowerCase()] = parseInt(els[key].value, 10) || 0;
+        updatePreview();
+      });
     });
 
     els.cellGap.addEventListener('input', () => {
@@ -273,6 +309,8 @@
       paperSize: 'a4',
       orientation: 'portrait',
       margin: 10,
+      customMargins: false,
+      margins: { top: 10, right: 10, bottom: 10, left: 10 },
       gap: 4,
       borderThickness: 0,
       scaleMode: 'fit'
@@ -284,6 +322,12 @@
     els.scaleMode.value = state.scaleMode;
     els.pageMargin.value = state.margin;
     els.pageMarginVal.textContent = state.margin + 'mm';
+    els.customMarginsToggle.checked = false;
+    els.customMarginsPanel.style.display = 'none';
+    els.marginTop.value = state.margins.top;
+    els.marginRight.value = state.margins.right;
+    els.marginBottom.value = state.margins.bottom;
+    els.marginLeft.value = state.margins.left;
     els.cellGap.value = state.gap;
     els.cellGapVal.textContent = state.gap + 'mm';
     els.borderThickness.value = state.borderThickness;

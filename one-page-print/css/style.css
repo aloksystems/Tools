@@ -363,11 +363,53 @@ html, body {
   font-weight: 500;
 }
 
+/* ===== Custom Margins ===== */
+.custom-margins-toggle .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-margins-toggle input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.custom-margins {
+  padding: 8px 0 4px 60px;
+  animation: slideDown var(--transition-slow) ease;
+}
+
+.margin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.margin-grid .custom-input-group input {
+  width: 100%;
+}
+
+.margin-hint {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-align: right;
+}
+
 /* ===== Orientation Buttons ===== */
 .orientation-btns {
   display: flex;
   gap: 6px;
   flex: 1;
+  min-width: 0;
 }
 
 .orient-btn {
@@ -376,7 +418,7 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 7px 10px;
+  padding: 7px 6px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--surface);
@@ -389,6 +431,8 @@ html, body {
   user-select: none;
   position: relative;
   overflow: hidden;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .orient-btn::after {
@@ -1016,7 +1060,10 @@ html, body {
 @media (max-width: 900px) {
   .workspace {
     flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - var(--header-height));
   }
+
   .sidebar {
     width: 100%;
     min-width: unset;
@@ -1025,23 +1072,52 @@ html, body {
     overflow-y: visible;
     border-right: none;
     border-bottom: 1px solid var(--border);
-    max-height: 200px;
-    overflow-y: auto;
+    max-height: none;
+    padding: 10px;
+    gap: 8px;
+    order: 2;
   }
+
   .settings-card {
-    min-width: 200px;
-    flex: 1;
+    min-width: 180px;
+    flex: 1 1 auto;
+    padding: 10px;
   }
+
   .grid-presets {
     grid-template-columns: repeat(7, 1fr);
   }
+
   .reset-btn {
-    min-width: 200px;
-    flex: 1;
+    min-width: 180px;
+    flex: 1 1 auto;
   }
+
   .orientation-btns {
-    min-width: 200px;
-    flex: 1;
+    min-width: 160px;
+    flex: 1 1 auto;
+  }
+
+  .preview-area {
+    order: 1;
+    min-height: 400px;
+    flex: none;
+  }
+
+  .preview-canvas-wrapper {
+    padding: 16px;
+  }
+
+  .thumb-strip {
+    order: 3;
+  }
+
+  .bottom-actions {
+    order: 4;
+  }
+
+  .custom-margins {
+    padding-left: 0;
   }
 }
 
@@ -1063,6 +1139,53 @@ html, body {
   .upload-text {
     font-size: 16px;
   }
+
+  .sidebar {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .settings-card {
+    min-width: unset;
+  }
+
+  .grid-presets {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .orient-btn {
+    padding: 6px 4px;
+    font-size: 11px;
+    gap: 3px;
+  }
+
+  .orient-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .control-row {
+    gap: 6px;
+  }
+
+  .control-label {
+    min-width: 44px;
+    font-size: 11px;
+  }
+
+  .margin-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  .preview-area {
+    min-height: 300px;
+  }
+
+  .preview-canvas-wrapper {
+    padding: 12px;
+  }
+
   .bottom-actions {
     flex-wrap: wrap;
     height: auto;

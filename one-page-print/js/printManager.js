@@ -9,13 +9,15 @@ class PrintManager {
   async print(pages, gridCalc, settings) {
     const { rows, cols } = settings.grid;
     const {
-      paperSize, orientation, margin, gap, borderThickness, scaleMode
+      paperSize, orientation, margin, margins: marginsArg, gap, borderThickness, scaleMode
     } = settings;
+
+    const margins = marginsArg || ((typeof margin === 'object') ? margin : { top: margin, right: margin, bottom: margin, left: margin });
 
     const paper = gridCalc.getPaperDimensions(paperSize, orientation);
     const calc = gridCalc.calculate(rows, cols, pages.length);
     const cellSize = gridCalc.calculateCellSize(
-      paper.width, paper.height, rows, cols, margin, gap
+      paper.width, paper.height, rows, cols, margins, gap
     );
 
     // Set @page size
@@ -35,14 +37,12 @@ class PrintManager {
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           const itemIdx = sheet.startIdx + r * cols + c;
-          if (itemIdx >= pages.length) continue;
-
-          const page = pages[itemIdx];
+          const page = pages[itemIdx % pages.length];
           const cellDiv = document.createElement('div');
           cellDiv.className = 'print-cell' + (borderThickness > 0 ? ' border-on' : '');
 
-          const left = margin + c * (cellSize.cellWidth + gap);
-          const top = margin + r * (cellSize.cellHeight + gap);
+          const left = margins.left + c * (cellSize.cellWidth + gap);
+          const top = margins.top + r * (cellSize.cellHeight + gap);
 
           cellDiv.style.left = left + 'mm';
           cellDiv.style.top = top + 'mm';
@@ -71,6 +71,9 @@ class PrintManager {
 
       this.printContainer.appendChild(sheetDiv);
     }
+
+    // Wait for layout to settle before opening print dialog
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
     // Trigger print
     window.print();

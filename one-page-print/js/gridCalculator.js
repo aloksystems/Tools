@@ -50,10 +50,11 @@ class GridCalculator {
   }
 
   calculateCellSize(paperWidthMm, paperHeightMm, rows, cols, marginMm, gapMm) {
+    const m = (typeof marginMm === 'object') ? marginMm : { top: marginMm, right: marginMm, bottom: marginMm, left: marginMm };
     const totalGapX = gapMm * (cols - 1);
     const totalGapY = gapMm * (rows - 1);
-    const cellWidth = (paperWidthMm - 2 * marginMm - totalGapX) / cols;
-    const cellHeight = (paperHeightMm - 2 * marginMm - totalGapY) / rows;
+    const cellWidth = (paperWidthMm - m.left - m.right - totalGapX) / cols;
+    const cellHeight = (paperHeightMm - m.top - m.bottom - totalGapY) / rows;
     return { cellWidth, cellHeight };
   }
 

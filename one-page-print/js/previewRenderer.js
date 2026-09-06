@@ -30,12 +30,14 @@ class PreviewRenderer {
   async render(pages, sheetIndex, gridCalc, settings) {
     const { rows, cols } = settings.grid;
     const {
-      paperSize, orientation, margin, gap, borderThickness, scaleMode
+      paperSize, orientation, margin, margins: marginsArg, gap, borderThickness, scaleMode
     } = settings;
+
+    const margins = marginsArg || ((typeof margin === 'object') ? margin : { top: margin, right: margin, bottom: margin, left: margin });
 
     const paper = gridCalc.getPaperDimensions(paperSize, orientation);
     const cellSize = gridCalc.calculateCellSize(
-      paper.width, paper.height, rows, cols, margin, gap
+      paper.width, paper.height, rows, cols, margins, gap
     );
 
     const calc = gridCalc.calculate(rows, cols, pages.length);
@@ -62,7 +64,8 @@ class PreviewRenderer {
     const sheet = calc.sheets[sheetIndex];
     if (!sheet) return;
 
-    const marginPx = margin * pxPerMm;
+    const marginPxTop = margins.top * pxPerMm;
+    const marginPxLeft = margins.left * pxPerMm;
     const gapPx = gap * pxPerMm;
     const cellWPx = cellSize.cellWidth * pxPerMm;
     const cellHPx = cellSize.cellHeight * pxPerMm;
@@ -70,11 +73,9 @@ class PreviewRenderer {
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         const itemIdx = sheet.startIdx + r * cols + c;
-        if (itemIdx >= pages.length) break;
-
-        const page = pages[itemIdx];
-        const cellX = marginPx + c * (cellWPx + gapPx);
-        const cellY = marginPx + r * (cellHPx + gapPx);
+        const page = pages[itemIdx % pages.length];
+        const cellX = marginPxLeft + c * (cellWPx + gapPx);
+        const cellY = marginPxTop + r * (cellHPx + gapPx);
 
         // Cell background
         ctx.fillStyle = '#f8f9fa';

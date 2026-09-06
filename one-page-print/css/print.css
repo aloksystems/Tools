@@ -3,25 +3,25 @@
 }
 
 @media print {
-  body * {
-    visibility: hidden !important;
+  /* Kill everything from the layout */
+  body > * {
+    display: none !important;
   }
 
-  .print-container,
-  .print-container * {
-    visibility: visible !important;
-  }
-
-  .print-container {
-    position: fixed;
+  /* Show only the print container */
+  #printContainer {
+    display: block !important;
+    position: absolute;
     left: 0;
     top: 0;
     width: 100%;
-    z-index: 99999;
+    height: 100%;
   }
 
   .print-sheet {
     page-break-after: always;
+    page-break-inside: avoid;
+    break-inside: avoid;
     overflow: hidden;
     position: relative;
   }
