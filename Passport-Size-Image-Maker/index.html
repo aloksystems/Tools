@@ -180,6 +180,42 @@
                             <span class="hint-text">photos</span>
                         </div>
                     </div>
+                    <div class="grid-layout-group">
+                        <span class="control-label">Grid Layout</span>
+                        <div class="grid-layout-fields">
+                            <div class="field-group">
+                                <label for="gridCols">Columns</label>
+                                <input type="number" id="gridCols" min="1" max="10" value="4" step="1">
+                            </div>
+                            <span class="dimension-separator">×</span>
+                            <div class="field-group">
+                                <label for="gridRows">Rows</label>
+                                <input type="number" id="gridRows" min="1" max="10" value="2" step="1">
+                            </div>
+                        </div>
+                        <span class="hint-text" id="gridTotalHint">4 × 2 = 8 photos</span>
+                    </div>
+                    <div class="margins-group">
+                        <span class="control-label">Page Margins (mm)</span>
+                        <div class="margins-fields">
+                            <div class="field-group">
+                                <label for="marginTop">Top</label>
+                                <input type="number" id="marginTop" min="0" max="100" value="10" step="1">
+                            </div>
+                            <div class="field-group">
+                                <label for="marginBottom">Bottom</label>
+                                <input type="number" id="marginBottom" min="0" max="100" value="10" step="1">
+                            </div>
+                            <div class="field-group">
+                                <label for="marginLeft">Left</label>
+                                <input type="number" id="marginLeft" min="0" max="100" value="10" step="1">
+                            </div>
+                            <div class="field-group">
+                                <label for="marginRight">Right</label>
+                                <input type="number" id="marginRight" min="0" max="100" value="10" step="1">
+                            </div>
+                        </div>
+                    </div>
                     <div class="output-format-group">
                         <span class="control-label">Output Format</span>
                         <div class="format-buttons" role="radiogroup" aria-label="Output format">

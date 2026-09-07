@@ -826,6 +826,46 @@ body {
     display: none;
 }
 
+.grid-layout-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1 1 200px;
+}
+
+.grid-layout-fields {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.grid-layout-fields .field-group input[type="number"] {
+    width: 65px;
+}
+
+.margins-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1 1 200px;
+}
+
+.margins-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.margins-fields .field-group input[type="number"] {
+    width: 65px;
+}
+
+.grid-layout-group .hint-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
 /* ---------- Preview Layout ---------- */
 .preview-layout {
     display: flex;
@@ -1041,6 +1081,10 @@ body {
     .sheet-options {
         flex-direction: column;
         gap: 16px;
+    }
+
+    .margins-fields {
+        flex-wrap: wrap;
     }
 }
 

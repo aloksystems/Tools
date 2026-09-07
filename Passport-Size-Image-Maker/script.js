@@ -40,6 +40,13 @@
     const copiesButtons = document.querySelectorAll('.copy-btn');
     const customCopiesField = document.getElementById('custom-copies-field');
     const customCopiesInput = document.getElementById('customCopies');
+    const gridColsInput = document.getElementById('gridCols');
+    const gridRowsInput = document.getElementById('gridRows');
+    const gridTotalHint = document.getElementById('gridTotalHint');
+    const marginTopInput = document.getElementById('marginTop');
+    const marginBottomInput = document.getElementById('marginBottom');
+    const marginLeftInput = document.getElementById('marginLeft');
+    const marginRightInput = document.getElementById('marginRight');
     const formatButtons = document.querySelectorAll('.format-btn');
     const qualityControl = document.getElementById('quality-control');
     const qualitySlider = document.getElementById('qualitySlider');
@@ -86,6 +93,9 @@
         backgroundMode: 'original', // 'original' | 'white'
         sheetCopies: 8,
         customCopies: 8,
+        sheetCols: 4,
+        sheetRows: 2,
+        pageMargins: { top: 10, bottom: 10, left: 10, right: 10 }, // mm
         outputFormat: 'jpg',
         jpgQuality: 90,
 
@@ -97,7 +107,6 @@
     const MM_PER_INCH = 25.4;
     const A4_WIDTH_MM = 210;
     const A4_HEIGHT_MM = 297;
-    const SHEET_MARGIN_MM = 10;
     const SHEET_SPACING_MM = 5;
     const DISPLAY_MAX_SIZE = 420;
 
@@ -555,6 +564,31 @@
     });
 
     // ---------- Sheet Copies ----------
+    function bestGridForCopies(count) {
+        if (count <= 0) return { cols: 1, rows: 1 };
+        // Prefer wider layouts (more cols than rows)
+        const aspect = A4_WIDTH_MM / A4_HEIGHT_MM;
+        let cols = Math.ceil(Math.sqrt(count * (1 / aspect)));
+        let rows = Math.ceil(count / cols);
+        // Ensure cols * rows >= count
+        if (cols * rows < count) cols = Math.ceil(count / rows);
+        return { cols: cols, rows: rows };
+    }
+
+    function syncGridFromCopies(count) {
+        const grid = bestGridForCopies(count);
+        state.sheetCols = grid.cols;
+        state.sheetRows = grid.rows;
+        gridColsInput.value = grid.cols;
+        gridRowsInput.value = grid.rows;
+        updateGridHint();
+    }
+
+    function updateGridHint() {
+        const total = state.sheetCols * state.sheetRows;
+        gridTotalHint.textContent = state.sheetCols + ' \u00d7 ' + state.sheetRows + ' = ' + total + ' photos';
+    }
+
     copiesButtons.forEach((btn) => {
         btn.addEventListener('click', function () {
             const copies = btn.dataset.copies;
@@ -569,6 +603,7 @@
                 customCopiesField.hidden = true;
                 state.sheetCopies = parseInt(copies, 10);
             }
+            syncGridFromCopies(state.sheetCopies);
             generateSheetPreview();
         });
     });
@@ -579,8 +614,69 @@
         customCopiesInput.value = state.customCopies;
         if (state.sheetCopies !== 4 && state.sheetCopies !== 6 && state.sheetCopies !== 8 && state.sheetCopies !== 12) {
             state.sheetCopies = state.customCopies;
+            syncGridFromCopies(state.sheetCopies);
             generateSheetPreview();
         }
+    });
+
+    // ---------- Grid Layout ----------
+    gridColsInput.addEventListener('change', function () {
+        state.sheetCols = clamp(parseInt(gridColsInput.value, 10) || 1, 1, 10);
+        gridColsInput.value = state.sheetCols;
+        state.sheetCopies = state.sheetCols * state.sheetRows;
+        customCopiesField.hidden = true;
+        // Deselect any preset copy button, mark custom
+        document.querySelectorAll('.copy-btn').forEach((b) => {
+            b.classList.toggle('active', b.dataset.copies === 'custom');
+            b.setAttribute('aria-checked', b.dataset.copies === 'custom' ? 'true' : 'false');
+        });
+        updateGridHint();
+        generateSheetPreview();
+    });
+
+    gridRowsInput.addEventListener('change', function () {
+        state.sheetRows = clamp(parseInt(gridRowsInput.value, 10) || 1, 1, 10);
+        gridRowsInput.value = state.sheetRows;
+        state.sheetCopies = state.sheetCols * state.sheetRows;
+        customCopiesField.hidden = true;
+        document.querySelectorAll('.copy-btn').forEach((b) => {
+            b.classList.toggle('active', b.dataset.copies === 'custom');
+            b.setAttribute('aria-checked', b.dataset.copies === 'custom' ? 'true' : 'false');
+        });
+        updateGridHint();
+        generateSheetPreview();
+    });
+
+    // ---------- Page Margins ----------
+    function readMarginsFromUI() {
+        state.pageMargins.top = clamp(parseFloat(marginTopInput.value) || 0, 0, 100);
+        state.pageMargins.bottom = clamp(parseFloat(marginBottomInput.value) || 0, 0, 100);
+        state.pageMargins.left = clamp(parseFloat(marginLeftInput.value) || 0, 0, 100);
+        state.pageMargins.right = clamp(parseFloat(marginRightInput.value) || 0, 0, 100);
+        marginTopInput.value = state.pageMargins.top;
+        marginBottomInput.value = state.pageMargins.bottom;
+        marginLeftInput.value = state.pageMargins.left;
+        marginRightInput.value = state.pageMargins.right;
+    }
+
+    marginTopInput.addEventListener('change', function () {
+        readMarginsFromUI();
+        generateSheetPreview();
+    });
+
+    marginBottomInput.addEventListener('change', function () {
+        readMarginsFromUI();
+        generateSheetPreview();
+    });
+
+    marginLeftInput.addEventListener('change', function () {
+        readMarginsFromUI();
+        generateSheetPreview();
+    });
+
+    marginRightInput.addEventListener('change', function () {
+        readMarginsFromUI();
+        generateSheetPreview();
     });
 
     // ---------- Output Format ----------
@@ -825,74 +921,57 @@
         const processedCanvas = state.processedPhotoCanvas;
         if (!processedCanvas) return;
 
-        const copies = state.sheetCopies || 8;
         const dpi = state.dpi;
 
         // A4 sheet pixel dimensions at current DPI
         const sheetW = mmToPixels(A4_WIDTH_MM, dpi);
         const sheetH = mmToPixels(A4_HEIGHT_MM, dpi);
-        const marginPx = mmToPixels(SHEET_MARGIN_MM, dpi);
+
+        // Custom page margins
+        const marginTop = mmToPixels(state.pageMargins.top, dpi);
+        const marginBottom = mmToPixels(state.pageMargins.bottom, dpi);
+        const marginLeft = mmToPixels(state.pageMargins.left, dpi);
+        const marginRight = mmToPixels(state.pageMargins.right, dpi);
         const spacingPx = mmToPixels(SHEET_SPACING_MM, dpi);
-        const photoW = processedCanvas.width;
-        const photoH = processedCanvas.height;
 
-        // Calculate grid layout
-        const availableW = sheetW - 2 * marginPx;
-        const availableH = sheetH - 2 * marginPx;
-        const maxCols = Math.max(1, Math.floor((availableW + spacingPx) / (photoW + spacingPx)));
-        const maxRows = Math.max(1, Math.floor((availableH + spacingPx) / (photoH + spacingPx)));
+        // Available area inside margins
+        const availableW = sheetW - marginLeft - marginRight;
+        const availableH = sheetH - marginTop - marginBottom;
 
-        let cols, rows;
-        if (copies <= 4) {
-            cols = Math.min(2, maxCols);
-            rows = Math.ceil(copies / cols);
-            if (rows > maxRows) {
-                rows = maxRows;
-                cols = Math.ceil(copies / rows);
-            }
-        } else if (copies <= 6) {
-            cols = Math.min(3, maxCols);
-            rows = Math.ceil(copies / cols);
-            if (rows > maxRows) {
-                rows = maxRows;
-                cols = Math.ceil(copies / rows);
-            }
-        } else if (copies <= 8) {
-            cols = Math.min(4, maxCols);
-            rows = Math.ceil(copies / cols);
-            if (rows > maxRows) {
-                rows = maxRows;
-                cols = Math.ceil(copies / rows);
-            }
-        } else if (copies <= 12) {
-            cols = Math.min(4, maxCols);
-            rows = Math.ceil(copies / cols);
-            if (rows > maxRows) {
-                rows = maxRows;
-                cols = Math.ceil(copies / rows);
-            }
+        // Grid dimensions from user settings
+        const cols = state.sheetCols;
+        const rows = state.sheetRows;
+
+        // Original photo aspect ratio
+        const origPhotoW = processedCanvas.width;
+        const origPhotoH = processedCanvas.height;
+        const photoAspect = origPhotoW / origPhotoH;
+
+        // Calculate max photo size that fits in the grid
+        const maxPhotoW = (availableW - (cols - 1) * spacingPx) / cols;
+        const maxPhotoH = (availableH - (rows - 1) * spacingPx) / rows;
+
+        // Scale photo to fit while maintaining aspect ratio
+        let photoW, photoH;
+        if (maxPhotoW / photoAspect <= maxPhotoH) {
+            photoW = maxPhotoW;
+            photoH = photoW / photoAspect;
         } else {
-            // Try to fit as many as possible in a balanced grid
-            cols = Math.min(maxCols, Math.ceil(Math.sqrt(copies * (availableW / availableH))));
-            rows = Math.ceil(copies / cols);
-            if (rows > maxRows) {
-                rows = maxRows;
-                cols = Math.ceil(copies / rows);
-            }
-            if (cols > maxCols) cols = maxCols;
+            photoH = maxPhotoH;
+            photoW = photoH * photoAspect;
         }
 
-        // Ensure we don't exceed max
-        cols = Math.min(cols, maxCols);
-        rows = Math.min(rows, maxRows);
+        // Ensure minimum size
+        photoW = Math.max(1, Math.round(photoW));
+        photoH = Math.max(1, Math.round(photoH));
 
         // Calculate total grid size
         const totalW = cols * photoW + (cols - 1) * spacingPx;
         const totalH = rows * photoH + (rows - 1) * spacingPx;
 
-        // Center the grid
-        const startX = (sheetW - totalW) / 2;
-        const startY = (sheetH - totalH) / 2;
+        // Center the grid horizontally, align to top with top margin
+        const startX = marginLeft + (availableW - totalW) / 2;
+        const startY = marginTop;
 
         // Create sheet canvas
         const sheetCanvas = document.createElement('canvas');
@@ -904,10 +983,12 @@
         sheetCtx.fillStyle = '#ffffff';
         sheetCtx.fillRect(0, 0, sheetW, sheetH);
 
-        // Draw photos
+        // Draw photos in grid
         let drawn = 0;
-        for (let r = 0; r < rows && drawn < copies; r++) {
-            for (let c = 0; c < cols && drawn < copies; c++) {
+        const totalCopies = cols * rows;
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                if (drawn >= totalCopies) break;
                 const x = startX + c * (photoW + spacingPx);
                 const y = startY + r * (photoH + spacingPx);
                 sheetCtx.drawImage(processedCanvas, x, y, photoW, photoH);
@@ -1058,6 +1139,20 @@
         });
         customCopiesField.hidden = true;
 
+        // Reset grid layout
+        state.sheetCols = 4;
+        state.sheetRows = 2;
+        gridColsInput.value = 4;
+        gridRowsInput.value = 2;
+        updateGridHint();
+
+        // Reset page margins
+        state.pageMargins = { top: 10, bottom: 10, left: 10, right: 10 };
+        marginTopInput.value = 10;
+        marginBottomInput.value = 10;
+        marginLeftInput.value = 10;
+        marginRightInput.value = 10;
+
         // Reset format to JPG
         state.outputFormat = 'jpg';
         document.querySelectorAll('.format-btn').forEach((b) => {
@@ -1084,6 +1179,7 @@
         selectPreset('india');
         qualityControl.hidden = false;
         updateCropViewportAspect();
+        updateGridHint();
         updateSizeDisplay();
 
         // Handle window resize for crop canvas
