@@ -109,6 +109,15 @@ const projectsData = [
 
   // Media Tools
   {
+    name: "FormReady",
+    category: "Document Tools",
+    description:
+      "A privacy-first bulk document preparation tool for converting, resizing, and compressing photos, signatures, certificates, and PDFs for online application forms. Process multiple files at once, customize requirements for each document, and download everything individually or as a ZIP — entirely in your browser.",
+    tags: ["PDF", "Image", "Converter", "Compressor", "Documents"],
+    demo: "https://aloksystems.github.io/Tools/FormReady/",
+    pinned: true,
+  },
+  {
     name: "MP4 to MP3 Converter",
     category: "Media Tools",
     description:
