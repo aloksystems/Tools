@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FormReady — Bulk Document Converter &amp; Resizer</title>
+  <meta name="description" content="Prepare photos, signatures, certificates and PDFs for online applications. Convert, resize and compress multiple documents in one place." />
+  <meta name="theme-color" content="#4f46e5" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="FormReady — Bulk Document Converter & Resizer" />
+  <meta property="og:description" content="Prepare photos, signatures, certificates and PDFs for online applications. Convert, resize and compress multiple documents in one place." />
+  <meta property="og:image" content="assets/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="#" aria-label="FormReady home">
+        <span class="brand-mark" aria-hidden="true">FR</span>
+        <span class="brand-text">
+          <strong>FORMREADY</strong>
+          <small>Bulk Document Converter</small>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <button class="nav-link" data-scroll="#workspace" type="button">Workspace</button>
+        <button class="nav-link" data-open-ops type="button">Operations</button>
+        <button class="nav-link" data-open-about type="button">About</button>
+        <button class="nav-link" data-open-privacy type="button">Privacy</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" role="main">
+    <!-- ===== Hero ===== -->
+    <section class="hero" id="hero">
+      <div class="container hero-inner">
+        <h1>Build Your Application Document Pack</h1>
+      </div>
+    </section>
+
+    <!-- ===== Stepper ===== -->
+    <div class="container">
+      <ol class="stepper" id="stepper" aria-label="Progress">
+        <li class="step is-active" data-step="upload">
+          <span class="step-dot" aria-hidden="true">1</span>
+          <span class="step-label">Upload</span>
+        </li>
+        <li class="step" data-step="configure">
+          <span class="step-dot" aria-hidden="true">2</span>
+          <span class="step-label">Configure</span>
+        </li>
+        <li class="step" data-step="result">
+          <span class="step-dot" aria-hidden="true">3</span>
+          <span class="step-label">Result</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- ===== Workspace ===== -->
+    <section class="container workspace" id="workspace" aria-live="polite">
+
+      <!-- Stage: Upload -->
+      <div class="stage" id="stage-upload">
+        <div class="dropzone" id="dropzone" tabindex="0" role="button"
+             aria-label="Upload documents. Drag and drop files here or activate to browse.">
+          <div class="dropzone-inner">
+            <div class="dropzone-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0 4 4m-4-4-4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+            </div>
+            <h2>Upload your documents</h2>
+            <p class="dropzone-hint">Drag &amp; drop files here</p>
+            <p class="dropzone-or">or</p>
+            <button class="btn btn-primary" data-select-docs type="button">Select Documents</button>
+            <p class="dropzone-types">JPG • PNG • WEBP • GIF • PDF</p>
+            <p class="dropzone-privacy">🔒 Private &amp; Browser-Based</p>
+          </div>
+          <input id="fileInput" type="file" multiple accept="image/*,application/pdf,.jpg,.jpeg,.png,.webp,.gif,.pdf" hidden />
+        </div>
+      </div>
+
+      <!-- Stage: Configure -->
+      <div class="stage" id="stage-configure" hidden>
+        <div class="configure-grid">
+          <!-- LEFT: Documents -->
+          <section class="panel panel-docs" aria-labelledby="docsHeading">
+            <div class="panel-head">
+              <div>
+                <h2 id="docsHeading">YOUR APPLICATION PACK</h2>
+                <p class="panel-sub" id="docsSummary">0 documents</p>
+              </div>
+              <div class="panel-actions">
+                <button class="btn btn-soft" data-select-docs type="button">+ Add Documents</button>
+                <button class="btn btn-danger-soft" id="clearAllBtn" type="button">Clear All</button>
+              </div>
+            </div>
+
+            <div class="pack-bar" id="packBar" hidden>
+              <label class="check">
+                <input type="checkbox" id="packToggle" />
+                <span><strong>Application Pack</strong> — combine selected images into one ordered PDF / batch</span>
+              </label>
+              <button class="btn btn-soft btn-sm" id="combineBtn" type="button" hidden>Combine into one PDF…</button>
+            </div>
+
+            <div id="fileList" class="file-list" role="list"></div>
+
+            <p id="emptyDocs" class="empty-note">No documents yet. Add files to begin.</p>
+          </section>
+
+          <!-- RIGHT: Bulk settings -->
+          <aside class="panel panel-bulk" aria-labelledby="bulkHeading">
+            <div class="panel-head">
+              <div>
+                <h2 id="bulkHeading">BULK PROCESSING SETTINGS</h2>
+                <p class="panel-sub">Defaults applied to all files. Each file can override.</p>
+              </div>
+            </div>
+
+            <form id="bulkForm" class="settings-form" autocomplete="off">
+              <fieldset class="field">
+                <legend>Default Output Format</legend>
+                <div class="segment" role="radiogroup" aria-label="Default output format">
+                  <label class="seg-opt"><input type="radio" name="bulkFormat" value="original" checked /><span>Original</span></label>
+                  <label class="seg-opt"><input type="radio" name="bulkFormat" value="jpg" /><span>JPG</span></label>
+                  <label class="seg-opt"><input type="radio" name="bulkFormat" value="png" /><span>PNG</span></label>
+                  <label class="seg-opt"><input type="radio" name="bulkFormat" value="webp" /><span>WEBP</span></label>
+                  <label class="seg-opt"><input type="radio" name="bulkFormat" value="pdf" /><span>PDF</span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="field">
+                <legend>Default Target Size <span class="muted">(maximum, optional)</span></legend>
+                <div class="target-row">
+                  <label class="check"><input type="checkbox" id="bulkTargetOn" /><span>Limit size</span></label>
+                  <div class="target-inputs" id="bulkTargetInputs" hidden>
+                    <input type="number" id="bulkTargetValue" min="1" step="1" value="200" aria-label="Default target size in KB" />
+                    <select id="bulkTargetUnit" aria-label="Target unit">
+                      <option value="KB" selected>KB</option>
+                      <option value="MB">MB</option>
+                    </select>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="field">
+                <legend>Default Quality</legend>
+                <div class="slider-row">
+                  <input type="range" id="bulkQuality" min="10" max="100" step="1" value="80" aria-describedby="bulkQualityOut" />
+                  <output id="bulkQualityOut" for="bulkQuality">80%</output>
+                </div>
+              </fieldset>
+
+              <fieldset class="field">
+                <legend>Default Dimensions</legend>
+                <div class="dim-row">
+                  <label class="check"><input type="checkbox" id="bulkDimsOn" /><span>Resize images</span></label>
+                  <div class="dim-inputs" id="bulkDimsInputs" hidden>
+                    <input type="number" id="bulkWidth" min="1" placeholder="Width" aria-label="Default width" />
+                    <span aria-hidden="true">×</span>
+                    <input type="number" id="bulkHeight" min="1" placeholder="Height" aria-label="Default height" />
+                    <select id="bulkDimsUnit" aria-label="Dimension unit">
+                      <option value="px" selected>px</option>
+                      <option value="cm">cm</option>
+                    </select>
+                    <div class="ratio-row">
+                      <label class="check sm"><input type="checkbox" id="bulkKeepRatio" checked /><span>Keep ratio</span></label>
+                      <input type="text" id="bulkRatio" placeholder="Ratio 3×4 / 3:4" aria-label="Aspect ratio, e.g. 3x4 or 3:4" />
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="field field-actions">
+                <button class="btn btn-soft" id="applyAllBtn" type="button">Apply to All</button>
+                <button class="btn btn-ghost" id="resetBulkBtn" type="button">Reset</button>
+              </div>
+            </form>
+
+            <hr class="divider" />
+
+            <fieldset class="field">
+              <legend>Download as</legend>
+              <div class="download-mode" role="radiogroup" aria-label="Download mode">
+                <label class="radio-card">
+                  <input type="radio" name="downloadMode" value="separate" checked />
+                  <span class="radio-card-body">
+                    <strong>Separate files</strong>
+                    <small>Download each document individually</small>
+                  </span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="downloadMode" value="zip" />
+                  <span class="radio-card-body">
+                    <strong>One ZIP file</strong>
+                    <small>FormReady_Application_Pack.zip</small>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <button class="btn btn-primary btn-block btn-lg" id="processBtn" type="button">Process &amp; Download</button>
+            <p class="bulk-note">“Target size” always means <strong>maximum</strong> size. Results are verified after processing.</p>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Stage: Result -->
+      <div class="stage" id="stage-result" hidden>
+        <div class="result-head">
+          <div>
+            <h2 id="resultHeading">Your Documents Are Ready</h2>
+            <p class="panel-sub" id="resultSummary">0 documents</p>
+          </div>
+          <div class="panel-actions">
+            <button class="btn btn-ghost" id="backToConfigure" type="button">← Back to Configure</button>
+            <button class="btn btn-soft" id="addMoreFromResult" type="button">+ Add Documents</button>
+          </div>
+        </div>
+
+        <div id="resultList" class="result-list" role="list"></div>
+
+        <div class="result-actions">
+          <button class="btn btn-soft btn-lg" id="downloadSeparateBtn" type="button">Download All</button>
+          <button class="btn btn-primary btn-lg" id="downloadZipBtn" type="button">Download ZIP</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Global progress ===== -->
+    <div class="container">
+      <div class="progress-wrap" id="progressWrap" hidden>
+        <div class="progress-top">
+          <span id="progressLabel">Processing…</span>
+          <span id="progressCount">0 / 0 files</span>
+        </div>
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <ul class="progress-items" id="progressItems" aria-label="Individual file status"></ul>
+      </div>
+    </div>
+
+    <section class="container info-strip" aria-label="How it works">
+      <article class="info-card">
+        <h3>1 · Upload</h3>
+        <p>Add photos, signatures, marksheets, certificates and PDFs all at once.</p>
+      </article>
+      <article class="info-card">
+        <h3>2 · Configure</h3>
+        <p>Set a target size, output format and dimensions per file — or apply bulk defaults.</p>
+      </article>
+      <article class="info-card">
+        <h3>3 · Process &amp; Download</h3>
+        <p>Every result is verified against its requirement, then downloaded separately or as a ZIP.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <p>FormReady — Prepare Every Document. In One Go.</p>
+      <p class="footer-privacy">🔒 Files are processed locally in your browser whenever possible. No account required.</p>
+    </div>
+  </footer>
+
+  <!-- ===== Modal: file settings / image editor ===== -->
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" id="modal">
+      <header class="modal-head">
+        <h2 id="modalTitle">Edit Settings</h2>
+        <button class="icon-btn" id="modalClose" type="button" aria-label="Close dialog">✕</button>
+      </header>
+      <div class="modal-body" id="modalBody"></div>
+      <footer class="modal-foot" id="modalFoot"></footer>
+    </div>
+  </div>
+
+  <!-- ===== Modal: info (about / privacy / operations) ===== -->
+  <div class="modal-backdrop" id="infoBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="infoTitle" id="infoModal">
+      <header class="modal-head">
+        <h2 id="infoTitle">Info</h2>
+        <button class="icon-btn" id="infoClose" type="button" aria-label="Close dialog">✕</button>
+      </header>
+      <div class="modal-body" id="infoBody"></div>
+    </div>
+  </div>
+
+  <!-- ===== Toasts ===== -->
+  <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ===== Libraries (CDN) ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

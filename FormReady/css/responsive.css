@@ -1,0 +1,94 @@
+/* ===== FormReady — responsive.css ===== */
+
+@media (max-width: 980px) {
+  .configure-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .header-inner {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .site-nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 20px 0 6px;
+  }
+
+  .stepper {
+    flex-wrap: wrap;
+  }
+
+  .step {
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+
+  .dropzone {
+    padding: 22px 14px;
+  }
+
+  .panel {
+    padding: 15px;
+  }
+
+  .card-main {
+    gap: 10px;
+  }
+
+  .card-preview {
+    flex-basis: 60px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-preview {
+    min-height: 200px;
+  }
+
+  .result-list {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-actions {
+    width: 100%;
+  }
+
+  .panel-actions .btn {
+    flex: 1;
+  }
+
+  .btn-block,
+  .result-actions .btn {
+    width: 100%;
+  }
+
+  .modal {
+    max-height: 92vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
