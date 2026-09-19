@@ -426,8 +426,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initFeedbackForm();
 });
 
-// Paste your Google Apps Script web app URL below.
-const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwM_S38oexd2VycAnLNFrcheDLi4QzI0BQJdd6pvDI-Qwd19A_wsyB44QcKT6oSiubs/exec';
+// FormSubmit.co endpoint — sends feedback to helloalokmail@gmail.com
+const FEEDBACK_ENDPOINT = 'https://formsubmit.co/helloalokmail@gmail.com';
 
 function initFeedbackForm() {
   const form = document.getElementById('feedback-form');
@@ -499,11 +499,23 @@ function initFeedbackForm() {
     try {
       const res = await fetch(FEEDBACK_ENDPOINT, {
         method: 'POST',
-        body: new URLSearchParams({ name, rating, type, message }),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          rating: `${rating}/5`,
+          type,
+          message,
+          _subject: `Tools Feedback: ${type}`,
+          _template: 'table',
+          _captcha: 'false',
+        }),
       });
       const data = await res.json();
 
-      if (data.success !== false) {
+      if (data.success === 'true' || data.success === true) {
         setStatus('Thank you! Your feedback has been sent. We read every message.', false);
         form.reset();
         setRating(0);
