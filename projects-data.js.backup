@@ -46,12 +46,12 @@ const projectsData = [
 
   // Productivity & Utilities
   {
-    name: "Writing Pace",
+    name: "WriteFlow",
     category: "Writing Tools",
     description:
       "A simple and customizable writing assistant that displays text one word, phrase, or sentence at a time with adjustable timing and highlighting. Designed to make copying long paragraphs and handwritten assignments easier by letting you write at your own comfortable pace. Runs entirely in the browser with no server-side processing.",
     tags: ["Writing", "Productivity", "Text", "Study"],
-    demo: "https://aloksystems.github.io/Tools/Writing-Pace/",
+    demo: "https://aloksystems.github.io/Tools/WriteFlow/",
     pinned: true,
   },
   {
