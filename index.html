@@ -147,9 +147,121 @@
         <!-- All Tools -->
         <div class="all-projects-section">
           <div class="projects-grid" id="projects-grid"></div>
+          <div class="no-results" id="no-results" hidden>
+            <div class="no-results-icon"><i class="fas fa-search"></i></div>
+            <h3>Couldn't find the tool you're looking for?</h3>
+            <p>
+              Request it below and we'll build it as soon as possible.
+            </p>
+            <a href="#feedback" class="cta-button primary">
+              <i class="fas fa-wrench"></i> Request This Tool
+            </a>
+          </div>
         </div>
       </div>
     </main>
+
+    <!-- Share Your Feedback -->
+    <section class="contact-section" id="feedback">
+      <div class="container">
+        <div class="section-kicker">Your Voice Matters</div>
+        <h2 class="feedback-heading">Share Your Feedback</h2>
+        <p class="feedback-subtext">
+          Help us improve our tools by sharing your experience. Found a bug,
+          or couldn't find the tool you were looking for? Tell us below and it
+          lands straight in our inbox.
+        </p>
+
+        <div class="contact-content">
+          <div class="contact-info">
+            <h3>Let's talk</h3>
+            <p>
+              Every message is read directly by the developer. You can also
+              reach out over email anytime.
+            </p>
+            <div class="contact-details">
+              <a href="mailto:alokk298690@gmail.com" class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span>alokk298690@gmail.com</span>
+              </a>
+            </div>
+          </div>
+
+          <form class="contact-form feedback-form" id="feedback-form" novalidate>
+            <h3>Tell us what you think...</h3>
+            <p class="form-description">
+              All feedback goes straight to the developer's mailbox.
+            </p>
+
+            <div class="form-group">
+              <input
+                type="text"
+                id="feedback-name"
+                name="name"
+                placeholder="Your Name"
+                autocomplete="name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <div class="rating-row">
+                <span class="rating-label">Your Rating</span>
+                <div
+                  class="rating-input"
+                  id="rating-input"
+                  role="radiogroup"
+                  aria-label="Your Rating"
+                >
+                  <input type="hidden" id="rating-value" name="rating" value="0" />
+                  <button type="button" class="rating-star" data-value="1" aria-label="1 star">
+                    <i class="fas fa-star"></i>
+                  </button>
+                  <button type="button" class="rating-star" data-value="2" aria-label="2 stars">
+                    <i class="fas fa-star"></i>
+                  </button>
+                  <button type="button" class="rating-star" data-value="3" aria-label="3 stars">
+                    <i class="fas fa-star"></i>
+                  </button>
+                  <button type="button" class="rating-star" data-value="4" aria-label="4 stars">
+                    <i class="fas fa-star"></i>
+                  </button>
+                  <button type="button" class="rating-star" data-value="5" aria-label="5 stars">
+                    <i class="fas fa-star"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <select id="feedback-type" name="type">
+                <option value="General Feedback">General Feedback</option>
+                <option value="Tool Request">
+                  Didn't Find a Tool (Request It)
+                </option>
+                <option value="Bug Report">Report a Bug</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <textarea
+                id="feedback-message"
+                name="message"
+                rows="5"
+                placeholder="Tell us what you think... or which tool you were looking for..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-status" id="form-status" hidden></div>
+
+            <button type="submit" class="submit-btn" id="feedback-submit">
+              <i class="fas fa-paper-plane"></i> Send Feedback
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -160,6 +272,9 @@
             <p>
               Free online tools for developers, students, creators &
               productivity.
+            </p>
+            <p class="footer-feedback-link">
+              <a href="#feedback"><i class="fas fa-comment"></i> Share Feedback</a>
             </p>
           </div>
           <div class="footer-right">

@@ -220,6 +220,11 @@ class ToolHubManager {
         .join('');
     }
 
+    const noResults = document.getElementById('no-results');
+    if (noResults) {
+      noResults.hidden = this.filteredProjects.length > 0;
+    }
+
     this.animateCards();
   }
 
@@ -418,4 +423,98 @@ class ToolHubManager {
 // Initialize the tool hub when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   new ToolHubManager();
+  initFeedbackForm();
 });
+
+// Paste your Google Apps Script web app URL below.
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwM_S38oexd2VycAnLNFrcheDLi4QzI0BQJdd6pvDI-Qwd19A_wsyB44QcKT6oSiubs/exec';
+
+function initFeedbackForm() {
+  const form = document.getElementById('feedback-form');
+  if (!form) {
+    return;
+  }
+
+  const stars = document.querySelectorAll('.rating-star');
+  const ratingInput = document.getElementById('rating-value');
+  const statusBox = document.getElementById('form-status');
+  const submitBtn = document.getElementById('feedback-submit');
+
+  function setRating(value) {
+    ratingInput.value = value;
+    stars.forEach((star) => {
+      star.classList.toggle('active', Number(star.dataset.value) <= value);
+      star.setAttribute('aria-pressed', Number(star.dataset.value) <= value ? 'true' : 'false');
+    });
+  }
+
+  stars.forEach((star) => {
+    star.addEventListener('click', () => setRating(Number(star.dataset.value)));
+    star.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        setRating(Number(star.dataset.value));
+      }
+    });
+    star.setAttribute('aria-pressed', 'false');
+  });
+
+  function setStatus(text, isError) {
+    statusBox.hidden = false;
+    statusBox.textContent = text;
+    statusBox.className = isError
+      ? 'form-status form-status--error'
+      : 'form-status form-status--success';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('feedback-name').value.trim();
+    const message = document.getElementById('feedback-message').value.trim();
+    const type = document.getElementById('feedback-type').value;
+    const rating = ratingInput.value;
+
+    statusBox.hidden = true;
+    statusBox.textContent = '';
+
+    if (!message) {
+      setStatus('Please tell us what you think in the message box.', true);
+      document.getElementById('feedback-message').focus();
+      return;
+    }
+
+    if (FEEDBACK_ENDPOINT.startsWith('YOUR_')) {
+      setStatus(
+        'Feedback service is not configured yet. Please email us directly at alokk298690@gmail.com instead.',
+        true,
+      );
+      return;
+    }
+
+    submitBtn.disabled = true;
+    const originalHtml = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+    try {
+      const res = await fetch(FEEDBACK_ENDPOINT, {
+        method: 'POST',
+        body: new URLSearchParams({ name, rating, type, message }),
+      });
+      const data = await res.json();
+
+      if (data.success !== false) {
+        setStatus('Thank you! Your feedback has been sent. We read every message.', false);
+        form.reset();
+        setRating(0);
+      } else {
+        setStatus('Something went wrong. Please email us at alokk298690@gmail.com', true);
+      }
+    } catch (error) {
+      setStatus('Could not reach the server. Please email us at alokk298690@gmail.com', true);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalHtml;
+    }
+  });
+}

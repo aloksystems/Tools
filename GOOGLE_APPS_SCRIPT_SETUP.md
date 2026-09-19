@@ -2,8 +2,8 @@
 
 ## Step 1: Create Google Sheet
 1. Go to [Google Sheets](https://sheets.google.com)
-2. Create a new sheet named "Portfolio Submissions"
-3. Add headers in row 1: `Timestamp | Name | Email | Message`
+2. Create a new sheet named "Tools Feedback"
+3. Add headers in row 1: `Timestamp | Name | Rating | Type | Message`
 
 ## Step 2: Create Apps Script
 1. Go to [Google Apps Script](https://script.google.com)
@@ -19,32 +19,33 @@ function doPost(e) {
   try {
     const params = e.parameter;
     const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
-    
+
     // Save to Google Sheet
     sheet.appendRow([
       new Date().toLocaleString('en-IN'),
       params.name || '',
-      params.email || '',
+      (params.rating || '0') + '/5',
+      params.type || '',
       params.message || ''
     ]);
-    
+
     // Send email notification
     GmailApp.sendEmail(
       EMAIL,
-      `New Portfolio Inquiry from ${params.name}`,
-      `Name: ${params.name}\nEmail: ${params.email}\nMessage:\n${params.message}`
+      `New Feedback: ${params.type || 'General Feedback'}`,
+      `Name: ${params.name || 'Anonymous'}\nRating: ${(params.rating || '0')}/5\nType: ${params.type || 'General Feedback'}\n\nMessage:\n${params.message}`
     );
-    
+
     return ContentService.createTextOutput(
       JSON.stringify({ success: true, message: 'Form submitted successfully!' })
     ).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
     return ContentService.createTextOutput(
       JSON.stringify({ success: false, message: error.toString() })
     ).setMimeType(ContentService.MimeType.JSON);
   }
-}
+} 
 ```
 
 ## Step 3: Deploy Script
@@ -55,12 +56,17 @@ function doPost(e) {
 5. Click **Deploy**
 6. Copy the deployment URL (looks like: `https://script.google.com/macros/d/{DEPLOYMENT_ID}/userweb`)
 
-## Step 4: Update Your Portfolio
-Replace `YOUR_DEPLOYMENT_URL` in your form's action attribute with the URL from Step 3.
+## Step 4: Update Your Site
+Open `script.js` and paste the deployment URL on the line:
 
-Your form action should look like:
-```
-action="https://script.google.com/macros/d/YOUR_DEPLOYMENT_ID/userweb"
+```javascript
+const FEEDBACK_ENDPOINT = 'YOUR_GOOGLE_SCRIPT_DEPLOYMENT_URL';
 ```
 
-Done! Test by submitting the form.
+so it looks like:
+
+```javascript
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/d/YOUR_DEPLOYMENT_ID/userweb';
+```
+
+Done! Test by submitting the feedback form on your site. Each submission creates a new row in your sheet and sends an email with the name, rating, type, and message to your mailbox.

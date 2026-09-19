@@ -1186,7 +1186,8 @@ button {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     width: 100%;
     border: 1px solid var(--border-color);
     border-radius: 0.82rem;
@@ -1195,6 +1196,16 @@ button {
     padding: 0.82rem 0.88rem;
     font-size: 0.95rem;
     transition: var(--transition-default);
+}
+
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%235a6676' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    padding-right: 2.4rem;
 }
 
 .form-group textarea {
@@ -1208,7 +1219,8 @@ button {
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
     border-color: color-mix(in srgb, var(--primary-color) 70%, white 30%);
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary-color) 20%, transparent 80%);
 }
@@ -1435,6 +1447,122 @@ button {
     padding: 3.2rem 0 2.4rem;
     border-top: 1px solid var(--border-color);
     background: rgba(var(--bg-card-rgb), 0.66);
+}
+
+.no-results {
+    text-align: center;
+    padding: 3.5rem 1rem;
+    margin-top: 1rem;
+    border: 1px dashed color-mix(in srgb, var(--border-color) 82%, transparent 18%);
+    border-radius: var(--radius-xl);
+    background: rgba(var(--bg-card-rgb), 0.6);
+}
+
+.no-results[hidden] {
+    display: none;
+}
+
+.no-results-icon {
+    width: 3.6rem;
+    height: 3.6rem;
+    margin: 0 auto 1rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--primary-color) 12%, transparent 88%);
+    color: var(--primary-color);
+    font-size: 1.4rem;
+}
+
+.no-results h3 {
+    font-family: "Sora", "Plus Jakarta Sans", sans-serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.4rem;
+}
+
+.no-results p {
+    color: var(--text-secondary);
+    margin-bottom: 1.2rem;
+}
+
+.no-results .cta-button {
+    text-decoration: none;
+    display: inline-flex;
+}
+
+.feedback-heading {
+    font-family: "Sora", "Plus Jakarta Sans", sans-serif;
+    font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
+    color: var(--text-primary);
+}
+
+.feedback-subtext {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 62ch;
+    margin-bottom: 1.6rem;
+}
+
+.rating-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+}
+
+.rating-label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.rating-input {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.rating-star {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--border-color);
+    font-size: 1.05rem;
+    transition: var(--transition-default);
+}
+
+.rating-star:hover {
+    color: #f59e0b;
+    transform: scale(1.12);
+}
+
+.rating-star.active {
+    color: #f59e0b;
+}
+
+.footer-feedback-link {
+    margin-top: 0.7rem;
+}
+
+.footer-feedback-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--primary-color);
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: var(--transition-default);
+}
+
+.footer-feedback-link a:hover {
+    color: var(--primary-dark);
+    gap: 0.65rem;
 }
 
 .footer-content {
