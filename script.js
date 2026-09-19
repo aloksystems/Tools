@@ -426,8 +426,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initFeedbackForm();
 });
 
-// FormSubmit.co endpoint — sends feedback to helloalokmail@gmail.com
-const FEEDBACK_ENDPOINT = 'https://formsubmit.co/helloalokmail@gmail.com';
+// FormSubmit.co AJAX endpoint — sends feedback to helloalokmail@gmail.com
+const FEEDBACK_ENDPOINT = 'https://formsubmit.co/ajax/helloalokmail@gmail.com';
 
 function initFeedbackForm() {
   const form = document.getElementById('feedback-form');
