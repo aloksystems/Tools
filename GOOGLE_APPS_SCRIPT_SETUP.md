@@ -13,7 +13,7 @@
 ```javascript
 // Google Apps Script Code
 const SHEET_ID = "YOUR_SHEET_ID"; // Copy from URL: docs.google.com/spreadsheets/d/{SHEET_ID}
-const EMAIL = "alokk298690@gmail.com"; // Your email
+const EMAIL = "helloalokmail@gmail.com"; // Your email
 
 function doPost(e) {
   try {

@@ -167,9 +167,9 @@ This project is open source and available under the [MIT License](LICENSE).
 **Alok Kumar** - Developer & Software Engineer
 
 - GitHub: [@aloksingh2005](https://github.com/aloksingh2005)
-- Email: alokk298690@gmail.com
-- LinkedIn: [Profile](#) *(Link not currently active)*
-- Twitter: [Profile](#) *(Link not currently active)*
+- Email: helloalokmail@gmail.com
+- LinkedIn: [@alok-kumar-a3201a432](https://www.linkedin.com/in/alok-kumar-a3201a432/)
+- Twitter: [@kumar_alok39268](https://x.com/kumar_alok39268)
 
 ---
 

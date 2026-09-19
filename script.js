@@ -486,7 +486,7 @@ function initFeedbackForm() {
 
     if (FEEDBACK_ENDPOINT.startsWith('YOUR_')) {
       setStatus(
-        'Feedback service is not configured yet. Please email us directly at alokk298690@gmail.com instead.',
+        'Feedback service is not configured yet. Please email us directly at helloalokmail@gmail.com instead.',
         true,
       );
       return;
@@ -508,10 +508,10 @@ function initFeedbackForm() {
         form.reset();
         setRating(0);
       } else {
-        setStatus('Something went wrong. Please email us at alokk298690@gmail.com', true);
+        setStatus('Something went wrong. Please email us at helloalokmail@gmail.com', true);
       }
     } catch (error) {
-      setStatus('Could not reach the server. Please email us at alokk298690@gmail.com', true);
+      setStatus('Could not reach the server. Please email us at helloalokmail@gmail.com', true);
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalHtml;
