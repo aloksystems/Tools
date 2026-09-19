@@ -520,7 +520,8 @@ function initFeedbackForm() {
         form.reset();
         setRating(0);
       } else {
-        setStatus('Something went wrong. Please email us at helloalokmail@gmail.com', true);
+        const detail = data && data.message ? data.message : 'Something went wrong.';
+        setStatus(`${detail} If it keeps failing, email us at helloalokmail@gmail.com.`, true);
       }
     } catch (error) {
       setStatus('Could not reach the server. Please email us at helloalokmail@gmail.com', true);
