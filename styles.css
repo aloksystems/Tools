@@ -381,6 +381,19 @@ select {
   display: none;
 }
 
+.search-toggle {
+  display: none;
+}
+
+.search-toggle .search-toggle-close,
+.search-toggle[aria-expanded="true"] .search-toggle-icon {
+  display: none;
+}
+
+.search-toggle[aria-expanded="true"] .search-toggle-close {
+  display: block;
+}
+
 .theme-toggle .theme-icon--sun {
   display: none;
 }
@@ -1428,8 +1441,25 @@ select {
     gap: 0.45rem;
   }
 
+  .search-toggle {
+    display: grid;
+  }
+
   .nav-search {
     display: none;
+    position: absolute;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    width: auto;
+    padding: 0.6rem 1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .nav-search.is-open {
+    display: flex;
   }
 
   .brand-mark {

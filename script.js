@@ -97,6 +97,10 @@ class ToolsApp {
 
   cacheDom() {
     this.navSearch = document.getElementById("search-input");
+    this.searchContainer = this.navSearch
+      ? this.navSearch.closest(".nav-search")
+      : null;
+    this.searchToggle = document.getElementById("search-toggle");
     this.pillsEl = document.getElementById("category-pills");
     this.toolsGrid = document.getElementById("tools-grid");
     this.noResults = document.getElementById("no-results");
@@ -144,8 +148,25 @@ class ToolsApp {
     // Search
     if (this.navSearch) {
       this.navSearch.addEventListener("input", (e) => {
+        const hadQuery = Boolean(this.search);
         this.search = e.target.value;
         this.applyFilters();
+        if (!hadQuery && this.search) {
+          this.scrollToResults();
+        }
+      });
+    }
+
+    // Mobile search toggle
+    if (this.searchToggle && this.searchContainer) {
+      this.searchToggle.addEventListener("click", () => {
+        const open = this.searchContainer.classList.toggle("is-open");
+        this.searchToggle.setAttribute("aria-expanded", open);
+        if (open) {
+          this.navSearch.focus();
+        } else {
+          this.navSearch.blur();
+        }
       });
     }
 
@@ -439,6 +460,16 @@ class ToolsApp {
       return this.navSearch;
     }
     return null;
+  }
+
+  /* Bring the tools section into view when a search begins. */
+  scrollToResults() {
+    const toolsSection = document.getElementById("tools");
+    if (!toolsSection) return;
+    const rect = toolsSection.getBoundingClientRect();
+    if (rect.top > window.innerHeight || rect.bottom < 0) {
+      toolsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 
   /* ---------- Tool counter ---------- */
