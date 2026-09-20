@@ -1,286 +1,358 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Alok Systems Tools | Free Online Tools</title>
+    <meta
+      name="description"
+      content="Fast, free and privacy-friendly online tools for developers, students, creators and everyday productivity."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f8fafc" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Alok Systems Tools" />
+    <meta property="og:title" content="Alok Systems Tools | Free Online Tools" />
+    <meta
+      property="og:description"
+      content="Fast, free and privacy-friendly online tools for developers, students, creators and everyday productivity."
+    />
+    <meta property="og:url" content="https://aloksystems.github.io/Tools/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Alok Systems Tools | Free Online Tools" />
+    <meta
+      name="twitter:description"
+      content="Fast, free and privacy-friendly online tools for developers, students, creators and everyday productivity."
+    />
+
     <link
       rel="icon"
       type="image/svg+xml"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230f766e'/%3E%3Cstop offset='100%25' stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-family='Arial,sans-serif' font-size='58' font-weight='bold' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230f766e'/%3E%3Cstop offset='100%25' stop-color='%2314b8a6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Ctext x='50' y='69' font-family='Arial, sans-serif' font-size='56' font-weight='700' fill='white' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E"
     />
-    <title>Alok Systmes Tools | Free Online Utilities</title>
-    <meta
-      name="description"
-      content="Free online tools for developers, students, creators, and productivity workflows."
-    />
+
     <script>
-      (function () {
-        const savedTheme = localStorage.getItem("tools-theme");
-        const prefersDark = window.matchMedia(
-          "(prefers-color-scheme: dark)",
-        ).matches;
-        const appliedTheme =
-          savedTheme === "dark" || (!savedTheme && prefersDark)
-            ? "dark"
-            : "light";
-        document.documentElement.setAttribute("data-theme", appliedTheme);
-      })();
+      ;(function () {
+        try {
+          var saved = localStorage.getItem("tools-theme")
+          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+          var theme = saved === "dark" || (!saved && prefersDark) ? "dark" : "light"
+          document.documentElement.setAttribute("data-theme", theme)
+        } catch (e) {}
+      })()
     </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Alok Systems Tools",
+        "url": "https://aloksystems.github.io/Tools/",
+        "description": "Fast, free and privacy-friendly online tools for developers, students, creators and everyday productivity."
+      }
+    </script>
   </head>
 
   <body>
-    <!-- Main Navigation with Search -->
-    <nav class="main-nav">
-      <div class="container">
-        <div class="nav-wrapper">
-          <a href="https://aloksystems.github.io/Tools/" class="nav-brand">
-            <h2>Alok Systems Tools</h2>
-          </a>
+    <a class="skip-link" href="#main">Skip to content</a>
 
+    <!-- ======== NAVBAR ======== -->
+    <header class="site-header" id="home">
+      <div class="container header-inner">
+        <a class="brand" href="index.html" aria-label="Alok Systems Tools — home">
+          <span class="brand-mark" aria-hidden="true">A</span>
+          <span class="brand-text">
+            <span class="brand--top">Alok Systems</span>
+            <span class="brand--bottom">Tools</span>
+          </span>
+        </a>
+
+        <nav class="site-nav" id="site-nav" aria-label="Primary">
+          <a class="nav-link is-active" href="#home" data-nav="home">Home</a>
+          <a class="nav-link" href="#tools" data-nav="tools">All Tools</a>
+          <a class="nav-link" href="#about" data-nav="about">About</a>
+        </nav>
+
+        <div class="header-actions">
           <div class="nav-search">
-            <div class="search-bar">
-              <i class="fas fa-search"></i>
-              <input
-                type="text"
-                id="search-input"
-                placeholder="Search tools, keywords, or categories..."
-              />
-              <button id="clear-search" class="clear-btn">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input
+              id="search-input"
+              type="search"
+              placeholder="Search tools, keywords, or categories..."
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Search tools"
+            />
+            <kbd class="kbd" aria-hidden="true">Ctrl K</kbd>
           </div>
 
-          <!-- Mobile Filters (only visible on mobile) -->
-          <button id="mobile-filters-btn" class="mobile-filters-btn">
-            <i class="fas fa-filter"></i> Filters
+          <button id="theme-toggle" class="icon-btn theme-toggle" type="button" aria-label="Toggle color theme">
+            <svg class="icon theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path><path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path><path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg class="icon theme-icon theme-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
           </button>
-          <div id="mobile-filters" class="mobile-filters-dropdown">
-            <button class="filter-btn-mobile active" data-category="all">
-              <i class="fas fa-th"></i> All
-            </button>
-            <button class="filter-btn-mobile" data-category="Developer Tools">
-              <i class="fas fa-code"></i> Developer Tools
-            </button>
-            <button class="filter-btn-mobile" data-category="Productivity">
-              <i class="fas fa-calculator"></i> Productivity
-            </button>
-            <button class="filter-btn-mobile" data-category="Media Tools">
-              <i class="fas fa-image"></i> Media Tools
-            </button>
-            <button class="filter-btn-mobile" data-category="AI & Chatbots">
-              <i class="fas fa-robot"></i> AI & Chatbots
-            </button>
-            <button
-              class="filter-btn-mobile"
-              data-category="Finance & Business"
-            >
-              <i class="fas fa-chart-line"></i> Finance
-            </button>
-          </div>
 
-          <!-- Theme Toggle moved inside navbar -->
-          <button
-            id="theme-toggle"
-            class="theme-toggle"
-            aria-label="Toggle theme"
-          >
-            <i class="fas fa-moon"></i>
-            <span class="theme-toggle-label">Dark</span>
+          <button id="menu-toggle" class="icon-btn menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="site-nav">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 12h16"></path><path d="M4 6h16"></path><path d="M4 18h16"></path>
+            </svg>
           </button>
         </div>
       </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <header class="hero" id="home">
-      <div class="container">
-        <div class="hero-content">
-          <div class="hero-text">
-            <h1 class="hero-title">Alok Systems Tools</h1>
+    <main id="main">
+      <!-- ======== HERO ======== -->
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-main">
+            <p class="hero-pill">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+              </svg>
+              Free&nbsp;<span class="hero-pill-sep">·</span>&nbsp;No Sign Up&nbsp;<span class="hero-pill-sep">·</span>&nbsp;Privacy First
+            </p>
+
+            <h1 class="hero-title">
+              Alok Systems <span class="hero-title-accent">Tools</span>
+            </h1>
+
             <p class="hero-subtitle">
               Fast, free, privacy-friendly tools for developers, students,
               creators, and everyday productivity.
             </p>
+
+            <p class="hero-tagline">Small Tools. Big Productivity.</p>
           </div>
-        </div>
-      </div>
-    </header>
-    <!-- Category Filters (Simplified) -->
-    <nav class="category-nav" id="categories">
-      <div class="container">
-        <div class="filters desktop-filters">
-          <button class="filter-btn active" data-category="all">
-            <i class="fas fa-th"></i> All
-          </button>
-          <button class="filter-btn" data-category="Developer Tools">
-            <i class="fas fa-code"></i> Developer Tools
-          </button>
-          <button class="filter-btn" data-category="Productivity">
-            <i class="fas fa-calculator"></i> Productivity
-          </button>
-          <button class="filter-btn" data-category="Media Tools">
-            <i class="fas fa-image"></i> Media Tools
-          </button>
-          <button class="filter-btn" data-category="AI & Chatbots">
-            <i class="fas fa-robot"></i> AI & Chatbots
-          </button>
-          <button class="filter-btn" data-category="Finance & Business">
-            <i class="fas fa-chart-line"></i> Finance
-          </button>
-        </div>
-      </div>
-    </nav>
 
-    <!-- Tools Section -->
-    <main class="projects-section" id="tools">
-      <div class="container">
-        <!-- All Tools -->
-        <div class="all-projects-section">
-          <div class="projects-grid" id="projects-grid"></div>
-          <div class="no-results" id="no-results" hidden>
-            <div class="no-results-icon"><i class="fas fa-search"></i></div>
-            <h3>Couldn't find the tool you're looking for?</h3>
-            <p>
-              Request it below and we'll build it as soon as possible.
-            </p>
-            <a href="#feedback" class="cta-button primary">
-              <i class="fas fa-wrench"></i> Request This Tool
-            </a>
-          </div>
-        </div>
-      </div>
-    </main>
+          <div class="hero-feature">
+            <article class="stats-card">
+              <h2 class="stats-title">Everything you need, in one place</h2>
+              <p class="stats-sub">
+                A growing collection of free utilities that just work — no
+                installs, no accounts, no nonsense.
+              </p>
 
-    <!-- Share Your Feedback -->
-    <section class="contact-section" id="feedback">
-      <div class="container">
-        <div class="section-kicker">Your Voice Matters</div>
-        <h2 class="feedback-heading">Share Your Feedback</h2>
-        <p class="feedback-subtext">
-          Help us improve our tools by sharing your experience. Found a bug,
-          or couldn't find the tool you were looking for? Tell us below and it
-          lands straight in our inbox.
-        </p>
+              <div class="stats-grid">
+                <div class="stat">
+                  <span class="stat-value" id="stat-tools">31</span>
+                  <span class="stat-label">Free Tools</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value" id="stat-categories">5</span>
+                  <span class="stat-label">Categories</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value">100%</span>
+                  <span class="stat-label">In-Browser</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value">0</span>
+                  <span class="stat-label">Sign-Ups</span>
+                </div>
+              </div>
 
-        <div class="contact-content">
-          <div class="contact-info">
-            <h3>Let's talk</h3>
-            <p>
-              Every message is read directly by the developer. You can also
-              reach out over email anytime.
-            </p>
-            <div class="contact-details">
-              <a href="mailto:helloalokmail@gmail.com" class="contact-item">
-                <i class="fas fa-envelope"></i>
-                <span>helloalokmail@gmail.com</span>
+              <a class="stats-cta" href="#tools">
+                Browse all tools
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>
+                </svg>
               </a>
+            </article>
+          </div>
+        </div>
+
+        <div class="container">
+          <a class="scroll-cue" href="#tools" aria-label="Scroll down to explore tools">
+            <span class="scroll-cue-mouse" aria-hidden="true">
+              <span class="scroll-cue-dot"></span>
+            </span>
+            <span class="scroll-cue-text">Scroll to explore</span>
+            <svg class="scroll-cue-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </a>
+        </div>
+      </section>
+
+      <!-- ======== CATEGORY NAV ======== -->
+      <nav class="category-bar" id="categories" aria-label="Tool categories">
+        <div class="container category-bar-inner">
+          <button class="cat-scroll-btn" id="cat-prev" type="button" aria-label="Scroll categories left" aria-controls="category-pills">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+          </button>
+          <div class="category-pills" id="category-pills" role="group" aria-label="Filter tools by category"></div>
+          <button class="cat-scroll-btn" id="cat-next" type="button" aria-label="Scroll categories right" aria-controls="category-pills">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+          <div class="category-meta">
+            <span class="tools-total"><strong id="tools-total">0</strong> tools</span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ======== ALL TOOLS / TOOL GRID ======== -->
+      <section class="section" id="tools">
+        <div class="container">
+          <div class="section-head">
+            <div class="section-head-copy">
+              <h2 class="section-title">All Tools</h2>
+              <p class="section-subtitle" id="tools-status">Explore every tool in one place.</p>
             </div>
+            <span class="results-count" id="results-count"></span>
+          </div>
+          <div class="tools-grid" id="tools-grid"></div>
+
+          <div class="no-results" id="no-results" hidden>
+            <span class="no-results-icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+                <path d="m8 8 6 6"></path><path d="m14 8-6 6"></path>
+              </svg>
+            </span>
+            <h3>No tools found</h3>
+            <p>Try another keyword or category.</p>
+            <a class="btn btn-ghost" href="#feedback">Request This Tool</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== FEEDBACK ======== -->
+      <section class="section feedback-section" id="feedback">
+        <div class="container feedback-layout">
+          <div class="feedback-info">
+            <h2 class="section-title">Share Your Feedback</h2>
+            <ul class="contact-list" aria-label="Connect with Alok">
+              <li>
+                <a class="contact-list-link" href="https://github.com/aloksystems" target="_blank" rel="noopener">
+                  <span class="contact-list-label">GitHub</span>
+                  <span class="visually-hidden">@aloksystems</span>
+                  <svg class="contact-list-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"></path></svg>
+                </a>
+              </li>
+              <li>
+                <a class="contact-list-link" href="https://www.linkedin.com/in/alok-kumar-a3201a432/" target="_blank" rel="noopener">
+                  <span class="contact-list-label">LinkedIn</span>
+                  <span class="visually-hidden">@alok-kumar</span>
+                  <svg class="contact-list-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"></path></svg>
+                </a>
+              </li>
+              <li>
+                <a class="contact-list-link" href="https://x.com/kumar_alok39268" target="_blank" rel="noopener">
+                  <span class="contact-list-label">X (Twitter)</span>
+                  <span class="visually-hidden">@kumar_alok39268</span>
+                  <svg class="contact-list-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"></path></svg>
+                </a>
+              </li>
+              <li>
+                <a class="contact-list-link" href="mailto:helloalokmail@gmail.com">
+                  <span class="contact-list-label">Email</span>
+                  <span class="visually-hidden">helloalokmail@gmail.com</span>
+                  <svg class="contact-list-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"></path></svg>
+                </a>
+              </li>
+            </ul>
           </div>
 
-          <form class="contact-form feedback-form" id="feedback-form" novalidate>
-            <h3>Tell us what you think...</h3>
-            <p class="form-description">
-              All feedback goes straight to the developer's mailbox.
-            </p>
-
+          <form class="feedback-form" id="feedback-form" novalidate>
             <div class="form-group">
-              <input
-                type="text"
-                id="feedback-name"
-                name="name"
-                placeholder="Your Name"
-                autocomplete="name"
-                required
-              />
+              <input id="feedback-name" name="name" type="text" placeholder="Your Name" autocomplete="name" />
             </div>
 
             <div class="form-group">
               <div class="rating-row">
-                <span class="rating-label">Your Rating</span>
-                <div
-                  class="rating-input"
-                  id="rating-input"
-                  role="radiogroup"
-                  aria-label="Your Rating"
-                >
+                <span class="rating-label" id="rating-label">Your Rating</span>
+                <div class="rating-input" id="rating-input" role="radiogroup" aria-labelledby="rating-label">
                   <input type="hidden" id="rating-value" name="rating" value="0" />
                   <button type="button" class="rating-star" data-value="1" aria-label="1 star">
-                    <i class="fas fa-star"></i>
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
                   </button>
                   <button type="button" class="rating-star" data-value="2" aria-label="2 stars">
-                    <i class="fas fa-star"></i>
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
                   </button>
                   <button type="button" class="rating-star" data-value="3" aria-label="3 stars">
-                    <i class="fas fa-star"></i>
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
                   </button>
                   <button type="button" class="rating-star" data-value="4" aria-label="4 stars">
-                    <i class="fas fa-star"></i>
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
                   </button>
                   <button type="button" class="rating-star" data-value="5" aria-label="5 stars">
-                    <i class="fas fa-star"></i>
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
                   </button>
                 </div>
               </div>
             </div>
 
             <div class="form-group">
-              <select id="feedback-type" name="type">
-                <option value="General Feedback">General Feedback</option>
-                <option value="Tool Request">
-                  Didn't Find a Tool (Request It)
-                </option>
-                <option value="Bug Report">Report a Bug</option>
-              </select>
+              <span class="form-label" id="feedback-type-label">What is this about?</span>
+              <div class="type-options" id="feedback-type" role="radiogroup" aria-labelledby="feedback-type-label">
+                <input type="hidden" name="type" id="feedback-type-value" value="General Feedback" />
+                <button type="button" class="type-option is-active" data-value="General Feedback" aria-pressed="true">General Feedback</button>
+                <button type="button" class="type-option" data-value="Tool Request" aria-pressed="false">Didn't Find a Tool</button>
+                <button type="button" class="type-option" data-value="Bug Report" aria-pressed="false">Report a Bug</button>
+              </div>
             </div>
 
             <div class="form-group">
-              <textarea
-                id="feedback-message"
-                name="message"
-                rows="5"
-                placeholder="Tell us what you think... or which tool you were looking for..."
-                required
-              ></textarea>
+              <textarea id="feedback-message" name="message" rows="4" placeholder="Tell us what you think... or which tool you were looking for..." required></textarea>
             </div>
 
-            <div class="form-status" id="form-status" hidden></div>
+            <div class="form-status" id="form-status" role="status" hidden></div>
 
-            <button type="submit" class="submit-btn" id="feedback-submit">
-              <i class="fas fa-paper-plane"></i> Send Feedback
-            </button>
+            <button type="submit" class="btn btn-primary btn-block" id="feedback-submit">Send Feedback</button>
           </form>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-left">
-            <h3>Alok Systmes Tools</h3>
-            <p>
-              Free online tools for developers, students, creators &
-              productivity.
-            </p>
-            <p class="footer-feedback-link">
-              <a href="#feedback"><i class="fas fa-comment"></i> Share Feedback</a>
-            </p>
-          </div>
-          <div class="footer-right">
-            <p>Built by Alok</p>
-            <p>&copy; 2026 Alok Systmes Tools. All rights reserved.</p>
-          </div>
+    <!-- ======== FOOTER ======== -->
+    <footer class="site-footer" id="about">
+      <div class="container footer-inner">
+        <div class="footer-left">
+          <p class="footer-line">Built with <span class="footer-heart" aria-label="love">♥</span> by <strong>Alok Systems</strong></p>
+          <span class="footer-divider" aria-hidden="true"></span>
+          <p class="footer-tagline">Free tools for a better, more productive web.</p>
+        </div>
+
+        <div class="footer-right">
+          <p class="footer-copy">© 2026 Alok Systems Tools. All rights reserved.</p>
         </div>
       </div>
     </footer>

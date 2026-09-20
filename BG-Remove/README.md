@@ -10,10 +10,10 @@
 
 | **OPTION 1: Download ZIP** | **OPTION 2: View on GitHub** |
 |---|---|
-| **👉 [CLICK HERE TO DOWNLOAD](https://github.com/aloksingh2005/BG-Remove/archive/refs/heads/main.zip)** | **👉 [VISIT REPOSITORY](https://github.com/aloksingh2005/BG-Remove)** |
+| **👉 [CLICK HERE TO DOWNLOAD](https://github.com/aloksystems/BG-Remove/archive/refs/heads/main.zip)** | **👉 [VISIT REPOSITORY](https://github.com/aloksystems/BG-Remove)** |
 | Extract ZIP and follow setup guide below | See code, contribute, track updates |
 
-**Repository Link:** `https://github.com/aloksingh2005/BG-Remove`
+**Repository Link:** `https://github.com/aloksystems/BG-Remove`
 
 ---
 
@@ -91,7 +91,7 @@ python app.py
 ### PATH A: Beginner (6 steps)
 
 1. **Install Python 3.11+** → [python.org](https://www.python.org/downloads/) (check "Add to PATH")
-2. **Download** → [CLICK HERE](https://github.com/aloksingh2005/BG-Remove/archive/refs/heads/main.zip)
+2. **Download** → [CLICK HERE](https://github.com/aloksystems/BG-Remove/archive/refs/heads/main.zip)
 3. **Extract ZIP** → Open folder > Shift+Right Click > "Open PowerShell here"
 4. **Create venv** → `python -m venv .venv`
 5. **Activate** → `.\.venv\Scripts\Activate.ps1`

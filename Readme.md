@@ -61,7 +61,7 @@ To run this portfolio locally, you only need a modern web browser. No additional
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/aloksingh2005/portfolio.git
+   git clone https://github.com/aloksystems/portfolio.git
    ```
 
 2. Navigate to the project directory:
@@ -166,7 +166,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **Alok Kumar** - Developer & Software Engineer
 
-- GitHub: [@aloksingh2005](https://github.com/aloksingh2005)
+- GitHub: [@aloksystems](https://github.com/aloksystems)
 - Email: helloalokmail@gmail.com
 - LinkedIn: [@alok-kumar-a3201a432](https://www.linkedin.com/in/alok-kumar-a3201a432/)
 - Twitter: [@kumar_alok39268](https://x.com/kumar_alok39268)
