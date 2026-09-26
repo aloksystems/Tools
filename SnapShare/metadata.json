@@ -1,6 +1,0 @@
-{
-  "name": "Temporary Image Share",
-  "description": "A secure, fast, and modern temporary image sharing platform with auto-expiring links, password protection, and automated secure deletions.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

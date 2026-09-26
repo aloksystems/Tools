@@ -3,6 +3,7 @@ export interface ImageState {
   name: string;
   size: number;
   type: string;
+  file: File;
   data: string;
   previewUrl: string;
   progress: number;

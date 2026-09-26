@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { upload } from "@vercel/blob/client";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowRight,
@@ -19,6 +20,13 @@ import { ImageState } from "../types";
 
 interface UploadWidgetProps {
   onUploadSuccess: (id: string, expiresAt: number) => void;
+}
+
+function dataUrlToBlob(dataUrl: string) {
+  const [header, encoded] = dataUrl.split(",");
+  const mime = header.match(/data:([^;]+)/)?.[1] || "application/octet-stream";
+  const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
+  return new Blob([bytes], { type: mime });
 }
 
 export default function UploadWidget({ onUploadSuccess }: UploadWidgetProps) {
@@ -98,6 +106,7 @@ export default function UploadWidget({ onUploadSuccess }: UploadWidgetProps) {
             name: file.name,
             size: file.size,
             type: file.type,
+            file,
             data,
             previewUrl,
             progress: 0,
@@ -145,7 +154,7 @@ export default function UploadWidget({ onUploadSuccess }: UploadWidgetProps) {
     setError("");
 
     try {
-      const images: Array<{ name: string; type: string; size: number; data: string }> = [];
+      const images: Array<{ name: string; type: string; size: number; url: string }> = [];
       for (let i = 0; i < files.length; i += 1) {
         const f = files[i];
         let data = f.data;
@@ -153,12 +162,20 @@ export default function UploadWidget({ onUploadSuccess }: UploadWidgetProps) {
           setUploadStep(`Optimizing ${f.name}`);
           data = await compressImageLocal(f.data, f.type);
         }
-        images.push({ name: f.name, type: f.type, size: f.size, data });
-        setUploadProgress(12 + Math.round(((i + 1) / files.length) * 52));
+        const uploadBody = data === f.data ? f.file : dataUrlToBlob(data);
+        const blob = await upload(f.name, uploadBody, {
+          access: "private",
+          handleUploadUrl: "/api/blob-upload",
+          contentType: f.type,
+          multipart: f.size > 4 * 1024 * 1024,
+          onUploadProgress: ({ percentage }) => setUploadProgress(76 + Math.round(percentage * 0.2)),
+        });
+        images.push({ name: f.name, type: f.type, size: f.size, url: blob.url });
+        setUploadProgress(76 + Math.round(((i + 1) / files.length) * 20));
       }
 
-      setUploadStep("Encrypting and uploading");
-      setUploadProgress(76);
+      setUploadStep("Saving transfer settings");
+      setUploadProgress(96);
 
       const res = await fetch("/api/upload", {
         method: "POST",

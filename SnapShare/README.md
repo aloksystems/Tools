@@ -1,59 +1,30 @@
 # SnapShare
 
-SnapShare is an Express + Vite app for short-lived file sharing with password protection, auto-expiry, optional one-time view, and optional download blocking.
+SnapShare is a Vite + React file-sharing app with private Vercel Blob uploads, password protection, expiry controls, one-time view, and optional download blocking.
 
-## Prerequisites
+## Deploy on Vercel
 
-- Node.js 20+
-- npm
+1. Push this project to the GitHub repository connected to Vercel.
+2. In Vercel, choose **Add New > Project** and import that existing repository.
+3. Keep the project root at the repository root. Vercel detects the Vite build automatically.
+4. Create a Vercel Blob store from the project dashboard. This provides `BLOB_READ_WRITE_TOKEN`.
+5. Create an Upstash Redis database and connect it to the Vercel project. This provides `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`.
+6. Redeploy after the integrations are connected.
 
-## Local Development
+Required environment variables in Vercel:
 
-1. Install dependencies:
-   `npm install`
-2. Create a local env file from `.env.example` and set values as needed.
-3. Start dev server:
-   `npm run dev`
+- `BLOB_READ_WRITE_TOKEN`
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
 
-## Production Build
+The browser uploads files directly to private Blob storage, so large files do not pass through a Vercel function request. Redis stores transfer metadata and password access grants with expiry TTLs.
 
-1. Build:
-   `npm run build`
-2. Start:
-   `npm run start`
+## Local checks
 
-The server binds to `process.env.PORT` (falls back to `3000`) and listens on `0.0.0.0`.
+```bash
+npm install
+npm run lint
+npm run build
+```
 
-## Deploy on Render (Node Web Service)
-
-Use these exact service settings:
-
-- Name: `SnapShare`
-- Branch: `main`
-- Root Directory: leave blank
-- Build Command: `npm install; npm run build`
-- Start Command: `npm run start`
-- Region: any
-- Environment Variables:
-  - `NODE_ENV=production`
-  - `GEMINI_API_KEY` (only if your app uses Gemini API routes)
-
-You can either:
-
-- configure manually in the Render form, or
-- deploy from `render.yaml` in this repo.
-
-## Important Hosting Caveat
-
-Current storage is ephemeral:
-
-- uploads are written to local filesystem (`uploads/`)
-- transfer/session state is kept in in-memory maps
-
-On Render, this means data is lost on restarts/redeploys, and free tier does not provide durable disk for this workload.
-
-## Required Next Step for Real Production Durability
-
-1. Move file storage to object storage (S3, R2, Supabase Storage, etc.).
-2. Move transfer/session metadata to a persistent store (Postgres/Redis).
-3. Keep this server as stateless API + frontend host.
+`npm run start` uses `vercel dev`, so local API testing requires the Vercel CLI and the three environment variables above.
