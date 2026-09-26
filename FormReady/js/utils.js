@@ -80,6 +80,10 @@ export function mimeFromFormat(format) {
   }
 }
 
+export function mimeFromExtension(extension) {
+  return mimeFromFormat(String(extension || "").toLowerCase().replace(/^\./, ""));
+}
+
 export function formatLabel(format) {
   if (!format || format === "original") return "Original";
   return format.toUpperCase();
@@ -176,8 +180,7 @@ export function isSafeFormat(format) {
 }
 
 export function extMatch(name, exts) {
-  const n = name.toLowerCase();
-  return exts.some((e) => n.endsWith(e));
+  return exts.includes(getFileExt(name));
 }
 
 export function escapeHtmlAttr(value) {

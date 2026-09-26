@@ -30,7 +30,7 @@ async function makeCanvas(source, w, h) {
 
 function encode(canvas, format, quality) {
   return new Promise((resolve, reject) => {
-    canvas.convertToBlob({ type: `image/${format}` })
+    canvas.convertToBlob({ type: `image/${format}`, quality })
       .then(resolve)
       .catch(() => {
         if (canvas.convertToBlob) {

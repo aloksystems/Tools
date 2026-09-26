@@ -67,6 +67,7 @@ export function clearFiles() {
     if (f.previewURL) URL.revokeObjectURL(f.previewURL);
   }
   state.files = [];
+  state.pack = { enabled: false, group: null };
   emit();
 }
 

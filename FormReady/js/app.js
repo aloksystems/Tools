@@ -478,8 +478,8 @@ async function onRetry(id) {
     updateFile(rec.id, { status: "failed", error: e.message || "Failed" });
     toast(`Could not process ${rec.currentName}: ${e.message}`, "error", 6000);
   }
+  setStage(STAGES.RESULT);
   setStep(STAGES.RESULT);
-  render();
   render();
 }
 

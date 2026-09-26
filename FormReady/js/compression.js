@@ -232,19 +232,26 @@ export async function processImageToPdf(item) {
   const { img } = await loadImage(item.originalFile);
   const targetBytes = s.targetOn ? bytesFromTarget(s.targetValue, s.targetUnit) : null;
 
-  let imgW = img.naturalWidth;
-  let imgH = img.naturalHeight;
+  let sourceCanvas = drawToCanvas(img, img.naturalWidth, img.naturalHeight);
+
+  if (s.crop && s.crop.enabled && s.crop.width > 0 && s.crop.height > 0) {
+    const x = Math.max(0, Math.min(sourceCanvas.width, Math.round(Number(s.crop.x) || 0)));
+    const y = Math.max(0, Math.min(sourceCanvas.height, Math.round(Number(s.crop.y) || 0)));
+    const width = Math.min(sourceCanvas.width - x, Math.round(Number(s.crop.width)));
+    const height = Math.min(sourceCanvas.height - y, Math.round(Number(s.crop.height)));
+    if (width > 0 && height > 0) sourceCanvas = cropCanvas(sourceCanvas, x, y, width, height);
+  }
+
+  if (s.rotate && s.rotate % 360 !== 0) sourceCanvas = rotateImage(sourceCanvas, s.rotate);
 
   if ((s.width && s.width > 0) || (s.height && s.height > 0)) {
     const keepRatio = s.keepRatio !== false;
     const targetW = s.width && s.width > 0 ? Number(s.width) : null;
     const targetH = s.height && s.height > 0 ? Number(s.height) : null;
-    const resized = resizeImage(img, targetW || img.naturalWidth, targetH || img.naturalHeight, keepRatio);
-    imgW = resized.width;
-    imgH = resized.height;
+    sourceCanvas = resizeImage(sourceCanvas, targetW || sourceCanvas.width, targetH || sourceCanvas.height, keepRatio);
   }
 
-  const canvas = drawToCanvas(img, imgW, imgH);
+  const canvas = sourceCanvas;
 
   let pdfBlob;
   let qualityUsed = 0.92;
@@ -317,28 +324,30 @@ export async function processPdfFile(item) {
     if (!result.length) throw new Error("No pages could be rendered from this PDF.");
     const first = result[0];
 
-    if (targetBytes && result.length === 1) {
-      const imgRes = await processImageFile({
-        ...item,
-        fileType: first.blob.type,
-        originalFile: first.blob,
-        settings: {
-          ...s,
-          format: to,
-          targetOn: true,
-          targetValue: s.targetValue,
-          targetUnit: s.targetUnit,
-        },
-      });
+    if (targetBytes) {
+      const processedPages = [];
+      for (const page of result) {
+        const imgRes = await processImageFile({
+          ...item,
+          fileType: page.blob.type,
+          originalFile: page.blob,
+          settings: {
+            ...s,
+            format: to,
+            targetOn: true,
+          },
+        });
+        processedPages.push({ ...page, blob: imgRes.blob, width: imgRes.width, height: imgRes.height });
+      }
       return {
-        blob: imgRes.blob,
+        blob: processedPages[0].blob,
         format: to,
-        pages: [{ ...first, blob: imgRes.blob }],
-        metTarget: imgRes.metTarget,
+        pages: processedPages,
+        metTarget: processedPages.every((page) => page.blob.size <= targetBytes),
         targetBytes,
         targetLabel: `${s.targetValue} ${s.targetUnit}`,
-        width: imgRes.width,
-        height: imgRes.height,
+        width: processedPages[0].width,
+        height: processedPages[0].height,
       };
     }
 
@@ -402,7 +411,7 @@ async function compressPdf(item) {
     }
   }
 
-  const metTarget = finalBuf.byteLength <= targetBytes;
+  const metTarget = !targetBytes || finalBuf.byteLength <= targetBytes;
 
   return {
     blob: new Blob([finalBuf], { type: "application/pdf" }),

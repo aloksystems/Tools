@@ -3,7 +3,7 @@
 import { classifyFromName } from "./classification.js";
 import { newFileRecord } from "./state.js";
 import { buildPreview } from "./preview.js";
-import { getFileExt, extMatch, classifyMimeByType } from "./utils.js";
+import { getFileExt, extMatch, classifyMimeByType, mimeFromExtension } from "./utils.js";
 
 const SUPPORTED = ["jpg", "jpeg", "png", "webp", "gif", "pdf"];
 
@@ -40,21 +40,20 @@ export async function addFiles(fileList) {
   for (const file of accepted) {
     const record = newFileRecord(file);
     record.ext = normalizeFileExt(file);
+    if (!record.fileType || record.fileType === "application/octet-stream") {
+      record.fileType = mimeFromExtension(record.ext);
+    }
     record.category = classifyFromName(file.name);
 
     const type = classifyMimeByType(file.type);
     if (record.ext === "unknown" && type !== "unknown") record.ext = type;
 
-    if (file.type.startsWith("image/")) {
-      record.previewURL = URL.createObjectURL(file);
-      const { buildPreview } = await import("./preview.js");
+    try {
       const info = await buildPreview(record);
       record.dims = info.dims;
-    }
-    if (file.type === "application/pdf") {
-      const { buildPreview } = await import("./preview.js");
-      const info = await buildPreview(record);
       record.pdfPages = info.pdfPages;
+    } catch (error) {
+      record.error = error?.message || "Could not preview this file.";
     }
 
     records.push(record);

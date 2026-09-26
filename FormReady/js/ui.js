@@ -181,8 +181,11 @@ export function setStep(step) {
 
   document.querySelectorAll(".step").forEach((s) => {
     const name = s.dataset.step;
+    const order = [STAGES.UPLOAD, STAGES.CONFIGURE, STAGES.RESULT];
+    const currentIndex = order.indexOf(step);
+    const stepIndex = order.indexOf(name);
     s.classList.toggle("is-active", name === step);
-    s.classList.toggle("is-done", name !== step && !isUpload && !isResult);
+    s.classList.toggle("is-done", stepIndex >= 0 && stepIndex < currentIndex);
   });
 
   if (step === STAGES.RESULT) {
@@ -257,9 +260,10 @@ function renderDocsSummary() {
 }
 
 function renderPackBar() {
-  const hasImages = state.files.some((f) => f.fileType.startsWith("image/") && !state.pack.group);
+  const imageCount = state.files.filter((f) => f.fileType.startsWith("image/") && f.status !== "packed").length;
+  const hasImages = imageCount > 0;
   el.packBar.hidden = !hasImages;
-  el.combineBtn.hidden = !(state.pack.enabled && state.pack.group && state.pack.group.length > 1);
+  el.combineBtn.hidden = !(state.pack.enabled && imageCount > 1);
 }
 
 function renderFileList() {
@@ -919,7 +923,10 @@ export function openImageEditor(record) {
     if (!cropEnabled) return;
     mouseDown = true; mode = "new";
     const t = e.touches[0];
-    dragStartX = t.clientX; dragStartY = t.clientY;
+    const rect = canvas.getBoundingClientRect();
+    const scale = canvas.width / rect.width;
+    dragStartX = (t.clientX - rect.left) * scale;
+    dragStartY = (t.clientY - rect.top) * scale;
   }, { passive: true });
   document.addEventListener("touchmove", (e) => {
     if (!mouseDown) return;
@@ -929,10 +936,10 @@ export function openImageEditor(record) {
     const curX = (t.clientX - rect.left) * scale;
     const curY = (t.clientY - rect.top) * scale;
     if (mode === "new") {
-      cropX = Math.min(dragStartX * scale, curX);
-      cropY = Math.min(dragStartY * scale, curY);
-      cropW = Math.abs(curX - dragStartX * scale);
-      cropH = Math.abs(curY - dragStartY * scale);
+      cropX = Math.min(dragStartX, curX);
+      cropY = Math.min(dragStartY, curY);
+      cropW = Math.abs(curX - dragStartX);
+      cropH = Math.abs(curY - dragStartY);
     }
     draw();
   }, { passive: true });
