@@ -1449,7 +1449,7 @@ select {
 
   .nav-search {
     display: none;
-    position: absolute;
+    position: fixed;
     top: var(--header-h);
     left: 0;
     right: 0;
@@ -1463,6 +1463,15 @@ select {
 
   .nav-search.is-open {
     display: flex;
+  }
+
+  .nav-search input {
+    height: 46px;
+    padding-right: 1rem;
+  }
+
+  .nav-search .kbd {
+    display: none;
   }
 
   .brand-mark {
