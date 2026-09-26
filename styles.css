@@ -299,6 +299,7 @@ select {
   align-items: center;
   gap: 0.6rem;
   flex-shrink: 0;
+  position: relative;
 }
 
 .nav-search {
@@ -1443,6 +1444,7 @@ select {
 
   .search-toggle {
     display: grid;
+    z-index: 1002;
   }
 
   .nav-search {
@@ -1456,6 +1458,7 @@ select {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow-lg);
+    z-index: 1001;
   }
 
   .nav-search.is-open {

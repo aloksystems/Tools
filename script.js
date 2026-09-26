@@ -411,6 +411,7 @@ class ToolsApp {
   /* ---------- Nav scroll animation / highlighting ---------- */
   setupNavScroll() {
     const sections = [
+      { id: "home", link: "home" },
       { id: "tools", link: "tools" },
       { id: "about", link: "about" },
     ];
@@ -429,6 +430,15 @@ class ToolsApp {
       }
     });
 
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        const targetId = link.getAttribute("href") || "";
+        if (targetId === "#home") {
+          window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+        }
+      });
+    });
+
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let ticking = false;
@@ -442,7 +452,7 @@ class ToolsApp {
           let current = "home";
           for (const s of sections) {
             const el = document.getElementById(s.id);
-            if (el && el.getBoundingClientRect().top + window.scrollY - 140 <= y) {
+            if (el && el.getBoundingClientRect().top + window.scrollY - 120 <= y) {
               current = s.link;
             }
           }
