@@ -164,7 +164,7 @@ export default function UploadWidget({ onUploadSuccess }: UploadWidgetProps) {
         }
         const uploadBody = data === f.data ? f.file : dataUrlToBlob(data);
         const blob = await upload(f.name, uploadBody, {
-          access: "private",
+          access: "public",
           handleUploadUrl: "/api/blob-upload",
           contentType: f.type,
           multipart: f.size > 4 * 1024 * 1024,

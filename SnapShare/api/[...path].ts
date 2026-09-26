@@ -214,7 +214,7 @@ async function serveImage(req: VercelRequest, res: VercelResponse, id: string, i
   const isDownload = req.query.download === "true";
   if (isDownload && !session.allowDownload) return res.status(403).json({ error: "Download disabled for this transfer" });
 
-  const blob = await get(image.url, { access: "private", useCache: false });
+  const blob = await get(image.url, { access: "public", useCache: false });
   if (!blob || blob.statusCode !== 200) return res.status(404).json({ error: "File missing" });
   res.setHeader("Content-Type", image.type);
   if (isDownload) {
