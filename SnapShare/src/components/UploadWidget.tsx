@@ -193,8 +193,14 @@ export default function UploadWidget({ onUploadSuccess }: UploadWidgetProps) {
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
+      const responseText = await res.text();
+      let data: { error?: string; id?: string; expiresAt?: number } = {};
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        data = { error: responseText || "Upload failed" };
+      }
+      if (!res.ok) throw new Error(data.error || `Upload failed (${res.status})`);
 
       const historyItem = {
         id: data.id,

@@ -250,6 +250,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(404).json({ error: "Not found" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Server error" });
+    const message = error instanceof Error ? error.message : "Unknown server error";
+    return res.status(500).json({ error: `Server error: ${message}` });
   }
 }
