@@ -109,7 +109,7 @@ const projectsData = [
       description:
         "A secure temporary file sharing platform with password protection, auto-expiry, one-time viewing, and download restrictions built using Express, Vite, and TypeScript.",
       tags: ["TypeScript", "Express", "Vite", "File Sharing", "Security"],
-      demo: "https://snapshare-i9u7.onrender.com/",
+      demo: "https://tools-lovat-beta.vercel.app/",
       icon: "S",
       iconColor: "#6366F1",
       pinned: true,
