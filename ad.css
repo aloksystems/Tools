@@ -1,0 +1,116 @@
+.sponsor-banner {
+  align-items: center;
+  background: #fff8e7;
+  border: 1px solid #f1d48a;
+  border-radius: 10px;
+  color: #5f4600;
+  display: flex;
+  gap: 0.75rem;
+  margin: 0.75rem auto;
+  max-width: 1100px;
+  padding: 0.65rem 0.9rem;
+  position: relative;
+  width: calc(100% - 2rem);
+  z-index: 10;
+}
+
+.sponsor-banner__label {
+  background: #7a5700;
+  border-radius: 999px;
+  color: #fff;
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.5rem;
+  text-transform: uppercase;
+}
+
+.sponsor-banner__text {
+  flex: 1 1 auto;
+  font-size: 0.875rem;
+}
+
+.sponsor-banner__link {
+  background: #7a5700;
+  border-radius: 6px;
+  color: #fff;
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 0.7rem;
+  text-decoration: none;
+}
+
+.sponsor-banner__link:hover,
+.sponsor-banner__link:focus-visible {
+  background: #5f4600;
+}
+
+.sponsor-banner__close {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0.15rem 0.3rem;
+}
+
+.display-ad-stack {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem auto;
+  max-width: 1100px;
+  width: calc(100% - 2rem);
+}
+
+.display-ad-slot {
+  align-items: center;
+  background: rgba(148, 163, 184, 0.08);
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+.display-ad-slot:not(.is-filled),
+.native-ad-wrapper:not(.is-filled) {
+  display: none;
+}
+
+.native-ad-wrapper {
+  flex: 1 1 100%;
+  max-width: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+.native-ad-slot {
+  min-height: 90px;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .sponsor-banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .sponsor-banner__text {
+    flex-basis: calc(100% - 2rem);
+  }
+
+  .sponsor-banner__link {
+    margin-left: 0;
+  }
+
+  .display-ad-slot {
+    min-height: 50px !important;
+  }
+}

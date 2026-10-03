@@ -33,6 +33,15 @@ This portfolio website showcases over 40+ projects across 7 different categories
 - **Pinned Projects**: Highlighted featured projects for easy access
 - **Keyboard Shortcuts**: Efficient navigation using keyboard commands
 - **Statistics Display**: Project counts and user metrics
+- **Sponsored Link**: Clearly labeled, optional sponsor banner on first-party tool pages
+
+The sponsor banner and approved display/native ad units are loaded from `ad.js` and
+`ad.css`. The Smartlink opens only after a visitor selects the labeled button in a new
+tab. The integration does not intercept normal navigation, tool actions, downloads, or
+form submissions. The publisher's approved anti-adblock/Popunder and Social Bar scripts
+are now enabled globally as requested; these can show overlays, popups, or redirects
+depending on the visitor's browser and ad-blocking settings. Update the ad configuration
+in `ad.js` if the publisher changes.
 
 ## Project Categories
 
