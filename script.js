@@ -342,7 +342,7 @@ class ToolsApp {
     const color = project.iconColor || colorFor(project.name);
 
     return `
-      <a class="tool-card" href="${escapeHtml(targetUrl)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(project.name)}">
+      <a class="tool-card" href="${escapeHtml(targetUrl)}" aria-label="Open ${escapeHtml(project.name)}">
         <div class="tool-card-top">
           <span class="tool-icon" style="background:${color}" aria-hidden="true">${glyph}</span>
           <span class="tool-cat">${escapeHtml(project.category)}</span>

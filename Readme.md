@@ -35,13 +35,12 @@ This portfolio website showcases over 40+ projects across 7 different categories
 - **Statistics Display**: Project counts and user metrics
 - **Sponsored Link**: Clearly labeled, optional sponsor banner on first-party tool pages
 
-The sponsor banner and approved display/native ad units are loaded from `ad.js` and
-`ad.css`. The Smartlink opens only after a visitor selects the labeled button in a new
-tab. The integration does not intercept normal navigation, tool actions, downloads, or
-form submissions. The publisher's approved anti-adblock/Popunder and Social Bar scripts
-are now enabled globally as requested; these can show overlays, popups, or redirects
-depending on the visitor's browser and ad-blocking settings. Update the ad configuration
-in `ad.js` if the publisher changes.
+The sponsor banner, three Smartlinks, and approved display/native ad units are loaded
+from `ad.js` and `ad.css`. No popup/modal blocks the user — any link, button, tab or
+tool-card click works normally (e.g. JSON-Formatter opens in a new page as usual) and
+a sponsor Smartlink opens alongside in a new tab. If the visitor is interested they
+stay/scroll, otherwise they just close it. Update the ad configuration in `ad.js`
+if the publisher changes.
 
 ## Project Categories
 
