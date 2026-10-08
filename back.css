@@ -1,0 +1,40 @@
+/* Global back button — clean navigation helper, no ads or tracking.
+   Shown on every tool subpage, hidden on the homepage. */
+
+.global-back-btn {
+  align-items: center;
+  background: #0f766e;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.35);
+  color: #fff;
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 700;
+  gap: 0.4rem;
+  left: 12px;
+  padding: 0.55rem 0.95rem;
+  position: fixed;
+  text-decoration: none;
+  top: 12px;
+  z-index: 9999;
+}
+
+.global-back-btn:hover,
+.global-back-btn:focus-visible {
+  background: #0d655e;
+  color: #fff;
+}
+
+html[data-theme="dark"] .global-back-btn {
+  background: #14b8a6;
+  color: #04211e;
+}
+
+@media (max-width: 600px) {
+  .global-back-btn {
+    font-size: 0.8rem;
+    left: 10px;
+    padding: 0.5rem 0.8rem;
+    top: 10px;
+  }
+}

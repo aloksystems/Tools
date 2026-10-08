@@ -33,14 +33,7 @@ This portfolio website showcases over 40+ projects across 7 different categories
 - **Pinned Projects**: Highlighted featured projects for easy access
 - **Keyboard Shortcuts**: Efficient navigation using keyboard commands
 - **Statistics Display**: Project counts and user metrics
-- **Sponsored Link**: Clearly labeled, optional sponsor banner on first-party tool pages
-
-The sponsor banner, three Smartlinks, and approved display/native ad units are loaded
-from `ad.js` and `ad.css`. No popup/modal blocks the user — any link, button, tab or
-tool-card click works normally (e.g. JSON-Formatter opens in a new page as usual) and
-a sponsor Smartlink opens alongside in a new tab. If the visitor is interested they
-stay/scroll, otherwise they just close it. Update the ad configuration in `ad.js`
-if the publisher changes.
+- **100% Ad-Free**: No ads, sponsor banners, or click hijacking — every tool is free and unlimited
 
 ## Project Categories
 
@@ -90,6 +83,7 @@ portfolio/
 ├── styles.css              # Custom styling with modern design
 ├── script.js               # JavaScript functionality
 ├── projects-data.js        # Project information data
+├── back.js / back.css      # Ad-free "All Tools" back button on tool subpages
 ├── img/                    # Image assets
 │   ├── img1.png           # Background image for hero section
 │   └── img2.png           # Additional image asset

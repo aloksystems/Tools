@@ -1593,37 +1593,4 @@ select {
   }
 }
 
-/* ===== Adsterra Ads ===== */
 
-.ad-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 28px auto;
-  overflow: hidden;
-}
-
-.ad-728 {
-  min-height: 90px;
-}
-
-.ad-300 {
-  min-height: 250px;
-}
-
-.ad-native {
-  min-height: 100px;
-}
-
-/* Prevent horizontal overflow on mobile */
-@media (max-width: 767px) {
-  .ad-728 {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  .ad-300 {
-    width: 100%;
-  }
-}
