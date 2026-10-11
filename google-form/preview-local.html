@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_blank">
+  <meta charset="UTF-8">
+  <style>
+/* FormForge design system — minimal, premium, neutral + restrained indigo accent */
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text: #0f172a;
+  --muted: #64748b;
+  --muted-2: #94a3b8;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-soft: #eef2ff;
+  --success: #15803d;
+  --success-bg: #f0fdf4;
+  --success-border: #bbf7d0;
+  --warning: #b45309;
+  --warning-bg: #fffbeb;
+  --warning-border: #fde68a;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --danger-border: #fecaca;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgba(15,23,42,.06), 0 4px 16px rgba(15,23,42,.06);
+  --shadow-lg: 0 12px 40px rgba(15,23,42,.14);
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; font-family: var(--font); background: var(--bg); color: var(--text);
+  font-size: 15px; line-height: 1.55;
+}
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+/* Header */
+.ff-header {
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(255,255,255,.9); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.ff-header-inner {
+  max-width: 1240px; margin: 0 auto; padding: 12px 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+.ff-logo { width: 36px; height: 36px; border-radius: 10px; background: var(--text);
+  color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 18px; flex: none; }
+.ff-brand h1 { font-size: 17px; margin: 0; letter-spacing: -.01em; }
+.ff-brand p { margin: 0; font-size: 12.5px; color: var(--muted); }
+.ff-header-spacer { flex: 1; }
+.ff-auth {
+  display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted);
+  border: 1px solid var(--border); background: var(--surface); padding: 6px 12px; border-radius: 999px;
+  max-width: 320px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.ff-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); flex: none; }
+.ff-dot.ok { background: #22c55e; }
+.ff-btn {
+  appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font: inherit; font-size: 13.5px; font-weight: 600; padding: 8px 14px; border-radius: 9px;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+  transition: background .15s, border-color .15s, transform .05s;
+}
+.ff-btn:hover { background: var(--surface-2); border-color: var(--border-strong); }
+.ff-btn:active { transform: translateY(1px); }
+.ff-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+.ff-btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.ff-btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.ff-btn-sm { padding: 6px 10px; font-size: 12.5px; border-radius: 8px; }
+.ff-btn svg { width: 15px; height: 15px; }
+
+/* Layout */
+.ff-wrap { max-width: 1240px; margin: 0 auto; padding: 28px 20px 60px; }
+.ff-title { font-size: 28px; letter-spacing: -.02em; margin: 0 0 6px; }
+.ff-subtitle { color: var(--muted); margin: 0 0 20px; max-width: 720px; }
+.ff-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 18px; align-items: start; }
+@media (max-width: 980px) { .ff-grid { grid-template-columns: 1fr; } }
+.ff-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.ff-card-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.ff-card-head h2 { font-size: 14px; margin: 0; }
+.ff-card-head p { font-size: 12.5px; color: var(--muted); margin: 0; }
+.ff-card-body { padding: 16px 18px; }
+.ff-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.ff-editor {
+  width: 100%; min-height: 420px; resize: vertical; font-family: var(--mono); font-size: 12.8px; line-height: 1.6;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; background: #0f172a; color: #e2e8f0;
+}
+.ff-editor:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ff-status { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; border-radius: var(--radius-sm);
+  padding: 10px 12px; margin-top: 12px; border: 1px solid var(--border); background: var(--surface-2); }
+.ff-status.ok { background: var(--success-bg); border-color: var(--success-border); color: #14532d; }
+.ff-status.err { background: var(--danger-bg); border-color: var(--danger-border); color: #7f1d1d; }
+.ff-status.warn { background: var(--warning-bg); border-color: var(--warning-border); color: #78350f; }
+.ff-errors { margin: 10px 0 0; padding: 0; list-style: none; max-height: 220px; overflow: auto; font-size: 12.8px; }
+.ff-errors li { padding: 7px 10px; border: 1px solid var(--danger-border); background: #fff; border-radius: 7px; margin-bottom: 6px; }
+.ff-errors code { font-family: var(--mono); font-size: 11.5px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+
+/* Preview */
+.ff-preview-meta { display: grid; gap: 10px; margin-bottom: 14px; }
+.ff-field label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
+.ff-field input[type=text], .ff-field textarea, .ff-field select {
+  width: 100%; font: inherit; font-size: 13.5px; padding: 9px 11px; border: 1px solid var(--border);
+  border-radius: 8px; background: #fff; color: var(--text);
+}
+.ff-field textarea { min-height: 56px; resize: vertical; }
+.ff-settings { display: flex; flex-wrap: wrap; gap: 10px 18px; border: 1px dashed var(--border-strong);
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 13px; }
+.ff-check { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.ff-q { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; background: #fff; }
+.ff-q-top { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.ff-q-num { font-size: 11px; font-weight: 800; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 2px 7px; color: var(--muted); }
+.ff-q-type { margin-left: auto; font-size: 12px; border: 1px solid var(--border); border-radius: 7px; padding: 5px 8px; font: inherit; background: #fff; }
+.ff-q input[type=text], .ff-q textarea { width: 100%; font: inherit; font-size: 13.5px; padding: 8px 10px;
+  border: 1px solid var(--border); border-radius: 7px; margin-bottom: 7px; }
+.ff-q textarea { min-height: 40px; resize: vertical; font-size: 12.8px; color: var(--muted); }
+.ff-opts { display: grid; gap: 6px; margin: 6px 0; }
+.ff-opt { display: flex; gap: 7px; align-items: center; }
+.ff-opt input { flex: 1; margin: 0 !important; }
+.ff-icon-btn { border: 1px solid var(--border); background: #fff; border-radius: 7px; width: 28px; height: 28px;
+  display: inline-grid; place-items: center; cursor: pointer; color: var(--muted); font-size: 14px; line-height: 1; flex: none; }
+.ff-icon-btn:hover { background: var(--surface-2); color: var(--text); }
+.ff-icon-btn.danger:hover { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-border); }
+.ff-q-foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.ff-req { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.ff-scale-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.ff-scale-row .ff-field { flex: 1; min-width: 110px; }
+.ff-add-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.ff-generate-bar { position: sticky; bottom: 0; padding: 12px 0 4px; background: linear-gradient(transparent, var(--bg) 30%); }
+.ff-generate-bar .ff-btn-primary { width: 100%; justify-content: center; padding: 13px; font-size: 15px; border-radius: 11px; }
+.ff-hint { font-size: 12.5px; color: var(--muted); text-align: center; margin-top: 8px; }
+
+/* Result */
+.ff-result { border: 1px solid var(--success-border); background: var(--success-bg); border-radius: var(--radius);
+  padding: 20px; margin-top: 18px; box-shadow: var(--shadow); }
+.ff-result.partial { background: var(--warning-bg); border-color: var(--warning-border); }
+.ff-result.failed { background: var(--danger-bg); border-color: var(--danger-border); }
+.ff-result h3 { margin: 0 0 6px; font-size: 17px; }
+.ff-links { display: grid; gap: 10px; margin-top: 12px; }
+.ff-link-row { background: #fff; border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px;
+  display: flex; gap: 10px; align-items: center; }
+.ff-link-row strong { font-size: 12.5px; display: block; }
+.ff-link-row a { font-size: 12.5px; word-break: break-all; }
+.ff-link-row .ff-btn { margin-left: auto; flex: none; }
+
+/* How-to */
+.ff-howto { margin-top: 26px; }
+.ff-howto ol { margin: 8px 0; padding-left: 20px; }
+.ff-howto li { margin-bottom: 6px; }
+.ff-prompt-box { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 14px; font-family: var(--mono);
+  font-size: 12px; line-height: 1.6; white-space: pre-wrap; max-height: 260px; overflow: auto; margin-top: 10px; }
+.ff-footer { color: var(--muted); font-size: 12.5px; text-align: center; margin-top: 30px; }
+
+/* Modal + toast */
+.ff-modal-back { position: fixed; inset: 0; background: rgba(15,23,42,.45); display: none; place-items: center; z-index: 50; padding: 16px; }
+.ff-modal-back.open { display: grid; }
+.ff-modal { background: #fff; border-radius: 14px; max-width: 560px; width: 100%; box-shadow: var(--shadow-lg);
+  max-height: 85vh; overflow: auto; }
+.ff-modal head, .ff-modal-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.ff-modal-head h3 { margin: 0; font-size: 16px; }
+.ff-modal-body { padding: 16px 20px; font-size: 14px; }
+#ffToast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(20px); background: #0f172a;
+  color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 13.5px; opacity: 0; pointer-events: none;
+  transition: opacity .2s, transform .2s; z-index: 60; max-width: min(92vw, 520px); text-align: center; }
+#ffToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.ff-spinner { width: 15px; height: 15px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+  border-radius: 50%; animation: ffspin .7s linear infinite; display: inline-block; }
+@keyframes ffspin { to { transform: rotate(360deg); } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+.ff-empty { border: 1px dashed var(--border-strong); border-radius: 10px; padding: 22px; text-align: center;
+  color: var(--muted); font-size: 13.5px; }
+@media (max-width: 640px) {
+  .ff-wrap { padding: 18px 12px 50px; }
+  .ff-title { font-size: 22px; }
+  .ff-card-body { padding: 12px; }
+  .ff-editor { min-height: 300px; }
+  .ff-auth span { display: none; }
+}
+</style>
+
+</head>
+<body>
+  <header class="ff-header">
+    <div class="ff-header-inner">
+      <div class="ff-logo" aria-hidden="true">F</div>
+      <div class="ff-brand">
+        <h1>FormForge</h1>
+        <p>Turn structured specifications into Google Forms.</p>
+      </div>
+      <div class="ff-header-spacer"></div>
+      <div class="ff-auth" id="ffAuth" title="Google account status">
+        <span class="ff-dot" id="ffAuthDot"></span><span id="ffAuthText">Checking account…</span>
+      </div>
+      <button class="ff-btn ff-btn-sm" id="ffHelpBtn" aria-haspopup="dialog">Help</button>
+    </div>
+  </header>
+
+  <main class="ff-wrap">
+    <h2 class="ff-title">Create a Google Form</h2>
+    <p class="ff-subtitle">Paste a ChatGPT-generated JSON specification, validate it, preview the form, edit anything, then generate a real Google Form with a linked response spreadsheet.</p>
+
+    <div class="ff-grid">
+      <!-- LEFT: editor -->
+      <section class="ff-card" aria-labelledby="ffEditorTitle">
+        <div class="ff-card-head">
+          <div><h2 id="ffEditorTitle">1 · Specification (JSON)</h2>
+          <p>Paste JSON without Markdown fences. Edits invalidate validation until re-validated.</p></div>
+        </div>
+        <div class="ff-card-body">
+          <div class="ff-toolbar" role="toolbar" aria-label="Editor actions">
+            <button class="ff-btn ff-btn-sm" id="btnPaste">Paste</button>
+            <button class="ff-btn ff-btn-sm" id="btnExample">Load example</button>
+            <button class="ff-btn ff-btn-sm" id="btnValidate">Validate JSON</button>
+            <button class="ff-btn ff-btn-sm" id="btnFormat">Format</button>
+            <button class="ff-btn ff-btn-sm" id="btnClear">Clear</button>
+            <button class="ff-btn ff-btn-sm" id="btnDownload" title="Download current spec as .json">Download</button>
+            <button class="ff-btn ff-btn-sm" id="btnImport" title="Import a .json file">Import</button>
+            <input type="file" id="fileImport" accept="application/json,.json" class="sr-only" aria-label="Import JSON file">
+          </div>
+          <label class="sr-only" for="ffEditor">JSON specification editor</label>
+          <textarea class="ff-editor" id="ffEditor" spellcheck="false" placeholder='Paste your FormForge JSON here, e.g.&#10;{&#10;  "schemaVersion": "1.0",&#10;  "title": "Student Registration Form",&#10;  ...&#10;}'></textarea>
+          <div class="ff-status" id="ffStatus" role="status" aria-live="polite"><span id="ffStatusText">Not validated yet. Click “Validate JSON”.</span></div>
+          <ul class="ff-errors" id="ffErrors" aria-label="Validation errors"></ul>
+        </div>
+      </section>
+
+      <!-- RIGHT: preview -->
+      <section class="ff-card" aria-labelledby="ffPreviewTitle">
+        <div class="ff-card-head">
+          <div><h2 id="ffPreviewTitle">2 · Preview &amp; edit</h2>
+          <p>Visual edits update the JSON automatically.</p></div>
+        </div>
+        <div class="ff-card-body">
+          <div id="ffPreviewEmpty" class="ff-empty">Validate a specification to see a live preview here.</div>
+          <div id="ffPreview" hidden>
+            <div class="ff-preview-meta">
+              <div class="ff-field"><label for="pvTitle">Form title</label><input type="text" id="pvTitle" maxlength="300"></div>
+              <div class="ff-field"><label for="pvDesc">Form description</label><textarea id="pvDesc" maxlength="2000"></textarea></div>
+            </div>
+            <div class="ff-settings" id="pvSettings" aria-label="Form settings"></div>
+            <div id="pvQuestions"></div>
+            <div class="ff-add-row">
+              <button class="ff-btn ff-btn-sm" id="btnAddQ">+ Add question</button>
+              <button class="ff-btn ff-btn-sm" id="btnSync">Refresh JSON from preview</button>
+            </div>
+          </div>
+          <div class="ff-generate-bar">
+            <button class="ff-btn ff-btn-primary" id="btnGenerate" disabled>Generate Google Form</button>
+            <div class="ff-hint" id="ffGenHint">Validate successfully to enable generation.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="ffResultSlot" aria-live="polite"></div>
+
+    <!-- HOW TO -->
+    <section class="ff-card ff-howto" aria-labelledby="ffHowTitle">
+      <div class="ff-card-head"><div><h2 id="ffHowTitle">How to use FormForge</h2>
+        <p>ChatGPT writes the spec · FormForge builds the form.</p></div></div>
+      <div class="ff-card-body">
+        <ol>
+          <li>Tell ChatGPT what form you want (purpose, audience, questions, required fields).</li>
+          <li>Ask ChatGPT to return JSON following the FormForge schema (use the prompt below).</li>
+          <li>Copy the JSON <strong>without</strong> surrounding Markdown code fences.</li>
+          <li>Paste it into FormForge and click <strong>Validate JSON</strong>.</li>
+          <li>Review the preview and edit anything.</li>
+          <li>Click <strong>Generate Google Form</strong> and copy your three links.</li>
+        </ol>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="ff-btn ff-btn-sm" id="btnCopyPrompt">Copy ChatGPT Prompt</button>
+          <button class="ff-btn ff-btn-sm" id="btnCopySchema">Copy minimal schema</button>
+        </div>
+        <div class="ff-prompt-box" id="ffPromptBox"></div>
+      </div>
+    </section>
+
+    <p class="ff-footer">FormForge · Google Apps Script · Forms + Sheets are created in your own Google account. No external database.</p>
+  </main>
+
+  <!-- FormForge — Components.html : reusable icons + modal/toast shells -->
+<template id="ff-icon-set">
+  <span data-icon="check">✓</span>
+</template>
+
+<div class="ff-modal-back" id="ffHelpModal" role="dialog" aria-modal="true" aria-labelledby="ffHelpTitle">
+  <div class="ff-modal">
+    <div class="ff-modal-head">
+      <h3 id="ffHelpTitle">Help &amp; authorization</h3>
+      <span style="flex:1"></span>
+      <button class="ff-icon-btn" data-close-help aria-label="Close help">✕</button>
+    </div>
+    <div class="ff-modal-body">
+      <p><strong>FormForge</strong> creates real Google Forms + linked response Sheets in your Google account.</p>
+      <p>On first use Google will ask you to authorize these scopes:</p>
+      <ul>
+        <li><code>forms</code> — create &amp; configure forms</li>
+        <li><code>spreadsheets</code> — create response spreadsheets</li>
+        <li><code>drive.file</code> — access files the app creates</li>
+        <li><code>userinfo.email</code> — show your account in the header</li>
+      </ul>
+      <p>Resources are owned by the account that runs the Web App (see README for Execute-as settings).
+      If you see an authorization error, re-open the deployment URL while signed in and accept the consent screen.</p>
+      <p>Tips: paste JSON <em>without</em> Markdown code fences (no ```json). Use <strong>Validate JSON</strong> before generating.
+      Generation is idempotent — repeated clicks with the same draft won't duplicate forms.</p>
+    </div>
+  </div>
+</div>
+
+<div id="ffToast" role="status" aria-live="polite"></div>
+
+  <script>
+(function () {
+'use strict';
+
+/* ============ Config mirror (keep in sync with Configuration.gs) ============ */
+var SCHEMA_VERSION = '1.0';
+var SUPPORTED_VERSIONS = ['1.0'];
+var SUPPORTED_TYPES = ['SHORT_ANSWER','PARAGRAPH','MULTIPLE_CHOICE','CHECKBOXES','DROPDOWN','DATE','TIME','LINEAR_SCALE'];
+var CHOICE_TYPES = ['MULTIPLE_CHOICE','CHECKBOXES','DROPDOWN'];
+var ALLOWED_ROOT = ['schemaVersion','title','description','settings','questions'];
+var ALLOWED_SETTINGS = ['collectEmail','limitOneResponse','allowResponseEdits','confirmationMessage'];
+var ALLOWED_QKEYS = ['id','title','description','type','required','options','scaleConfig'];
+var LIMITS = { MAX_PAYLOAD: 262144, MAX_Q: 100, MAX_TITLE: 300, MAX_DESC: 2000, MAX_QTITLE: 300,
+  MAX_QDESC: 1000, MAX_OPTS: 50, MIN_OPTS: 2, MAX_OPTLEN: 200, MAX_CONFIRM: 1000 };
+var TYPE_LABELS = { SHORT_ANSWER:'Short answer', PARAGRAPH:'Paragraph', MULTIPLE_CHOICE:'Multiple choice',
+  CHECKBOXES:'Checkboxes', DROPDOWN:'Dropdown', DATE:'Date', TIME:'Time', LINEAR_SCALE:'Linear scale' };
+
+var EXAMPLE_SPEC = {
+  schemaVersion: '1.0',
+  title: 'Student Registration Form',
+  description: 'Enter your student details.',
+  settings: {
+    collectEmail: false, limitOneResponse: false, allowResponseEdits: false,
+    confirmationMessage: 'Your response has been submitted successfully.'
+  },
+  questions: [
+    { id: 'student_name', title: 'Student Name', description: 'Enter your full name.', type: 'SHORT_ANSWER', required: true },
+    { id: 'course', title: 'Select Course', description: '', type: 'DROPDOWN', options: ['BCA','BBA','B.Tech','MCA'], required: true },
+    { id: 'gender', title: 'Gender', description: '', type: 'MULTIPLE_CHOICE', options: ['Male','Female','Other'], required: false },
+    { id: 'interests', title: 'Areas of Interest', description: '', type: 'CHECKBOXES', options: ['Programming','Design','Data Science'], required: false },
+    { id: 'feedback', title: 'Additional Information', description: '', type: 'PARAGRAPH', required: false }
+  ]
+};
+
+var CHATGPT_PROMPT = [
+'You help users create Google Forms via FormForge. Follow these rules:',
+'',
+'1. First, ask for missing essentials if the request is vague (purpose, audience, list of questions, which are required).',
+'2. When the user explicitly asks for import-ready output, respond with VALID JSON ONLY — no explanations, no Markdown fences.',
+'3. Use exactly this schema (schemaVersion "1.0"):',
+'   { "schemaVersion": "1.0", "title": string (required, non-empty),',
+'     "description": string,',
+'     "settings": { "collectEmail": boolean, "limitOneResponse": boolean,',
+'       "allowResponseEdits": boolean, "confirmationMessage": string },',
+'     "questions": [ { "id": "snake_case_unique", "title": string (required),',
+'       "description": string, "type": one of SHORT_ANSWER | PARAGRAPH | MULTIPLE_CHOICE | CHECKBOXES | DROPDOWN | DATE | TIME | LINEAR_SCALE,',
+'       "required": boolean, "options": [strings] (REQUIRED for choice types, min 2 unique non-empty; OMIT otherwise),',
+'       "scaleConfig": { "min": 0|1, "max": 2..10, "lowerLabel": string, "upperLabel": string } (LINEAR_SCALE only) } ] }',
+'4. Never invent requirements the user did not specify. Set "required": true only when the user asked or it is clearly essential.',
+'5. Choice questions must include 2+ unique, non-empty options. Never use unsupported types or settings.',
+'6. Keep titles <= 300 chars, max 100 questions. Confirm the JSON parses before sending.'
+].join('\n');
+
+var MINIMAL_SCHEMA = JSON.stringify({
+  schemaVersion: '1.0', title: 'My Form', description: '',
+  settings: { collectEmail: false, limitOneResponse: false, allowResponseEdits: false, confirmationMessage: 'Thanks for responding.' },
+  questions: [{ id: 'q1', title: 'Your name', description: '', type: 'SHORT_ANSWER', required: true }]
+}, null, 2);
+
+/* ============ State ============ */
+var state = { spec: null, valid: false, generating: false, generationId: null, lastValidatedText: null };
+
+/* ============ DOM refs ============ */
+function $(id) { return document.getElementById(id); }
+var editor, statusBox, statusText, errorsUl, previewEmpty, preview, pvTitle, pvDesc, pvSettings, pvQuestions,
+    btnGenerate, genHint, resultSlot, toastEl;
+
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastEl._t);
+  toastEl._t = setTimeout(function () { toastEl.classList.remove('show'); }, 2600);
+}
+function esc(s) { return String(s === undefined || s === null ? '' : s); }
+function uuid() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+function copyText(text, okMsg) {
+  function done() { toast(okMsg || 'Copied to clipboard.'); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+  } else { fallback(); }
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) { toast('Copy failed — select the text manually.'); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ============ Client-side validation (mirrors Validation.gs) ============ */
+function clientValidate(parsed) {
+  var errors = [];
+  function err(path, message) { errors.push({ path: path, message: message }); }
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return [{ path: '$', message: 'Specification must be a JSON object.' }];
+  }
+  Object.keys(parsed).forEach(function (k) {
+    if (ALLOWED_ROOT.indexOf(k) === -1) err('$.', 'Unsupported field "' + k + '". Allowed: ' + ALLOWED_ROOT.join(', ') + '.');
+  });
+  if (parsed.schemaVersion === undefined || parsed.schemaVersion === null) err('$.schemaVersion', 'Missing "schemaVersion". Expected "1.0".');
+  else if (SUPPORTED_VERSIONS.indexOf(String(parsed.schemaVersion)) === -1) err('$.schemaVersion', 'Unsupported schemaVersion. Supported: ' + SUPPORTED_VERSIONS.join(', ') + '.');
+  if (parsed.title === undefined || parsed.title === null || String(parsed.title).trim() === '') err('$.title', 'Form title is required.');
+  else if (String(parsed.title).trim().length > LIMITS.MAX_TITLE) err('$.title', 'Title must be ≤ ' + LIMITS.MAX_TITLE + ' chars.');
+  if (parsed.description !== undefined && parsed.description !== null) {
+    if (typeof parsed.description !== 'string') err('$.description', 'Description must be a string.');
+    else if (parsed.description.length > LIMITS.MAX_DESC) err('$.description', 'Description must be ≤ ' + LIMITS.MAX_DESC + ' chars.');
+  }
+  if (parsed.settings !== undefined && parsed.settings !== null) {
+    var s = parsed.settings;
+    if (typeof s !== 'object' || Array.isArray(s)) err('$.settings', 'Settings must be an object.');
+    else {
+      Object.keys(s).forEach(function (k) {
+        if (ALLOWED_SETTINGS.indexOf(k) === -1) err('$.settings.' + k, 'Unsupported setting "' + k + '".');
+      });
+      ['collectEmail','limitOneResponse','allowResponseEdits'].forEach(function (b) {
+        if (s[b] !== undefined && typeof s[b] !== 'boolean') err('$.settings.' + b, '"' + b + '" must be boolean.');
+      });
+      if (s.confirmationMessage !== undefined && s.confirmationMessage !== null) {
+        if (typeof s.confirmationMessage !== 'string') err('$.settings.confirmationMessage', 'Must be a string.');
+        else if (s.confirmationMessage.length > LIMITS.MAX_CONFIRM) err('$.settings.confirmationMessage', 'Must be ≤ ' + LIMITS.MAX_CONFIRM + ' chars.');
+      }
+    }
+  }
+  if (!Array.isArray(parsed.questions)) err('$.questions', '"questions" must be an array.');
+  else {
+    if (parsed.questions.length < 1) err('$.questions', 'At least 1 question is required.');
+    if (parsed.questions.length > LIMITS.MAX_Q) err('$.questions', 'Max ' + LIMITS.MAX_Q + ' questions.');
+    var seen = {};
+    parsed.questions.forEach(function (q, i) {
+      var base = '$.questions[' + i + ']';
+      if (!q || typeof q !== 'object' || Array.isArray(q)) { err(base, 'Question must be an object.'); return; }
+      Object.keys(q).forEach(function (k) {
+        if (ALLOWED_QKEYS.indexOf(k) === -1) err(base + '.' + k, 'Unsupported field "' + k + '".');
+      });
+      if (q.id !== undefined && q.id !== null && q.id !== '') {
+        if (typeof q.id !== 'string') err(base + '.id', 'id must be a string.');
+        else {
+          var t = q.id.trim();
+          if (t === '') err(base + '.id', 'id must be non-empty if provided.');
+          else if (!/^[A-Za-z0-9_\-]{1,64}$/.test(t)) err(base + '.id', 'id: letters/numbers/_/- only, max 64.');
+          else if (seen[t]) err(base + '.id', 'Duplicate id "' + t + '".');
+          else seen[t] = true;
+        }
+      }
+      if (q.title === undefined || q.title === null || String(q.title).trim() === '') err(base + '.title', 'Question title is required.');
+      else if (String(q.title).trim().length > LIMITS.MAX_QTITLE) err(base + '.title', 'Title must be ≤ ' + LIMITS.MAX_QTITLE + ' chars.');
+      if (q.description !== undefined && q.description !== null && typeof q.description !== 'string') err(base + '.description', 'Description must be a string.');
+      else if (typeof q.description === 'string' && q.description.length > LIMITS.MAX_QDESC) err(base + '.description', 'Description must be ≤ ' + LIMITS.MAX_QDESC + ' chars.');
+      if (q.type === undefined || q.type === null || String(q.type).trim() === '') { err(base + '.type', 'Type is required: ' + SUPPORTED_TYPES.join(', ') + '.'); return; }
+      var type = String(q.type).trim().toUpperCase();
+      if (SUPPORTED_TYPES.indexOf(type) === -1) { err(base + '.type', 'Unsupported type "' + String(q.type).slice(0,40) + '".'); return; }
+      if (q.required !== undefined && typeof q.required !== 'boolean') err(base + '.required', '"required" must be boolean.');
+      var isChoice = CHOICE_TYPES.indexOf(type) !== -1;
+      if (isChoice) {
+        if (!Array.isArray(q.options)) err(base + '.options', type + ' requires "options" array.');
+        else {
+          if (q.options.length < LIMITS.MIN_OPTS) err(base + '.options', 'Need ≥ ' + LIMITS.MIN_OPTS + ' options.');
+          if (q.options.length > LIMITS.MAX_OPTS) err(base + '.options', 'Max ' + LIMITS.MAX_OPTS + ' options.');
+          var so = {};
+          q.options.forEach(function (o, oi) {
+            if (typeof o !== 'string') { err(base + '.options[' + oi + ']', 'Option must be a string.'); return; }
+            var ot = o.trim();
+            if (ot === '') err(base + '.options[' + oi + ']', 'Option must be non-empty.');
+            else if (ot.length > LIMITS.MAX_OPTLEN) err(base + '.options[' + oi + ']', 'Option ≤ ' + LIMITS.MAX_OPTLEN + ' chars.');
+            else if (so[ot]) err(base + '.options[' + oi + ']', 'Duplicate option "' + ot.slice(0,40) + '".');
+            else so[ot] = true;
+          });
+        }
+      } else if (q.options !== undefined) err(base + '.options', '"options" only for ' + CHOICE_TYPES.join(', ') + '.');
+      if (type === 'LINEAR_SCALE') {
+        var sc = q.scaleConfig;
+        if (sc !== undefined && sc !== null) {
+          if (typeof sc !== 'object' || Array.isArray(sc)) err(base + '.scaleConfig', 'Must be an object.');
+          else {
+            var mn = sc.min !== undefined ? sc.min : 1, mx = sc.max !== undefined ? sc.max : 5;
+            if ([0,1].indexOf(mn) === -1) err(base + '.scaleConfig.min', 'min must be 0 or 1.');
+            if (typeof mx !== 'number' || Math.floor(mx) !== mx || mx < 2 || mx > 10) err(base + '.scaleConfig.max', 'max must be integer 2..10.');
+            else if ([0,1].indexOf(mn) !== -1 && mx <= mn) err(base + '.scaleConfig.max', 'max must exceed min.');
+          }
+        }
+      } else if (q.scaleConfig !== undefined) err(base + '.scaleConfig', 'Only for LINEAR_SCALE.');
+    });
+  }
+  return errors;
+}
+
+function normalizeClient(spec) {
+  var out = { schemaVersion: String(spec.schemaVersion), title: String(spec.title).trim(),
+    description: spec.description == null ? '' : String(spec.description).trim(), settings: {}, questions: [] };
+  var s = spec.settings || {};
+  out.settings = { collectEmail: s.collectEmail === true, limitOneResponse: s.limitOneResponse === true,
+    allowResponseEdits: s.allowResponseEdits === true,
+    confirmationMessage: (s.confirmationMessage == null ? 'Your response has been submitted successfully.' : String(s.confirmationMessage)) };
+  var used = {};
+  (spec.questions || []).forEach(function (q, i) {
+    var nq = {};
+    var rid = (q.id == null ? '' : String(q.id).trim()) || ('q_' + (i + 1));
+    var b = rid, k = 2;
+    while (used[rid]) { rid = b + '_' + k; k++; }
+    used[rid] = true;
+    nq.id = rid; nq.title = String(q.title).trim();
+    nq.description = q.description == null ? '' : String(q.description);
+    nq.type = String(q.type).trim().toUpperCase();
+    nq.required = q.required === true;
+    if (CHOICE_TYPES.indexOf(nq.type) !== -1) nq.options = (q.options || []).map(function (o) { return String(o).trim(); });
+    if (nq.type === 'LINEAR_SCALE') {
+      var sc = q.scaleConfig || {};
+      nq.scaleConfig = { min: sc.min !== undefined ? sc.min : 1, max: sc.max !== undefined ? sc.max : 5,
+        lowerLabel: sc.lowerLabel ? String(sc.lowerLabel) : '', upperLabel: sc.upperLabel ? String(sc.upperLabel) : '' };
+    }
+    out.questions.push(nq);
+  });
+  return out;
+}
+
+/* ============ Status / errors UI ============ */
+function setStatus(kind, msg) {
+  statusBox.classList.remove('ok', 'err', 'warn');
+  if (kind) statusBox.classList.add(kind);
+  statusText.textContent = msg;
+}
+function renderErrors(errors) {
+  errorsUl.textContent = '';
+  (errors || []).forEach(function (e) {
+    var li = document.createElement('li');
+    var code = document.createElement('code');
+    code.textContent = e.path || '$';
+    li.appendChild(code);
+    li.appendChild(document.createTextNode(' — ' + e.message));
+    errorsUl.appendChild(li);
+  });
+}
+function setGenerateEnabled(on, hint) {
+  btnGenerate.disabled = !on;
+  if (hint !== undefined) genHint.textContent = hint;
+}
+function invalidate(reason) {
+  state.valid = false;
+  state.spec = null;
+  setGenerateEnabled(false, reason || 'JSON changed — re-validate to enable generation.');
+}
+
+/* ============ Validate action ============ */
+function doValidate() {
+  var raw = editor.value;
+  if (!raw.trim()) {
+    state.valid = false; state.spec = null;
+    setStatus('warn', 'Editor is empty. Paste a specification or load the example.');
+    renderErrors([]); setGenerateEnabled(false, 'Nothing to generate yet.');
+    previewEmpty.hidden = false; preview.hidden = true;
+    return;
+  }
+  if (raw.length > LIMITS.MAX_PAYLOAD) {
+    setStatus('err', 'Specification too large (' + raw.length + ' chars, max 262144).');
+    renderErrors([{ path: '$', message: 'Payload exceeds 256 KB.' }]);
+    invalidate('Payload too large.');
+    return;
+  }
+  var parsed;
+  try { parsed = JSON.parse(raw); }
+  catch (e) {
+    setStatus('err', 'Invalid JSON syntax: ' + String(e.message || e).slice(0, 200));
+    renderErrors([{ path: '$', message: 'Invalid JSON syntax: ' + String(e.message || e).slice(0, 200) }]);
+    invalidate('Fix JSON syntax, then re-validate.');
+    previewEmpty.hidden = false; preview.hidden = true;
+    return;
+  }
+  var errs = clientValidate(parsed);
+  if (errs.length) {
+    setStatus('err', 'Found ' + errs.length + ' problem' + (errs.length > 1 ? 's' : '') + '. Fix them and re-validate.');
+    renderErrors(errs);
+    invalidate('Fix validation errors, then re-validate.');
+    previewEmpty.hidden = false; preview.hidden = true;
+    return;
+  }
+  state.spec = normalizeClient(parsed);
+  state.valid = true;
+  state.lastValidatedText = JSON.stringify(state.spec, null, 2);
+  setStatus('ok', 'Valid ✓ — ' + state.spec.questions.length + ' question(s). Preview is ready.');
+  renderErrors([]);
+  renderPreview();
+  setGenerateEnabled(true, 'Ready — preview matches the JSON. Click to create real resources.');
+  toast('Specification is valid.');
+}
+
+/* ============ Preview rendering (safe DOM, no innerHTML with user data) ============ */
+function clearEl(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+
+function renderPreview() {
+  if (!state.spec) { previewEmpty.hidden = false; preview.hidden = true; return; }
+  previewEmpty.hidden = true; preview.hidden = false;
+  pvTitle.value = state.spec.title;
+  pvDesc.value = state.spec.description || '';
+  renderSettings();
+  renderQuestions();
+}
+
+function renderSettings() {
+  clearEl(pvSettings);
+  var s = state.spec.settings;
+  var defs = [
+    { key: 'collectEmail', label: 'Collect email' },
+    { key: 'limitOneResponse', label: 'Limit to 1 response' },
+    { key: 'allowResponseEdits', label: 'Allow response edits' }
+  ];
+  defs.forEach(function (d) {
+    var lab = document.createElement('label');
+    lab.className = 'ff-check';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = !!s[d.key];
+    cb.setAttribute('aria-label', d.label);
+    cb.addEventListener('change', function () { s[d.key] = cb.checked; pushPreviewToEditor(true); });
+    lab.appendChild(cb);
+    lab.appendChild(document.createTextNode(d.label));
+    pvSettings.appendChild(lab);
+  });
+  var wrap = document.createElement('div');
+  wrap.className = 'ff-field'; wrap.style.flex = '1'; wrap.style.minWidth = '200px';
+  var lab2 = document.createElement('label');
+  lab2.textContent = 'Confirmation message'; lab2.setAttribute('for', 'pvConfirm');
+  var inp = document.createElement('input');
+  inp.type = 'text'; inp.id = 'pvConfirm'; inp.maxLength = LIMITS.MAX_CONFIRM;
+  inp.value = s.confirmationMessage || '';
+  inp.addEventListener('input', function () { s.confirmationMessage = inp.value; pushPreviewToEditor(true); });
+  wrap.appendChild(lab2); wrap.appendChild(inp);
+  pvSettings.appendChild(wrap);
+}
+
+function questionIcon(type) {
+  var m = { SHORT_ANSWER: '≡', PARAGRAPH: '¶', MULTIPLE_CHOICE: '◉', CHECKBOXES: '☑', DROPDOWN: '▾', DATE: '📅', TIME: '◷', LINEAR_SCALE: '⇔' };
+  return m[type] || '•';
+}
+
+function renderQuestions() {
+  clearEl(pvQuestions);
+  state.spec.questions.forEach(function (q, idx) {
+    pvQuestions.appendChild(questionCard(q, idx));
+  });
+}
+
+function questionCard(q, idx) {
+  var card = document.createElement('div');
+  card.className = 'ff-q';
+  card.setAttribute('data-qid', q.id);
+
+  var top = document.createElement('div'); top.className = 'ff-q-top';
+  var num = document.createElement('span'); num.className = 'ff-q-num'; num.textContent = 'Q' + (idx + 1);
+  top.appendChild(num);
+  var icon = document.createElement('span'); icon.textContent = questionIcon(q.type); icon.setAttribute('aria-hidden', 'true');
+  top.appendChild(icon);
+  var typeSel = document.createElement('select');
+  typeSel.className = 'ff-q-type'; typeSel.setAttribute('aria-label', 'Question type for question ' + (idx + 1));
+  SUPPORTED_TYPES.forEach(function (t) {
+    var o = document.createElement('option'); o.value = t; o.textContent = TYPE_LABELS[t]; if (q.type === t) o.selected = true;
+    typeSel.appendChild(o);
+  });
+  typeSel.addEventListener('change', function () {
+    var nt = typeSel.value;
+    q.type = nt;
+    if (CHOICE_TYPES.indexOf(nt) !== -1 && !Array.isArray(q.options)) q.options = ['Option 1', 'Option 2'];
+    if (CHOICE_TYPES.indexOf(nt) === -1) delete q.options;
+    if (nt === 'LINEAR_SCALE' && !q.scaleConfig) q.scaleConfig = { min: 1, max: 5, lowerLabel: '', upperLabel: '' };
+    if (nt !== 'LINEAR_SCALE') delete q.scaleConfig;
+    pushPreviewToEditor(true); renderQuestions();
+  });
+  top.appendChild(typeSel);
+  card.appendChild(top);
+
+  var titleInp = document.createElement('input');
+  titleInp.type = 'text'; titleInp.value = q.title; titleInp.maxLength = LIMITS.MAX_QTITLE;
+  titleInp.setAttribute('aria-label', 'Question title'); titleInp.placeholder = 'Question title';
+  titleInp.addEventListener('input', function () { q.title = titleInp.value; pushPreviewToEditor(false); });
+  card.appendChild(titleInp);
+
+  var descInp = document.createElement('textarea');
+  descInp.value = q.description || ''; descInp.placeholder = 'Description (optional)';
+  descInp.setAttribute('aria-label', 'Question description');
+  descInp.addEventListener('input', function () { q.description = descInp.value; pushPreviewToEditor(false); });
+  card.appendChild(descInp);
+
+  // Type-specific body (disabled respondent-style preview + editing where needed)
+  if (CHOICE_TYPES.indexOf(q.type) !== -1) {
+    var opts = document.createElement('div'); opts.className = 'ff-opts';
+    (q.options || []).forEach(function (opt, oi) {
+      var row = document.createElement('div'); row.className = 'ff-opt';
+      var marker = document.createElement('span');
+      marker.textContent = q.type === 'CHECKBOXES' ? '☐' : (q.type === 'DROPDOWN' ? (oi + 1) + '.' : '○');
+      marker.setAttribute('aria-hidden', 'true');
+      row.appendChild(marker);
+      var inp = document.createElement('input');
+      inp.type = 'text'; inp.value = opt; inp.maxLength = LIMITS.MAX_OPTLEN;
+      inp.setAttribute('aria-label', 'Option ' + (oi + 1));
+      inp.addEventListener('input', function () { q.options[oi] = inp.value; pushPreviewToEditor(false); });
+      row.appendChild(inp);
+      row.appendChild(iconBtn('↑', 'Move option up', function () {
+        if (oi === 0) return; var t = q.options[oi - 1]; q.options[oi - 1] = q.options[oi]; q.options[oi] = t;
+        pushPreviewToEditor(true); renderQuestions();
+      }));
+      row.appendChild(iconBtn('↓', 'Move option down', function () {
+        if (oi === q.options.length - 1) return; var t = q.options[oi + 1]; q.options[oi + 1] = q.options[oi]; q.options[oi] = t;
+        pushPreviewToEditor(true); renderQuestions();
+      }));
+      row.appendChild(iconBtn('✕', 'Remove option', function () {
+        if (q.options.length <= LIMITS.MIN_OPTS) { toast('Choice questions need at least ' + LIMITS.MIN_OPTS + ' options.'); return; }
+        q.options.splice(oi, 1); pushPreviewToEditor(true); renderQuestions();
+      }, true));
+      opts.appendChild(row);
+    });
+    card.appendChild(opts);
+    var addOpt = document.createElement('button');
+    addOpt.className = 'ff-btn ff-btn-sm'; addOpt.textContent = '+ Add option';
+    addOpt.addEventListener('click', function () {
+      if (q.options.length >= LIMITS.MAX_OPTS) { toast('Maximum ' + LIMITS.MAX_OPTS + ' options.'); return; }
+      q.options.push('Option ' + (q.options.length + 1)); pushPreviewToEditor(true); renderQuestions();
+    });
+    card.appendChild(addOpt);
+  } else if (q.type === 'LINEAR_SCALE') {
+    var sc = q.scaleConfig || (q.scaleConfig = { min: 1, max: 5, lowerLabel: '', upperLabel: '' });
+    var row = document.createElement('div'); row.className = 'ff-scale-row';
+    [['min', 'Min (0/1)', [0, 1]], ['max', 'Max (2–10)', null]].forEach(function (cfg) {
+      var key = cfg[0], label = cfg[1];
+      var f = document.createElement('div'); f.className = 'ff-field';
+      var lb = document.createElement('label'); lb.textContent = label;
+      var sel = document.createElement('select');
+      if (key === 'min') { [0, 1].forEach(function (v) { var o = document.createElement('option'); o.value = v; o.textContent = v; if (sc.min === v) o.selected = true; sel.appendChild(o); }); }
+      else { for (var v = 2; v <= 10; v++) { var o2 = document.createElement('option'); o2.value = v; o2.textContent = v; if (sc.max === v) o2.selected = true; sel.appendChild(o2); } }
+      sel.addEventListener('change', function () { sc[key] = parseInt(sel.value, 10); pushPreviewToEditor(true); });
+      f.appendChild(lb); f.appendChild(sel); row.appendChild(f);
+    });
+    card.appendChild(row);
+    var row2 = document.createElement('div'); row2.className = 'ff-scale-row'; row2.style.marginTop = '8px';
+    [['lowerLabel', 'Lower label'], ['upperLabel', 'Upper label']].forEach(function (cfg2) {
+      var f2 = document.createElement('div'); f2.className = 'ff-field';
+      var lb2 = document.createElement('label'); lb2.textContent = cfg2[1];
+      var in2 = document.createElement('input'); in2.type = 'text'; in2.value = sc[cfg2[0]] || ''; in2.maxLength = 100;
+      in2.addEventListener('input', function () { sc[cfg2[0]] = in2.value; pushPreviewToEditor(false); });
+      f2.appendChild(lb2); f2.appendChild(in2); row2.appendChild(f2);
+    });
+    card.appendChild(row2);
+  } else {
+    var ph = document.createElement('div');
+    ph.style.cssText = 'font-size:12.5px;color:var(--muted);border:1px dashed var(--border);border-radius:7px;padding:8px 10px;margin:4px 0;';
+    ph.textContent = q.type === 'DATE' ? 'Respondent will pick a date.' : q.type === 'TIME' ? 'Respondent will pick a time.' :
+      q.type === 'PARAGRAPH' ? 'Respondent will see a multi-line text box.' : 'Respondent will see a single-line text box.';
+    card.appendChild(ph);
+  }
+
+  var foot = document.createElement('div'); foot.className = 'ff-q-foot';
+  foot.appendChild(iconBtn('↑', 'Move question up', function () {
+    if (idx === 0) return;
+    var arr = state.spec.questions; var t = arr[idx - 1]; arr[idx - 1] = arr[idx]; arr[idx] = t;
+    pushPreviewToEditor(true); renderQuestions();
+  }));
+  foot.appendChild(iconBtn('↓', 'Move question down', function () {
+    var arr = state.spec.questions; if (idx === arr.length - 1) return;
+    var t = arr[idx + 1]; arr[idx + 1] = arr[idx]; arr[idx] = t;
+    pushPreviewToEditor(true); renderQuestions();
+  }));
+  var del = iconBtn('Delete', 'Delete question', function () {
+    if (!window.confirm('Delete question "' + q.title.slice(0, 60) + '"?')) return;
+    state.spec.questions.splice(idx, 1);
+    pushPreviewToEditor(true); renderQuestions();
+    if (!state.spec.questions.length) { toast('All questions deleted — add one to generate.'); }
+  }, true);
+  del.style.width = 'auto'; del.style.padding = '0 10px'; del.style.height = '28px'; del.style.fontSize = '12px';
+  foot.appendChild(del);
+  var req = document.createElement('label'); req.className = 'ff-req';
+  var reqCb = document.createElement('input'); reqCb.type = 'checkbox'; reqCb.checked = !!q.required;
+  reqCb.addEventListener('change', function () { q.required = reqCb.checked; pushPreviewToEditor(true); });
+  req.appendChild(reqCb); req.appendChild(document.createTextNode('Required'));
+  foot.appendChild(req);
+  card.appendChild(foot);
+  return card;
+}
+
+function iconBtn(text, label, onClick, danger) {
+  var b = document.createElement('button');
+  b.className = 'ff-icon-btn' + (danger ? ' danger' : '');
+  b.textContent = text; b.title = label; b.setAttribute('aria-label', label); b.type = 'button';
+  b.addEventListener('click', onClick);
+  return b;
+}
+
+/** Push preview edits back into the JSON editor. reRender=true means structure changed. */
+function pushPreviewToEditor(rerender) {
+  if (!state.spec) return;
+  editor.value = JSON.stringify(state.spec, null, 2);
+  // Preview edits keep the spec valid-by-construction; re-run silent validation.
+  var errs = clientValidate(state.spec);
+  if (errs.length === 0) {
+    state.valid = true;
+    state.lastValidatedText = editor.value;
+    setStatus('ok', 'Valid ✓ — ' + state.spec.questions.length + ' question(s). Preview is in sync.');
+    renderErrors([]);
+    setGenerateEnabled(state.spec.questions.length > 0, state.spec.questions.length ? 'Ready — preview matches the JSON.' : 'Add at least one question.');
+  } else {
+    state.valid = false;
+    setStatus('err', 'Edit introduced ' + errs.length + ' problem(s) — review highlighted errors.');
+    renderErrors(errs);
+    setGenerateEnabled(false, 'Fix validation errors to enable generation.');
+  }
+}
+
+/* ============ Editor toolbar actions ============ */
+function bindToolbar() {
+  $('btnPaste').addEventListener('click', function () {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      navigator.clipboard.readText().then(function (t) {
+        if (!t) { toast('Clipboard is empty.'); return; }
+        editor.value = t.trim().replace(/^```(json)?/i, '').replace(/```\s*$/, '').trim();
+        invalidate(); setStatus('warn', 'Pasted. Click “Validate JSON” to continue.');
+        toast('Pasted from clipboard.');
+        editor.focus();
+      }, function () { toast('Clipboard blocked — press Ctrl/Cmd+V in the editor.'); editor.focus(); });
+    } else { toast('Clipboard API unavailable — press Ctrl/Cmd+V in the editor.'); editor.focus(); }
+  });
+  $('btnExample').addEventListener('click', function () {
+    editor.value = JSON.stringify(EXAMPLE_SPEC, null, 2);
+    invalidate(); setStatus('warn', 'Example loaded. Click “Validate JSON”.');
+    resultSlot.textContent = '';
+    toast('Example loaded.');
+  });
+  $('btnValidate').addEventListener('click', doValidate);
+  $('btnFormat').addEventListener('click', function () {
+    try { editor.value = JSON.stringify(JSON.parse(editor.value), null, 2); toast('Formatted.'); }
+    catch (e) { toast('Cannot format: invalid JSON.'); }
+  });
+  $('btnClear').addEventListener('click', function () {
+    if (editor.value && !window.confirm('Clear the editor? Unsaved edits will be lost.')) return;
+    editor.value = ''; invalidate('Nothing to generate yet.');
+    setStatus('warn', 'Editor cleared.'); renderErrors([]);
+    previewEmpty.hidden = false; preview.hidden = true; resultSlot.textContent = '';
+  });
+  $('btnDownload').addEventListener('click', function () {
+    var text = editor.value || JSON.stringify(EXAMPLE_SPEC, null, 2);
+    var blob = new Blob([text], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'formforge-spec.json';
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    toast('Downloaded spec.');
+  });
+  $('btnImport').addEventListener('click', function () { $('fileImport').click(); });
+  $('fileImport').addEventListener('change', function (ev) {
+    var f = ev.target.files && ev.target.files[0];
+    if (!f) return;
+    if (f.size > LIMITS.MAX_PAYLOAD) { toast('File too large (max 256 KB).'); return; }
+    var r = new FileReader();
+    r.onload = function () {
+      editor.value = String(r.result || '');
+      invalidate(); setStatus('warn', 'Imported "' + f.name + '". Click “Validate JSON”.');
+      toast('Imported file.');
+    };
+    r.readAsText(f);
+    ev.target.value = '';
+  });
+  $('btnAddQ').addEventListener('click', function () {
+    if (!state.spec) { toast('Validate a spec first.'); return; }
+    if (state.spec.questions.length >= LIMITS.MAX_Q) { toast('Maximum questions reached.'); return; }
+    state.spec.questions.push({ id: 'q_' + Date.now().toString(36), title: 'New question', description: '', type: 'SHORT_ANSWER', required: false });
+    pushPreviewToEditor(true); renderQuestions();
+  });
+  $('btnSync').addEventListener('click', function () {
+    if (!state.spec) return;
+    pushPreviewToEditor(true); renderQuestions(); toast('JSON refreshed from preview.');
+  });
+  pvTitle.addEventListener('input', function () { if (state.spec) { state.spec.title = pvTitle.value; pushPreviewToEditor(false); } });
+  pvDesc.addEventListener('input', function () { if (state.spec) { state.spec.description = pvDesc.value; pushPreviewToEditor(false); } });
+}
+
+/* ============ Generation ============ */
+function setGenerating(on) {
+  state.generating = on;
+  btnGenerate.disabled = on || !state.valid;
+  btnGenerate.textContent = '';
+  if (on) {
+    var sp = document.createElement('span'); sp.className = 'ff-spinner';
+    btnGenerate.appendChild(sp);
+    btnGenerate.appendChild(document.createTextNode(' Creating form + spreadsheet…'));
+    genHint.textContent = 'Working — do not close or click again. One request in flight.';
+  } else {
+    btnGenerate.textContent = 'Generate Google Form';
+  }
+}
+
+function isSafeHttpUrl(u) {
+  return typeof u === 'string' && /^https:\/\/(docs\.google\.com|forms\.gle|forms\.google\.com)\//.test(u);
+}
+
+function bindGenerate() {
+  btnGenerate.addEventListener('click', function () {
+    if (state.generating) return;
+    if (!state.valid || !state.spec) { toast('Validate successfully first.'); return; }
+    if (typeof google === 'undefined' || !google.script || !google.script.run) {
+      renderLocalNotice();
+      return;
+    }
+    var gid = uuid();
+    state.generationId = gid;
+    setGenerating(true);
+    resultSlot.textContent = '';
+    google.script.run
+      .withSuccessHandler(function (res) { setGenerating(false); handleResult(res); })
+      .withFailureHandler(function (err) {
+        setGenerating(false);
+        setGenerateEnabled(true, 'Generation failed — review the error and retry.');
+        renderResult({ ok: false, errorCode: 'TRANSPORT_FAILED',
+          message: 'Could not reach the server: ' + ((err && err.message) || err || 'unknown error') + '. Check authorization and connection, then retry.' });
+      })
+      .ffGenerateForm(state.spec, gid);
+  });
+}
+
+function renderLocalNotice() {
+  renderResult({ ok: false, errorCode: 'NOT_DEPLOYED',
+    message: 'This preview is not running inside Google Apps Script, so real creation is unavailable. Deploy Code.gs + friends as a Web App (see README), open the Web App URL, then generate.' });
+}
+
+function handleResult(res) {
+  if (!res || typeof res !== 'object') {
+    renderResult({ ok: false, errorCode: 'BAD_RESPONSE', message: 'Server returned an unexpected response. Please retry.' });
+    return;
+  }
+  if (res.ok) {
+    setGenerateEnabled(false, 'Created ✓ — use “Create another form” for a new draft.');
+    renderResult(res);
+    toast(res.deduplicated ? 'Duplicate click ignored — showing original result.' : 'Form created successfully.');
+  } else {
+    setGenerateEnabled(state.valid, 'Generation did not complete — fix the issue and retry (no duplicates created on retry).');
+    renderResult(res);
+  }
+}
+
+function renderResult(res) {
+  clearEl(resultSlot);
+  var box = document.createElement('div');
+  var cls = 'ff-result' + (res.ok ? '' : (res.partial ? ' partial' : ' failed'));
+  box.className = cls;
+
+  var h = document.createElement('h3');
+  h.textContent = res.ok ? '✓ Form created successfully' : (res.partial ? '⚠ Partially completed' : '✕ Generation failed');
+  box.appendChild(h);
+  var p = document.createElement('p');
+  p.style.margin = '0'; p.style.fontSize = '13.5px';
+  p.textContent = res.message || '';
+  box.appendChild(p);
+
+  if (res.errorCode) {
+    var code = document.createElement('p');
+    code.style.cssText = 'font-size:12px;color:var(--muted);margin:6px 0 0;font-family:var(--mono)';
+    code.textContent = 'code: ' + res.errorCode + (res.generationId ? ' · ref: ' + res.generationId : '');
+    box.appendChild(code);
+  }
+  if (res.errors && res.errors.length) {
+    var ul = document.createElement('ul'); ul.className = 'ff-errors';
+    res.errors.forEach(function (e) {
+      var li = document.createElement('li');
+      var c = document.createElement('code'); c.textContent = e.path || '$';
+      li.appendChild(c); li.appendChild(document.createTextNode(' — ' + e.message));
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+  }
+  if (res.warnings && res.warnings.length) {
+    var w = document.createElement('p');
+    w.style.cssText = 'font-size:12.5px;margin:8px 0 0;';
+    w.textContent = 'Warnings: ' + res.warnings.join(' | ');
+    box.appendChild(w);
+  }
+
+  if (res.form || res.spreadsheet) {
+    var links = document.createElement('div'); links.className = 'ff-links';
+    if (res.form) {
+      if (res.form.publishedUrl) links.appendChild(linkRow('Respondent link (share this)', res.form.publishedUrl));
+      if (res.form.editUrl) links.appendChild(linkRow('Editor link (edit the form)', res.form.editUrl));
+      else if (res.form.id) {
+        var note = document.createElement('p');
+        note.style.fontSize = '12.5px'; note.textContent = 'Form id: ' + res.form.id;
+        links.appendChild(note);
+      }
+    }
+    if (res.spreadsheet && res.spreadsheet.url) links.appendChild(linkRow('Response spreadsheet', res.spreadsheet.url));
+    box.appendChild(links);
+  }
+
+  var row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;';
+  var again = document.createElement('button');
+  again.className = 'ff-btn ff-btn-sm'; again.textContent = 'Create another form';
+  again.addEventListener('click', function () {
+    resultSlot.textContent = '';
+    editor.value = ''; invalidate('Nothing to generate yet.');
+    setStatus('warn', 'Ready for a new draft.');
+    previewEmpty.hidden = false; preview.hidden = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  row.appendChild(again);
+  box.appendChild(row);
+  resultSlot.appendChild(box);
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function linkRow(label, url) {
+  var div = document.createElement('div'); div.className = 'ff-link-row';
+  var info = document.createElement('div');
+  var s = document.createElement('strong'); s.textContent = label;
+  info.appendChild(s);
+  var a = document.createElement('a');
+  if (isSafeHttpUrl(url)) { a.href = url; a.target = '_blank'; a.rel = 'noopener'; }
+  else { a.href = '#'; a.addEventListener('click', function (e) { e.preventDefault(); }); }
+  a.textContent = url;
+  info.appendChild(a);
+  div.appendChild(info);
+  var cb = document.createElement('button');
+  cb.className = 'ff-btn ff-btn-sm'; cb.textContent = 'Copy';
+  cb.addEventListener('click', function () { copyText(url, 'Link copied.'); });
+  div.appendChild(cb);
+  return div;
+}
+
+/* ============ How-to / prompt / help / auth ============ */
+function bindMisc() {
+  $('ffPromptBox').textContent = CHATGPT_PROMPT;
+  $('btnCopyPrompt').addEventListener('click', function () { copyText(CHATGPT_PROMPT, 'ChatGPT prompt copied.'); });
+  $('btnCopySchema').addEventListener('click', function () { copyText(MINIMAL_SCHEMA, 'Minimal schema copied.'); });
+  var modal = $('ffHelpModal');
+  $('ffHelpBtn').addEventListener('click', function () { modal.classList.add('open'); });
+  modal.querySelector('[data-close-help]').addEventListener('click', function () { modal.classList.remove('open'); });
+  modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('open'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') modal.classList.remove('open'); });
+
+  editor.addEventListener('input', function () { invalidate(); setStatus('warn', 'Edited — re-validate before generating.'); });
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function (st) {
+        var dot = $('ffAuthDot'), txt = $('ffAuthText');
+        dot.classList.add('ok');
+        txt.textContent = (st && st.email) ? st.email : 'Signed in (email hidden by deployment)';
+      })
+      .withFailureHandler(function () { $('ffAuthText').textContent = 'Authorization required — accept consent on first run'; })
+      .ffGetAuthStatus();
+  } else {
+    $('ffAuthText').textContent = 'Local preview — deploy to connect account';
+  }
+}
+
+/* ============ Init ============ */
+document.addEventListener('DOMContentLoaded', function () {
+  editor = $('ffEditor'); statusBox = $('ffStatus'); statusText = $('ffStatusText'); errorsUl = $('ffErrors');
+  previewEmpty = $('ffPreviewEmpty'); preview = $('ffPreview'); pvTitle = $('pvTitle'); pvDesc = $('pvDesc');
+  pvSettings = $('pvSettings'); pvQuestions = $('pvQuestions');
+  btnGenerate = $('btnGenerate'); genHint = $('ffGenHint'); resultSlot = $('ffResultSlot'); toastEl = $('ffToast');
+  bindToolbar(); bindGenerate(); bindMisc();
+  setGenerateEnabled(false, 'Validate successfully to enable generation.');
+});
+})();
+</script>
+
+</body>
+</html>

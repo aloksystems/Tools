@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0",
+  "title": "Student Registration Form",
+  "description": "Enter your student details.",
+  "settings": {
+    "collectEmail": false,
+    "limitOneResponse": false,
+    "allowResponseEdits": false,
+    "confirmationMessage": "Your response has been submitted successfully."
+  },
+  "questions": [
+    {
+      "id": "student_name",
+      "title": "Student Name",
+      "description": "Enter your full name.",
+      "type": "SHORT_ANSWER",
+      "required": true
+    },
+    {
+      "id": "course",
+      "title": "Select Course",
+      "description": "",
+      "type": "DROPDOWN",
+      "options": ["BCA", "BBA", "B.Tech", "MCA"],
+      "required": true
+    },
+    {
+      "id": "gender",
+      "title": "Gender",
+      "description": "",
+      "type": "MULTIPLE_CHOICE",
+      "options": ["Male", "Female", "Other"],
+      "required": false
+    },
+    {
+      "id": "interests",
+      "title": "Areas of Interest",
+      "description": "",
+      "type": "CHECKBOXES",
+      "options": ["Programming", "Design", "Data Science"],
+      "required": false
+    },
+    {
+      "id": "feedback",
+      "title": "Additional Information",
+      "description": "",
+      "type": "PARAGRAPH",
+      "required": false
+    }
+  ]
+}

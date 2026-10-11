@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <?!= include('Styles'); ?>
+</head>
+<body>
+  <header class="ff-header">
+    <div class="ff-header-inner">
+      <div class="ff-logo" aria-hidden="true">F</div>
+      <div class="ff-brand">
+        <h1>FormForge</h1>
+        <p>Turn structured specifications into Google Forms.</p>
+      </div>
+      <div class="ff-header-spacer"></div>
+      <div class="ff-auth" id="ffAuth" title="Google account status">
+        <span class="ff-dot" id="ffAuthDot"></span><span id="ffAuthText">Checking account…</span>
+      </div>
+      <button class="ff-btn ff-btn-sm" id="ffHelpBtn" aria-haspopup="dialog">Help</button>
+    </div>
+  </header>
+
+  <main class="ff-wrap">
+    <h2 class="ff-title">Create a Google Form</h2>
+    <p class="ff-subtitle">Paste a ChatGPT-generated JSON specification, validate it, preview the form, edit anything, then generate a real Google Form with a linked response spreadsheet.</p>
+
+    <div class="ff-grid">
+      <!-- LEFT: editor -->
+      <section class="ff-card" aria-labelledby="ffEditorTitle">
+        <div class="ff-card-head">
+          <div><h2 id="ffEditorTitle">1 · Specification (JSON)</h2>
+          <p>Paste JSON without Markdown fences. Edits invalidate validation until re-validated.</p></div>
+        </div>
+        <div class="ff-card-body">
+          <div class="ff-toolbar" role="toolbar" aria-label="Editor actions">
+            <button class="ff-btn ff-btn-sm" id="btnPaste">Paste</button>
+            <button class="ff-btn ff-btn-sm" id="btnExample">Load example</button>
+            <button class="ff-btn ff-btn-sm" id="btnValidate">Validate JSON</button>
+            <button class="ff-btn ff-btn-sm" id="btnFormat">Format</button>
+            <button class="ff-btn ff-btn-sm" id="btnClear">Clear</button>
+            <button class="ff-btn ff-btn-sm" id="btnDownload" title="Download current spec as .json">Download</button>
+            <button class="ff-btn ff-btn-sm" id="btnImport" title="Import a .json file">Import</button>
+            <input type="file" id="fileImport" accept="application/json,.json" class="sr-only" aria-label="Import JSON file">
+          </div>
+          <label class="sr-only" for="ffEditor">JSON specification editor</label>
+          <textarea class="ff-editor" id="ffEditor" spellcheck="false" placeholder='Paste your FormForge JSON here, e.g.&#10;{&#10;  "schemaVersion": "1.0",&#10;  "title": "Student Registration Form",&#10;  ...&#10;}'></textarea>
+          <div class="ff-status" id="ffStatus" role="status" aria-live="polite"><span id="ffStatusText">Not validated yet. Click “Validate JSON”.</span></div>
+          <ul class="ff-errors" id="ffErrors" aria-label="Validation errors"></ul>
+        </div>
+      </section>
+
+      <!-- RIGHT: preview -->
+      <section class="ff-card" aria-labelledby="ffPreviewTitle">
+        <div class="ff-card-head">
+          <div><h2 id="ffPreviewTitle">2 · Preview &amp; edit</h2>
+          <p>Visual edits update the JSON automatically.</p></div>
+        </div>
+        <div class="ff-card-body">
+          <div id="ffPreviewEmpty" class="ff-empty">Validate a specification to see a live preview here.</div>
+          <div id="ffPreview" hidden>
+            <div class="ff-preview-meta">
+              <div class="ff-field"><label for="pvTitle">Form title</label><input type="text" id="pvTitle" maxlength="300"></div>
+              <div class="ff-field"><label for="pvDesc">Form description</label><textarea id="pvDesc" maxlength="2000"></textarea></div>
+            </div>
+            <div class="ff-settings" id="pvSettings" aria-label="Form settings"></div>
+            <div id="pvQuestions"></div>
+            <div class="ff-add-row">
+              <button class="ff-btn ff-btn-sm" id="btnAddQ">+ Add question</button>
+              <button class="ff-btn ff-btn-sm" id="btnSync">Refresh JSON from preview</button>
+            </div>
+          </div>
+          <div class="ff-generate-bar">
+            <button class="ff-btn ff-btn-primary" id="btnGenerate" disabled>Generate Google Form</button>
+            <div class="ff-hint" id="ffGenHint">Validate successfully to enable generation.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="ffResultSlot" aria-live="polite"></div>
+
+    <!-- HOW TO -->
+    <section class="ff-card ff-howto" aria-labelledby="ffHowTitle">
+      <div class="ff-card-head"><div><h2 id="ffHowTitle">How to use FormForge</h2>
+        <p>ChatGPT writes the spec · FormForge builds the form.</p></div></div>
+      <div class="ff-card-body">
+        <ol>
+          <li>Tell ChatGPT what form you want (purpose, audience, questions, required fields).</li>
+          <li>Ask ChatGPT to return JSON following the FormForge schema (use the prompt below).</li>
+          <li>Copy the JSON <strong>without</strong> surrounding Markdown code fences.</li>
+          <li>Paste it into FormForge and click <strong>Validate JSON</strong>.</li>
+          <li>Review the preview and edit anything.</li>
+          <li>Click <strong>Generate Google Form</strong> and copy your three links.</li>
+        </ol>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="ff-btn ff-btn-sm" id="btnCopyPrompt">Copy ChatGPT Prompt</button>
+          <button class="ff-btn ff-btn-sm" id="btnCopySchema">Copy minimal schema</button>
+        </div>
+        <div class="ff-prompt-box" id="ffPromptBox"></div>
+      </div>
+    </section>
+
+    <p class="ff-footer">FormForge · Google Apps Script · Forms + Sheets are created in your own Google account. No external database.</p>
+  </main>
+
+  <?!= include('Components'); ?>
+  <?!= include('Client'); ?>
+</body>
+</html>

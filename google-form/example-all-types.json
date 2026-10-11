@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "title": "All Question Types — QA Form",
+  "description": "Covers every supported FormForge type for testing.",
+  "settings": {
+    "collectEmail": false,
+    "limitOneResponse": false,
+    "allowResponseEdits": true,
+    "confirmationMessage": "Thanks — recorded for QA."
+  },
+  "questions": [
+    { "id": "qa_short", "title": "Short answer", "description": "Single line.", "type": "SHORT_ANSWER", "required": true },
+    { "id": "qa_para", "title": "Paragraph", "description": "", "type": "PARAGRAPH", "required": false },
+    { "id": "qa_mc", "title": "Pick one", "description": "", "type": "MULTIPLE_CHOICE", "options": ["Alpha", "Beta", "Gamma"], "required": true },
+    { "id": "qa_cb", "title": "Pick many", "description": "", "type": "CHECKBOXES", "options": ["Red", "Green", "Blue"], "required": false },
+    { "id": "qa_dd", "title": "Dropdown", "description": "", "type": "DROPDOWN", "options": ["Small", "Medium", "Large"], "required": true },
+    { "id": "qa_date", "title": "Preferred date", "description": "", "type": "DATE", "required": false },
+    { "id": "qa_time", "title": "Preferred time", "description": "", "type": "TIME", "required": false },
+    { "id": "qa_scale", "title": "Satisfaction", "description": "Rate us.", "type": "LINEAR_SCALE", "required": true, "scaleConfig": { "min": 1, "max": 5, "lowerLabel": "Poor", "upperLabel": "Excellent" } }
+  ]
+}
