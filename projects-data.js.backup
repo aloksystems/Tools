@@ -336,4 +336,49 @@ const projectsData = [
     icon: "W",
     iconColor: "#3B82F6",
   },
+  // Android Apps
+  {
+    name: "DriftLock",
+    category: "Android Apps",
+    description:
+      "Reduce aimless scrolling with app-usage tracking and focus sessions that lock distracting apps. Includes background tracking and session reminders.",
+    tags: ["Android", "Focus", "Screen Time"],
+    demo: "https://aloksystems.freedev.app/alok-apps/apps/driftlock.html",
+    icon: "D",
+    iconColor: "#6C63FF",
+    pinned: true,
+    featured: true,
+  },
+  {
+    name: "Vaultix",
+    category: "Android Apps",
+    description:
+      "Keep sensitive files in a private vault secured by your device's fingerprint or face unlock.",
+    tags: ["Android", "Privacy", "Biometrics"],
+    demo: "https://aloksystems.freedev.app/alok-apps/apps/vaultix.html",
+    icon: "V",
+    iconColor: "#14B8A6",
+    pinned: true,
+    featured: true,
+  },
+  {
+    name: "Fake Caller",
+    category: "Android Apps",
+    description:
+      "Schedule a realistic incoming call with a custom caller name to help you leave a meeting or conversation gracefully.",
+    tags: ["Android", "Utilities", "Call Scheduler"],
+    demo: "https://aloksystems.freedev.app/alok-apps/apps/fake-caller.html",
+    icon: "C",
+    iconColor: "#F59E0B",
+  },
+  {
+    name: "Apex Classes",
+    category: "Android Apps",
+    description:
+      "Stay connected to Apex Classes learning content, class updates, and notices from your Android device.",
+    tags: ["Android", "Education", "Learning"],
+    demo: "https://aloksystems.freedev.app/alok-apps/apps/apexclasses-app.html",
+    icon: "A",
+    iconColor: "#3B82F6",
+  },
 ];
