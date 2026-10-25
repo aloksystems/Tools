@@ -74,7 +74,8 @@ const projectsData = [
     description:
       "A smart Google Forms and Sheets generator that turns structured JSON specifications into ready-to-use Google Forms and linked Google Spreadsheets. Simply paste your form requirements, preview and edit questions, and generate forms automatically with minimal manual effort.",
     tags: ["Google Forms", "Google Sheets", "JSON", "Automation"],
-    demo: "YOUR_DEPLOYED_FORMFORGE_URL",
+    demo:
+      "https://script.google.com/macros/s/AKfycbyzFFNtYFjlEVfQg3MILkeujACfh1fr-J9GrcXwbeMEEmqsBPH22QPZMorxwO8OM2Fh/exec",
     icon: "📝",
     iconColor: "#0F9D58",
     pinned: true,
