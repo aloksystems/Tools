@@ -305,16 +305,18 @@ const projectsData = [
     featured: true,
     pinned: true,
   },
-  {
-    name: "Global ChatBot",
-    category: "AI & Chatbots",
-    description:
-      "A mobile-friendly chat application with beautiful UI, user authentication, and real-time translation support.",
-    tags: ["JavaScript", "AI", "Translation"],
-    demo: "https://aloksystems.freedev.app/Global-ChatBot/",
-    icon: "G",
-    iconColor: "#14B8A6",
-  },
+  // Hidden temporarily — Firebase project deleted (chat backend unavailable).
+  // To show again, uncomment this block.
+  // {
+  //   name: "Global ChatBot",
+  //   category: "AI & Chatbots",
+  //   description:
+  //     "A mobile-friendly chat application with beautiful UI, user authentication, and real-time translation support.",
+  //   tags: ["JavaScript", "AI", "Translation"],
+  //   demo: "https://aloksystems.freedev.app/Global-ChatBot/",
+  //   icon: "G",
+  //   iconColor: "#14B8A6",
+  // },
 
   // Finance & Business
   {
