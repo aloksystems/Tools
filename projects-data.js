@@ -70,7 +70,7 @@ const projectsData = [
   // Productivity & Utilities
   {
     name: "FormForge",
-    category: "Productivity Tools",
+    category: "Productivity",
     description:
       "A smart Google Forms and Sheets generator that turns structured JSON specifications into ready-to-use Google Forms and linked Google Spreadsheets. Simply paste your form requirements, preview and edit questions, and generate forms automatically with minimal manual effort.",
     tags: ["Google Forms", "Google Sheets", "JSON", "Automation"],
@@ -332,7 +332,7 @@ const projectsData = [
     description:
       "Track work hours, manage productivity, analyze work patterns, and monitor earnings with a clean, responsive interface.",
     tags: ["JavaScript", "Productivity", "Time Tracking"],
-    demo: "https://aloksystems.freedev.app/Work%20Hour/",
+    demo: "https://aloksystems.freedev.app/Work-Hour/",
     icon: "W",
     iconColor: "#3B82F6",
   },
@@ -342,7 +342,7 @@ const projectsData = [
     description:
       "A catalogue of Android apps from Alok Systems, with app details, release information, and APK downloads.",
     tags: ["Android", "APK", "Apps"],
-    demo: "https://aloksystems.freedev.app/alok-apps/",
+    demo: "https://aloksystems.freedev.app/apk-website/",
     icon: "A",
     iconColor: "#3B82F6",
     pinned: true,

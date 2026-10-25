@@ -10,7 +10,6 @@
   AddOutputFilterByType DEFLATE application/javascript application/json
   AddOutputFilterByType DEFLATE image/svg+xml
   AddOutputFilterByType DEFLATE application/xml text/xml
-  DeflateCompressionLevel 9
 </IfModule>
 
 # ---- Cache lifetimes ----

@@ -56,7 +56,12 @@
 
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <link rel="canonical" href="https://aloksystems.freedev.app/">
-    <meta name="author" content="Alok Systems"></head>
+    <meta name="author" content="Alok Systems">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://formsubmit.co; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
+  </head>
 
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -362,7 +367,7 @@
       </div>
     </footer>
 
-    <script src="projects-data.js"></script>
-    <script src="script.js"></script>
+    <script src="projects-data.js" defer></script>
+    <script src="script.js" defer></script>
   </body>
 </html>
