@@ -500,9 +500,10 @@ class ToolsApp {
 }
 
 /* ============================================================
-   Feedback form — FormSubmit.co (preserved)
+   Feedback form — Google Apps Script Web App
    ============================================================ */
-const FEEDBACK_ENDPOINT = "https://formsubmit.co/ajax/helloalokmail@gmail.com";
+const FEEDBACK_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbyzFFNtYFjlEVfQg3MILkeujACfh1fr-J9GrcXwbeMEEmqsBPH22QPZMorxwO8OM2Fh/exec";
 
 function initFeedbackForm() {
   const form = document.getElementById("feedback-form");
@@ -586,18 +587,16 @@ function initFeedbackForm() {
     submitBtn.innerHTML = "Sending...";
 
     try {
+      const payload = new URLSearchParams({
+        name,
+        rating,
+        type,
+        message,
+      });
       const res = await fetch(FEEDBACK_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name,
-          rating: `${rating}/5`,
-          type,
-          message,
-          _subject: `Tools Feedback: ${type}`,
-          _template: "table",
-          _captcha: "false",
-        }),
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString(),
       });
       const data = await res.json();
 
