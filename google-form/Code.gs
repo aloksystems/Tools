@@ -11,13 +11,18 @@ function doGet() {
   t.appName = 'FormForge';
   return t.evaluate()
     .setTitle('FormForge — Google Form & Sheet Generator')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
 /** HTML include helper used as <?!= include('Styles'); ?> */
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
+// Keep generation warning-state setup beside the web-app entry point.
+var ffLastWarnings_ = [];
+function ffResetWarnings_() {
+  ffLastWarnings_ = [];
 }
 
 /**
@@ -57,14 +62,14 @@ function ffValidateOnly(input) {
 function ffGenerateForm(input, generationId) {
   ffResetWarnings_();
   var startedAt = new Date();
-  var gid = (typeof generationId === 'string' && generationId.trim() !== '')
-    ? generationId.trim().slice(0, 64)
+  var gid = (typeof generationId === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(generationId.trim()))
+    ? generationId.trim()
     : Utilities.getUuid();
 
   // ---- Idempotency: return cached result if this generationId was seen ----
   var cache = null;
   try { cache = CacheService.getUserCache(); } catch (e) { cache = null; }
-  var cacheKey = 'ff_gen_' + gid.replace(/[^A-Za-z0-9_\-]/g, '').slice(0, 40);
+  var cacheKey = 'ff_gen_' + gid;
   if (cache) {
     try {
       var prev = cache.get(cacheKey);
@@ -74,13 +79,6 @@ function ffGenerateForm(input, generationId) {
         return parsed;
       }
     } catch (e) { /* ignore cache read errors */ }
-  }
-
-  // ---- Rate limiting ----
-  try {
-    ffEnforceRateLimit_();
-  } catch (e) {
-    return ffFailResult_(gid, 'RATE_LIMITED', String(e.message || e), []);
   }
 
   // ---- Payload guard + validation ----
@@ -110,13 +108,34 @@ function ffGenerateForm(input, generationId) {
   // ---- Serialize concurrent generations for this user ----
   var lock = null;
   try { lock = LockService.getUserLock(); } catch (e) { lock = null; }
-  if (lock) {
-    try { lock.waitLock(15000); } catch (e) { /* proceed anyway */ }
+  if (!lock) return ffFailResult_(gid, 'LOCK_UNAVAILABLE', 'Could not safely start generation. Please retry in a moment.', []);
+  try {
+    lock.waitLock(15000);
+  } catch (e) {
+    return ffFailResult_(gid, 'GENERATION_BUSY', 'Another generation is still running. Please wait a moment and retry.', []);
   }
 
   var form = null;
   var formUrls = null;
   try {
+    // Re-check idempotency after acquiring the per-user lock to close the
+    // race where two copies of the same request arrive at the same time.
+    if (cache) {
+      try {
+        var lockedPrev = cache.get(cacheKey);
+        if (lockedPrev) {
+          var lockedResult = JSON.parse(lockedPrev);
+          lockedResult.deduplicated = true;
+          return lockedResult;
+        }
+      } catch (e) { /* Continue safely; the lock still serializes generation. */ }
+    }
+    try {
+      ffEnforceRateLimit_();
+    } catch (e) {
+      return ffFailResult_(gid, 'RATE_LIMITED', String(e.message || e), []);
+    }
+
     // ---- Step 1: create + configure form ----
     try {
       form = ffCreateForm_(normalized);
@@ -189,7 +208,7 @@ function ffGenerateForm(input, generationId) {
 }
 
 function ffGetWarnings_() {
-  // FormService.gs declares global `var ffLastWarnings_ = []`.
+  // The generation warning list is initialized in Code.gs for the Web App entry point.
   // Read it defensively without shadowing.
   try {
     // In Apps Script all .gs files share one global scope.
@@ -232,7 +251,7 @@ function ffPartialResult_(gid, code, message, formUrlsOrForm, ssInfo, warnings) 
       }
     }
   }
-  return {
+  var result = {
     ok: false,
     partial: true,
     generationId: gid,
@@ -245,6 +264,12 @@ function ffPartialResult_(gid, code, message, formUrlsOrForm, ssInfo, warnings) 
     spreadsheet: ssInfo ? { id: ssInfo.id, url: ssInfo.url } : null,
     deduplicated: false
   };
+  // Cache partial outcomes too: a retry with the same client generation ID
+  // must not create a second Form or Spreadsheet after a recoverable failure.
+  try {
+    CacheService.getUserCache().put('ff_gen_' + gid, JSON.stringify(result), 21600);
+  } catch (e) {}
+  return result;
 }
 
 function ffEnforceRateLimit_() {

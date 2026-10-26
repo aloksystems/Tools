@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Age Calculator – Calculate Your Exact Age Instantly</title>
-  <meta name="description" content="Calculate your exact age in years, months, weeks, days, hours, minutes, and seconds. Accurate, instant, and beautifully simple age calculator.">
-  <meta name="keywords" content="age calculator, exact age, birthday, calculate age, age in years, age in days, age tool">
+  <meta name="description" content="Calculate your exact age in years, months, and days, see total days lived, and find your next birthday. Free, private, and processed in your browser.">
+  <meta name="color-scheme" content="light dark">
   <meta name="author" content="Alok Systems">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <meta name="language" content="English">
@@ -19,6 +19,7 @@
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
@@ -32,7 +33,8 @@
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Age Calculator",
-    "description": "Calculate your exact age instantly with complete accuracy.",
+    "description": "Calculate your exact age, total days lived, and next birthday privately in your browser.",
+    "url": "https://aloksystems.freedev.app/Age-Calculator/",
     "applicationCategory": "UtilityApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript",
@@ -44,18 +46,31 @@
   }
   </script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"How is my age calculated?","acceptedAnswer":{"@type":"Answer","text":"Your age is calculated from the calendar difference between your date of birth and the selected date. Total days use calendar dates, so daylight saving changes do not affect the count."}},
+      {"@type":"Question","name":"Can I calculate my age on a past or future date?","acceptedAnswer":{"@type":"Answer","text":"Yes. Turn on Calculate age on a specific date and enter any valid date on or after your birthday."}},
+      {"@type":"Question","name":"Is my date of birth stored or uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The calculation runs in your browser. The date you enter is not sent to a server or saved by this tool."}},
+      {"@type":"Question","name":"How are leap-day birthdays handled?","acceptedAnswer":{"@type":"Answer","text":"For a birthday on February 29, the next birthday countdown uses February 28 in years that are not leap years."}}
+    ]
+  }
+  </script>
+
   <!-- Canonical -->
   <link rel="canonical" href="https://aloksystems.freedev.app/Age-Calculator/">
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#007AFF">
+  <meta name="theme-color" content="#0f766e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="AgeCalc">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="application-name" content="Age Calculator">
-  <meta name="msapplication-TileColor" content="#007AFF">
+  <meta name="msapplication-TileColor" content="#0f766e">
   <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
 
   <!-- Apple Touch Icon -->
@@ -66,6 +81,16 @@
   <link rel="alternate icon" href="icons/icon-48x48.png">
 
   <!-- Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
   <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../back.css">
     <script src="../back.js" defer></script>
@@ -91,34 +116,36 @@
 
   <main class="container">
     <section class="hero">
+      <p class="eyebrow">FREE · PRIVATE · INSTANT</p>
       <h1 class="hero-title">Age Calculator</h1>
-      <p class="hero-subtitle">Calculate your exact age instantly with complete accuracy.</p>
+      <p class="hero-subtitle">Find your exact age, total days lived, and the date of your next birthday. Your date stays in this browser.</p>
     </section>
 
     <section class="calculator" aria-label="Age calculator">
       <div class="card">
         <div class="field">
-          <label class="field-label">Date of Birth</label>
+          <label class="field-label" for="dobDay">Your date of birth</label>
+          <p class="date-note">Enter day, month, and year (DD / MM / YYYY).</p>
           <div class="date-fields">
             <div class="date-field-group">
-              <input type="text" id="dobDay" class="date-field" placeholder="DD" maxlength="2" inputmode="numeric" autocomplete="off">
+              <input type="text" id="dobDay" class="date-field" placeholder="DD" aria-label="Day of birth" maxlength="2" inputmode="numeric" autocomplete="off">
               <span class="field-hint">Day</span>
             </div>
             <span class="field-sep"></span>
             <div class="date-field-group">
-              <input type="text" id="dobMonth" class="date-field" placeholder="MM" maxlength="2" inputmode="numeric" autocomplete="off">
+              <input type="text" id="dobMonth" class="date-field" placeholder="MM" aria-label="Month of birth" maxlength="2" inputmode="numeric" autocomplete="off">
               <span class="field-hint">Month</span>
             </div>
             <span class="field-sep"></span>
             <div class="date-field-group">
-              <input type="text" id="dobYear" class="date-field" placeholder="YYYY" maxlength="4" inputmode="numeric" autocomplete="off">
+              <input type="text" id="dobYear" class="date-field" placeholder="YYYY" aria-label="Year of birth" maxlength="4" inputmode="numeric" autocomplete="off">
               <span class="field-hint">Year</span>
             </div>
           </div>
         </div>
 
         <div class="specific-date-toggle">
-          <button type="button" id="toggleSpecificDate" class="toggle-link">
+          <button type="button" id="toggleSpecificDate" class="toggle-link" aria-expanded="false" aria-controls="specificDateField">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
             </svg>
@@ -127,20 +154,20 @@
         </div>
 
         <div class="field hidden" id="specificDateField">
-          <label class="field-label">Calculate Age On</label>
+          <label class="field-label" for="targetDay">Calculate age on this date</label>
           <div class="date-fields">
             <div class="date-field-group">
-              <input type="text" id="targetDay" class="date-field" placeholder="DD" maxlength="2" inputmode="numeric" autocomplete="off">
+              <input type="text" id="targetDay" class="date-field" placeholder="DD" aria-label="Target day" maxlength="2" inputmode="numeric" autocomplete="off">
               <span class="field-hint">Day</span>
             </div>
             <span class="field-sep"></span>
             <div class="date-field-group">
-              <input type="text" id="targetMonth" class="date-field" placeholder="MM" maxlength="2" inputmode="numeric" autocomplete="off">
+              <input type="text" id="targetMonth" class="date-field" placeholder="MM" aria-label="Target month" maxlength="2" inputmode="numeric" autocomplete="off">
               <span class="field-hint">Month</span>
             </div>
             <span class="field-sep"></span>
             <div class="date-field-group">
-              <input type="text" id="targetYear" class="date-field" placeholder="YYYY" maxlength="4" inputmode="numeric" autocomplete="off">
+              <input type="text" id="targetYear" class="date-field" placeholder="YYYY" aria-label="Target year" maxlength="4" inputmode="numeric" autocomplete="off">
               <span class="field-hint">Year</span>
             </div>
           </div>
@@ -157,6 +184,23 @@
           <span id="errorText"></span>
         </div>
       </div>
+    </section>
+
+    <section class="how-to section-card" aria-labelledby="how-to-title">
+      <div class="section-heading"><p class="eyebrow">THREE SIMPLE STEPS</p><h2 id="how-to-title">How to use the age calculator</h2></div>
+      <ol class="steps">
+        <li><span>01</span><div><h3>Enter your birthday</h3><p>Type the day, month, and four-digit year in the fields above.</p></div></li>
+        <li><span>02</span><div><h3>Choose a date to calculate to</h3><p>Leave the optional date off to calculate your age today, or select it to check your age on another date.</p></div></li>
+        <li><span>03</span><div><h3>View your results</h3><p>See your age breakdown, time lived, next birthday countdown, and a few date details.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="faq section-card" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">GOOD TO KNOW</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>How is my age calculated?</summary><p>Your age is calculated from the calendar difference between your date of birth and the selected date. Total days use calendar dates, so daylight saving changes do not affect the count.</p></details>
+      <details><summary>Can I calculate my age on a past or future date?</summary><p>Yes. Turn on “Calculate age on a specific date” and enter any valid date on or after your birthday.</p></details>
+      <details><summary>Is my date of birth stored or uploaded?</summary><p>No. The calculation runs in your browser. The date you enter is not sent to a server or saved by this tool.</p></details>
+      <details><summary>How are leap-day birthdays handled?</summary><p>For a birthday on February 29, the next birthday countdown uses February 28 in years that are not leap years.</p></details>
     </section>
 
     <section class="results hidden" id="resultsSection" aria-label="Age results">
@@ -249,10 +293,22 @@
       </button>
     </section>
 
-    <footer class="footer">
-      <p>&copy; 2026 Age Calculator. All rights reserved.</p>
-    </footer>
   </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <a class="footer-brand" href="/" aria-label="Alok Systems Tools home"><span class="tool-brand-mark" aria-hidden="true">A</span><span><strong>Alok Systems Tools</strong><small>&copy; 2026 · Your calculation stays on this device.</small></span></a>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="/">Home</a>
+        <a href="/#tools">All tools</a>
+        <a href="/#about">About</a>
+      </nav>
+    </div>
+    <!-- Footer navigation points to sections on the live tools homepage. -->
+    <div class="footer-copy">
+      <p>Alok Systems Tools · Your calculation stays on this device.</p>
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>

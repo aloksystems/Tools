@@ -1,17 +1,6 @@
 const projectsData = [
   // Developer Tools
   {
-    name: "JSON Formatter",
-    category: "Developer Tools",
-    description:
-      "A powerful, easy-to-use online tool for formatting, validating, and minifying JSON data. This tool runs entirely in your browser with no server-side processing, ensuring your data privacy and security.",
-    tags: ["JavaScript", "JSON", "Formatter"],
-    demo: "https://aloksystems.freedev.app/JSON-Formatter/",
-    icon: "{ }",
-    iconColor: "#7C3AED",
-    pinned: true,
-  },
-  {
     name: "TempMail",
     category: "Developer Tools",
     description:
@@ -20,17 +9,6 @@ const projectsData = [
     demo: "https://aloksystems.freedev.app/TempMail/",
     icon: "@",
     iconColor: "#0EA5E9",
-    pinned: true,
-  },
-  {
-    name: "Color Palette Generator",
-    category: "Developer Tools",
-    description:
-      "A powerful, browser-based tool for generating color palettes, CSS gradients, and accessibility checking. This application helps designers and developers create beautiful color schemes and gradients for their projects.",
-    tags: ["JavaScript", "CSS", "Colors"],
-    demo: "https://aloksystems.freedev.app/Color-Palette-Gradient/",
-    icon: "#",
-    iconColor: "#EC4899",
     pinned: true,
   },
   {
@@ -56,17 +34,6 @@ const projectsData = [
     iconColor: "#0D9488",
     pinned: true,
   },
-  {
-    name: "Gradient Generator",
-    category: "Developer Tools",
-    description:
-      "A powerful, feature-rich CSS gradient generator that allows you to create beautiful linear and radial gradients with an intuitive UI. Export your gradients as CSS, download as PNG, or save your favorites for later use.",
-    tags: ["JavaScript", "CSS", "Design"],
-    demo: "https://aloksystems.freedev.app/Gradient-Generator/",
-    icon: "G",
-    iconColor: "#8B5CF6",
-  },
-
   // Productivity & Utilities
   {
     name: "FormForge",
@@ -75,24 +42,24 @@ const projectsData = [
       "A smart Google Forms and Sheets generator that turns structured JSON specifications into ready-to-use Google Forms and linked Google Spreadsheets. Simply paste your form requirements, preview and edit questions, and generate forms automatically with minimal manual effort.",
     tags: ["Google Forms", "Google Sheets", "JSON", "Automation"],
     demo:
-      "https://script.google.com/macros/s/AKfycbyv_aE0WU2Ap9pXZpneDcJvQ04A2xcR1l2jlCnfzd68dfex4FjE5T_5S7yP5qI_f8I-/exec",
+      "https://script.google.com/macros/s/AKfycbwmpwPqUR2QfuaUDw636muhCWxCu2c2LE7f3OE5C0DN5Jrqfw1eEIxPNz7KptI6E43z/exec",
     icon: "📝",
     iconColor: "#0F9D58",
     pinned: true,
   },
   {
-    name: "WriteFlow",
+    name: "PaceWrite",
     category: "Productivity",
     description:
       "A simple and customizable writing assistant that displays text one word, phrase, or sentence at a time with adjustable timing and highlighting. Designed to make copying long paragraphs and handwritten assignments easier by letting you write at your own comfortable pace. Runs entirely in the browser with no server-side processing.",
     tags: ["Writing", "Productivity", "Text", "Study"],
     demo: "https://aloksystems.freedev.app/WriteFlow/",
-    icon: "W",
+    icon: "P",
     iconColor: "#14B8A6",
     pinned: true,
   },
   {
-    name: "Micro Maker",
+    name: "PrintGrid",
     category: "Productivity",
     description:
       "A smart PDF and image printing tool for fitting multiple pages onto fewer physical sheets with customizable N-up grid layouts, live print preview, page reordering, paper settings, automatic sheet calculation, and PDF export.",
@@ -208,7 +175,7 @@ const projectsData = [
     featured: true,
   },
   {
-    name: "Passport Size Image Maker",
+    name: "ID Photo Studio",
     category: "Media Tools",
     description:
       "A browser-based passport photo maker that allows users to create properly sized passport and ID photos, adjust dimensions, crop images, and generate printable photo sheets. All image processing happens locally in the browser without uploading photos to any server.",

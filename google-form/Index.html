@@ -1,30 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Turn a validated JSON specification into a real Google Form and linked response spreadsheet, created in your Google account.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="FormForge | Google Form Generator">
+  <meta property="og:description" content="Build Google Forms and linked response sheets from a clear JSON specification.">
+  <meta name="author" content="Alok Systems">
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"Where are the Form and response Sheet created?","acceptedAnswer":{"@type":"Answer","text":"They are created in the Google account used to authorize and run this web app. Ownership depends on the Apps Script deployment's Execute as setting."}},
+    {"@type":"Question","name":"Does FormForge store my JSON or generated forms?","acceptedAnswer":{"@type":"Answer","text":"FormForge has no external database. The JSON is sent to the Apps Script backend only for validation and to create the resources you requested. Generated Forms and Sheets are saved in Google Drive."}},
+    {"@type":"Question","name":"Can I inspect the form before it is created?","acceptedAnswer":{"@type":"Answer","text":"Yes. Validate the JSON, review the editable preview, and make changes before selecting Generate Google Form."}}
+  ]}
+  </script>
   <?!= include('Styles'); ?>
 </head>
 <body>
-  <header class="ff-header">
-    <div class="ff-header-inner">
-      <div class="ff-logo" aria-hidden="true">F</div>
-      <div class="ff-brand">
-        <h1>FormForge</h1>
-        <p>Turn structured specifications into Google Forms.</p>
-      </div>
-      <div class="ff-header-spacer"></div>
-      <div class="ff-auth" id="ffAuth" title="Google account status">
-        <span class="ff-dot" id="ffAuthDot"></span><span id="ffAuthText">Checking account…</span>
-      </div>
-      <button class="ff-btn ff-btn-sm" id="ffHelpBtn" aria-haspopup="dialog">Help</button>
+  <a class="ff-skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="site-brand" href="https://aloksystems.freedev.app/" aria-label="Alok Systems Tools home"><span class="brand-mark" aria-hidden="true">A</span><span><strong>Alok Systems</strong><small>Tools</small></span></a>
+      <nav class="site-nav" aria-label="Primary navigation"><a href="https://aloksystems.freedev.app/">Home</a><a href="https://aloksystems.freedev.app/#tools">All tools</a><a href="https://aloksystems.freedev.app/#about">About</a></nav>
+      <button class="theme-toggle" id="ffThemeBtn" type="button" aria-label="Switch to dark theme" aria-pressed="false"></button>
     </div>
   </header>
 
-  <main class="ff-wrap">
-    <h2 class="ff-title">Create a Google Form</h2>
-    <p class="ff-subtitle">Paste a ChatGPT-generated JSON specification, validate it, preview the form, edit anything, then generate a real Google Form with a linked response spreadsheet.</p>
+  <main class="ff-wrap" id="main">
+    <nav class="ff-breadcrumb" aria-label="Breadcrumb"><a href="https://aloksystems.freedev.app/">Home</a><span aria-hidden="true">›</span><a href="https://aloksystems.freedev.app/#tools">Tools</a><span aria-hidden="true">›</span><strong>FormForge</strong></nav>
+    <section class="ff-hero" aria-labelledby="ffPageTitle">
+      <p class="ff-eyebrow">FORMFORGE · YOUR GOOGLE ACCOUNT</p>
+      <h2 class="ff-title" id="ffPageTitle">Create a Google Form</h2>
+      <p class="ff-subtitle">Describe your form as JSON, validate and preview it, then create a real Google Form with a linked response spreadsheet. You review and authorize creation in your own Google account.</p>
+      <div class="ff-trust-row"><span>✓ Preview before creating</span><span>✓ Server-side validation</span><span>✓ No external database</span></div>
+      <button class="ff-btn ff-btn-sm" id="ffHelpBtn" type="button" aria-haspopup="dialog" aria-controls="ffHelpModal">Help and keyboard support</button>
+    </section>
 
     <div class="ff-grid">
       <!-- LEFT: editor -->
@@ -94,7 +116,7 @@
           <li>Review the preview and edit anything.</li>
           <li>Click <strong>Generate Google Form</strong> and copy your three links.</li>
         </ol>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <div class="ff-prompt-actions">
           <button class="ff-btn ff-btn-sm" id="btnCopyPrompt">Copy ChatGPT Prompt</button>
           <button class="ff-btn ff-btn-sm" id="btnCopySchema">Copy minimal schema</button>
         </div>
@@ -102,9 +124,23 @@
       </div>
     </section>
 
-    <p class="ff-footer">FormForge · Google Apps Script · Forms + Sheets are created in your own Google account. No external database.</p>
+
+    <section class="ff-faq-wrap" aria-labelledby="ffFaqTitle">
+      <div class="ff-section-heading"><p class="ff-eyebrow">BEFORE YOU GENERATE</p><h2 id="ffFaqTitle">Frequently asked questions</h2></div>
+      <details><summary>Where are the Form and response Sheet created?</summary><p>They are created in the Google account used to authorize and run this web app. Ownership depends on the Apps Script deployment's “Execute as” setting.</p></details>
+      <details><summary>Does FormForge store my JSON or generated forms?</summary><p>FormForge has no external database. The JSON is sent to the Apps Script backend only for validation and to create the resources you requested. Generated Forms and Sheets are saved in Google Drive.</p></details>
+      <details><summary>Can I inspect the form before it is created?</summary><p>Yes. Validate the JSON, review the editable preview, and make changes before selecting “Generate Google Form”.</p></details>
+      <details><summary>Why might Google ask me to authorize access?</summary><p>The app needs permission to create Forms and spreadsheets. Review the Google consent screen and grant access only if you want to use these features.</p></details>
+    </section>
   </main>
 
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <a class="footer-brand" href="https://aloksystems.freedev.app/" aria-label="Alok Systems Tools home"><span class="brand-mark" aria-hidden="true">A</span><span><strong>Alok Systems Tools</strong><small>Free tools. Private by design.</small></span></a>
+      <nav class="footer-nav" aria-label="Footer navigation"><a href="https://aloksystems.freedev.app/">Home</a><a href="https://aloksystems.freedev.app/#tools">All tools</a><a href="https://aloksystems.freedev.app/#about">About</a></nav>
+    </div>
+    <p class="copyright">© 2026 Alok Systems Tools</p>
+  </footer>
   <?!= include('Components'); ?>
   <?!= include('Client'); ?>
 </body>

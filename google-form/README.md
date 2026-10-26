@@ -2,6 +2,10 @@
 
 Turn a ChatGPT-generated JSON specification into a **real Google Form** with a **linked response Spreadsheet**, deployed as a Google Apps Script Web App. No external database, no secrets in the client.
 
+## Current web app deployment
+
+Production Web App URL: https://script.google.com/macros/s/AKfycbwmpwPqUR2QfuaUDw636muhCWxCu2c2LE7f3OE5C0DN5Jrqfw1eEIxPNz7KptI6E43z/exec
+
 ## Project files
 
 ```

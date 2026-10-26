@@ -1,122 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milk Account Calculator</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="description" content="Use Milk Account Calculator online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Dairy-Management/">
-    <meta property="og:title" content="Milk Account Calculator">
-    <meta property="og:description" content="Use Milk Account Calculator online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Dairy-Management/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Milk Account Calculator">
-    <meta name="twitter:description" content="Use Milk Account Calculator online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Milk Account Calculator",
-    "description":  "Use Milk Account Calculator online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/Dairy-Management/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <title>Dairy Management Calculator | Milk Delivery Accounts</title>
+  <meta name="description" content="Track milk deliveries, missed days, customer accounts, and billing totals. Export a clear dairy delivery statement privately from your browser.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Dairy-Management/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Dairy Management Calculator | Milk Delivery Accounts">
+  <meta property="og:description" content="Track customer milk deliveries, missed dates, and billing totals. Your records stay in your browser.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Dairy-Management/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Dairy Management Calculator">
+  <meta name="twitter:description" content="Track deliveries, customer accounts, and milk billing privately in your browser.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Dairy Management Calculator",
+    "description":"Track milk delivery accounts, missed delivery dates, and billing totals privately in your browser.",
+    "url":"https://aloksystems.freedev.app/Dairy-Management/",
+    "applicationCategory":"BusinessApplication",
+    "operatingSystem":"Any",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Where are customer records stored?","acceptedAnswer":{"@type":"Answer","text":"Customer details are saved in this browser on this device. They are not uploaded to a server. Clearing browser data removes saved records."}},
+      {"@type":"Question","name":"How do I record days without a delivery?","acceptedAnswer":{"@type":"Answer","text":"Enter the missed dates in the date field, separated by commas, or use the Sunday shortcut. Only unique dates inside the selected billing period are counted."}},
+      {"@type":"Question","name":"Can I export or share an account statement?","acceptedAnswer":{"@type":"Answer","text":"Download a CSV statement for spreadsheets or open a prefilled summary in WhatsApp. Review the message before sending it."}},
+      {"@type":"Question","name":"Which currency is used for billing?","acceptedAnswer":{"@type":"Answer","text":"Amounts are displayed in Indian rupees (INR). Enter the price per liter in rupees."}}
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
 <body>
-    <div class="container">
-        <h1>Milk Account Calculator</h1>
-
-        <div class="input-card">
-            <h3>Date Range</h3>
-            <div class="input-group">
-                <label for="startDate">Start Date (DD/MM/YY)</label>
-                <input type="text" id="startDate" placeholder="e.g., 01/03/25" oninput="updateResults()">
-            </div>
-            <div class="input-group">
-                <label for="endDate">End Date (DD/MM/YY)</label>
-                <input type="text" id="endDate" placeholder="e.g., 31/03/25" oninput="updateResults()">
-            </div>
-            <div class="quick-buttons">
-                <button onclick="setThisMonth()">This Month</button>
-                <button onclick="setLast30Days()">Last 30 Days</button>
-                <button onclick="setLast7Days()">Last 7 Days</button>
-            </div>
-        </div>
-
-        <div class="input-card">
-            <h3>Missing Delivery Dates</h3>
-            <div class="input-group">
-                <label for="missingDates">Enter dates (e.g., 05/03/25, 10/03/25)</label>
-                <input type="text" id="missingDates" placeholder="Comma-separated, DD/MM/YY" oninput="updateResults()">
-            </div>
-            <button onclick="markSundays()">No Delivery on Sundays</button>
-        </div>
-
-        <div class="input-card">
-            <h3>Milk Details</h3>
-            <div class="input-group">
-                <label for="customerName">Customer Name</label>
-                <input type="text" id="customerName" placeholder="e.g., John Doe" oninput="addCustomer()">
-                <select id="customerSelect" onchange="switchCustomer()">
-                    <option value="">Select Customer</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="milkQty">Milk Quantity per Day (liters)</label>
-                <input type="number" id="milkQty" step="0.1" min="0" value="1" oninput="updateResults()">
-            </div>
-            <div class="input-group">
-                <label for="pricePerLiter">Price per Liter</label>
-                <input type="number" id="pricePerLiter" step="0.01" min="0" value="0" oninput="updateResults()">
-                <button onclick="useLastPrice()">Use Last Price</button>
-            </div>
-        </div>
-
-        <div class="results-card" id="resultsCard">
-            <h3>Summary for <span id="currentCustomer">Customer</span></h3>
-            <div class="results-grid">
-                <div class="result-item">
-                    <span class="label">Total Days</span>
-                    <span class="value" id="totalDays">0</span>
-                </div>
-                <div class="result-item">
-                    <span class="label">Missing Days</span>
-                    <span class="value" id="missingDays">0</span>
-                </div>
-                <div class="result-item">
-                    <span class="label">Delivery Days</span>
-                    <span class="value" id="deliveryDays">0</span>
-                </div>
-                <div class="result-item">
-                    <span class="label">Total Milk</span>
-                    <span class="value" id="totalMilk">0 liters</span>
-                </div>
-                <div class="result-item">
-                    <span class="label">Total Cost</span>
-                    <span class="value" id="totalCost">$0</span>
-                </div>
-                <div class="result-item">
-                    <span class="label">Potential Earnings</span>
-                    <span class="value" id="potentialCost">$0</span>
-                </div>
-            </div>
-            <button onclick="toggleDetails()" id="detailsToggle">Show Daily Breakdown</button>
-            <div class="daily-details" id="dailyDetails" style="display: none;"></div>
-            <div class="export-buttons">
-                <button onclick="downloadCSV()">Download CSV</button>
-                <button onclick="shareWhatsApp()">Share via WhatsApp</button>
-            </div>
-        </div>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="site-brand" href="/" aria-label="Alok Systems Tools home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span><strong>Alok Systems</strong><small>Tools</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/">Home</a><a href="/#tools">All tools</a><a href="/#about">About</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark theme" aria-pressed="false"></button>
     </div>
-    <script src="script.js"></script>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">DAILY BUSINESS, MADE CLEAR</p>
+      <h1 id="page-title">Dairy Management</h1>
+      <p>Keep delivery days and customer milk accounts organized. Calculate billing, spot missed deliveries, and export a ready-to-share statement.</p>
+      <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>Customer records stay in this browser on this device.</div>
+    </section>
+
+    <section class="workspace" aria-label="Milk account calculator">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="customer-title">
+          <div class="panel-heading"><span class="step-number">01</span><div><h2 id="customer-title">Customer</h2><p>Choose a saved account or add a new one.</p></div></div>
+          <div class="customer-create">
+            <label for="customerName">New customer name</label>
+            <div class="inline-control"><input type="text" id="customerName" maxlength="80" autocomplete="off" placeholder="e.g. Asha Sharma"><button type="button" id="addCustomerBtn" class="btn btn-secondary">Add customer</button></div>
+          </div>
+          <label class="field-label" for="customerSelect">Saved customers</label>
+          <select id="customerSelect"><option value="">No customer selected</option></select>
+          <p class="field-help">Each customer keeps their own dates, quantity, and milk rate.</p>
+        </section>
+
+        <section class="panel" aria-labelledby="period-title">
+          <div class="panel-heading"><span class="step-number">02</span><div><h2 id="period-title">Billing period</h2><p>Pick the first and last day to include.</p></div></div>
+          <div class="field-grid">
+            <div><label for="startDate">Start date</label><input type="date" id="startDate"></div>
+            <div><label for="endDate">End date</label><input type="date" id="endDate"></div>
+          </div>
+          <div class="quick-actions" aria-label="Quick date ranges">
+            <button type="button" class="chip" id="thisMonthBtn">This month</button>
+            <button type="button" class="chip" id="last30Btn">Last 30 days</button>
+            <button type="button" class="chip" id="last7Btn">Last 7 days</button>
+          </div>
+          <div class="field-group-spaced">
+            <label for="missingDates">Missed delivery dates <span class="optional">(optional)</span></label>
+            <textarea id="missingDates" rows="2" placeholder="YYYY-MM-DD, YYYY-MM-DD" aria-describedby="missingHelp"></textarea>
+            <p class="field-help" id="missingHelp">Separate dates with commas. Dates outside the billing period are ignored.</p>
+            <button type="button" class="text-action" id="sundaysBtn">Mark Sundays as no-delivery days</button>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="milk-title">
+          <div class="panel-heading"><span class="step-number">03</span><div><h2 id="milk-title">Milk and rate</h2><p>Set the usual daily quantity and price.</p></div></div>
+          <div class="field-grid">
+            <div><label for="milkQty">Milk per delivery</label><div class="input-suffix"><input type="number" id="milkQty" min="0.01" max="10000" step="0.01" value="1"><span>liters</span></div></div>
+            <div><label for="pricePerLiter">Price per liter</label><div class="input-suffix"><span>₹</span><input type="number" id="pricePerLiter" min="0" max="1000000" step="0.01" value="0"></div></div>
+          </div>
+          <button type="button" class="text-action" id="lastPriceBtn">Use the last entered rate</button>
+        </section>
+        <p id="inputError" class="input-error" role="alert" hidden></p>
+      </div>
+
+      <section class="summary-panel" aria-labelledby="summary-title">
+        <div class="summary-heading"><p class="eyebrow">ACCOUNT SUMMARY</p><h2 id="summary-title">Milk account</h2><p id="summaryPeriod" class="summary-period">Set a billing period to see your totals.</p></div>
+        <div class="summary-grid">
+          <article class="metric"><span class="metric-label">Calendar days</span><strong id="totalDays">0</strong></article>
+          <article class="metric"><span class="metric-label">Missed days</span><strong id="missingDays">0</strong></article>
+          <article class="metric"><span class="metric-label">Delivery days</span><strong id="deliveryDays">0</strong></article>
+          <article class="metric"><span class="metric-label">Milk delivered</span><strong id="totalMilk">0 L</strong></article>
+          <article class="metric metric-primary"><span class="metric-label">Amount due</span><strong id="totalCost" aria-live="polite">₹0.00</strong></article>
+          <article class="metric"><span class="metric-label">If no days were missed</span><strong id="potentialCost">₹0.00</strong></article>
+        </div>
+        <details class="breakdown" id="breakdownDetails">
+          <summary>View daily breakdown</summary>
+          <div id="dailyDetails" class="breakdown-content"><p>Enter a valid period to view each day.</p></div>
+        </details>
+        <div class="export-actions">
+          <button type="button" class="btn btn-primary" id="downloadCsvBtn">Download CSV</button>
+          <button type="button" class="btn btn-outline" id="shareBtn">Share on WhatsApp</button>
+        </div>
+        <p class="export-note">Review your statement before sharing it.</p>
+      </section>
+    </section>
+
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to use Dairy Management</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Add or select a customer</h3><p>Save an account to keep that customer's delivery details on this device.</p></div></li>
+        <li><span>02</span><div><h3>Set dates and milk rate</h3><p>Choose a billing period, record missed dates, and enter the daily quantity and price.</p></div></li>
+        <li><span>03</span><div><h3>Check and export the total</h3><p>Review delivery days and amount due, then download a CSV or prepare a WhatsApp summary.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Where are my customer records saved?</summary><p>Records are saved in local browser storage on this device. They are not uploaded to a server. If you clear site data or switch browsers/devices, the saved records will not be available.</p></details>
+      <details><summary>How do I enter missed deliveries?</summary><p>Enter dates as YYYY-MM-DD, separated by commas, or use the Sunday shortcut. Duplicate dates are counted once, and dates outside your selected period are ignored.</p></details>
+      <details><summary>What does “If no days were missed” mean?</summary><p>It is the estimated amount for every calendar day in the period at the selected daily quantity and price. “Amount due” subtracts missed delivery dates.</p></details>
+      <details><summary>What happens when I share on WhatsApp?</summary><p>The tool opens WhatsApp with a prepared summary. You can review or edit the message before choosing to send it.</p></details>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <a class="footer-brand" href="/" aria-label="Alok Systems Tools home"><span class="brand-mark" aria-hidden="true">A</span><span><strong>Alok Systems Tools</strong><small>Free tools. Private by design.</small></span></a>
+      <nav class="footer-nav" aria-label="Footer navigation"><a href="/">Home</a><a href="/#tools">All tools</a><a href="/#about">About</a></nav>
+    </div>
+    <p class="copyright">© 2026 Alok Systems Tools</p>
+  </footer>
+
+  <script src="script.js" defer></script>
 </body>
 </html>

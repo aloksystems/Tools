@@ -44,6 +44,7 @@
       isSpecificDate = !isSpecificDate;
       specificDateField.classList.toggle('hidden', !isSpecificDate);
       this.classList.toggle('active', isSpecificDate);
+      this.setAttribute('aria-expanded', String(isSpecificDate));
       const span = this.querySelector('span');
       span.textContent = isSpecificDate ? 'Calculate age on today\'s date' : 'Calculate age on a specific date';
     });
@@ -114,7 +115,7 @@
     }
 
     if (parsedDOB < new Date(1582, 9, 15)) {
-      showError('Please enter a date after 15 October 1582.');
+      showError('Please enter a date on or after 15 October 1582.');
       return;
     }
 
@@ -133,7 +134,7 @@
           return;
         }
         if (parsedTarget < parsedDOB) {
-          showError('Target date must be after the date of birth.');
+          showError('The selected date must be on or after the date of birth.');
           return;
         }
         targetDate = parsedTarget;
@@ -149,9 +150,10 @@
   }
 
   function parseDate(dayStr, monthStr, yearStr) {
-    const d = parseInt(dayStr, 10);
-    const m = parseInt(monthStr, 10);
-    const y = parseInt(yearStr, 10);
+    if (!/^\d{1,2}$/.test(dayStr) || !/^\d{1,2}$/.test(monthStr) || !/^\d{4}$/.test(yearStr)) return null;
+    const d = Number(dayStr);
+    const m = Number(monthStr);
+    const y = Number(yearStr);
 
     if (isNaN(d) || isNaN(m) || isNaN(y)) return null;
     if (d < 1 || d > 31) return null;
@@ -176,7 +178,7 @@
     displayOptionalInfo(birth);
 
     resultsSection.classList.remove('hidden');
-    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    resultsSection.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
 
     startLiveSeconds(birth, target);
   }
@@ -184,7 +186,10 @@
   function calcAge(birth, target) {
     let years = target.getFullYear() - birth.getFullYear();
     let months = target.getMonth() - birth.getMonth();
-    let days = target.getDate() - birth.getDate();
+    const birthDay = birth.getMonth() === 1 && birth.getDate() === 29 && !isLeapYear(target.getFullYear())
+      ? 28
+      : birth.getDate();
+    let days = target.getDate() - birthDay;
 
     if (days < 0) {
       months--;
@@ -201,22 +206,42 @@
   }
 
   function calcTotals(birth, target) {
-    const diffMs = target.getTime() - birth.getTime();
-    const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const birthDay = Date.UTC(birth.getFullYear(), birth.getMonth(), birth.getDate());
+    const targetDay = Date.UTC(target.getFullYear(), target.getMonth(), target.getDate());
+    const totalDays = Math.floor((targetDay - birthDay) / 86400000);
     const totalWeeks = Math.floor(totalDays / 7);
-    const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const totalMinutes = Math.floor(diffMs / (1000 * 60));
-    const totalSeconds = Math.floor(diffMs / 1000);
+    const elapsedMilliseconds = Math.max(0, target.getTime() - birth.getTime());
+    const totalHours = Math.floor(elapsedMilliseconds / 3600000);
+    const totalMinutes = Math.floor(elapsedMilliseconds / 60000);
+    const totalSeconds = Math.floor(elapsedMilliseconds / 1000);
     return { totalDays, totalWeeks, totalHours, totalMinutes, totalSeconds };
   }
 
   function calcNextBirthday(birth, target) {
-    const next = new Date(target.getFullYear(), birth.getMonth(), birth.getDate());
-    if (next <= target) {
-      next.setFullYear(next.getFullYear() + 1);
+    let next = makeBirthdayDate(target.getFullYear(), birth);
+    const nextDay = Date.UTC(next.getFullYear(), next.getMonth(), next.getDate());
+    const targetDay = Date.UTC(target.getFullYear(), target.getMonth(), target.getDate());
+    if (nextDay < targetDay) {
+      return getNextBirthday(birth, target, target.getFullYear() + 1);
     }
-    const daysLeft = Math.ceil((next - target) / (1000 * 60 * 60 * 24));
+    const daysLeft = calendarDaysBetween(target, next);
     return { date: next, daysLeft };
+  }
+
+  function getNextBirthday(birth, target, year) {
+    const next = makeBirthdayDate(year, birth);
+    return { date: next, daysLeft: calendarDaysBetween(target, next) };
+  }
+
+  function makeBirthdayDate(year, birth) {
+    const day = birth.getMonth() === 1 && birth.getDate() === 29 && !isLeapYear(year) ? 28 : birth.getDate();
+    return new Date(year, birth.getMonth(), day);
+  }
+
+  function calendarDaysBetween(from, to) {
+    const fromDay = Date.UTC(from.getFullYear(), from.getMonth(), from.getDate());
+    const toDay = Date.UTC(to.getFullYear(), to.getMonth(), to.getDate());
+    return Math.max(0, Math.round((toDay - fromDay) / 86400000));
   }
 
   function displayAge(age) {
@@ -229,9 +254,10 @@
   }
 
   function displayTotals(totals) {
+    const age = calcAge(birthDate, targetDate || new Date());
     const els = {
-      detailYears: totals.totalDays ? Math.floor(totals.totalDays / 365.25) : 0,
-      detailMonths: totals.totalDays ? Math.floor(totals.totalDays / (365.25 / 12)) : 0,
+      detailYears: age.years,
+      detailMonths: age.years * 12 + age.months,
       detailWeeks: totals.totalWeeks,
       detailDays: totals.totalDays,
       detailHours: totals.totalHours,
@@ -279,6 +305,10 @@
 
   function animateValue(el, start, end, duration) {
     if (!el) return;
+    if (prefersReducedMotion()) {
+      el.textContent = Number(end).toLocaleString();
+      return;
+    }
     const startTime = performance.now();
 
     function update(currentTime) {
@@ -348,9 +378,10 @@
       isSpecificDate = false;
       specificDateField.classList.add('hidden');
       toggleSpecificDate.classList.remove('active');
+      toggleSpecificDate.setAttribute('aria-expanded', 'false');
       toggleSpecificDate.querySelector('span').textContent = 'Calculate age on a specific date';
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
     dobDay.focus();
   }
 
@@ -358,17 +389,32 @@
     const current = document.documentElement.getAttribute('data-theme');
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('age-calculator-theme', next);
+    updateThemeControl();
+    try { localStorage.setItem('tools-theme', next); } catch (e) { /* Theme still applies for this visit. */ }
   }
 
   function loadTheme() {
-    const saved = localStorage.getItem('age-calculator-theme');
+    let saved = null;
+    try { saved = localStorage.getItem('tools-theme'); } catch (e) { /* Storage may be disabled. */ }
     if (saved) {
       document.documentElement.setAttribute('data-theme', saved);
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.documentElement.setAttribute('data-theme', 'dark');
-      localStorage.setItem('age-calculator-theme', 'dark');
     }
+    updateThemeControl();
+  }
+
+  function updateThemeControl() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    themeBtn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+    themeBtn.setAttribute('aria-pressed', String(isDark));
+    themeBtn.innerHTML = isDark
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>';
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   function createRipple(e) {

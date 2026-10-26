@@ -56,12 +56,6 @@ function ffCreateForm_(normalized) {
   return form;
 }
 
-var ffLastWarnings_ = [];
-
-function ffResetWarnings_() {
-  ffLastWarnings_ = [];
-}
-
 function ffAddQuestion_(form, q) {
   var item;
   var required = q.required === true;

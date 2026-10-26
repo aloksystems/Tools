@@ -242,6 +242,7 @@ function setGenerateEnabled(on, hint) {
 function invalidate(reason) {
   state.valid = false;
   state.spec = null;
+  state.generationId = null;
   setGenerateEnabled(false, reason || 'JSON changed — re-validate to enable generation.');
 }
 
@@ -600,7 +601,7 @@ function bindGenerate() {
       renderLocalNotice();
       return;
     }
-    var gid = uuid();
+    var gid = state.generationId || uuid();
     state.generationId = gid;
     setGenerating(true);
     resultSlot.textContent = '';
@@ -729,25 +730,35 @@ function bindMisc() {
   $('btnCopyPrompt').addEventListener('click', function () { copyText(CHATGPT_PROMPT, 'ChatGPT prompt copied.'); });
   $('btnCopySchema').addEventListener('click', function () { copyText(MINIMAL_SCHEMA, 'Minimal schema copied.'); });
   var modal = $('ffHelpModal');
-  $('ffHelpBtn').addEventListener('click', function () { modal.classList.add('open'); });
-  modal.querySelector('[data-close-help]').addEventListener('click', function () { modal.classList.remove('open'); });
-  modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('open'); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') modal.classList.remove('open'); });
+  var helpButton = $('ffHelpBtn');
+  var closeHelpButton = modal.querySelector('[data-close-help]');
+  function closeHelp() { modal.classList.remove('open'); helpButton.focus(); }
+  helpButton.addEventListener('click', function () { modal.classList.add('open'); closeHelpButton.focus(); });
+  closeHelpButton.addEventListener('click', closeHelp);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeHelp(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeHelp(); });
+
+  $('ffThemeBtn').addEventListener('click', function () {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var next = dark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    updateThemeButton();
+    try { localStorage.setItem('tools-theme', next); } catch (e) { /* Theme stays active for this visit. */ }
+  });
+  updateThemeButton();
 
   editor.addEventListener('input', function () { invalidate(); setStatus('warn', 'Edited — re-validate before generating.'); });
 
-  if (typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run
-      .withSuccessHandler(function (st) {
-        var dot = $('ffAuthDot'), txt = $('ffAuthText');
-        dot.classList.add('ok');
-        txt.textContent = (st && st.email) ? st.email : 'Signed in (email hidden by deployment)';
-      })
-      .withFailureHandler(function () { $('ffAuthText').textContent = 'Authorization required — accept consent on first run'; })
-      .ffGetAuthStatus();
-  } else {
-    $('ffAuthText').textContent = 'Local preview — deploy to connect account';
-  }
+}
+
+function updateThemeButton() {
+  var button = $('ffThemeBtn');
+  var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  button.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+  button.setAttribute('aria-pressed', String(dark));
+  button.innerHTML = dark
+    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>'
+    : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>';
 }
 
 /* ============ Init ============ */
