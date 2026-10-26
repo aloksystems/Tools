@@ -41,9 +41,26 @@
     </script>
 </head>
 <body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-brand" href="/" aria-label="Alok Systems Tools home">
+                <span class="site-brand-mark">A</span>
+                <span><strong>Alok Systems</strong><small>Tools</small></span>
+            </a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <a href="/">Home</a>
+                <a href="/#tools">Tools</a>
+                <a href="/#about">About</a>
+            </nav>
+            <button class="theme-toggle site-theme-toggle" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+        <div class="breadcrumb" aria-label="Breadcrumb">
+            <a href="/">Home</a><span aria-hidden="true">›</span><a href="/#tools">Tools</a>
+            <span aria-hidden="true">›</span><strong>Unit Converter</strong>
+        </div>
+    </header>
     <div class="container">
-        <header class="header">
-            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        <header class="header tool-intro">
             <h1>Unit Converter</h1>
             <p>Fast, accurate unit conversions for length, mass, temperature, and volume. All calculations happen in your browser.</p>
         </header>
@@ -76,6 +93,19 @@
                 </div>
             </div>
         </main>
+
+        <section class="tool-details" aria-labelledby="converter-details-title">
+            <div class="details-heading">
+                <span class="section-kicker">Fast and accurate</span>
+                <h2 id="converter-details-title">Convert common units with confidence</h2>
+                <p>Select a category, enter a value, and switch units to see the result instantly.</p>
+            </div>
+            <div class="details-grid">
+                <article><span class="detail-number">01</span><h3>Choose a category</h3><p>Switch between length, mass, temperature, and volume conversions from the category tabs.</p></article>
+                <article><span class="detail-number">02</span><h3>Enter a value</h3><p>Type any number and select the source and destination units that you need.</p></article>
+                <article><span class="detail-number">03</span><h3>Use the result</h3><p>The converted value updates locally and can be copied or used immediately in your work.</p></article>
+            </div>
+        </section>
 
         <section class="faq-section">
             <h2>Frequently Asked Questions</h2>

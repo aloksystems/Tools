@@ -1,7 +1,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #2c3e50, #1a252f);
-    color: #ecf0f1;
+    background: #f8fafc;
+    color: #0f172a;
     min-height: 100vh;
     margin: 0;
     padding: 20px;
@@ -24,7 +24,8 @@ h1 {
 }
 
 .input-card, .results-card {
-    background: #34495e;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     padding: 20px;
@@ -33,7 +34,7 @@ h1 {
 }
 
 h3 {
-    color: #ecf0f1;
+    color: #0f172a;
     margin: 0 0 15px;
     font-size: 1.3em;
 }
@@ -52,22 +53,22 @@ label {
 input, select {
     width: 100%;
     padding: 10px;
-    border: 2px solid #7f8c8d;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
     font-size: 1em;
-    background: #2c3e50;
-    color: #ecf0f1;
+    background: #ffffff;
+    color: #0f172a;
     transition: border-color 0.3s;
     box-sizing: border-box;
 }
 
 input:focus, select:focus {
-    border-color: #3498db;
+    border-color: #0d9488;
     outline: none;
 }
 
 button {
-    background: #3498db;
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
     color: white;
     border: none;
     padding: 12px 20px;
@@ -79,7 +80,7 @@ button {
 }
 
 button:hover {
-    background: #2980b9;
+    background: #0d9488;
     transform: translateY(-2px);
 }
 
@@ -97,7 +98,7 @@ button:hover {
 }
 
 .result-item {
-    background: #2c3e50;
+    background: #f1f5f9;
     padding: 10px;
     border-radius: 8px;
     text-align: center;
@@ -106,26 +107,26 @@ button:hover {
 
 .result-item .label {
     display: block;
-    color: #bdc3c7;
+    color: #64748b;
     font-size: 0.9em;
 }
 
 .result-item .value {
-    color: #ecf0f1;
+    color: #0f172a;
     font-weight: bold;
     font-size: 1.1em;
 }
 
 .daily-details {
     margin-top: 20px;
-    background: #2c3e50;
+    background: #f1f5f9;
     padding: 15px;
     border-radius: 8px;
-    color: #ecf0f1;
+    color: #0f172a;
 }
 
 #currentCustomer {
-    color: #3498db;
+    color: #0d9488;
 }
 
 @keyframes fadeIn {

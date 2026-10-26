@@ -259,3 +259,83 @@ body {
     .options-row { flex-direction: column; }
     .option-group { min-width: 0; }
 }
+
+/* Unified Alok Systems tool workspace */
+.global-back-btn { display: none; }
+body { overflow-x: hidden; }
+.container {
+    max-width: 1180px;
+    padding: 1.5rem 1.5rem 2rem;
+}
+.header {
+    margin: 0 auto 1.25rem;
+    max-width: 1180px;
+    padding: .5rem 0 0;
+    text-align: left;
+}
+.header h1 {
+    color: var(--text-primary);
+    font-size: clamp(1.8rem, 3vw, 2.45rem);
+    margin: 0 0 .35rem;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+}
+.header p { margin: 0; max-width: 650px; }
+.header .theme-toggle { display: none; }
+.main-content {
+    align-items: stretch;
+    grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr);
+    gap: 1rem;
+}
+.input-section, .output-section, .faq-section {
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+}
+.input-section { padding: clamp(1.1rem, 2vw, 1.5rem); }
+.type-selector {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+.type-btn { min-height: 40px; }
+.input-group label, .option-group label {
+    color: var(--text-primary);
+    font-size: .82rem;
+    letter-spacing: 0;
+    text-transform: none;
+}
+.input-group input, .input-group select, .option-group select {
+    background: var(--surface-color);
+    min-height: 44px;
+}
+.options-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr; }
+.option-group { min-width: 0; }
+.generate-btn { min-height: 46px; }
+.output-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100%;
+}
+.qr-display {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    min-height: 300px;
+}
+.qr-display img, .qr-display canvas { image-rendering: pixelated; }
+.faq-section { margin-top: 1rem; }
+
+@media (max-width: 760px) {
+    .container { padding: 1rem 1rem 1.5rem; }
+    .main-content { grid-template-columns: 1fr; }
+    .output-section { min-height: 0; }
+    .options-row { grid-template-columns: 1fr 1fr; }
+    .option-group:first-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 420px) {
+    .options-row { grid-template-columns: 1fr; }
+    .option-group:first-child { grid-column: auto; }
+    .download-actions, .action-btn { width: 100%; }
+    .action-btn { justify-content: center; }
+}

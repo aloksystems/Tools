@@ -180,6 +180,24 @@ svg { display: block; }
   padding: 20px 22px;
   margin-bottom: 20px;
 }
+
+/* Alok Systems brand alignment while retaining WriteFlow's reading-focused UI. */
+:root {
+  --accent: #0d9488;
+  --accent-soft: rgba(20, 184, 166, .12);
+  --border: #e2e8f0;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+}
+[data-theme="dark"] {
+  --accent: #2dd4bf;
+  --accent-soft: rgba(45, 212, 191, .16);
+  --border: #1e293b;
+  --bg: #0b1120;
+  --surface: #101a2e;
+}
+.card { border-color: var(--border); box-shadow: var(--shadow-md); }
+.brand-mark { background: var(--accent); }
 .card-title {
   font-size: 12px; font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.08em; color: var(--muted);

@@ -255,6 +255,29 @@ body {
     gap: 20px;
   }
 
+  :root {
+    --primary-color: #0d9488;
+    --secondary-color: #0f766e;
+    --light-color: #ffffff;
+    --border-color: #e2e8f0;
+    --text-color: #0f172a;
+    --bg-color: #f8fafc;
+  }
+  [data-theme="dark"] {
+    --bg-color: #0b1120;
+    --text-color: #e2e8f0;
+    --light-color: #101a2e;
+    --border-color: #1e293b;
+  }
+  .container { max-width: 1180px; }
+  .header { text-align: left; }
+  .header h1 { color: var(--text-color); }
+  .text-area-section, .sidebar { box-shadow: 0 4px 14px rgba(15,23,42,.07); }
+  @media (max-width: 760px) {
+    .main-content { grid-template-columns: 1fr; }
+    .container { padding: 1rem; }
+  }
+
   .header h1 {
     font-size: 2rem;
   }

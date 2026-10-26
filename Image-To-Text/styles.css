@@ -1,8 +1,8 @@
 /* Global Styles */
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1e1e2f, #3a3a5f);
-    color: #fff;
+    background: #f8fafc;
+    color: #0f172a;
     margin: 0;
     padding: 20px 0;
     /* Removed flex centering so content starts from the top */
@@ -11,13 +11,14 @@ body {
   /* Container: full-width layout */
   .container {
     width: 90%;
-    max-width: 800px;
-    background: rgba(255, 255, 255, 0.1);
+    max-width: 1180px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     backdrop-filter: blur(15px);
     padding: 30px;
     border-radius: 20px;
     text-align: center;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .07);
     margin: 0 auto; /* Center horizontally only */
   }
   
@@ -49,7 +50,7 @@ body {
   
   .drop-area span {
     font-weight: bold;
-    color: #ffcc00;
+    color: #0d9488;
   }
   
   /* Preview Image */

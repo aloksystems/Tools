@@ -761,6 +761,38 @@ body {
     flex-direction: column;
   }
 
+  /* Alok Systems workspace styling; gradient rendering remains unchanged. */
+  :root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --border-hover: #cbd5e1;
+    --accent-primary: #0d9488;
+    --accent-secondary: #14b8a6;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+  }
+  [data-theme="dark"] {
+    --bg-primary: #0b1120;
+    --bg-secondary: #101a2e;
+    --bg-tertiary: #16223a;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --border-color: #1e293b;
+    --accent-primary: #14b8a6;
+  }
+  .header { background: var(--bg-secondary); border-bottom-color: var(--border-color); }
+  .controls-section, .preview-container { border: 1px solid var(--border-color); }
+  .main-content { max-width: 1180px; gap: 1rem; }
+  @media (max-width: 760px) {
+    .main-content { grid-template-columns: 1fr; padding: 1rem; }
+    .controls-section { position: static; max-height: none; }
+  }
+
   .btn {
     width: 100%;
   }

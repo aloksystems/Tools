@@ -21,7 +21,7 @@
     --tag-bg: #f3f4f6;
     --tag-text: #6b7280;
     --pill-bg: #f3f4f6;
-    --pill-active-bg: #111827;
+    --pill-active-bg: #0d9488;
     --pill-active-text: #ffffff;
     --pill-hover-bg: #e5e7eb;
     --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
@@ -41,7 +41,7 @@
     /* Category colors */
     --cat-organize: #0d9488;
     --cat-organize-light: #ccfbf1;
-    --cat-convert: #7c3aed;
+    --cat-convert: #0f766e;
     --cat-convert-light: #ede9fe;
     --cat-edit: #ea580c;
     --cat-edit-light: #fff7ed;
@@ -102,6 +102,12 @@ body {
     -moz-osx-font-smoothing: grayscale;
     transition: background var(--transition-slow), color var(--transition-slow);
 }
+
+/* PDF suite-specific brand alignment. The registry and tool shell remain intact. */
+.navbar { background: color-mix(in srgb, var(--bg) 90%, transparent); }
+.hero { background: linear-gradient(135deg, var(--accent-bg), var(--bg)); }
+.tool-card:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); }
+.tools-grid { gap: 16px; }
 
 a { color: inherit; text-decoration: none; }
 

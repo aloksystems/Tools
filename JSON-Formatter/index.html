@@ -46,16 +46,28 @@
     <!-- Notification Element -->
     <div id="notification" class="notification"></div>
 
-    <div class="container">
-        <!-- Header Section -->
-        <header class="header fade-in">
-            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" href="/" aria-label="Alok Systems Tools home">
+                <span class="brand-mark">A</span>
+                <span class="brand-copy"><strong>Alok Systems</strong><small>Tools</small></span>
+            </a>
+            <nav class="tool-nav" aria-label="Primary navigation">
+                <a href="/">Home</a>
+                <a href="/#tools">Tools</a>
+                <a href="/#about">About</a>
+            </nav>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode" aria-label="Toggle dark mode">
                 <span id="theme-icon">🌙</span>
             </button>
-            <h1>JSON Formatter & Validator</h1>
-            <p>Format, minify, and validate your JSON data instantly. Perfect for developers and data analysts.</p>
-        </header>
+        </div>
+        <div class="tool-breadcrumb" aria-label="Breadcrumb">
+            <a href="/">Home</a><span aria-hidden="true">›</span><a href="/#tools">Tools</a>
+            <span aria-hidden="true">›</span><strong>JSON Formatter</strong>
+        </div>
+    </header>
 
+    <div class="container">
         <!-- Main Content -->
         <main class="main-content fade-in">
             <!-- JSON Editor Section -->
@@ -217,6 +229,14 @@
             </div>
         </section>
     </div>
+
+    <!-- Footer (dark band) -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span>© 2026 Alok Systems · JSON Formatter Tool</span>
+            <span>Runs 100% in your browser — your data never leaves your device.</span>
+        </div>
+    </footer>
 
     <!-- Prism.js for Syntax Highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" integrity="sha384-MXybTpajaBV0AkcBaCPT4KIvo0FzoCiWXgcihYsw4FUkEz0Pv3JGV6tk2G8vJtDc" crossorigin="anonymous"></script>

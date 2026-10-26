@@ -41,9 +41,26 @@
     </script>
 </head>
 <body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-brand" href="/" aria-label="Alok Systems Tools home">
+                <span class="site-brand-mark">A</span>
+                <span><strong>Alok Systems</strong><small>Tools</small></span>
+            </a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <a href="/">Home</a>
+                <a href="/#tools">Tools</a>
+                <a href="/#about">About</a>
+            </nav>
+            <button class="theme-toggle site-theme-toggle" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+        <div class="breadcrumb" aria-label="Breadcrumb">
+            <a href="/">Home</a><span aria-hidden="true">›</span><a href="/#tools">Tools</a>
+            <span aria-hidden="true">›</span><strong>Password Generator</strong>
+        </div>
+    </header>
     <div class="container">
-        <header class="header">
-            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        <header class="header tool-intro">
             <h1>Password Generator</h1>
             <p>Create strong, secure passwords with full control over length and character types. 100% offline — no data leaves your browser.</p>
         </header>
@@ -82,6 +99,19 @@
                 </div>
             </div>
         </main>
+
+        <section class="tool-details" aria-labelledby="password-details-title">
+            <div class="details-heading">
+                <span class="section-kicker">Simple and private</span>
+                <h2 id="password-details-title">Create a stronger password in seconds</h2>
+                <p>Choose the character mix and length that fit your account, then copy the result without sending it anywhere.</p>
+            </div>
+            <div class="details-grid">
+                <article><span class="detail-number">01</span><h3>Set your rules</h3><p>Adjust length and choose uppercase, lowercase, digits, symbols, or ambiguous-character filtering.</p></article>
+                <article><span class="detail-number">02</span><h3>Generate locally</h3><p>Cryptographically strong randomness creates the password directly in your browser.</p></article>
+                <article><span class="detail-number">03</span><h3>Copy and use</h3><p>Review the strength indicator and copy the generated password when you are ready.</p></article>
+            </div>
+        </section>
 
         <section class="faq-section">
             <h2>Frequently Asked Questions</h2>

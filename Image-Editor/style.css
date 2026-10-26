@@ -17,9 +17,9 @@
   --border-color: #dee2e6;
   --border-light: #e9ecef;
   
-  --accent-primary: #4361ee;
-  --accent-hover: #3651d4;
-  --accent-light: #e7f3ff;
+  --accent-primary: #0d9488;
+  --accent-hover: #0f766e;
+  --accent-light: #ccfbf1;
   
   --danger: #dc3545;
   --danger-hover: #bb2d3b;
@@ -52,9 +52,9 @@ body.dark-mode {
   --border-color: #3d424a;
   --border-light: #2d3139;
   
-  --accent-primary: #528bff;
-  --accent-hover: #6a9dff;
-  --accent-light: #1e3a5f;
+  --accent-primary: #2dd4bf;
+  --accent-hover: #14b8a6;
+  --accent-light: #123b3a;
   
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);

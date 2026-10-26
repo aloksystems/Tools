@@ -1,11 +1,11 @@
 :root {
     --premium-bg: #f8fafc;
     --premium-bg-deep: #eef2ff;
-    --premium-accent: #1d4ed8;
-    --premium-accent-strong: #1e40af;
-    --premium-accent-soft: rgba(29, 78, 216, 0.1);
-    --premium-cyan: #0891b2;
-    --premium-violet: #7c3aed;
+    --premium-accent: #0d9488;
+    --premium-accent-strong: #0f766e;
+    --premium-accent-soft: rgba(20, 184, 166, 0.12);
+    --premium-cyan: #14b8a6;
+    --premium-violet: #0f766e;
     --premium-ink: #0f172a;
     --premium-muted: #5b6b80;
     --premium-surface: #ffffff;
@@ -33,9 +33,9 @@
 [data-theme="dark"] {
     --premium-bg: #05070f;
     --premium-bg-deep: #111827;
-    --premium-accent: #3b82f6;
-    --premium-accent-strong: #60a5fa;
-    --premium-accent-soft: rgba(59, 130, 246, 0.18);
+    --premium-accent: #14b8a6;
+    --premium-accent-strong: #2dd4bf;
+    --premium-accent-soft: rgba(45, 212, 191, 0.18);
     --premium-ink: #f8fafc;
     --premium-muted: #94a3b8;
     --premium-surface: #0f172a;

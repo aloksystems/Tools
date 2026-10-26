@@ -1,0 +1,293 @@
+/* ============================================================
+   Shared Tool Theme Overlay — aloksystems/Tools
+   ------------------------------------------------------------
+   Loaded on EVERY tool subpage (injected by back.js after the
+   tool's own stylesheet). It remaps the canonical design tokens
+   (--bg / --surface / --brand …) onto the per-tool CSS variable
+   names that the individual tools already use (--accent,
+   --bg-card, --radius-*, --shadow-* …), so every tool inherits
+   the main site's teal brand, Inter font, card radius and dark
+   mode without per-file cosmetic edits.
+   ============================================================ */
+
+/* Inter font (matches main site). Must be the first rule. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* ------------------------------------------------------------
+   Light — canonical tokens (from root styles.css :root)
+   ------------------------------------------------------------ */
+:root {
+  /* Surfaces */
+  --bg: #f8fafc;
+  --bg-soft: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-3: #f1f5f9;
+
+  /* Text */
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+
+  /* Brand (canonical) + legacy alias used by older tools */
+  --brand: #14b8a6;
+  --brand-strong: #0d9488;
+  --brand-deep: #0f766e;
+  --brand-soft: rgba(20, 184, 166, 0.09);
+  --brand-soft-2: rgba(20, 184, 166, 0.16);
+  --accent: #14b8a6;
+  --accent-hover: #0d9488;
+  --accent-strong: #0d9488;
+  --accent-deep: #0f766e;
+  --accent-soft: rgba(20, 184, 166, 0.09);
+
+  /* Borders */
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-focus: #0d9488;
+
+  /* Shadows (matches site) */
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 8px 30px rgba(15, 23, 42, 0.08);
+  --shadow-xl: 0 20px 60px rgba(15, 23, 42, 0.1);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+
+  /* Type + motion */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  --transition: 0.2s ease;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ------------------------------------------------------------
+   Dark — canonical tokens (from root styles.css [data-theme=dark])
+   ------------------------------------------------------------ */
+[data-theme="dark"] {
+  --bg: #0b1120;
+  --bg-soft: #0f172a;
+  --bg-card: #101a2e;
+  --bg-card-hover: #16223a;
+  --bg-secondary: #0f172a;
+  --surface: #101a2e;
+  --surface-2: #16223a;
+  --surface-3: #1e293b;
+
+  --text: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+
+  --brand: #2dd4bf;
+  --brand-strong: #14b8a6;
+  --brand-deep: #2dd4bf;
+  --brand-soft: rgba(45, 212, 191, 0.1);
+  --brand-soft-2: rgba(45, 212, 191, 0.2);
+  --accent: #2dd4bf;
+  --accent-hover: #14b8a6;
+  --accent-strong: #14b8a6;
+  --accent-deep: #2dd4bf;
+  --accent-soft: rgba(45, 212, 191, 0.1);
+
+  --border: #1e293b;
+  --border-strong: #334155;
+  --border-focus: #14b8a6;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* ------------------------------------------------------------
+   Base enforcement — font + backgrounds follow the brand
+   ------------------------------------------------------------ */
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Consistent, accessible focus ring */
+:focus-visible {
+  outline: 2px solid var(--brand-strong);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   Shared tool surfaces
+   These selectors cover the common patterns used by the static
+   tools while leaving tool-specific layouts and behavior intact.
+   ------------------------------------------------------------ */
+.global-tool-page {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.global-tool-page main,
+.global-tool-page .container,
+.global-tool-page .app-container,
+.global-tool-page .page-container,
+.global-tool-page .tool-container {
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.global-tool-page input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+.global-tool-page select,
+.global-tool-page textarea {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  max-width: 100%;
+}
+
+.global-tool-page input:not([type="checkbox"]):not([type="radio"]):not([type="color"]):focus,
+.global-tool-page select:focus,
+.global-tool-page textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--brand-soft-2);
+  outline: none;
+}
+
+.global-tool-page button,
+.global-tool-page .btn,
+.global-tool-page .button,
+.global-tool-page [role="button"] {
+  transition: background-color var(--transition), border-color var(--transition),
+    color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.global-tool-page .card,
+.global-tool-page .panel,
+.global-tool-page .tool-card,
+.global-tool-page .editor-section,
+.global-tool-page .sidebar > *,
+.global-tool-page .info-panel,
+.global-tool-page .input-section,
+.global-tool-page .output-section,
+.global-tool-page .results-section,
+.global-tool-page .drop-area,
+.global-tool-page .calculator,
+.global-tool-page .details-card,
+.global-tool-page .faq-section {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.global-tool-page .drop-area {
+  border-style: dashed;
+}
+
+.global-tool-page .drop-area:hover,
+.global-tool-page .upload-zone:hover {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.global-tool-page .btn-primary,
+.global-tool-page .primary-btn,
+.global-tool-page .generate-btn,
+.global-tool-page .calc-btn,
+.global-tool-page .compress-btn,
+.global-tool-page .download-btn {
+  background: linear-gradient(135deg, var(--brand-strong), var(--brand));
+  border-color: transparent;
+  color: #fff;
+}
+
+.global-tool-page .btn-primary:hover,
+.global-tool-page .primary-btn:hover,
+.global-tool-page .generate-btn:hover,
+.global-tool-page .calc-btn:hover,
+.global-tool-page .compress-btn:hover,
+.global-tool-page .download-btn:hover {
+  box-shadow: var(--shadow-brand);
+  transform: translateY(-1px);
+}
+
+.global-tool-page .btn-secondary,
+.global-tool-page .btn-outline,
+.global-tool-page .secondary-btn,
+.global-tool-page .action-btn.secondary {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.global-tool-page .btn-secondary:hover,
+.global-tool-page .btn-outline:hover,
+.global-tool-page .secondary-btn:hover,
+.global-tool-page .action-btn.secondary:hover {
+  border-color: var(--brand);
+  color: var(--brand-strong);
+}
+
+.global-tool-page .notification,
+.global-tool-page .success-display,
+.global-tool-page .error-display,
+.global-tool-page .status-message {
+  border-radius: var(--radius-md);
+}
+
+.global-tool-page img,
+.global-tool-page canvas,
+.global-tool-page video {
+  max-width: 100%;
+}
+
+@media (max-width: 760px) {
+  .global-tool-page main,
+  .global-tool-page .container,
+  .global-tool-page .app-container,
+  .global-tool-page .page-container,
+  .global-tool-page .tool-container {
+    width: min(100% - 2rem, 1180px);
+  }
+
+  .global-tool-page .main-content,
+  .global-tool-page .content-grid,
+  .global-tool-page .tool-grid,
+  .global-tool-page .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .global-tool-page .sidebar {
+    width: 100%;
+  }
+}
+
+/* ------------------------------------------------------------
+   Controls — uniformly inherit the brand font. Buttons default
+   to the pill shape (any tool-specific radius class overrides
+   this element-level rule, so nothing breaks).
+   ------------------------------------------------------------ */
+button,
+input,
+select,
+textarea {
+  font-family: var(--font);
+}
+
+button,
+input[type="submit"] {
+  border-radius: var(--radius-pill);
+}
+
+/* Explicit action-button helpers */
+.btn,
+.button {
+  border-radius: var(--radius-pill);
+}

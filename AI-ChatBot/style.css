@@ -7,17 +7,17 @@
 }
 
 :root {
-    --primary-color: #8557ff;
-    --primary-light: #9e79ff;
-    --background-color: #f8f9fa;
-    --text-color: #333;
+    --primary-color: #0d9488;
+    --primary-light: #14b8a6;
+    --background-color: #f8fafc;
+    --text-color: #0f172a;
     --card-color: #fff;
-    --border-color: #e1e4e8;
+    --border-color: #e2e8f0;
     --chat-user-bg: #f0f2f5;
     --chat-ai-bg: #f0f0f5;
     --chat-user-text: #333;
     --chat-ai-text: #333;
-    --sidebar-bg: #fff;
+    --sidebar-bg: #ffffff;
     --input-bg: #fff;
     --toast-bg: rgba(51, 51, 51, 0.9);
     --toast-text: #fff;

@@ -1,17 +1,17 @@
 /* ===== FormReady — main.css (base / tokens / layout) ===== */
 
 :root {
-  --primary: #4f46e5;
-  --primary-600: #4338ca;
-  --primary-soft: #eef2ff;
-  --accent: #7c3aed;
-  --bg: #f7f8fc;
+  --primary: #0d9488;
+  --primary-600: #0f766e;
+  --primary-soft: #ccfbf1;
+  --accent: #14b8a6;
+  --bg: #f8fafc;
   --surface: #ffffff;
   --surface-alt: #f3f4fb;
   --border: #e4e7f0;
   --border-strong: #cfd4e6;
-  --text: #1b1f2e;
-  --text-soft: #5b6374;
+  --text: #0f172a;
+  --text-soft: #64748b;
   --muted: #848b9d;
   --success: #16a34a;
   --success-soft: #ecfdf3;

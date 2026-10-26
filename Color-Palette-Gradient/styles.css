@@ -648,6 +648,43 @@ body {
     padding: 0 15px;
   }
 
+  /* Alok Systems visual refresh: preserve palette controls and generation logic. */
+  :root {
+    --primary-color: #0d9488;
+    --secondary-color: #14b8a6;
+    --accent-color: #5eead4;
+    --background-color: #f8fafc;
+    --surface-color: #ffffff;
+    --text-color: #0f172a;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 14px rgba(15, 23, 42, .07);
+    --shadow-lg: 0 18px 40px rgba(15, 23, 42, .11);
+  }
+  [data-theme="dark"] {
+    --background-color: #0b1120;
+    --surface-color: #101a2e;
+    --text-color: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --border-color: #1e293b;
+  }
+  .header {
+    background: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    margin-bottom: 2rem;
+    padding: 1.5rem 1rem;
+  }
+  .title { color: var(--text-color); }
+  .palette-section, .gradient-section, .accessibility-section {
+    border: 1px solid var(--border-color);
+  }
+  .btn-primary { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+  @media (max-width: 600px) {
+    .container { padding: 0 1rem; }
+    .title { font-size: 1.8rem; }
+  }
+
   .title {
     font-size: 2rem;
     flex-direction: column;

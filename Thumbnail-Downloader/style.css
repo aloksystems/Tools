@@ -1,14 +1,14 @@
 /* CSS Variables for Theme Management */
 :root {
-  --primary-color: #ff0000;
-  --primary-hover: #cc0000;
-  --secondary-color: #282828;
-  --accent-color: #00d4aa;
+  --primary-color: #0d9488;
+  --primary-hover: #0f766e;
+  --secondary-color: #0f172a;
+  --accent-color: #14b8a6;
   --text-primary: #212121;
   --text-secondary: #666666;
-  --background: #ffffff;
-  --surface: #f8f9fa;
-  --border: #e1e5e9;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
   --shadow: rgba(0, 0, 0, 0.1);
   --success: #4caf50;
   --error: #f44336;
@@ -24,7 +24,7 @@
   --surface: #1e1e1e;
   --border: #333333;
   --shadow: rgba(0, 0, 0, 0.3);
-  --secondary-color: #ffffff;
+  --secondary-color: #e2e8f0;
 }
 
 /* Base Styles */

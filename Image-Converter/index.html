@@ -39,32 +39,30 @@
     </script>
 </head>
 
-<body data-theme="dark">
-  <!-- Theme Toggle -->
-  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="5"></circle>
-      <line x1="12" y1="1" x2="12" y2="3"></line>
-      <line x1="12" y1="21" x2="12" y2="23"></line>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-      <line x1="1" y1="12" x2="3" y2="12"></line>
-      <line x1="21" y1="12" x2="23" y2="12"></line>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-    </svg>
-    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-    </svg>
-  </button>
+<body data-theme="light">
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="site-brand" href="/" aria-label="Alok Systems Tools home">
+        <span class="site-brand-mark">A</span>
+        <span><strong>Alok Systems</strong><small>Tools</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/">Home</a>
+        <a href="/#tools">Tools</a>
+        <a href="/#about">About</a>
+      </nav>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line></svg>
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+    </div>
+  </header>
 
   <div class="container">
-    <header class="header">
+    <section class="header tool-intro">
       <h1 class="title">Image Format Converter</h1>
-      <p class="subtitle">Convert images between formats instantly</p>
-    </header>
+      <p class="subtitle">Convert JPG, PNG, WebP, AVIF, BMP, GIF, TIFF, and HEIC images privately in your browser.</p>
+    </section>
 
     <!-- Drag & Drop Area -->
     <div id="drop-area" class="drop-area" role="button" tabindex="0" aria-label="Upload images">
@@ -171,9 +169,30 @@
     <!-- Image Previews & Individual Downloads -->
     <div id="preview-container" class="preview-container" role="list"></div>
 
+    <section class="tool-details" aria-labelledby="converter-details-title">
+      <div class="details-heading">
+        <span class="section-kicker">Flexible image conversion</span>
+        <h2 id="converter-details-title">Change formats without uploading your images</h2>
+        <p>Choose an output format and quality, then convert and download your images directly on your device.</p>
+      </div>
+      <div class="details-grid">
+        <article><span class="detail-number">01</span><h3>Add images</h3><p>Drop one or more supported image files into the upload area or browse from your device.</p></article>
+        <article><span class="detail-number">02</span><h3>Choose output</h3><p>Select the format and quality that match your use case before starting conversion.</p></article>
+        <article><span class="detail-number">03</span><h3>Download files</h3><p>Review the converted previews and download individual files or a ZIP archive.</p></article>
+      </div>
+    </section>
+
+    <section class="faq-section" aria-labelledby="converter-faq-title">
+      <h2 id="converter-faq-title">Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        <article><strong>Are my images uploaded?</strong><p>No. Image conversion runs locally in your browser and your files stay on your device.</p></article>
+        <article><strong>Which formats are supported?</strong><p>JPG, PNG, WebP, AVIF, BMP, GIF, TIFF, HEIC, and HEIF files are supported where the browser allows it.</p></article>
+        <article><strong>Can I convert multiple images?</strong><p>Yes. Add multiple images, convert them together, and download all results as a ZIP file.</p></article>
+      </div>
+    </section>
+
     <footer class="footer">
-      <p>© 2026 Image Format Converter | All Rights Reserved</p>
-      <p class="footer-note">All processing happens in your browser. Your images never leave your device.</p>
+      <p>Alok Systems Tools © 2026 · Image conversion happens locally in your browser.</p>
     </footer>
   </div>
 

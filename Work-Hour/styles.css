@@ -13,7 +13,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 1.25rem;
-  background: #f0f2f5;
+  background: #f8fafc;
   transition: background 0.35s;
 }
 
@@ -26,6 +26,7 @@ body.dark {
   width: 100%;
   max-width: 360px;
   background: #fff;
+  border: 1px solid #e2e8f0;
   border-radius: 24px;
   padding: 2rem 1.75rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.04);
@@ -41,7 +42,7 @@ body.dark .card {
 h1 {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #0f172a;
   margin-bottom: 0.1rem;
 }
 
@@ -151,7 +152,7 @@ body.dark .slide-picker .item {
   padding: 0.45rem 0;
   border: none;
   background: transparent;
-  color: #4f6ef7;
+  color: #0d9488;
   font-size: 0.8rem;
   font-weight: 700;
   outline: none;
