@@ -7,11 +7,7 @@
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#0f766e">
   <meta name="description" content="Turn a validated JSON specification into a real Google Form and linked response spreadsheet, created in your Google account.">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Alok Systems Tools">
-  <meta property="og:title" content="FormForge | Google Form Generator">
-  <meta property="og:description" content="Build Google Forms and linked response sheets from a clear JSON specification.">
-  <meta name="author" content="Alok Systems">
+  <title>FormForge — Google Form Generator</title>
   <script>
     try {
       var savedTheme = localStorage.getItem('tools-theme');
@@ -19,65 +15,96 @@
       document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
     } catch (e) {}
   </script>
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"Where are the Form and response Sheet created?","acceptedAnswer":{"@type":"Answer","text":"They are created in the Google account used to authorize and run this web app. Ownership depends on the Apps Script deployment's Execute as setting."}},
-    {"@type":"Question","name":"Does FormForge store my JSON or generated forms?","acceptedAnswer":{"@type":"Answer","text":"FormForge has no external database. The JSON is sent to the Apps Script backend only for validation and to create the resources you requested. Generated Forms and Sheets are saved in Google Drive."}},
-    {"@type":"Question","name":"Can I inspect the form before it is created?","acceptedAnswer":{"@type":"Answer","text":"Yes. Validate the JSON, review the editable preview, and make changes before selecting Generate Google Form."}}
-  ]}
-  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <?!= include('Styles'); ?>
 </head>
 <body>
   <a class="ff-skip" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="site-header-inner">
-      <a class="site-brand" href="https://aloksystems.freedev.app/" aria-label="Alok Systems Tools home"><span class="brand-mark" aria-hidden="true">A</span><span><strong>Alok Systems</strong><small>Tools</small></span></a>
-      <nav class="site-nav" aria-label="Primary navigation"><a href="https://aloksystems.freedev.app/">Home</a><a href="https://aloksystems.freedev.app/#tools">All tools</a><a href="https://aloksystems.freedev.app/#about">About</a></nav>
-      <button class="theme-toggle" id="ffThemeBtn" type="button" aria-label="Switch to dark theme" aria-pressed="false"></button>
+
+  <header class="ff-appbar">
+    <div class="ff-appbar-inner">
+      <a class="ff-brand" href="https://aloksystems.freedev.app/" target="_blank" rel="noopener">
+        <span class="ff-brand-mark" aria-hidden="true">F</span>
+        <span class="ff-brand-copy">
+          <strong>FormForge</strong>
+          <small>Google Form generator</small>
+        </span>
+      </a>
+      <div class="ff-appbar-actions">
+        <span class="ff-account" id="ffAccount" title="Checking your Google account">
+          <span class="ff-dot" id="ffAccountDot" aria-hidden="true"></span>
+          <span id="ffAccountText">Checking account…</span>
+        </span>
+        <a class="ff-tools-link" href="https://aloksystems.freedev.app/#tools" target="_blank" rel="noopener">All tools</a>
+        <button class="ff-icon-btn" id="ffHelpBtn" type="button" aria-label="Help and authorization" aria-haspopup="dialog" aria-controls="ffHelpModal">?</button>
+        <button class="ff-icon-btn" id="ffThemeToggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">☾</button>
+      </div>
     </div>
   </header>
 
   <main class="ff-wrap" id="main">
-    <nav class="ff-breadcrumb" aria-label="Breadcrumb"><a href="https://aloksystems.freedev.app/">Home</a><span aria-hidden="true">›</span><a href="https://aloksystems.freedev.app/#tools">Tools</a><span aria-hidden="true">›</span><strong>FormForge</strong></nav>
     <section class="ff-hero" aria-labelledby="ffPageTitle">
-      <p class="ff-eyebrow">FORMFORGE · YOUR GOOGLE ACCOUNT</p>
-      <h2 class="ff-title" id="ffPageTitle">Create a Google Form</h2>
-      <p class="ff-subtitle">Describe your form as JSON, validate and preview it, then create a real Google Form with a linked response spreadsheet. You review and authorize creation in your own Google account.</p>
-      <div class="ff-trust-row"><span>✓ Preview before creating</span><span>✓ Server-side validation</span><span>✓ No external database</span></div>
-      <button class="ff-btn ff-btn-sm" id="ffHelpBtn" type="button" aria-haspopup="dialog" aria-controls="ffHelpModal">Help and keyboard support</button>
+      <p class="ff-eyebrow">FormForge · Google Workspace</p>
+      <h1 class="ff-title" id="ffPageTitle">Turn a spec into a working Google Form.</h1>
+      <p class="ff-subtitle">Paste JSON, review the live preview, then create a real Form with a linked response sheet — in your own Google account.</p>
+      <div class="ff-hero-actions">
+        <button class="ff-btn ff-btn-primary" id="ffHeroExample" type="button">Load example spec</button>
+        <a class="ff-btn" href="#howto">How it works</a>
+      </div>
+      <div class="ff-chip-row">
+        <span class="ff-chip"><b>✓</b> Preview before creating</span>
+        <span class="ff-chip"><b>✓</b> Server-side validation</span>
+        <span class="ff-chip"><b>✓</b> No external database</span>
+      </div>
     </section>
 
     <div class="ff-grid">
-      <!-- LEFT: editor -->
+      <!-- Step 1: specification -->
       <section class="ff-card" aria-labelledby="ffEditorTitle">
         <div class="ff-card-head">
-          <div><h2 id="ffEditorTitle">1 · Specification (JSON)</h2>
-          <p>Paste JSON without Markdown fences. Edits invalidate validation until re-validated.</p></div>
+          <span class="ff-step" aria-hidden="true">1</span>
+          <div>
+            <h2 id="ffEditorTitle">JSON specification</h2>
+            <p>Paste ChatGPT output — Markdown fences are stripped automatically.</p>
+          </div>
         </div>
         <div class="ff-card-body">
           <div class="ff-toolbar" role="toolbar" aria-label="Editor actions">
-            <button class="ff-btn ff-btn-sm" id="btnPaste">Paste</button>
-            <button class="ff-btn ff-btn-sm" id="btnExample">Load example</button>
-            <button class="ff-btn ff-btn-sm" id="btnValidate">Validate JSON</button>
-            <button class="ff-btn ff-btn-sm" id="btnFormat">Format</button>
-            <button class="ff-btn ff-btn-sm" id="btnClear">Clear</button>
-            <button class="ff-btn ff-btn-sm" id="btnDownload" title="Download current spec as .json">Download</button>
-            <button class="ff-btn ff-btn-sm" id="btnImport" title="Import a .json file">Import</button>
+            <button class="ff-btn ff-btn-sm" id="btnPaste" type="button">Paste</button>
+            <button class="ff-btn ff-btn-sm" id="btnExample" type="button">Load example</button>
+            <button class="ff-btn ff-btn-sm" id="btnFormat" type="button">Format</button>
+            <button class="ff-btn ff-btn-sm" id="btnDownload" type="button" title="Download the current spec as .json">Download</button>
+            <button class="ff-btn ff-btn-sm" id="btnImport" type="button" title="Import a .json file">Import</button>
+            <span class="ff-toolbar-spacer"></span>
+            <button class="ff-btn ff-btn-sm ff-btn-danger-ghost" id="btnClear" type="button">Clear</button>
+            <button class="ff-btn ff-btn-sm ff-btn-primary" id="btnValidate" type="button">Validate JSON</button>
             <input type="file" id="fileImport" accept="application/json,.json" class="sr-only" aria-label="Import JSON file">
           </div>
-          <label class="sr-only" for="ffEditor">JSON specification editor</label>
-          <textarea class="ff-editor" id="ffEditor" spellcheck="false" placeholder='Paste your FormForge JSON here, e.g.&#10;{&#10;  "schemaVersion": "1.0",&#10;  "title": "Student Registration Form",&#10;  ...&#10;}'></textarea>
+
+          <div class="ff-editor-shell">
+            <div class="ff-editor-bar">
+              <span>spec.json</span>
+              <span class="ff-char-count" id="ffCharCount">0 / 262,144 chars</span>
+            </div>
+            <label class="sr-only" for="ffEditor">JSON specification editor</label>
+            <textarea class="ff-editor" id="ffEditor" spellcheck="false" placeholder='Paste your FormForge JSON here, e.g.&#10;{&#10;  "schemaVersion": "1.0",&#10;  "title": "Student Registration Form",&#10;  ...&#10;}'></textarea>
+          </div>
+
           <div class="ff-status" id="ffStatus" role="status" aria-live="polite"><span id="ffStatusText">Not validated yet. Click “Validate JSON”.</span></div>
           <ul class="ff-errors" id="ffErrors" aria-label="Validation errors"></ul>
         </div>
       </section>
 
-      <!-- RIGHT: preview -->
+      <!-- Step 2: preview -->
       <section class="ff-card" aria-labelledby="ffPreviewTitle">
         <div class="ff-card-head">
-          <div><h2 id="ffPreviewTitle">2 · Preview &amp; edit</h2>
-          <p>Visual edits update the JSON automatically.</p></div>
+          <span class="ff-step" aria-hidden="true">2</span>
+          <div>
+            <h2 id="ffPreviewTitle">Preview &amp; edit</h2>
+            <p>Edits sync back to the JSON instantly.</p>
+          </div>
         </div>
         <div class="ff-card-body">
           <div id="ffPreviewEmpty" class="ff-empty">Validate a specification to see a live preview here.</div>
@@ -89,12 +116,12 @@
             <div class="ff-settings" id="pvSettings" aria-label="Form settings"></div>
             <div id="pvQuestions"></div>
             <div class="ff-add-row">
-              <button class="ff-btn ff-btn-sm" id="btnAddQ">+ Add question</button>
-              <button class="ff-btn ff-btn-sm" id="btnSync">Refresh JSON from preview</button>
+              <button class="ff-btn ff-btn-sm" id="btnAddQ" type="button">+ Add question</button>
+              <button class="ff-btn ff-btn-sm" id="btnSync" type="button">Refresh JSON from preview</button>
             </div>
           </div>
           <div class="ff-generate-bar">
-            <button class="ff-btn ff-btn-primary" id="btnGenerate" disabled>Generate Google Form</button>
+            <button class="ff-btn ff-btn-primary" id="btnGenerate" type="button" disabled>Generate Google Form</button>
             <div class="ff-hint" id="ffGenHint">Validate successfully to enable generation.</div>
           </div>
         </div>
@@ -103,44 +130,58 @@
 
     <div id="ffResultSlot" aria-live="polite"></div>
 
-    <!-- HOW TO -->
-    <section class="ff-card ff-howto" aria-labelledby="ffHowTitle">
-      <div class="ff-card-head"><div><h2 id="ffHowTitle">How to use FormForge</h2>
-        <p>ChatGPT writes the spec · FormForge builds the form.</p></div></div>
+    <section class="ff-card ff-howto" id="howto" aria-labelledby="ffHowTitle">
+      <div class="ff-card-head">
+        <span class="ff-step" aria-hidden="true">3</span>
+        <div>
+          <h2 id="ffHowTitle">How it works</h2>
+          <p>ChatGPT writes the spec · FormForge builds the form.</p>
+        </div>
+      </div>
       <div class="ff-card-body">
         <ol>
-          <li>Tell ChatGPT what form you want (purpose, audience, questions, required fields).</li>
-          <li>Ask ChatGPT to return JSON following the FormForge schema (use the prompt below).</li>
-          <li>Copy the JSON <strong>without</strong> surrounding Markdown code fences.</li>
-          <li>Paste it into FormForge and click <strong>Validate JSON</strong>.</li>
-          <li>Review the preview and edit anything.</li>
-          <li>Click <strong>Generate Google Form</strong> and copy your three links.</li>
+          <li>Tell ChatGPT the form you need — purpose, audience, questions and which fields are required.</li>
+          <li>Ask it to answer with JSON using the prompt below, <strong>without</strong> Markdown fences.</li>
+          <li>Paste the JSON, click <strong>Validate JSON</strong>, and fix anything flagged in the preview.</li>
+          <li>Click <strong>Generate Google Form</strong> and copy the respondent link, editor link and response sheet.</li>
         </ol>
         <div class="ff-prompt-actions">
-          <button class="ff-btn ff-btn-sm" id="btnCopyPrompt">Copy ChatGPT Prompt</button>
-          <button class="ff-btn ff-btn-sm" id="btnCopySchema">Copy minimal schema</button>
+          <button class="ff-btn ff-btn-sm" id="btnCopyPrompt" type="button">Copy ChatGPT prompt</button>
+          <button class="ff-btn ff-btn-sm" id="btnCopySchema" type="button">Copy minimal schema</button>
         </div>
         <div class="ff-prompt-box" id="ffPromptBox"></div>
       </div>
     </section>
 
-
     <section class="ff-faq-wrap" aria-labelledby="ffFaqTitle">
-      <div class="ff-section-heading"><p class="ff-eyebrow">BEFORE YOU GENERATE</p><h2 id="ffFaqTitle">Frequently asked questions</h2></div>
-      <details><summary>Where are the Form and response Sheet created?</summary><p>They are created in the Google account used to authorize and run this web app. Ownership depends on the Apps Script deployment's “Execute as” setting.</p></details>
-      <details><summary>Does FormForge store my JSON or generated forms?</summary><p>FormForge has no external database. The JSON is sent to the Apps Script backend only for validation and to create the resources you requested. Generated Forms and Sheets are saved in Google Drive.</p></details>
-      <details><summary>Can I inspect the form before it is created?</summary><p>Yes. Validate the JSON, review the editable preview, and make changes before selecting “Generate Google Form”.</p></details>
-      <details><summary>Why might Google ask me to authorize access?</summary><p>The app needs permission to create Forms and spreadsheets. Review the Google consent screen and grant access only if you want to use these features.</p></details>
+      <div class="ff-section-heading">
+        <p class="ff-eyebrow">Before you generate</p>
+        <h2 id="ffFaqTitle">Frequently asked questions</h2>
+      </div>
+      <details>
+        <summary>Where are the Form and response Sheet created?</summary>
+        <p>They are created in the Google account used to authorize and run this web app. Ownership depends on the Apps Script deployment’s “Execute as” setting.</p>
+      </details>
+      <details>
+        <summary>Does FormForge store my JSON or generated forms?</summary>
+        <p>FormForge has no external database. The JSON is sent to the Apps Script backend only for validation and to create the resources you requested. Generated Forms and Sheets are saved in Google Drive.</p>
+      </details>
+      <details>
+        <summary>Can I inspect the form before it is created?</summary>
+        <p>Yes. Validate the JSON, review the editable preview, and make changes before selecting “Generate Google Form”.</p>
+      </details>
+      <details>
+        <summary>Why might Google ask me to authorize access?</summary>
+        <p>The app needs permission to create Forms and spreadsheets. Review the Google consent screen and grant access only if you want to use these features.</p>
+      </details>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="site-footer-inner">
-      <a class="footer-brand" href="https://aloksystems.freedev.app/" aria-label="Alok Systems Tools home"><span class="brand-mark" aria-hidden="true">A</span><span><strong>Alok Systems Tools</strong><small>Free tools. Private by design.</small></span></a>
-      <nav class="footer-nav" aria-label="Footer navigation"><a href="https://aloksystems.freedev.app/">Home</a><a href="https://aloksystems.freedev.app/#tools">All tools</a><a href="https://aloksystems.freedev.app/#about">About</a></nav>
-    </div>
-    <p class="copyright">© 2026 Alok Systems Tools</p>
+  <footer class="ff-footer">
+    <a href="https://aloksystems.freedev.app/" target="_blank" rel="noopener">Alok Systems Tools</a>
+    · FormForge creates files only in your Google account.
   </footer>
+
   <?!= include('Components'); ?>
   <?!= include('Client'); ?>
 </body>

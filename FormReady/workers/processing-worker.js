@@ -29,14 +29,12 @@ async function makeCanvas(source, w, h) {
 }
 
 function encode(canvas, format, quality) {
+  // "image/jpg" is not a valid MIME type; browsers silently fall back to PNG.
+  const type = format === "jpg" || format === "jpeg" ? "image/jpeg" : `image/${format}`;
   return new Promise((resolve, reject) => {
-    canvas.convertToBlob({ type: `image/${format}`, quality })
+    canvas.convertToBlob({ type, quality })
       .then(resolve)
-      .catch(() => {
-        if (canvas.convertToBlob) {
-          canvas.convertToBlob({ type: `image/${format}`, quality }).then(resolve).catch(reject);
-        } else reject(new Error("No blob conversion in worker"));
-      });
+      .catch(reject);
   });
 }
 

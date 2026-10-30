@@ -1,184 +1,320 @@
-const firebaseConfig = window.APP_FIREBASE_CONFIG;
+(function () {
+    "use strict";
 
-if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey.includes('REPLACE_WITH_NEW_RESTRICTED_API_KEY')) {
-        throw new Error('Firebase config missing. Set js/firebase-config.js with your new restricted API key.');
-}
+    var config = window.APP_FIREBASE_CONFIG;
+    var configReady = Boolean(
+        config &&
+        typeof config.apiKey === "string" &&
+        config.apiKey.length > 0 &&
+        config.apiKey.indexOf("REPLACE_WITH_NEW_RESTRICTED_API_KEY") === -1
+    );
 
-if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-}
-const auth = firebase.auth();
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Get form elements
-    const loginForm = document.getElementById('login-form');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const errorMessage = document.getElementById('error-message');
-    const forgotPasswordLink = document.getElementById('forgot-password-link');
-    const googleLoginBtn = document.getElementById('google-login');
-    const facebookLoginBtn = document.getElementById('facebook-login');
-    
-    // Check if user is already logged in
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            // User is signed in, redirect to dashboard
-            window.location.href = 'dashboard.html';
+    var auth = null;
+    if (configReady && typeof firebase !== "undefined") {
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(config);
+            }
+            auth = firebase.auth();
+        } catch (error) {
+            configReady = false;
         }
-    });
-    
-    // Form submission handler
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Basic validation
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-        
-        if (!isValidEmail(email)) {
-            showError('Please enter a valid email address');
+    }
+
+    var REDIRECT_DELAY = 900;
+    var submitting = false;
+
+    function isValidEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    function isValidPassword(value) {
+        return value.length > 0;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var form = document.getElementById("login-form");
+        if (!form) {
             return;
         }
-        
-        if (password.length < 1) {
-            showError('Please enter your password');
+
+        var emailInput = document.getElementById("email");
+        var passwordInput = document.getElementById("password");
+        var submitButton = document.getElementById("login-submit");
+        var errorBox = document.getElementById("error-message");
+        var statusBox = document.getElementById("status-message");
+        var forgotLink = document.getElementById("forgot-password-link");
+        var googleButton = document.getElementById("google-login");
+        var facebookButton = document.getElementById("facebook-login");
+        var passwordToggle = document.getElementById("toggle-password");
+        var serviceNotice = document.getElementById("serviceNotice");
+
+        if (new URLSearchParams(window.location.search).has("test")) {
+            window.__gcAuth = {
+                configReady: configReady,
+                validateEmail: isValidEmail,
+                validatePassword: isValidPassword
+            };
+        }
+
+        setupPasswordToggle();
+
+        form.addEventListener("submit", handleSubmit);
+        forgotLink.addEventListener("click", handleForgotPassword);
+        googleButton.addEventListener("click", function () {
+            if (auth) {
+                signInWithProvider(new firebase.auth.GoogleAuthProvider(), "Google");
+            }
+        });
+        facebookButton.addEventListener("click", function () {
+            if (auth) {
+                signInWithProvider(new firebase.auth.FacebookAuthProvider(), "Facebook");
+            }
+        });
+        emailInput.addEventListener("input", function () {
+            clearFieldError("email");
+            hideMessage(errorBox);
+        });
+        passwordInput.addEventListener("input", function () {
+            clearFieldError("password");
+            hideMessage(errorBox);
+        });
+
+        if (!auth) {
+            showServiceNotice();
             return;
         }
-        
-        // Sign in with Firebase
-        auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-                // Login successful
-                showNotification('Login successful!');
-                
-                // Redirect to dashboard page after a short delay
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            })
-            .catch(error => {
-                // Handle errors
-                let errorMsg = 'Failed to login. Please check your credentials.';
-                
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    errorMsg = 'Invalid email or password. Please try again.';
-                } else if (error.code === 'auth/too-many-requests') {
-                    errorMsg = 'Too many failed login attempts. Please try again later.';
-                }
-                
-                showError(errorMsg);
-            });
-    });
-    
-    // Forgot password handler
-    forgotPasswordLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        const email = emailInput.value.trim();
-        
-        if (!email || !isValidEmail(email)) {
-            showError('Please enter your email address first');
-            return;
+
+        auth.onAuthStateChanged(function (user) {
+            if (user && !submitting) {
+                window.location.replace("dashboard.html");
+            }
+        });
+
+        // Detect a project where Authentication has not been set up yet.
+        auth.fetchSignInMethodsForEmail("noreply@example.com").catch(function (error) {
+            var code = error && error.code ? error.code : "";
+            var message = String(error && error.message ? error.message : "");
+            if (code === "auth/configuration-not-found" || code === "auth/invalid-api-key" ||
+                code === "auth/operation-not-allowed" || message.indexOf("CONFIGURATION_NOT_FOUND") !== -1) {
+                showServiceNotice();
+            }
+        });
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            hideMessage(errorBox);
+            hideMessage(statusBox);
+
+            var email = emailInput.value.trim();
+            var password = passwordInput.value;
+            var firstInvalid = null;
+
+            if (!isValidEmail(email)) {
+                setFieldError("email", "Enter a valid email address.");
+                firstInvalid = firstInvalid || emailInput;
+            }
+            if (!isValidPassword(password)) {
+                setFieldError("password", "Enter your password to continue.");
+                firstInvalid = firstInvalid || passwordInput;
+            }
+            if (firstInvalid) {
+                firstInvalid.focus();
+                return;
+            }
+            if (!auth) {
+                showMessage(errorBox, "Sign-in is unavailable right now. Reconnect a Firebase project to continue.");
+                return;
+            }
+
+            submitting = true;
+            setLoading(true);
+            auth.signInWithEmailAndPassword(email, password)
+                .then(function () {
+                    showMessage(statusBox, "Signed in successfully. Redirecting…");
+                    window.setTimeout(function () {
+                        window.location.replace("dashboard.html");
+                    }, REDIRECT_DELAY);
+                })
+                .catch(function (error) {
+                    submitting = false;
+                    setLoading(false);
+                    showMessage(errorBox, loginErrorMessage(error));
+                });
         }
-        
-        auth.sendPasswordResetEmail(email)
-            .then(() => {
-                showNotification('Password reset email sent. Please check your inbox.');
-            })
-            .catch(error => {
-                let errorMsg = 'Failed to send password reset email.';
-                
-                if (error.code === 'auth/user-not-found') {
-                    errorMsg = 'No account found with this email address.';
-                }
-                
-                showError(errorMsg);
+
+        function handleForgotPassword(event) {
+            event.preventDefault();
+            if (!auth) {
+                return;
+            }
+            hideMessage(errorBox);
+            hideMessage(statusBox);
+
+            var email = emailInput.value.trim();
+            if (!isValidEmail(email)) {
+                setFieldError("email", "Enter your email first so we can send the reset link.");
+                emailInput.focus();
+                return;
+            }
+
+            forgotLink.setAttribute("aria-disabled", "true");
+            auth.sendPasswordResetEmail(email)
+                .then(function () {
+                    showMessage(statusBox, "Password reset link sent to " + email + ". Check your inbox.");
+                })
+                .catch(function (error) {
+                    var code = error && error.code ? error.code : "";
+                    if (code === "auth/user-not-found") {
+                        showMessage(errorBox, "No account found for that email address.");
+                    } else if (code === "auth/network-request-failed") {
+                        showMessage(errorBox, "Network error. Check your connection and try again.");
+                    } else {
+                        showMessage(errorBox, "We couldn't send the reset email. Please try again.");
+                    }
+                })
+                .then(function () {
+                    forgotLink.removeAttribute("aria-disabled");
+                });
+        }
+
+        function signInWithProvider(provider, label) {
+            hideMessage(errorBox);
+            hideMessage(statusBox);
+            submitting = true;
+            setSocialBusy(true);
+            auth.signInWithPopup(provider)
+                .then(function () {
+                    showMessage(statusBox, "Signed in with " + label + ". Redirecting…");
+                    window.setTimeout(function () {
+                        window.location.replace("dashboard.html");
+                    }, REDIRECT_DELAY);
+                })
+                .catch(function (error) {
+                    submitting = false;
+                    setSocialBusy(false);
+                    var message = socialErrorMessage(label, error);
+                    if (message) {
+                        showMessage(errorBox, message);
+                    }
+                });
+        }
+
+        function setLoading(isLoading) {
+            submitButton.disabled = isLoading;
+            submitButton.textContent = isLoading ? "Signing in…" : "Sign in";
+            form.setAttribute("aria-busy", String(isLoading));
+            setSocialBusy(isLoading);
+        }
+
+        function setSocialBusy(isBusy) {
+            googleButton.disabled = isBusy;
+            facebookButton.disabled = isBusy;
+        }
+
+        function setupPasswordToggle() {
+            if (!passwordToggle) {
+                return;
+            }
+            passwordToggle.addEventListener("click", function () {
+                var show = passwordInput.type === "password";
+                passwordInput.type = show ? "text" : "password";
+                passwordToggle.setAttribute("aria-pressed", String(show));
+                passwordToggle.setAttribute("aria-label", show ? "Hide password" : "Show password");
             });
+        }
+
+        function showServiceNotice() {
+            if (serviceNotice) {
+                serviceNotice.hidden = false;
+            }
+            form.querySelector("fieldset").disabled = true;
+            googleButton.disabled = true;
+            facebookButton.disabled = true;
+            forgotLink.setAttribute("aria-disabled", "true");
+        }
+
+        function setFieldError(fieldName, message) {
+            var field = form.querySelector('[data-field="' + fieldName + '"]');
+            var input = document.getElementById(fieldName);
+            var error = document.getElementById(fieldName + "-error");
+            if (!field || !error) {
+                return;
+            }
+            field.classList.add("has-error");
+            input.setAttribute("aria-invalid", "true");
+            error.textContent = message;
+            error.hidden = false;
+        }
+
+        function clearFieldError(fieldName) {
+            var field = form.querySelector('[data-field="' + fieldName + '"]');
+            var input = document.getElementById(fieldName);
+            var error = document.getElementById(fieldName + "-error");
+            if (!field || !error) {
+                return;
+            }
+            field.classList.remove("has-error");
+            input.removeAttribute("aria-invalid");
+            error.textContent = "";
+            error.hidden = true;
+        }
+
+        function showMessage(box, message) {
+            if (!box) {
+                return;
+            }
+            box.textContent = message;
+            box.hidden = false;
+        }
+
+        function hideMessage(box) {
+            if (!box) {
+                return;
+            }
+            box.textContent = "";
+            box.hidden = true;
+        }
+
+        function loginErrorMessage(error) {
+            var code = error && error.code ? error.code : "";
+            switch (code) {
+                case "auth/invalid-email":
+                    return "That email address doesn't look right.";
+                case "auth/user-disabled":
+                    return "This account has been disabled.";
+                case "auth/user-not-found":
+                case "auth/wrong-password":
+                case "auth/invalid-login-credentials":
+                    return "Email or password is incorrect.";
+                case "auth/too-many-requests":
+                    return "Too many attempts. Wait a minute and try again.";
+                case "auth/network-request-failed":
+                    return "Network error. Check your connection and try again.";
+                case "auth/operation-not-allowed":
+                    return "Email sign-in is not enabled for this project.";
+                default:
+                    return "We couldn't sign you in. Please try again.";
+            }
+        }
+
+        function socialErrorMessage(label, error) {
+            var code = error && error.code ? error.code : "";
+            if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+                return "";
+            }
+            switch (code) {
+                case "auth/account-exists-with-different-credential":
+                    return "That email already uses a different sign-in method.";
+                case "auth/popup-blocked":
+                    return "Your browser blocked the sign-in popup. Allow popups and try again.";
+                case "auth/operation-not-allowed":
+                    return label + " sign-in is not enabled for this project.";
+                case "auth/network-request-failed":
+                    return "Network error. Check your connection and try again.";
+                default:
+                    return label + " sign-in failed. Please try again.";
+            }
+        }
     });
-    
-    // Google Sign In
-    googleLoginBtn.addEventListener('click', () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider)
-            .then(() => {
-                showNotification('Login successful!');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            })
-            .catch(error => {
-                showError('Google sign-in failed. Please try again.');
-                console.error(error);
-            });
-    });
-    
-    // Facebook Sign In
-    facebookLoginBtn.addEventListener('click', () => {
-        const provider = new firebase.auth.FacebookAuthProvider();
-        auth.signInWithPopup(provider)
-            .then(() => {
-                showNotification('Login successful!');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            })
-            .catch(error => {
-                showError('Facebook sign-in failed. Please try again.');
-                console.error(error);
-            });
-    });
-    
-    // Helper functions
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-    
-    function showError(message) {
-        errorMessage.textContent = message;
-        errorMessage.style.display = 'block';
-        
-        // Hide error after 5 seconds
-        setTimeout(() => {
-            errorMessage.style.display = 'none';
-        }, 5000);
-    }
-    
-    // Function to show custom notification
-    function showNotification(message) {
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = 'custom-notification';
-        notification.textContent = message;
-        
-        // Add styles
-        notification.style.position = 'fixed';
-        notification.style.top = '20px';
-        notification.style.left = '50%';
-        notification.style.transform = 'translateX(-50%)';
-        notification.style.backgroundColor = '#6a11cb';
-        notification.style.color = 'white';
-        notification.style.padding = '15px 25px';
-        notification.style.borderRadius = '8px';
-        notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
-        notification.style.zIndex = '1000';
-        notification.style.opacity = '0';
-        notification.style.transition = 'opacity 0.3s ease';
-        
-        // Add to body
-        document.body.appendChild(notification);
-        
-        // Fade in
-        setTimeout(() => {
-            notification.style.opacity = '1';
-        }, 10);
-        
-        // Remove after delay
-        setTimeout(() => {
-            notification.style.opacity = '0';
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 1300);
-    }
-});
+})();

@@ -42,19 +42,19 @@ const projectsData = [
       "A smart Google Forms and Sheets generator that turns structured JSON specifications into ready-to-use Google Forms and linked Google Spreadsheets. Simply paste your form requirements, preview and edit questions, and generate forms automatically with minimal manual effort.",
     tags: ["Google Forms", "Google Sheets", "JSON", "Automation"],
     demo:
-      "https://script.google.com/macros/s/AKfycbwmpwPqUR2QfuaUDw636muhCWxCu2c2LE7f3OE5C0DN5Jrqfw1eEIxPNz7KptI6E43z/exec",
+      "https://script.google.com/macros/s/AKfycbx1AGk1GHLlva2hf7tuK4k62JYLaIV-a89vqRsUE9qrykZQp6TseDQURARuwMJ9pZLb/exec",
     icon: "📝",
     iconColor: "#0F9D58",
     pinned: true,
   },
   {
-    name: "PaceWrite",
+    name: "Assignment Writer",
     category: "Productivity",
     description:
-      "A simple and customizable writing assistant that displays text one word, phrase, or sentence at a time with adjustable timing and highlighting. Designed to make copying long paragraphs and handwritten assignments easier by letting you write at your own comfortable pace. Runs entirely in the browser with no server-side processing.",
-    tags: ["Writing", "Productivity", "Text", "Study"],
+      "A paced writing assistant for handwritten assignments. Paste an assignment, choose how much text to see at once — word, phrase, or sentence — and follow a moving highlight as you write it out by hand at your own speed. Runs entirely in the browser with no uploads.",
+    tags: ["Assignments", "Writing", "Productivity", "Study"],
     demo: "https://aloksystems.freedev.app/WriteFlow/",
-    icon: "P",
+    icon: "A",
     iconColor: "#14B8A6",
     pinned: true,
   },
@@ -272,18 +272,16 @@ const projectsData = [
     featured: true,
     pinned: true,
   },
-  // Hidden temporarily — Firebase project deleted (chat backend unavailable).
-  // To show again, uncomment this block.
-  // {
-  //   name: "Global ChatBot",
-  //   category: "AI & Chatbots",
-  //   description:
-  //     "A mobile-friendly chat application with beautiful UI, user authentication, and real-time translation support.",
-  //   tags: ["JavaScript", "AI", "Translation"],
-  //   demo: "https://aloksystems.freedev.app/Global-ChatBot/",
-  //   icon: "G",
-  //   iconColor: "#14B8A6",
-  // },
+  {
+    name: "Global Chat",
+    category: "AI & Chatbots",
+    description:
+      "Real-time chat with a global room and private rooms. Sign in, reply, react, edit, and delete messages, with presence and typing indicators.",
+    tags: ["JavaScript", "Firebase", "Realtime"],
+    demo: "https://aloksystems.freedev.app/Global-ChatBot/",
+    icon: "G",
+    iconColor: "#14B8A6",
+  },
 
   // Finance & Business
   {

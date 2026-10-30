@@ -1,28 +1,23 @@
-<!-- FormForge — Components.html : reusable icons + modal/toast shells -->
-<template id="ff-icon-set">
-  <span data-icon="check">✓</span>
-</template>
-
+<!-- FormForge — Components.html : help dialog + toast host -->
 <div class="ff-modal-back" id="ffHelpModal" role="dialog" aria-modal="true" aria-labelledby="ffHelpTitle">
   <div class="ff-modal">
     <div class="ff-modal-head">
       <h3 id="ffHelpTitle">Help &amp; authorization</h3>
       <span style="flex:1"></span>
-      <button class="ff-icon-btn" data-close-help aria-label="Close help">✕</button>
+      <button class="ff-icon-btn" data-close-help aria-label="Close help" type="button">✕</button>
     </div>
     <div class="ff-modal-body">
-      <p><strong>FormForge</strong> creates real Google Forms + linked response Sheets in your Google account.</p>
+      <p><strong>FormForge</strong> creates a real Google Form plus a linked response spreadsheet in your Google account.</p>
       <p>On first use Google will ask you to authorize these scopes:</p>
       <ul>
-        <li><code>forms</code> — create &amp; configure forms</li>
+        <li><code>forms</code> — create and configure forms</li>
         <li><code>spreadsheets</code> — create response spreadsheets</li>
         <li><code>drive.file</code> — access files the app creates</li>
-        <li><code>userinfo.email</code> — show your account in the header</li>
+        <li><code>userinfo.email</code> — show your account in the app bar</li>
       </ul>
-      <p>Resources are owned by the account that runs the Web App (see README for Execute-as settings).
-      If you see an authorization error, re-open the deployment URL while signed in and accept the consent screen.</p>
-      <p>Tips: paste JSON <em>without</em> Markdown code fences (no ```json). Use <strong>Validate JSON</strong> before generating.
-      Generation is idempotent — repeated clicks with the same draft won't duplicate forms.</p>
+      <p>Resources are owned by the account that runs the Web App (see the README for Execute-as settings). If you see an authorization error, re-open the deployment URL while signed in and accept the consent screen.</p>
+      <p><strong>Shortcuts:</strong> <code>Ctrl</code>/<code>Cmd</code> + <code>Enter</code> validates the JSON. <code>Esc</code> closes this dialog.</p>
+      <p><strong>Tips:</strong> paste JSON <em>without</em> Markdown fences (no ```json). Validate before generating. Generation is idempotent — repeated clicks with the same draft won’t duplicate forms.</p>
     </div>
   </div>
 </div>

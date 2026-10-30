@@ -1,12 +1,12 @@
 ﻿        :root {
-            --primary-color: #16a34a;
+            --primary-color: #0d9488;
             --secondary-color: #64748b;
-            --accent-color: #f0fdf4;
-            --success-color: #16a34a;
+            --accent-color: rgba(20, 184, 166, 0.09);
+            --success-color: #0d9488;
             --danger-color: #dc2626;
-            --border-radius: 8px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --border-radius: 11px;
+            --shadow: 0 8px 26px rgba(15, 23, 42, 0.06);
+            --shadow-hover: 0 18px 38px -18px rgba(15, 23, 42, 0.22);
         }
 
         * {
@@ -16,11 +16,11 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0fdfa 0%, #f8fafc 60%);
             min-height: 100vh;
             padding: 20px;
-            color: #166534;
+            color: #0f172a;
         }
 
         .container {
@@ -66,7 +66,7 @@
         }
 
         #dropZone {
-            border: 2px dashed #86efac;
+            border: 2px dashed rgba(20, 184, 166, 0.35);
             border-radius: var(--border-radius);
             padding: 40px 20px;
             text-align: center;
@@ -79,7 +79,7 @@
         #dropZone:hover,
         #dropZone.dragover {
             border-color: var(--primary-color);
-            background: #dcfce7;
+            background: rgba(20, 184, 166, 0.12);
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
         }
@@ -103,10 +103,10 @@
         #fileList {
             max-height: 200px;
             overflow-y: auto;
-            border: 1px solid #d1d5db;
+            border: 1px solid #e2e8f0;
             border-radius: var(--border-radius);
             padding: 10px;
-            background: white;
+            background: #ffffff;
             margin-bottom: 20px;
         }
 
@@ -115,7 +115,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 5px 0;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .file-item:last-child {
@@ -151,9 +151,9 @@
         }
 
         #info.success {
-            background: #ecfdf5;
+            background: #f0fdfa;
             border-color: var(--success-color);
-            color: #166534;
+            color: #0f766e;
         }
 
         #info.error {
@@ -177,7 +177,7 @@
         }
 
         button:hover:not(:disabled) {
-            background: #15803d;
+            background: #0f766e;
             transform: translateY(-1px);
             box-shadow: var(--shadow-hover);
         }

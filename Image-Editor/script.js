@@ -132,7 +132,6 @@ const elements = {
   redoBtn: document.getElementById('redoBtn'),
   
   // Dark mode
-  darkModeToggle: document.getElementById('darkModeToggle'),
 };
 
 // ====================
@@ -168,11 +167,14 @@ function setupEventListeners() {
   
   filterInputs.forEach(input => {
     if (input) {
+      // Live preview on input, but only record one history entry when the
+      // adjustment is committed (change), so dragging a slider doesn't flood
+      // the undo stack with dozens of snapshots.
       input.addEventListener('input', debounce(() => {
         updateFilterValues();
-        saveStateToHistory();
         renderCanvas();
       }, 100));
+      input.addEventListener('change', () => saveStateToHistory());
     }
   });
   
@@ -204,6 +206,7 @@ function setupEventListeners() {
   
   // Layer controls
   elements.layerOpacity?.addEventListener('input', updateActiveLayerOpacity);
+  elements.layerOpacity?.addEventListener('change', () => saveStateToHistory());
   elements.blendModeSelect?.addEventListener('change', updateActiveLayerBlendMode);
   elements.addLayerBtn?.addEventListener('click', addNewLayer);
   elements.deleteLayerBtn?.addEventListener('click', deleteActiveLayer);
@@ -229,8 +232,6 @@ function setupEventListeners() {
   state.canvas.addEventListener('touchmove', handleCanvasTouchMove);
   state.canvas.addEventListener('touchend', handleCanvasTouchEnd);
   
-  // Dark mode toggle
-  elements.darkModeToggle?.addEventListener('click', toggleDarkMode);
   
   // Window resize handler (with debounce)
   window.addEventListener('resize', debounce(() => {
@@ -462,7 +463,6 @@ function updateActiveLayerOpacity(e) {
   const opacity = parseInt(e.target.value);
   state.layers[state.activeLayerIndex].opacity = opacity;
   document.getElementById('layerOpacityValue').textContent = opacity + '%';
-  saveStateToHistory();
   renderCanvas();
 }
 
@@ -569,6 +569,8 @@ function saveStateToHistory() {
     rotation: state.rotation,
     currentImageSrc: state.currentImageSrc,
     toolMode: state.toolMode,
+    canvasWidth: state.canvas.width,
+    canvasHeight: state.canvas.height,
   };
   
   state.history.push(stateSnapshot);
@@ -610,6 +612,12 @@ function loadStateFromHistory() {
   state.currentImageSrc = stateSnapshot.currentImageSrc;
   state.toolMode = stateSnapshot.toolMode || 'move';
   updateToolModeButtons();
+
+  // Restore canvas dimensions so undo/redo work correctly after resize/crop.
+  if (stateSnapshot.canvasWidth && stateSnapshot.canvasHeight) {
+    state.canvas.width = stateSnapshot.canvasWidth;
+    state.canvas.height = stateSnapshot.canvasHeight;
+  }
   
   renderLayersList();
   updateLayerControls();
@@ -1768,6 +1776,12 @@ function initializeCollapsibles() {
 // KEYBOARD SHORTCUTS
 // ====================
 function handleKeyboardShortcuts(e) {
+  // Don't hijack shortcuts while the user is typing/editing a field.
+  const t = e.target;
+  const isEditable = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' ||
+    t.tagName === 'SELECT' || t.isContentEditable);
+  if (isEditable) return;
+
   // Undo: Ctrl+Z
   if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
     e.preventDefault();
@@ -1790,23 +1804,29 @@ function handleKeyboardShortcuts(e) {
 // ====================
 // DARK MODE
 // ====================
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-  const isDark = document.body.classList.contains('dark-mode');
-  localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
-  
-  // Update icon
-  const icon = elements.darkModeToggle.querySelector('i');
-  icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+function applyDarkMode(isDark) {
+  document.body.classList.toggle('dark-mode', isDark);
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  try { localStorage.setItem('tools-theme', isDark ? 'dark' : 'light'); } catch (e) {}
 }
 
+new MutationObserver(() => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.body.classList.toggle('dark-mode', isDark);
+}).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
 function loadDarkModeSetting() {
-  const darkMode = localStorage.getItem('darkMode');
-  if (darkMode === 'enabled') {
-    document.body.classList.add('dark-mode');
-    const icon = elements.darkModeToggle.querySelector('i');
-    icon.className = 'fas fa-sun';
-  }
+  let isDark = false;
+  try {
+    const savedTheme = localStorage.getItem('tools-theme');
+    if (savedTheme) {
+      isDark = savedTheme === 'dark';
+    } else {
+      isDark = localStorage.getItem('darkMode') === 'enabled'
+        || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+  } catch (e) {}
+  applyDarkMode(isDark);
 }
 
 // ====================

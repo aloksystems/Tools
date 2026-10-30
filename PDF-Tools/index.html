@@ -9,13 +9,14 @@
     <meta property="og:description" content="PDF Tools - Free, private, browser-based PDF tools for merging, splitting, compressing, converting, and editing PDFs.">
     <meta property="og:type" content="website">
     <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#0f766e">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='60'%20font-family='Arial,sans-serif'%20font-size='30'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EPDF%3C/text%3E%3C/svg%3E">
     <title>PDF Tools</title>
     <script src="theme-init.js"></script>
     <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../back.css">
     <script src="../back.js" defer></script>
@@ -41,45 +42,31 @@
 <body>
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
-            <a class="navbar-brand" href="index.html">
-                <span class="brand-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 3v6h6"/></svg>
-                </span>
-                <span class="brand-text">PDF Tools</span>
-                <span class="brand-badge" title="All processing happens locally in your browser">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-                    Local &amp; Private
-                </span>
-            </a>
             <div class="navbar-search" id="searchWrapper">
                 <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                 <input type="search" id="searchInput" placeholder="Search tools, categories, or keywords..." autocomplete="off" aria-label="Search tools">
                 <kbd class="search-kbd" aria-hidden="true">Ctrl K</kbd>
                 <div class="search-dropdown" id="searchDropdown" role="listbox" aria-label="Search suggestions"></div>
             </div>
-            <div class="navbar-actions">
-                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
-                    <svg class="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                </button>
-            </div>
         </div>
     </nav>
 
     <main class="main">
-        <section class="hero">
+        <section class="hero" aria-labelledby="pageTitle">
             <div class="hero-inner">
-                <h1>PDF tools, without the hassle.</h1>
-                <p>Fast, free, privacy-friendly tools for merging, splitting, converting, editing, and organizing PDFs &mdash; processed locally in your browser.</p>
-                <div class="hero-badge">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                <p class="eyebrow">Private PDF toolkit</p>
+                <h1 id="pageTitle">PDF tools, without the hassle.</h1>
+                <p>Merge, split, compress, convert, sign, and edit PDFs in one place. Every tool runs locally in your browser &mdash; no sign-up and no uploads.</p>
+                <div class="privacy-note">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
                     Files stay on your device
                 </div>
             </div>
         </section>
 
-        <section class="categories-section" id="categories">
+        <section class="categories-section" id="categories" aria-label="Browse tools by category">
             <div class="categories-inner">
-                <div class="categories-scroll" id="categoriesScroll"></div>
+                <div class="categories-scroll" id="categoriesScroll" role="group" aria-label="Tool categories"></div>
                 <div class="categories-meta" id="categoriesMeta"></div>
             </div>
         </section>
@@ -87,7 +74,10 @@
         <section class="tools-section" id="tools">
             <div class="tools-inner">
                 <div class="tools-header" id="toolsHeader">
-                    <h2 class="tools-heading" id="toolsHeading">All tools</h2>
+                    <div>
+                        <p class="eyebrow">Browse the suite</p>
+                        <h2 class="tools-heading" id="toolsHeading">All tools</h2>
+                    </div>
                     <span class="tools-count" id="toolsCount"></span>
                 </div>
                 <div class="tools-grid" id="toolsGrid"></div>
@@ -97,32 +87,48 @@
                     <p class="empty-state-desc">Try a different keyword or browse all categories.</p>
                     <button class="empty-state-action" id="clearSearch">Clear search</button>
                 </div>
+
+                <section class="content-section" aria-labelledby="howTitle">
+                    <div class="section-heading">
+                        <p class="eyebrow">Quick guide</p>
+                        <h2 id="howTitle">How it works</h2>
+                    </div>
+                    <ol class="steps-grid">
+                        <li><span>01</span><div><h3>Pick a tool</h3><p>Search the suite or filter by category to find the right PDF tool.</p></div></li>
+                        <li><span>02</span><div><h3>Add your file</h3><p>Drag and drop a PDF or image. Processing starts in your browser.</p></div></li>
+                        <li><span>03</span><div><h3>Download the result</h3><p>Save the finished file. The original on your device is left untouched.</p></div></li>
+                    </ol>
+                </section>
+
+                <section class="content-section faq-section" aria-labelledby="faqTitle">
+                    <div class="section-heading">
+                        <p class="eyebrow">Help and privacy</p>
+                        <h2 id="faqTitle">Frequently asked questions</h2>
+                    </div>
+                    <details>
+                        <summary>Are my PDFs uploaded to a server?</summary>
+                        <p>No. Each tool processes your file inside this browser. The document is not sent to a server and no copy is stored online.</p>
+                    </details>
+                    <details>
+                        <summary>Is PDF Tools free to use?</summary>
+                        <p>Yes. Every tool is free, with no account, watermark, or export limit.</p>
+                    </details>
+                    <details>
+                        <summary>Do I need to install anything?</summary>
+                        <p>No. Open a modern browser such as Chrome, Edge, Firefox, or Safari and use the tools directly from this page.</p>
+                    </details>
+                    <details>
+                        <summary>Which tools are included?</summary>
+                        <p>Merge, split, crop, rotate, reorder, extract or delete pages, compress, convert to and from images, extract text, edit metadata, protect, unlock, sign, watermark, add page numbers, and scan to PDF.</p>
+                    </details>
+                    <details>
+                        <summary>Why did a tool fail on my PDF?</summary>
+                        <p>Password-protected, damaged, or unusually large PDFs can exceed what the browser can process. Try unlocking the file first, or use a smaller document.</p>
+                    </details>
+                </section>
             </div>
         </section>
     </main>
-
-    <footer class="footer">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <a class="footer-logo" href="/">
-                    <span class="footer-logo-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 3v6h6"/></svg>
-                    </span>
-                    PDF Tools
-                </a>
-                <p class="footer-tagline">Fast, private PDF utilities that run locally in your browser.</p>
-            </div>
-            <div class="footer-links">
-                <a href="#tools">All Tools</a>
-                <a href="#categories">Categories</a>
-                <a href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to Top</a>
-            </div>
-            <div class="footer-bottom">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-                Your files never leave your device.
-            </div>
-        </div>
-    </footer>
 
     <script src="tool-registry.js"></script>
     <script src="app.js"></script>

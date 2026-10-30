@@ -1,209 +1,236 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ultimate Image Compressor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EIC%3C/text%3E%3C/svg%3E">
+  <title>Image Compressor | Compress JPG, PNG &amp; WebP Privately</title>
+  <meta name="description" content="Compress JPG, PNG, and WebP images in your browser. Compare before and after sizes, adjust quality, resize, and download privately — no uploads.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Image-Compressor/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Image Compressor - Alok Systems Tools">
+  <meta property="og:description" content="Shrink JPG, PNG, and WebP files in your browser with a live size comparison. No uploads, no sign-up.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Image-Compressor/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Image Compressor - Alok Systems Tools">
+  <meta name="twitter:description" content="Shrink JPG, PNG, and WebP files in your browser with a live size comparison. No uploads, no sign-up.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Image Compressor",
+    "description":"Compress JPG, PNG, and WebP images locally in your browser with quality, resize, and batch controls.",
+    "url":"https://aloksystems.freedev.app/Image-Compressor/",
+    "applicationCategory":"UtilityApplication",
+    "operatingSystem":"Any",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Are my images uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. Every image is read and compressed inside your browser using the canvas element. Nothing is uploaded or stored online."}},
+      {"@type":"Question","name":"Which formats can I compress?","acceptedAnswer":{"@type":"Answer","text":"You can add JPG, PNG, WebP, GIF, and BMP images that the browser can open. The compressed result can be saved as JPG, WebP, or PNG."}},
+      {"@type":"Question","name":"Why does a PNG file not get smaller?","acceptedAnswer":{"@type":"Answer","text":"PNG is lossless, so the quality slider does not apply. Enabling Resize large images or choosing JPG or WebP will usually reduce the file size."}},
+      {"@type":"Question","name":"Does compressing reduce image dimensions?","acceptedAnswer":{"@type":"Answer","text":"Only when Resize large images is enabled and a side is larger than the maximum dimension. Otherwise the original pixel dimensions are kept."}}
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="description" content="Use Ultimate Image Compressor online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Image-Compressor/">
-    <meta property="og:title" content="Ultimate Image Compressor">
-    <meta property="og:description" content="Use Ultimate Image Compressor online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Image-Compressor/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Ultimate Image Compressor">
-    <meta name="twitter:description" content="Use Ultimate Image Compressor online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Ultimate Image Compressor",
-    "description":  "Use Ultimate Image Compressor online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/Image-Compressor/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
-
 <body>
-  <header class="site-header">
-    <div class="site-header-inner">
-      <a class="site-brand" href="/" aria-label="Alok Systems Tools home">
-        <span class="site-brand-mark">A</span>
-        <span><strong>Alok Systems</strong><small>Tools</small></span>
-      </a>
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="/">Home</a>
-        <a href="/#tools">Tools</a>
-        <a href="/#about">About</a>
-      </nav>
-      <button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">🌙</button>
-    </div>
-    <div class="breadcrumb" aria-label="Breadcrumb">
-      <a href="/">Home</a><span aria-hidden="true">›</span><a href="/#tools">Tools</a>
-      <span aria-hidden="true">›</span><strong>Image Compressor</strong>
-    </div>
-  </header>
-  <div class="container">
-    <section class="tool-intro">
-      <h1>Ultimate Image Compressor</h1>
-      <p>Compress JPG, PNG, WEBP, GIF, and BMP images privately in your browser.</p>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">SMALLER FILES, SAME BROWSER</p>
+      <h1 id="page-title">Image Compressor</h1>
+      <p>Shrink photos for email, websites, and forms — with the quality and file size you choose.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        Your images are processed locally and never uploaded.
+      </div>
     </section>
 
-    <main>
-      <!-- Drop Zone -->
-      <div id="drop-area" class="drop-area">
-        <div class="upload-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-        </div>
-        <p>Drag &amp; Drop Images Here or <span class="highlight">Click to Upload</span></p>
-        <p class="drop-hint">Supports JPG, PNG, WEBP, GIF, BMP</p>
-        <input type="file" id="file-input" multiple accept="image/*">
-      </div>
+    <p id="statusMessage" class="status-banner" role="status" aria-live="polite" hidden></p>
 
-      <!-- File List -->
-      <div id="file-list" class="file-list"></div>
-
-      <!-- Controls -->
-      <div class="compression-controls">
-
-        <!-- Quality Slider -->
-        <div class="quality-control">
-          <div class="control-header">
-            <label for="quality-slider">Compression Quality</label>
-            <span id="quality-value">80%</span>
+    <section class="workspace" aria-label="Image compressor">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="upload-title">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div><h2 id="upload-title">Add images</h2><p>Drop one or more images, browse, or paste a screenshot.</p></div>
           </div>
-          <input type="range" id="quality-slider" min="1" max="100" value="80">
-          <div class="quality-labels">
-            <span>High Compression</span>
-            <span>Best Quality</span>
-          </div>
-        </div>
-
-        <!-- Resize Option -->
-        <div class="resize-control">
-          <div class="control-header">
-            <label for="resize-toggle">Resize Large Images</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="resize-toggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-          <div id="resize-options" class="resize-options">
-            <label for="max-dimension">Max dimension (px):</label>
-            <input type="number" id="max-dimension" value="1920" min="100" max="8000" step="100">
-          </div>
-        </div>
-
-        <!-- Format + Compress -->
-        <div class="format-compress">
-          <div class="format-select">
-            <label for="format">Output Format:</label>
-            <select id="format">
-              <option value="jpg">JPG</option>
-              <option value="webp">WEBP</option>
-              <option value="png">PNG</option>
-            </select>
-          </div>
-          <button id="compress-btn" class="compress-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="8 17 12 21 16 17"></polyline>
-              <line x1="12" y1="12" x2="12" y2="21"></line>
-              <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+          <div class="upload-area" id="drop-area" role="button" tabindex="0" aria-label="Add images. Click, drag and drop, or paste from the clipboard.">
+            <input type="file" id="fileInput" accept="image/*" multiple hidden>
+            <svg class="upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
             </svg>
-            Compress
+            <p class="upload-main-text">Drag &amp; drop your images here</p>
+            <p class="upload-divider">— or —</p>
+            <button id="chooseBtn" class="btn btn-secondary" type="button">Choose images</button>
+            <p class="upload-hint">JPG, PNG, WebP, GIF, or BMP · or press <kbd>Ctrl</kbd> + <kbd>V</kbd> to paste</p>
+          </div>
+          <ul id="file-list" class="file-list" aria-label="Selected images"></ul>
+          <p id="file-summary" class="file-summary" hidden></p>
+        </section>
+
+        <section class="panel" aria-labelledby="settings-title">
+          <div class="panel-heading">
+            <span class="step-number">02</span>
+            <div><h2 id="settings-title">Compression settings</h2><p>Balance quality and file size, then compress everything in one go.</p></div>
+          </div>
+          <div class="settings-grid">
+            <div class="quality-field">
+              <div class="quality-head">
+                <label class="field-label" for="quality-slider">Quality</label>
+                <output id="quality-value" class="quality-value" for="quality-slider">80%</output>
+              </div>
+              <input type="range" id="quality-slider" min="1" max="100" value="80">
+              <div class="range-labels"><span>Smaller file</span><span>Better detail</span></div>
+            </div>
+
+            <div>
+              <label class="field-label" for="format">Output format</label>
+              <select id="format">
+                <option value="jpg">JPG — photos, smallest</option>
+                <option value="webp">WebP — modern and compact</option>
+                <option value="png">PNG — lossless</option>
+              </select>
+            </div>
+
+            <div class="resize-setting">
+              <label class="switch" for="resize-toggle">
+                <input type="checkbox" id="resize-toggle" checked>
+                <span class="switch-track" aria-hidden="true"></span>
+                <span class="switch-label">Resize large images</span>
+              </label>
+              <div id="resize-options" class="resize-options">
+                <label class="field-label" for="max-dimension">Maximum side</label>
+                <div class="input-suffix">
+                  <input type="number" id="max-dimension" value="1920" min="100" max="8000" step="100" inputmode="numeric">
+                  <span>px</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="png-notice" class="notice" hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            PNG is lossless, so the quality slider has no effect. Resizing or choosing JPG/WebP will reduce the size.
+          </div>
+
+          <button id="compress-btn" class="btn btn-primary compress-btn" type="button" disabled>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="8 17 12 21 16 17"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path></svg>
+            Compress images
           </button>
+        </section>
+      </div>
+
+      <aside class="summary-panel" aria-labelledby="result-title">
+        <div class="summary-heading">
+          <p class="eyebrow">BEFORE &amp; AFTER</p>
+          <h2 id="result-title">Your result</h2>
+          <p class="summary-period" id="summaryNote">Add an image to see its preview and size comparison.</p>
         </div>
-      </div>
 
-      <!-- PNG Notice -->
-      <div id="png-notice" class="png-notice hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-        PNG is lossless — quality slider has no effect. Resizing will still reduce file size.
-      </div>
+        <div class="preview-stage">
+          <img id="previewImage" class="preview-image" alt="Selected image preview" hidden>
+          <div id="previewPlaceholder" class="preview-placeholder">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>No image selected</span>
+          </div>
+          <span id="previewBadge" class="preview-badge" hidden></span>
+        </div>
 
-      <!-- Results Section -->
-      <div id="results-section" class="results-section hidden">
-        <h3>Compression Results</h3>
+        <div id="resultSummary" hidden>
+          <div class="size-compare" aria-label="File size comparison">
+            <div class="size-cell">
+              <span class="size-label">Original</span>
+              <strong id="original-size">—</strong>
+            </div>
+            <svg class="compare-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            <div class="size-cell">
+              <span class="size-label">Compressed</span>
+              <strong id="compressed-size">—</strong>
+            </div>
+            <span id="savings-badge" class="savings-badge" hidden>—</span>
+          </div>
 
-        <div class="progress-container">
-          <div class="progress-bar">
+          <div id="progressTrack" class="progress-track" role="progressbar" aria-label="Compression progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
             <div id="progress-fill" class="progress-fill"></div>
           </div>
-          <div class="progress-stats">
-            <span>Original: <strong id="original-size">0 KB</strong></span>
-            <span>Compressed: <strong id="compressed-size">0 KB</strong>
-              &nbsp;<span id="savings-badge" class="savings-badge">0% saved</span>
-            </span>
+          <p id="progressText" class="progress-text" aria-live="polite" hidden></p>
+
+          <dl class="meta-grid">
+            <div><dt>Dimensions</dt><dd id="metaDimensions">—</dd></div>
+            <div><dt>Format</dt><dd id="metaFormat">—</dd></div>
+            <div><dt>File name</dt><dd id="metaName" title="">—</dd></div>
+            <div><dt>Quality</dt><dd id="metaQuality">—</dd></div>
+          </dl>
+
+          <p id="batchSummary" class="batch-summary" hidden></p>
+
+          <div class="export-actions">
+            <button id="download-btn" class="btn btn-primary" type="button" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download image
+            </button>
+            <button id="download-all-btn" class="btn btn-outline" type="button" hidden>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download all (.zip)
+            </button>
           </div>
+
+          <div id="result-list" class="result-list" aria-label="Compressed results"></div>
         </div>
 
-        <div id="results-container" class="results-container"></div>
-
-        <div class="download-all">
-          <button id="download-btn" class="download-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            Download All
-          </button>
-        </div>
-      </div>
-    </main>
-
-    <section class="tool-details" aria-labelledby="compressor-details-title">
-      <div class="details-heading">
-        <span class="section-kicker">Private image processing</span>
-        <h2 id="compressor-details-title">Reduce image size without uploading files</h2>
-        <p>Choose your quality and resize settings, then download optimized images directly to your device.</p>
-      </div>
-      <div class="details-grid">
-        <article><span class="detail-number">01</span><h3>Add images</h3><p>Drop one or more supported image files into the upload area or browse from your device.</p></article>
-        <article><span class="detail-number">02</span><h3>Set compression</h3><p>Choose output format, quality, and an optional maximum dimension for large images.</p></article>
-        <article><span class="detail-number">03</span><h3>Download results</h3><p>Compare the size savings and download one file or all compressed images together.</p></article>
-      </div>
+        <button id="reset-btn" class="btn btn-outline reset-btn" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          Reset
+        </button>
+        <p class="export-note">Nothing is uploaded — compression happens on this device.</p>
+      </aside>
     </section>
 
-    <section class="faq-section" aria-labelledby="compressor-faq-title">
-      <h2 id="compressor-faq-title">Frequently Asked Questions</h2>
-      <div class="faq-grid">
-        <article><strong>Are my images uploaded?</strong><p>No. Compression happens locally in your browser, so your files stay on your device.</p></article>
-        <article><strong>Which formats are supported?</strong><p>You can add JPG, PNG, WEBP, GIF, and BMP images.</p></article>
-        <article><strong>Can I compress multiple images?</strong><p>Yes. Add multiple images and download them individually or as a ZIP file.</p></article>
-      </div>
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to compress an image</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Add your images</h3><p>Drop files, browse your device, or paste an image with Ctrl + V.</p></div></li>
+        <li><span>02</span><div><h3>Choose settings</h3><p>Set quality, output format, and an optional maximum dimension.</p></div></li>
+        <li><span>03</span><div><h3>Compare and download</h3><p>Review the size savings, then save one file or all results as a ZIP.</p></div></li>
+      </ol>
     </section>
 
-    <footer>
-      <p>Alok Systems Tools &copy; 2026 · Images are processed locally in your browser.</p>
-    </footer>
-  </div>
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Are my images uploaded to a server?</summary><p>No. Every image is read and compressed inside your browser using the canvas element. Nothing is uploaded or stored online.</p></details>
+      <details><summary>Which formats can I compress?</summary><p>You can add JPG, PNG, WebP, GIF, and BMP images that the browser can open. The compressed result can be saved as JPG, WebP, or PNG.</p></details>
+      <details><summary>Why does a PNG file not get smaller?</summary><p>PNG is lossless, so the quality slider does not apply. Enabling Resize large images or choosing JPG or WebP will usually reduce the file size.</p></details>
+      <details><summary>Does compressing reduce image dimensions?</summary><p>Only when Resize large images is enabled and a side is larger than the maximum dimension. Otherwise the original pixel dimensions are kept.</p></details>
+    </section>
+  </main>
 
-  <!-- JSZip for bundled download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous"></script>
   <script src="script.js"></script>
 </body>
-
 </html>

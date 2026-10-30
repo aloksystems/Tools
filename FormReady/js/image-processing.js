@@ -121,12 +121,38 @@ export async function compressImageToSizeCanvas(
   }
 
   if (format === "png") {
-    const blob = await canvasToBlob(baseCanvas, "png");
+    let canvas = baseCanvas;
+    let blob = await canvasToBlob(canvas, "png");
+    if (targetBytes && blob.size > targetBytes && allowDimensionReduction) {
+      // PNG is lossless, so a size cap can only be reached by scaling down.
+      let w = canvas.width;
+      let h = canvas.height;
+      for (let i = 0; i < 12; i++) {
+        w *= 0.82;
+        h *= 0.82;
+        if (Math.min(w, h) < 16) break;
+        const shrunk = drawImageOnCanvas(baseCanvas, w, h);
+        const shrunkBlob = await canvasToBlob(shrunk, "png");
+        if (shrunkBlob.size <= targetBytes) {
+          return {
+            blob: shrunkBlob,
+            canvas: shrunk,
+            width: shrunk.width,
+            height: shrunk.height,
+            quality: 1,
+          };
+        }
+        if (shrunkBlob.size < blob.size) {
+          blob = shrunkBlob;
+          canvas = shrunk;
+        }
+      }
+    }
     return {
       blob,
-      canvas: baseCanvas,
-      width: baseCanvas.width,
-      height: baseCanvas.height,
+      canvas,
+      width: canvas.width,
+      height: canvas.height,
       quality: 1,
     };
   }

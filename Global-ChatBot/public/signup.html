@@ -1,86 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Chat - Create Account</title>
-    <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" integrity="sha384-v3Z/Xdw1sCeo6M/geW7sn1Lt9obIm7MhAk8laVV+rvYFmzuWDELOiygx7dVte2dX" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" integrity="sha384-p62xBRve8PdqGDGASZtZMuHgPsyPcT5VsFwgmz2p4zaFdEtt5ZzNqxK+CLzQS7xP" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" integrity="sha384-3LctmFHtNDZwkVOSZ0fvJZJD9XR5Og5ol/MVEfNt36gUUnSYBRJN0iFjIMbFecOg" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="../../back.css">
-    <script src="../../back.js" defer></script>
-
-    <meta name="description" content="Use Global Chat - Create Account online for free. Fast, private, and browser-based with no installation required.">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#0f766e">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EGC%3C/text%3E%3C/svg%3E">
+    <title>Create account | Global Chat</title>
+    <meta name="description" content="Create a free Global Chat account with email, Google, or Facebook to open your dashboard and start chatting in shared rooms.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Global-ChatBot/public/signup.html">
-    <meta property="og:title" content="Global Chat - Create Account">
-    <meta property="og:description" content="Use Global Chat - Create Account online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Global-ChatBot/public/signup">
+    <link rel="canonical" href="https://aloksystems.freedev.app/Global-ChatBot/signup.html">
+    <meta property="og:title" content="Global Chat - Create account">
+    <meta property="og:description" content="Create a free Global Chat account with email, Google, or Facebook to open your dashboard and start chatting in shared rooms.">
+    <meta property="og:url" content="https://aloksystems.freedev.app/Global-ChatBot/signup.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alok Systems Tools">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Global Chat - Create Account">
-    <meta name="twitter:description" content="Use Global Chat - Create Account online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
+    <meta name="twitter:title" content="Global Chat - Create account">
+    <meta name="twitter:description" content="Create a free Global Chat account with email, Google, or Facebook to open your dashboard and start chatting in shared rooms.">
+    <meta name="author" content="Alok Systems">
+    <script type="application/ld+json">
 {
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Global Chat - Create Account",
-    "description":  "Use Global Chat - Create Account online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/Global-ChatBot/public/signup.html",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Global Chat",
+    "description": "Create a free Global Chat account with email, Google, or Facebook to open your dashboard and start chatting in shared rooms.",
+    "url": "https://aloksystems.freedev.app/Global-ChatBot/signup.html",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any"
 }
     </script>
-</head>
-<body>
-    <div class="container">
-        <div class="signup-container">
-            <h1>Create Account</h1>
-            <form id="signup-form">
-                <div class="input-group">
-                    <span class="icon"><i class="fas fa-user"></i></span>
-                    <input type="text" id="username" placeholder="Full Name" required>
-                </div>
-                
-                <div class="input-group">
-                    <span class="icon"><i class="fas fa-envelope"></i></span>
-                    <input type="email" id="email" placeholder="Email" required>
-                </div>
-                
-                <div class="input-group">
-                    <span class="icon"><i class="fas fa-lock"></i></span>
-                    <input type="password" id="password" placeholder="Password (min 6)" autocomplete="new-password" minlength="6" required>
-                </div>
-                
-                <div id="error-message" class="error-message"></div>
-                
-                <button type="submit" class="btn-signup">Sign Up</button>
-                
-                <div class="social-login">
-                    <p>Or sign up with</p>
-                    <div class="social-icons">
-                        <div class="social-icon" id="google-signup">
-                            <i class="fab fa-google" style="color: white;"></i>
-                        </div>
-                        <div class="social-icon" id="facebook-signup">
-                            <i class="fab fa-facebook-f" style="color: white;"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="login-link">
-                    <p>Have account? <a href="login.html" id="login-link">Login</a></p>
-                </div>
-            </form>
-        </div>
-    </div>
 
-<script src="js/firebase-config.js"></script>
-<script src="js/signup.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="../back.css">
+    <script src="../back.js" defer></script>
+    <script>
+      try {
+        var savedTheme = localStorage.getItem('tools-theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+      } catch (e) {}
+    </script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" integrity="sha384-v3Z/Xdw1sCeo6M/geW7sn1Lt9obIm7MhAk8laVV+rvYFmzuWDELOiygx7dVte2dX" crossorigin="anonymous" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" integrity="sha384-p62xBRve8PdqGDGASZtZMuHgPsyPcT5VsFwgmz2p4zaFdEtt5ZzNqxK+CLzQS7xP" crossorigin="anonymous" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" integrity="sha384-3LctmFHtNDZwkVOSZ0fvJZJD9XR5Og5ol/MVEfNt36gUUnSYBRJN0iFjIMbFecOg" crossorigin="anonymous" defer></script>
+    <script src="js/firebase-config.js" defer></script>
+    <script src="js/signup.js" defer></script>
+</head>
+
+<body>
+    <main class="auth-shell">
+        <section class="hero" aria-labelledby="page-title">
+            <p class="eyebrow">GLOBAL CHAT · NEW ACCOUNT</p>
+            <h1 id="page-title">Join Global Chat</h1>
+            <p>Create an account to open your dashboard, start private rooms, and chat with your circle in real time.</p>
+            <div class="privacy-note">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                Registration runs through Firebase — saved only to your account.
+            </div>
+        </section>
+
+        <section class="panel" aria-labelledby="signup-title">
+            <div class="panel-heading">
+                <span class="panel-badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg>
+                </span>
+                <div>
+                    <h2 id="signup-title">Create your account</h2>
+                    <p>It takes less than a minute — no downloads, no installs.</p>
+                </div>
+            </div>
+
+            <div class="auth-notice" id="serviceNotice" role="status" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
+                <div>
+                    <strong>Account creation is not enabled yet</strong>
+                    <p>Enable Authentication in the Firebase console (Authentication &rarr; Get started), then reload this page.</p>
+                </div>
+            </div>
+
+            <form id="signup-form" class="auth-form" novalidate>
+                <fieldset class="auth-fields">
+                    <legend class="visually-hidden">Account details</legend>
+                    <div class="field" data-field="username">
+                        <label for="username">Display name</label>
+                        <div class="input-wrap">
+                            <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <input type="text" id="username" name="username" placeholder="Your name" autocomplete="name" maxlength="60" required aria-describedby="username-error">
+                        </div>
+                        <p class="field-error" id="username-error" hidden></p>
+                    </div>
+
+                    <div class="field" data-field="email">
+                        <label for="email">Email address</label>
+                        <div class="input-wrap">
+                            <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
+                            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required aria-describedby="email-error">
+                        </div>
+                        <p class="field-error" id="email-error" hidden></p>
+                    </div>
+
+                    <div class="field field-password" data-field="password">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                            <input type="password" id="password" name="password" placeholder="Create a password" autocomplete="new-password" minlength="6" required aria-describedby="password-help password-error">
+                            <button class="password-toggle" type="button" id="toggle-password" aria-label="Show password" aria-pressed="false">
+                                <svg class="icon-show" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                <svg class="icon-hide" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18"></path><path d="M10.6 5.2A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a18.7 18.7 0 0 1-3.2 4.2"></path><path d="M6.6 6.6C3.9 8.4 2 12 2 12s3.5 7 10 7a10.7 10.7 0 0 0 4.1-.8"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path></svg>
+                            </button>
+                        </div>
+                        <p class="field-help" id="password-help">Use at least 6 characters.</p>
+                        <p class="field-error" id="password-error" hidden></p>
+                    </div>
+
+                    <div class="form-alert" id="error-message" role="alert" hidden></div>
+                    <div class="form-alert form-alert-success" id="status-message" role="status" hidden></div>
+
+                    <button type="submit" class="btn btn-primary btn-block" id="signup-submit">Create account</button>
+                </fieldset>
+            </form>
+
+            <div class="auth-divider"><span>or sign up with</span></div>
+            <div class="social-grid">
+                <button type="button" class="btn btn-secondary social-btn" id="google-signup">
+                    <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>
+                    <span>Google</span>
+                </button>
+                <button type="button" class="btn btn-secondary social-btn" id="facebook-signup">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.96h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"></path><path fill="#fff" d="M16.67 15.56l.53-3.49h-3.32V9.81c0-.96.47-1.89 1.95-1.89h1.51V4.96s-1.37-.24-2.68-.24c-2.74 0-4.53 1.66-4.53 4.69v2.66H7.08v3.49h3.05V24a12.3 12.3 0 0 0 3.74 0v-8.44h2.8z"></path></svg>
+                    <span>Facebook</span>
+                </button>
+            </div>
+
+            <p class="auth-switch">Already have an account? <a href="login.html">Sign in</a></p>
+        </section>
+
+        <section class="content-section" aria-labelledby="help-title">
+            <div class="section-heading">
+                <p class="eyebrow">HOW IT WORKS</p>
+                <h2 id="help-title">What your account unlocks</h2>
+            </div>
+            <ul class="help-list">
+                <li>
+                    <span class="help-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg></span>
+                    <div>
+                        <h3>A personal dashboard</h3>
+                        <p>Every room you join, every conversation you start — organised in one place.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="help-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"></path></svg></span>
+                    <div>
+                        <h3>Real-time rooms</h3>
+                        <p>Messages sync instantly, so your group sees every reply the moment you send it.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="help-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"></rect><path d="M12 18h.01"></path></svg></span>
+                    <div>
+                        <h3>Signed in everywhere</h3>
+                        <p>Use the same email or social login on your phone and laptop to pick up where you left off.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </main>
 </body>
-</html> 
+
+</html>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pdf-studio-v4';
+const CACHE_NAME = 'pdf-studio-v5';
 const PRECACHE = [
   'index.html',
   'tool.html',
@@ -36,19 +36,27 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) {
-        return cached;
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  event.respondWith((async () => {
+    try {
+      const response = await fetch(event.request);
+      if (response && response.status === 200) {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(event.request, response.clone()).catch(() => {});
       }
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type === 'opaque') {
-          return response;
-        }
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-        return response;
-      });
-    })
-  );
+      return response;
+    } catch (error) {
+      const cached = await caches.match(event.request, { ignoreSearch: true });
+      if (cached) return cached;
+      if (event.request.mode === 'navigate') {
+        const fallback = await caches.match('index.html');
+        if (fallback) return fallback;
+      }
+      return new Response('', { status: 503, statusText: 'Offline' });
+    }
+  })());
 });

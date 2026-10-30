@@ -105,7 +105,7 @@
                 }
                 pageIndices = parseRange(rangeStr, totalPages);
                 if (pageIndices.length === 0) {
-                    info.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Invalid range â€“ no pages selected!';
+                    info.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Invalid range — no pages selected!';
                     info.className = 'error';
                     return;
                 }
@@ -128,7 +128,7 @@
 
                 const zipBlob = await zip.generateAsync({ type: 'blob' });
                 saveAs(zipBlob, `split_pages_${Date.now()}.zip`);
-                info.innerHTML = `<i class="fas fa-check-circle"></i> Success! Split ${pageIndices.length} pages into ZIP â€“ download complete!`;
+                info.innerHTML = `<i class="fas fa-check-circle"></i> Success! Split ${pageIndices.length} pages into ZIP — download complete!`;
                 info.className = 'success';
             } catch (e) {
                 info.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Split failed: ${e.message}`;

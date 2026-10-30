@@ -1,5 +1,5 @@
 ﻿/* ==========================================================================
-   WriteFlow — main application script
+   Assignment Writer — main application script
    Modules: Storage, Settings, TextParser, TimerManager, HighlightManager,
             SessionManager, UIManager, App
    Vanilla JS, no dependencies.
@@ -744,10 +744,22 @@ const UIManager = {
     this.applyTheme();
   },
 
+  _appliedTheme: null,
+
   applyTheme() {
     const s = Settings.current;
-    const isDark = matchMedia("(prefers-color-scheme: dark)").matches;
-    const theme = s.theme === "auto" ? (isDark ? "dark" : "light") : s.theme;
+    let theme = s.theme;
+    if (s.theme === "auto") {
+      // Respect the shared site theme toggle, then fall back to the OS preference.
+      let stored = null;
+      try { stored = localStorage.getItem("tools-theme"); } catch (e) { /* ignore */ }
+      theme = stored === "dark" || stored === "light"
+        ? stored
+        : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    } else {
+      try { localStorage.setItem("tools-theme", theme); } catch (e) { /* ignore */ }
+    }
+    this._appliedTheme = theme;
     document.documentElement.setAttribute("data-theme", theme);
   },
 
@@ -898,6 +910,18 @@ const App = {
 
     // theme auto-switching
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => UIManager.applyTheme());
+
+    // Keep the in-app theme control in step with the shared site theme toggle.
+    new MutationObserver(() => {
+      const theme = document.documentElement.getAttribute("data-theme");
+      if ((theme !== "light" && theme !== "dark") || theme === UIManager._appliedTheme) return;
+      UIManager._appliedTheme = theme;
+      if (Settings.get("theme") !== theme) {
+        Settings.current.theme = theme;
+        Storage.set("theme", theme);
+        UIManager.refreshSettingsControls();
+      }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     this.bindEvents();
     window.addEventListener("keydown", (e) => this.onKeydown(e));

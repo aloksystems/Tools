@@ -1,0 +1,140 @@
+/* Shared dashboard chrome for standalone tool pages. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+.global-tool-page {
+  --shared-surface: #fff;
+  --shared-text: #0f172a;
+  --shared-muted: #64748b;
+  --shared-border: #e2e8f0;
+  --shared-brand: #0f766e;
+  --shared-font:
+    Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html[data-theme="dark"] .global-tool-page {
+  --shared-surface: #101a2e;
+  --shared-text: #e2e8f0;
+  --shared-muted: #94a3b8;
+  --shared-border: #26354a;
+  --shared-brand: #2dd4bf;
+}
+
+body.global-tool-page {
+  min-height: 100vh;
+}
+
+body.global-tool-page :focus-visible {
+  outline: 3px solid #14b8a6;
+  outline-offset: 3px;
+}
+
+body.global-tool-page :is(.global-shell, .global-tool-footer) {
+  font-family: var(--shared-font);
+}
+
+body.global-tool-page :is(.global-tool-footer) {
+  color: var(--shared-text);
+}
+
+body.global-tool-page :is(.global-tool-footer) a {
+  color: var(--shared-muted);
+}
+
+body.global-tool-page :is(.site-footer, .footer, .footer-wrap) {
+  border-color: var(--shared-border);
+}
+
+.global-tool-page .global-shell {
+  color: #0f172a;
+}
+
+.global-tool-page .global-shell a {
+  text-decoration: none;
+}
+
+body.global-tool-page .global-shell .global-theme-toggle {
+  position: static;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 12px;
+}
+
+.global-tool-footer {
+  align-self: stretch;
+  flex: none;
+  width: 100%;
+  margin-top: auto;
+  border-top: 1px solid var(--shared-border);
+  background: var(--shared-surface);
+  color: var(--shared-text);
+}
+
+.global-tool-footer-inner {
+  width: min(100% - 48px, 1120px);
+  min-height: 92px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.global-tool-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--shared-text);
+  text-decoration: none;
+  line-height: 1.25;
+}
+
+.global-tool-footer-brand .global-brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.global-tool-footer-brand strong,
+.global-tool-footer-brand small {
+  display: block;
+}
+
+.global-tool-footer-brand strong {
+  font-size: 0.88rem;
+}
+
+.global-tool-footer-brand small,
+.global-tool-footer-note {
+  color: var(--shared-muted);
+  font-size: 0.78rem;
+}
+
+.global-tool-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.global-tool-footer-nav a {
+  color: var(--shared-muted);
+  font-size: 0.86rem;
+  text-decoration: none;
+}
+
+.global-tool-footer-nav a:hover {
+  color: var(--shared-brand);
+}
+
+@media (max-width: 650px) {
+  .global-tool-footer-inner {
+    width: min(100% - 32px, 1180px);
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+}

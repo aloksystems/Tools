@@ -1,49 +1,288 @@
 <!doctype html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SnapShare | Secure Ephemeral Transfer</title>
-    <script>
-      (function () {
-        try {
-          var stored = localStorage.getItem("snapshare_theme");
-          var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-          var theme = stored === "light" || stored === "dark" ? stored : (prefersDark ? "dark" : "light");
-          document.documentElement.classList.toggle("dark", theme === "dark");
-        } catch (_) {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-    </script>
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="description" content="Use SnapShare | Secure Ephemeral Transfer online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/SnapShare/">
-    <meta property="og:title" content="SnapShare | Secure Ephemeral Transfer">
-    <meta property="og:description" content="Use SnapShare | Secure Ephemeral Transfer online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/SnapShare/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="SnapShare | Secure Ephemeral Transfer">
-    <meta name="twitter:description" content="Use SnapShare | Secure Ephemeral Transfer online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "SnapShare | Secure Ephemeral Transfer",
-    "description":  "Use SnapShare | Secure Ephemeral Transfer online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/SnapShare/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3ESS%3C/text%3E%3C/svg%3E">
+  <title>SnapShare | Ephemeral File Sharing in Your Browser</title>
+  <meta name="description" content="Bundle photos and videos into a self-destructing share link with a password, expiry timer, and one-time view. Files stay in your browser — nothing is uploaded.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/SnapShare/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="SnapShare - Ephemeral File Sharing">
+  <meta property="og:description" content="Create password-protected, self-destructing share links for photos and videos. Everything happens in your browser.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/SnapShare/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SnapShare - Ephemeral File Sharing">
+  <meta name="twitter:description" content="Create password-protected, self-destructing share links for photos and videos. Everything happens in your browser.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"SnapShare",
+    "description":"Create password-protected, self-destructing share links for photos and videos without uploading to a server.",
+    "url":"https://aloksystems.freedev.app/SnapShare/",
+    "applicationCategory":"UtilityApplication",
+    "operatingSystem":"Any",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<body>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">SEND IT, THEN IT'S GONE</p>
+      <h1 id="page-title">SnapShare</h1>
+      <p>Bundle photos and videos into a self-destructing share link — with a password, an expiry timer, and one-time view.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        Files stay in this browser — nothing is uploaded.
+      </div>
+    </section>
+
+    <p id="statusMessage" class="status-banner" role="status" aria-live="polite" hidden></p>
+
+    <!-- ===================== Home / create ===================== -->
+    <div id="viewHome">
+      <div class="workspace">
+        <div class="input-column">
+          <section class="panel" aria-labelledby="files-title">
+            <div class="panel-heading">
+              <span class="step-number">01</span>
+              <div><h2 id="files-title">Add files</h2><p>Drop images or videos, browse, or paste a screenshot.</p></div>
+            </div>
+            <div class="upload-area" id="dropArea" role="button" tabindex="0" aria-label="Add files. Click, drag and drop, or paste from the clipboard.">
+              <input type="file" id="fileInput" accept="image/*,video/*" multiple hidden>
+              <svg class="upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <p class="upload-main-text">Drop files or click to add</p>
+              <p class="upload-divider">— or —</p>
+              <button id="chooseBtn" class="btn btn-secondary" type="button">Choose files</button>
+              <p class="upload-hint">PNG, JPG, WebP, GIF, MP4 · or press <kbd>Ctrl</kbd> + <kbd>V</kbd> to paste</p>
+            </div>
+            <ul id="fileList" class="file-list" aria-label="Selected files"></ul>
+            <p id="fileSummary" class="file-summary" hidden></p>
+          </section>
+
+          <section class="panel" aria-labelledby="settings-title">
+            <div class="panel-heading">
+              <span class="step-number">02</span>
+              <div><h2 id="settings-title">Transfer settings</h2><p>Set how long the link lives and who can open it.</p></div>
+            </div>
+
+            <div class="settings-grid">
+              <div class="settings-field">
+                <span class="field-label" id="expiry-label">Expiry window</span>
+                <div class="chip-row" role="group" aria-labelledby="expiry-label">
+                  <button type="button" class="chip" data-expiry="5m" aria-pressed="false">5m</button>
+                  <button type="button" class="chip" data-expiry="10m" aria-pressed="false">10m</button>
+                  <button type="button" class="chip" data-expiry="30m" aria-pressed="false">30m</button>
+                  <button type="button" class="chip is-active" data-expiry="1h" aria-pressed="true">1h</button>
+                  <button type="button" class="chip" data-expiry="custom" aria-pressed="false">Custom</button>
+                </div>
+                <div id="customExpiryRow" class="custom-expiry" hidden>
+                  <label class="field-label" for="customMinutes">Custom expiry (1–60 min)</label>
+                  <div class="input-suffix">
+                    <input type="number" id="customMinutes" value="12" min="1" max="60" step="1" inputmode="numeric">
+                    <span>min</span>
+                  </div>
+                </div>
+                <p class="expiry-preview"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <span id="expiryPreview">Expires in 60 minutes</span></p>
+              </div>
+
+              <div class="settings-field">
+                <label class="field-label" for="passwordInput">Password protection <span class="field-optional">optional</span></label>
+                <input type="password" id="passwordInput" placeholder="Leave empty for no password" autocomplete="new-password">
+              </div>
+
+              <div class="settings-field settings-field-wide">
+                <label class="field-label" for="slugInput">Custom link name <span class="field-optional">optional</span></label>
+                <input type="text" id="slugInput" placeholder="team-handoff-2026" maxlength="32" spellcheck="false" autocomplete="off" pattern="[A-Za-z0-9-]*">
+                <p class="field-hint">Letters, numbers, and dashes. Generates a random name when empty.</p>
+              </div>
+            </div>
+
+            <div class="toggle-grid">
+              <label class="toggle-card" for="oneTimeView">
+                <input type="checkbox" id="oneTimeView">
+                <span class="toggle-copy"><strong>One-time view</strong><span>Delete 15 seconds after the first open.</span></span>
+                <span class="switch-track" aria-hidden="true"></span>
+              </label>
+              <label class="toggle-card" for="selfDestruct">
+                <input type="checkbox" id="selfDestruct">
+                <span class="toggle-copy"><strong>Delete after download</strong><span>Remove the transfer after the first download.</span></span>
+                <span class="switch-track" aria-hidden="true"></span>
+              </label>
+              <label class="toggle-card" for="blockDownload">
+                <input type="checkbox" id="blockDownload">
+                <span class="toggle-copy"><strong>Disable downloads</strong><span>Allow viewing but block saving the files.</span></span>
+                <span class="switch-track" aria-hidden="true"></span>
+              </label>
+              <label class="toggle-card" for="hideFilenames">
+                <input type="checkbox" id="hideFilenames">
+                <span class="toggle-copy"><strong>Hide file names</strong><span>Show neutral names like Asset_1.jpg.</span></span>
+                <span class="switch-track" aria-hidden="true"></span>
+              </label>
+            </div>
+
+            <button id="createBtn" class="btn btn-primary btn-wide" type="button" disabled>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              Create secure share
+            </button>
+          </section>
+        </div>
+
+        <aside class="side-column">
+          <section class="summary-panel" aria-labelledby="profile-title">
+            <div class="summary-heading">
+              <p class="eyebrow">TRANSFER PROFILE</p>
+              <h2 id="profile-title">Ready to share</h2>
+              <p class="summary-period" id="profileNote">Add a file to see what your link will do.</p>
+            </div>
+            <dl class="meta-grid" id="profileGrid">
+              <div><dt>Files</dt><dd id="profileCount">0</dd></div>
+              <div><dt>Total size</dt><dd id="profileSize">0 KB</dd></div>
+              <div><dt>Expires</dt><dd id="profileExpiry">60 min</dd></div>
+              <div><dt>Password</dt><dd id="profilePassword">Off</dd></div>
+              <div><dt>One-time view</dt><dd id="profileOneTime">Off</dd></div>
+              <div><dt>Downloads</dt><dd id="profileDownload">Allowed</dd></div>
+            </dl>
+          </section>
+
+          <section class="summary-panel" aria-labelledby="history-title">
+            <div class="summary-heading">
+              <p class="eyebrow">ON THIS DEVICE</p>
+              <h2 id="history-title">Recent transfers</h2>
+              <p class="summary-period">Links you created in this browser.</p>
+            </div>
+            <ul id="historyList" class="history-list"></ul>
+            <p id="historyEmpty" class="empty-note">Nothing yet — your first share will appear here.</p>
+          </section>
+
+          <section class="summary-panel" aria-labelledby="how-title">
+            <div class="summary-heading">
+              <p class="eyebrow">HOW IT WORKS</p>
+              <h2 id="how-title">Ephemeral by design</h2>
+            </div>
+            <ul class="how-list">
+              <li><span>1</span>Files are stored locally in this browser with an expiry timer.</li>
+              <li><span>2</span>The link opens the transfer here, protected by your password.</li>
+              <li><span>3</span>Expired or deleted transfers are removed automatically — no copies left behind.</li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ===================== Share / receive ===================== -->
+    <div id="viewShare" hidden>
+      <div id="shareLoading" class="summary-panel center-panel">
+        <p class="muted-text">Loading transfer…</p>
+      </div>
+
+      <section id="shareGate" class="summary-panel gate-panel" hidden aria-labelledby="gate-title">
+        <div class="gate-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </div>
+        <h2 id="gate-title">Password required</h2>
+        <p class="muted-text">This transfer is protected. Enter the password to continue.</p>
+        <form id="gateForm" class="gate-form">
+          <label class="field-label" for="gatePassword">Password</label>
+          <input type="password" id="gatePassword" autocomplete="current-password" placeholder="Enter password" required>
+          <p id="gateError" class="field-error" role="alert" hidden>Incorrect password. Please try again.</p>
+          <button type="submit" class="btn btn-primary btn-wide">Unlock transfer</button>
+        </form>
+      </section>
+
+      <section id="shareExpired" class="summary-panel center-panel" hidden>
+        <div class="gate-icon gate-icon-warn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <h2>Transfer expired</h2>
+        <p class="muted-text">The link is no longer active, or the transfer was deleted.</p>
+        <a class="btn btn-primary" href="#/" id="newTransferLink">Create a new transfer</a>
+      </section>
+
+      <div id="shareContent" class="workspace" hidden>
+        <section class="panel share-stage-panel" aria-labelledby="asset-title">
+          <div class="share-topline">
+            <p class="eyebrow" id="asset-title"><span id="assetCount">0 ASSETS</span></p>
+            <p class="expiry-badge" id="shareExpiry">Expires in 60m</p>
+          </div>
+          <div class="preview-stage">
+            <img id="stageImage" class="preview-image" alt="" hidden>
+            <video id="stageVideo" class="preview-image" controls playsinline hidden></video>
+            <div id="stagePlaceholder" class="preview-placeholder" hidden>
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Select an asset</span>
+            </div>
+          </div>
+          <div id="thumbStrip" class="thumb-strip" role="tablist" aria-label="Transfer assets"></div>
+          <p id="oneTimeNote" class="notice notice-warn" hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span id="oneTimeText">One-time view — this transfer will be deleted 15 seconds after it is opened.</span>
+          </p>
+        </section>
+
+        <aside class="side-column">
+          <section class="summary-panel" aria-labelledby="actions-title">
+            <div class="summary-heading">
+              <h2 id="actions-title">Actions</h2>
+            </div>
+            <div class="stack-actions">
+              <button id="copyLinkBtn" class="btn btn-secondary" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy share link
+              </button>
+              <button id="downloadBtn" class="btn btn-primary" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download current file
+              </button>
+              <button id="deleteBtn" class="btn btn-danger-ghost" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                Delete transfer
+              </button>
+            </div>
+          </section>
+
+          <section class="summary-panel" aria-labelledby="security-title">
+            <div class="summary-heading">
+              <h2 id="security-title">Security profile</h2>
+            </div>
+            <ul class="security-list">
+              <li><span>Password</span><strong id="secPassword">—</strong></li>
+              <li><span>Expiry</span><strong id="secExpiry">—</strong></li>
+              <li><span>One-time view</span><strong id="secOneTime">—</strong></li>
+              <li><span>Downloads</span><strong id="secDownload">—</strong></li>
+              <li><span>File names</span><strong id="secNames">—</strong></li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="script.js"></script>
+</body>
 </html>

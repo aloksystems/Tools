@@ -26,7 +26,9 @@
         async function loadPDF(event) {
             const file = event.target.files[0];
             if (!file) return;
-            dropZone.innerHTML = `<p>Loading ${file.name}...</p>`;
+            const loading = document.createElement('p');
+            loading.textContent = `Loading ${file.name}...`;
+            dropZone.replaceChildren(loading);
             info.textContent = 'Loading PDF...';
             info.className = '';
 
@@ -77,7 +79,7 @@
         }
 
         function togglePage(pageNum, checked) {
-            // Just for tracking â€“ collect on remove
+            // Just for tracking — collect on remove
         }
 
         async function removeSelected() {

@@ -1,7 +1,7 @@
 {
   "name": "Age Calculator",
   "short_name": "AgeCalc",
-  "description": "Calculate your exact age instantly with complete accuracy.",
+  "description": "Find your exact age, total time lived, and next birthday privately.",
   "start_url": "/Age-Calculator/",
   "scope": "/Age-Calculator/",
   "display": "standalone",

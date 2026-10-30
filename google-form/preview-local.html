@@ -1,244 +1,978 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <base target="_blank">
+  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Turn a validated JSON specification into a real Google Form and linked response spreadsheet, created in your Google account.">
+  <title>FormForge — Google Form Generator</title>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-/* FormForge design system — minimal, premium, neutral + restrained indigo accent */
+/* ===== FormForge — Styles.html =====
+   Teal design system shared with the Alok Systems Tools site.
+   Light + dark tokens, app bar, workspace cards, editor, preview, FAQ. */
+
 :root {
-  --bg: #f8fafc;
+  color-scheme: light;
+  --page: #f8fafc;
   --surface: #ffffff;
-  --surface-2: #f1f5f9;
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
+  --surface-soft: #f1f5f9;
   --text: #0f172a;
   --muted: #64748b;
-  --muted-2: #94a3b8;
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-soft: #eef2ff;
-  --success: #15803d;
-  --success-bg: #f0fdf4;
-  --success-border: #bbf7d0;
-  --warning: #b45309;
-  --warning-bg: #fffbeb;
-  --warning-border: #fde68a;
-  --danger: #dc2626;
+  --subtle: #94a3b8;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
+  --brand: #14b8a6;
+  --brand-strong: #0d9488;
+  --brand-deep: #0f766e;
+  --brand-soft: rgba(20, 184, 166, .09);
+  --brand-ring: rgba(20, 184, 166, .22);
+  --ok: #15803d;
+  --ok-bg: #f0fdf4;
+  --ok-line: #bbf7d0;
+  --warn: #b45309;
+  --warn-bg: #fffbeb;
+  --warn-line: #fde68a;
+  --danger: #b91c1c;
   --danger-bg: #fef2f2;
-  --danger-border: #fecaca;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 1px 2px rgba(15,23,42,.06), 0 4px 16px rgba(15,23,42,.06);
-  --shadow-lg: 0 12px 40px rgba(15,23,42,.14);
-  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --danger-line: #fecaca;
+  --shadow: 0 8px 26px rgba(15, 23, 42, .06);
+  --shadow-lg: 0 26px 60px -20px rgba(15, 23, 42, .35);
+  --radius: 18px;
+  --radius-sm: 11px;
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --ease: cubic-bezier(.22, .61, .36, 1);
 }
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0b1120;
+  --surface: #101a2e;
+  --surface-soft: #16223a;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --subtle: #7c8aa0;
+  --line: #26354a;
+  --line-strong: #334155;
+  --brand: #2dd4bf;
+  --brand-strong: #14b8a6;
+  --brand-deep: #2dd4bf;
+  --brand-soft: rgba(45, 212, 191, .1);
+  --brand-ring: rgba(45, 212, 191, .3);
+  --ok: #86efac;
+  --ok-bg: #12261f;
+  --ok-line: #14532d;
+  --warn: #fde68a;
+  --warn-bg: #2a2113;
+  --warn-line: #70511b;
+  --danger: #fecaca;
+  --danger-bg: #351c27;
+  --danger-line: #7f1d1d;
+  --shadow: 0 8px 26px rgba(0, 0, 0, .2);
+  --shadow-lg: 0 26px 60px -20px rgba(0, 0, 0, .55);
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
-  margin: 0; font-family: var(--font); background: var(--bg); color: var(--text);
-  font-size: 15px; line-height: 1.55;
+  min-width: 320px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--page);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
-a { color: var(--accent); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
-/* Header */
-.ff-header {
-  position: sticky; top: 0; z-index: 20;
-  background: rgba(255,255,255,.9); backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
+h1, h2, h3, p { margin: 0; }
+a { color: var(--brand-strong); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+img { max-width: 100%; }
+
+:focus-visible {
+  outline: 3px solid var(--brand-ring);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
-.ff-header-inner {
-  max-width: 1240px; margin: 0 auto; padding: 12px 20px;
-  display: flex; align-items: center; gap: 14px;
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
 }
-.ff-logo { width: 36px; height: 36px; border-radius: 10px; background: var(--text);
-  color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 18px; flex: none; }
-.ff-brand h1 { font-size: 17px; margin: 0; letter-spacing: -.01em; }
-.ff-brand p { margin: 0; font-size: 12.5px; color: var(--muted); }
-.ff-header-spacer { flex: 1; }
-.ff-auth {
-  display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted);
-  border: 1px solid var(--border); background: var(--surface); padding: 6px 12px; border-radius: 999px;
-  max-width: 320px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+
+.ff-skip {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-size: .82rem;
+  font-weight: 700;
+  text-decoration: none;
 }
-.ff-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); flex: none; }
-.ff-dot.ok { background: #22c55e; }
+.ff-skip:focus { top: 10px; }
+
+/* ===== App bar ===== */
+.ff-appbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border-bottom: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.ff-appbar-inner {
+  width: min(100% - 48px, 1180px);
+  margin: 0 auto;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ff-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--text);
+  text-decoration: none;
+  min-width: 0;
+}
+
+.ff-brand-mark {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  box-shadow: 0 8px 20px -8px rgba(20, 184, 166, .55);
+}
+
+.ff-brand-copy { display: grid; line-height: 1.15; min-width: 0; }
+.ff-brand-copy strong { font-size: .95rem; font-weight: 800; letter-spacing: -.01em; }
+.ff-brand-copy small { color: var(--muted); font-size: .72rem; font-weight: 600; }
+
+.ff-appbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ff-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 280px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ff-account span:not(.ff-dot) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ff-dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--subtle);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--subtle) 18%, transparent);
+}
+.ff-dot.ok { background: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+
+.ff-tools-link {
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 7px 10px;
+  border-radius: 9px;
+}
+.ff-tools-link:hover { background: var(--brand-soft); color: var(--brand-strong); }
+
+/* ===== Buttons ===== */
 .ff-btn {
-  appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--text);
-  font: inherit; font-size: 13.5px; font-weight: 600; padding: 8px 14px; border-radius: 9px;
-  cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
-  transition: background .15s, border-color .15s, transform .05s;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: .8rem;
+  font-weight: 650;
+  line-height: 1;
+  text-decoration: none;
+  transition: background .15s var(--ease), border-color .15s var(--ease), transform .06s var(--ease);
 }
-.ff-btn:hover { background: var(--surface-2); border-color: var(--border-strong); }
+.ff-btn:hover { background: var(--surface-soft); border-color: var(--line-strong); }
 .ff-btn:active { transform: translateY(1px); }
-.ff-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
-.ff-btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.ff-btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-.ff-btn-sm { padding: 6px 10px; font-size: 12.5px; border-radius: 8px; }
-.ff-btn svg { width: 15px; height: 15px; }
+.ff-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
-/* Layout */
-.ff-wrap { max-width: 1240px; margin: 0 auto; padding: 28px 20px 60px; }
-.ff-title { font-size: 28px; letter-spacing: -.02em; margin: 0 0 6px; }
-.ff-subtitle { color: var(--muted); margin: 0 0 20px; max-width: 720px; }
-.ff-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 18px; align-items: start; }
-@media (max-width: 980px) { .ff-grid { grid-template-columns: 1fr; } }
-.ff-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
-.ff-card-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-.ff-card-head h2 { font-size: 14px; margin: 0; }
-.ff-card-head p { font-size: 12.5px; color: var(--muted); margin: 0; }
-.ff-card-body { padding: 16px 18px; }
-.ff-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.ff-btn-primary {
+  background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 10px 22px -14px rgba(13, 148, 136, .9);
+}
+.ff-btn-primary:hover { filter: brightness(1.04); background: linear-gradient(135deg, var(--brand-deep), var(--brand)); border-color: transparent; }
+html[data-theme="dark"] .ff-btn-primary { color: #04211e; }
+
+.ff-btn-sm { min-height: 32px; padding: 0 10px; font-size: .76rem; border-radius: 9px; }
+
+.ff-btn-danger-ghost { color: var(--danger); }
+.ff-btn-danger-ghost:hover { background: var(--danger-bg); border-color: var(--danger-line); }
+
+.ff-icon-btn {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1;
+}
+.ff-icon-btn:hover { background: var(--surface-soft); color: var(--text); border-color: var(--line-strong); }
+.ff-icon-btn.danger:hover { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-line); }
+
+/* ===== Layout / hero ===== */
+.ff-wrap {
+  width: min(100% - 48px, 1180px);
+  margin: 0 auto;
+  flex: 1;
+  padding: 38px 0 64px;
+}
+
+.ff-hero {
+  max-width: 800px;
+  margin: 0 auto 30px;
+  text-align: center;
+}
+
+.ff-eyebrow {
+  margin-bottom: 8px;
+  color: var(--brand-deep);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.ff-title {
+  margin-bottom: 10px;
+  font-size: clamp(1.8rem, 3.6vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+.ff-subtitle {
+  max-width: 640px;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: .98rem;
+}
+
+.ff-hero-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.ff-chip-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.ff-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: .74rem;
+  font-weight: 600;
+}
+.ff-chip b { color: var(--brand-deep); font-weight: 800; }
+
+/* ===== Workspace grid ===== */
+.ff-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.ff-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.ff-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.ff-card-head > div { min-width: 0; }
+.ff-card-head h2 {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -.015em;
+}
+.ff-card-head p {
+  margin-top: 1px;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.ff-step {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--brand-soft);
+  border: 1px solid color-mix(in srgb, var(--brand) 24%, transparent);
+  color: var(--brand-deep);
+  font-size: .86rem;
+  font-weight: 800;
+}
+
+.ff-card-body { padding: 18px 20px 20px; }
+
+/* ===== Editor ===== */
+.ff-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+.ff-toolbar-spacer { flex: 1 1 0; min-width: 0; }
+.ff-toolbar .ff-btn-primary {
+  flex: 1 1 100%;
+  min-height: 40px;
+  margin-top: 2px;
+  font-size: .84rem;
+}
+
+.ff-editor-shell {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0b1220;
+}
+
+.ff-editor-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 12px;
+  border-bottom: 1px solid #1e293b;
+  background: #0f172a;
+  color: #94a3b8;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.ff-editor-bar .ff-char-count {
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 600;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+}
+.ff-char-count.is-over { color: #fca5a5; }
+
 .ff-editor {
-  width: 100%; min-height: 420px; resize: vertical; font-family: var(--mono); font-size: 12.8px; line-height: 1.6;
-  border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; background: #0f172a; color: #e2e8f0;
+  display: block;
+  width: 100%;
+  min-height: 430px;
+  padding: 14px;
+  border: 0;
+  resize: vertical;
+  background: #0b1220;
+  color: #e2e8f0;
+  font-family: var(--mono);
+  font-size: 12.6px;
+  line-height: 1.65;
+  tab-size: 2;
 }
-.ff-editor:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-.ff-status { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; border-radius: var(--radius-sm);
-  padding: 10px 12px; margin-top: 12px; border: 1px solid var(--border); background: var(--surface-2); }
-.ff-status.ok { background: var(--success-bg); border-color: var(--success-border); color: #14532d; }
-.ff-status.err { background: var(--danger-bg); border-color: var(--danger-border); color: #7f1d1d; }
-.ff-status.warn { background: var(--warning-bg); border-color: var(--warning-border); color: #78350f; }
-.ff-errors { margin: 10px 0 0; padding: 0; list-style: none; max-height: 220px; overflow: auto; font-size: 12.8px; }
-.ff-errors li { padding: 7px 10px; border: 1px solid var(--danger-border); background: #fff; border-radius: 7px; margin-bottom: 6px; }
-.ff-errors code { font-family: var(--mono); font-size: 11.5px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+.ff-editor::placeholder { color: #475569; }
+.ff-editor:focus-visible { outline: 3px solid var(--brand-ring); outline-offset: -3px; border-radius: 0; }
 
-/* Preview */
-.ff-preview-meta { display: grid; gap: 10px; margin-bottom: 14px; }
-.ff-field label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
-.ff-field input[type=text], .ff-field textarea, .ff-field select {
-  width: 100%; font: inherit; font-size: 13.5px; padding: 9px 11px; border: 1px solid var(--border);
-  border-radius: 8px; background: #fff; color: var(--text);
+.ff-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 550;
 }
-.ff-field textarea { min-height: 56px; resize: vertical; }
-.ff-settings { display: flex; flex-wrap: wrap; gap: 10px 18px; border: 1px dashed var(--border-strong);
-  border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 13px; }
-.ff-check { display: flex; align-items: center; gap: 7px; cursor: pointer; }
-.ff-q { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; background: #fff; }
-.ff-q-top { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-.ff-q-num { font-size: 11px; font-weight: 800; background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: 6px; padding: 2px 7px; color: var(--muted); }
-.ff-q-type { margin-left: auto; font-size: 12px; border: 1px solid var(--border); border-radius: 7px; padding: 5px 8px; font: inherit; background: #fff; }
-.ff-q input[type=text], .ff-q textarea { width: 100%; font: inherit; font-size: 13.5px; padding: 8px 10px;
-  border: 1px solid var(--border); border-radius: 7px; margin-bottom: 7px; }
-.ff-q textarea { min-height: 40px; resize: vertical; font-size: 12.8px; color: var(--muted); }
+.ff-status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: none;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: var(--subtle);
+}
+.ff-status.ok { background: var(--ok-bg); border-color: var(--ok-line); color: var(--ok); }
+.ff-status.ok::before { background: var(--ok); }
+.ff-status.err { background: var(--danger-bg); border-color: var(--danger-line); color: var(--danger); }
+.ff-status.err::before { background: var(--danger); }
+.ff-status.warn { background: var(--warn-bg); border-color: var(--warn-line); color: var(--warn); }
+.ff-status.warn::before { background: var(--warn); }
+
+.ff-errors {
+  max-height: 220px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  overflow: auto;
+  font-size: .8rem;
+}
+.ff-errors:empty { display: none; }
+.ff-errors li {
+  margin-bottom: 6px;
+  padding: 7px 10px;
+  border: 1px solid var(--danger-line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--danger);
+}
+.ff-errors code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--danger-bg);
+  font-family: var(--mono);
+  font-size: .72rem;
+}
+
+/* ===== Preview ===== */
+.ff-empty {
+  padding: 34px 20px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: .85rem;
+  text-align: center;
+}
+
+.ff-preview-meta { display: grid; gap: 12px; margin-bottom: 14px; }
+
+.ff-field { min-width: 0; }
+.ff-field label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 700;
+}
+.ff-field input[type=text],
+.ff-field textarea,
+.ff-field select,
+.ff-q input[type=text],
+.ff-q textarea,
+.ff-q-type {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--page);
+  color: var(--text);
+  font-size: .86rem;
+  padding: 9px 11px;
+  transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+}
+.ff-field input[type=text]:focus,
+.ff-field textarea:focus,
+.ff-field select:focus,
+.ff-q input[type=text]:focus,
+.ff-q textarea:focus,
+.ff-q-type:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+.ff-field textarea { min-height: 58px; resize: vertical; }
+
+.ff-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-bottom: 14px;
+  padding: 11px 13px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 11px;
+  font-size: .8rem;
+}
+.ff-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 550;
+}
+.ff-check input { accent-color: var(--brand-strong); width: 15px; height: 15px; }
+
+.ff-q {
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.ff-q-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.ff-q-num {
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 800;
+}
+.ff-q-top > span[aria-hidden] { color: var(--brand-deep); font-size: .9rem; }
+.ff-q-type {
+  margin-left: auto;
+  width: auto;
+  padding: 5px 8px;
+  font-size: .74rem;
+  font-weight: 600;
+}
+.ff-q input[type=text],
+.ff-q textarea { margin-bottom: 7px; }
+.ff-q textarea { min-height: 42px; font-size: .8rem; color: var(--muted); }
+
 .ff-opts { display: grid; gap: 6px; margin: 6px 0; }
-.ff-opt { display: flex; gap: 7px; align-items: center; }
-.ff-opt input { flex: 1; margin: 0 !important; }
-.ff-icon-btn { border: 1px solid var(--border); background: #fff; border-radius: 7px; width: 28px; height: 28px;
-  display: inline-grid; place-items: center; cursor: pointer; color: var(--muted); font-size: 14px; line-height: 1; flex: none; }
-.ff-icon-btn:hover { background: var(--surface-2); color: var(--text); }
-.ff-icon-btn.danger:hover { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-border); }
-.ff-q-foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-.ff-req { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
-.ff-scale-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.ff-opt { display: flex; align-items: center; gap: 6px; }
+.ff-opt > span[aria-hidden] { width: 16px; flex: none; color: var(--muted); font-size: .78rem; text-align: center; }
+.ff-opt input[type=text] { flex: 1; margin: 0; }
+.ff-q-foot { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.ff-req {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ff-req input { accent-color: var(--brand-strong); width: 15px; height: 15px; }
+
+.ff-scale-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .ff-scale-row .ff-field { flex: 1; min-width: 110px; }
-.ff-add-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-.ff-generate-bar { position: sticky; bottom: 0; padding: 12px 0 4px; background: linear-gradient(transparent, var(--bg) 30%); }
-.ff-generate-bar .ff-btn-primary { width: 100%; justify-content: center; padding: 13px; font-size: 15px; border-radius: 11px; }
-.ff-hint { font-size: 12.5px; color: var(--muted); text-align: center; margin-top: 8px; }
 
-/* Result */
-.ff-result { border: 1px solid var(--success-border); background: var(--success-bg); border-radius: var(--radius);
-  padding: 20px; margin-top: 18px; box-shadow: var(--shadow); }
-.ff-result.partial { background: var(--warning-bg); border-color: var(--warning-border); }
-.ff-result.failed { background: var(--danger-bg); border-color: var(--danger-border); }
-.ff-result h3 { margin: 0 0 6px; font-size: 17px; }
-.ff-links { display: grid; gap: 10px; margin-top: 12px; }
-.ff-link-row { background: #fff; border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px;
-  display: flex; gap: 10px; align-items: center; }
-.ff-link-row strong { font-size: 12.5px; display: block; }
-.ff-link-row a { font-size: 12.5px; word-break: break-all; }
-.ff-link-row .ff-btn { margin-left: auto; flex: none; }
+.ff-add-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
 
-/* How-to */
-.ff-howto { margin-top: 26px; }
-.ff-howto ol { margin: 8px 0; padding-left: 20px; }
+.ff-generate-bar {
+  position: sticky;
+  bottom: 0;
+  margin-top: 14px;
+  padding: 10px 0 2px;
+  background: linear-gradient(transparent, var(--surface) 32%);
+}
+.ff-generate-bar .ff-btn-primary {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  font-size: .94rem;
+  font-weight: 750;
+}
+.ff-hint {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: .76rem;
+  text-align: center;
+}
+
+/* ===== Result ===== */
+.ff-result {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid var(--ok-line);
+  border-radius: var(--radius);
+  background: var(--ok-bg);
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+.ff-result.partial { border-color: var(--warn-line); background: var(--warn-bg); }
+.ff-result.failed { border-color: var(--danger-line); background: var(--danger-bg); }
+.ff-result h3 { margin-bottom: 5px; font-size: 1.02rem; font-weight: 800; }
+
+.ff-links { display: grid; gap: 9px; margin-top: 12px; }
+.ff-link-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.ff-link-row > div { min-width: 0; flex: 1; }
+.ff-link-row strong { display: block; font-size: .76rem; }
+.ff-link-row a { display: block; font-size: .78rem; overflow-wrap: anywhere; }
+
+/* ===== How-to / FAQ ===== */
+.ff-howto { margin-top: 22px; }
+.ff-howto ol {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: .88rem;
+}
 .ff-howto li { margin-bottom: 6px; }
-.ff-prompt-box { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 14px; font-family: var(--mono);
-  font-size: 12px; line-height: 1.6; white-space: pre-wrap; max-height: 260px; overflow: auto; margin-top: 10px; }
-.ff-footer { color: var(--muted); font-size: 12.5px; text-align: center; margin-top: 30px; }
+.ff-howto li strong { color: var(--text); }
+.ff-prompt-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+.ff-prompt-box {
+  max-height: 250px;
+  overflow: auto;
+  padding: 14px;
+  border-radius: 11px;
+  background: #0b1220;
+  color: #cbd5e1;
+  font-family: var(--mono);
+  font-size: 11.8px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
 
-/* Modal + toast */
-.ff-modal-back { position: fixed; inset: 0; background: rgba(15,23,42,.45); display: none; place-items: center; z-index: 50; padding: 16px; }
+.ff-faq-wrap {
+  margin-top: 22px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.ff-section-heading { margin-bottom: 10px; }
+.ff-section-heading h2 { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; }
+.ff-faq-wrap details { border-top: 1px solid var(--line); }
+.ff-faq-wrap details:first-of-type { border-top: 0; }
+.ff-faq-wrap summary {
+  padding: 12px 2px;
+  font-size: .86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ff-faq-wrap summary::marker { color: var(--brand-strong); }
+.ff-faq-wrap details p {
+  padding: 0 2px 14px;
+  color: var(--muted);
+  font-size: .84rem;
+}
+
+.ff-footer {
+  width: min(100% - 48px, 1180px);
+  margin: 0 auto;
+  padding: 20px 0 28px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .76rem;
+  text-align: center;
+}
+.ff-footer a { color: var(--brand-strong); font-weight: 700; text-decoration: none; }
+.ff-footer a:hover { text-decoration: underline; }
+
+/* ===== Modal + toast ===== */
+.ff-modal-back {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  place-items: center;
+  padding: 16px;
+  background: rgba(8, 15, 28, .5);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
 .ff-modal-back.open { display: grid; }
-.ff-modal { background: #fff; border-radius: 14px; max-width: 560px; width: 100%; box-shadow: var(--shadow-lg);
-  max-height: 85vh; overflow: auto; }
-.ff-modal head, .ff-modal-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-.ff-modal-head h3 { margin: 0; font-size: 16px; }
-.ff-modal-body { padding: 16px 20px; font-size: 14px; }
-#ffToast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(20px); background: #0f172a;
-  color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 13.5px; opacity: 0; pointer-events: none;
-  transition: opacity .2s, transform .2s; z-index: 60; max-width: min(92vw, 520px); text-align: center; }
+.ff-modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: 86vh;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+}
+.ff-modal-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.ff-modal-head h3 { margin: 0; font-size: 1rem; font-weight: 800; }
+.ff-modal-body { padding: 16px 18px 20px; font-size: .87rem; }
+.ff-modal-body p { margin-bottom: 10px; color: var(--text); }
+.ff-modal-body ul { margin: 0 0 10px; padding-left: 18px; color: var(--muted); }
+.ff-modal-body li { margin-bottom: 4px; }
+.ff-modal-body code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--surface-soft);
+  font-family: var(--mono);
+  font-size: .78rem;
+}
+
+#ffToast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  z-index: 70;
+  max-width: min(92vw, 520px);
+  padding: 10px 16px;
+  border-radius: 11px;
+  background: #0f172a;
+  color: #e2e8f0;
+  box-shadow: 0 16px 38px -12px rgba(0, 0, 0, .5);
+  font-size: .82rem;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(16px);
+  transition: opacity .2s var(--ease), transform .2s var(--ease);
+}
 #ffToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.ff-spinner { width: 15px; height: 15px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
-  border-radius: 50%; animation: ffspin .7s linear infinite; display: inline-block; }
+
+.ff-spinner {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  border: 2px solid rgba(255, 255, 255, .4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: ffspin .7s linear infinite;
+}
+html[data-theme="dark"] .ff-spinner { border-color: rgba(4, 33, 30, .3); border-top-color: #04211e; }
 @keyframes ffspin { to { transform: rotate(360deg); } }
-.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
-.ff-empty { border: 1px dashed var(--border-strong); border-radius: 10px; padding: 22px; text-align: center;
-  color: var(--muted); font-size: 13.5px; }
-@media (max-width: 640px) {
-  .ff-wrap { padding: 18px 12px 50px; }
-  .ff-title { font-size: 22px; }
+
+/* ===== Responsive ===== */
+@media (max-width: 980px) {
+  .ff-grid { grid-template-columns: 1fr; }
+  .ff-editor { min-height: 320px; }
+}
+
+@media (max-width: 760px) {
+  .ff-appbar-inner { min-height: 62px; gap: 10px; }
+  .ff-brand-copy small { display: none; }
+  .ff-account { max-width: 34px; padding: 6px 8px; }
+  .ff-account span:not(.ff-dot) { display: none; }
+  .ff-tools-link { display: none; }
+  .ff-wrap { width: min(100% - 28px, 1180px); padding: 26px 0 48px; }
+  .ff-card-head { padding: 13px 15px; }
+  .ff-card-body { padding: 15px; }
+  .ff-title { font-size: clamp(1.65rem, 6vw, 2rem); }
+  .ff-footer { width: min(100% - 28px, 1180px); }
+  .ff-howto ol { font-size: .84rem; }
+}
+
+@media (max-width: 480px) {
+  .ff-wrap { width: min(100% - 22px, 1180px); }
+  .ff-appbar-inner { width: min(100% - 22px, 1180px); padding: 0; }
+  .ff-brand-mark { width: 34px; height: 34px; }
+  .ff-brand-copy strong { font-size: .88rem; }
+  .ff-card-head { padding: 12px; }
   .ff-card-body { padding: 12px; }
-  .ff-editor { min-height: 300px; }
-  .ff-auth span { display: none; }
+  .ff-toolbar { gap: 6px; }
+  .ff-btn-sm { min-height: 30px; }
+  .ff-editor { min-height: 280px; font-size: 12px; }
+  .ff-footer { width: min(100% - 22px, 1180px); }
+  .ff-faq-wrap { padding: 17px; }
+  .ff-link-row { flex-wrap: wrap; }
+  .ff-link-row .ff-btn { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 </style>
 
 </head>
 <body>
-  <header class="ff-header">
-    <div class="ff-header-inner">
-      <div class="ff-logo" aria-hidden="true">F</div>
-      <div class="ff-brand">
-        <h1>FormForge</h1>
-        <p>Turn structured specifications into Google Forms.</p>
+  <a class="ff-skip" href="#main">Skip to content</a>
+
+  <header class="ff-appbar">
+    <div class="ff-appbar-inner">
+      <a class="ff-brand" href="https://aloksystems.freedev.app/" target="_blank" rel="noopener">
+        <span class="ff-brand-mark" aria-hidden="true">F</span>
+        <span class="ff-brand-copy">
+          <strong>FormForge</strong>
+          <small>Google Form generator</small>
+        </span>
+      </a>
+      <div class="ff-appbar-actions">
+        <span class="ff-account" id="ffAccount" title="Checking your Google account">
+          <span class="ff-dot" id="ffAccountDot" aria-hidden="true"></span>
+          <span id="ffAccountText">Checking account…</span>
+        </span>
+        <a class="ff-tools-link" href="https://aloksystems.freedev.app/#tools" target="_blank" rel="noopener">All tools</a>
+        <button class="ff-icon-btn" id="ffHelpBtn" type="button" aria-label="Help and authorization" aria-haspopup="dialog" aria-controls="ffHelpModal">?</button>
+        <button class="ff-icon-btn" id="ffThemeToggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">☾</button>
       </div>
-      <div class="ff-header-spacer"></div>
-      <div class="ff-auth" id="ffAuth" title="Google account status">
-        <span class="ff-dot" id="ffAuthDot"></span><span id="ffAuthText">Checking account…</span>
-      </div>
-      <button class="ff-btn ff-btn-sm" id="ffHelpBtn" aria-haspopup="dialog">Help</button>
     </div>
   </header>
 
-  <main class="ff-wrap">
-    <h2 class="ff-title">Create a Google Form</h2>
-    <p class="ff-subtitle">Paste a ChatGPT-generated JSON specification, validate it, preview the form, edit anything, then generate a real Google Form with a linked response spreadsheet.</p>
+  <main class="ff-wrap" id="main">
+    <section class="ff-hero" aria-labelledby="ffPageTitle">
+      <p class="ff-eyebrow">FormForge · Google Workspace</p>
+      <h1 class="ff-title" id="ffPageTitle">Turn a spec into a working Google Form.</h1>
+      <p class="ff-subtitle">Paste JSON, review the live preview, then create a real Form with a linked response sheet — in your own Google account.</p>
+      <div class="ff-hero-actions">
+        <button class="ff-btn ff-btn-primary" id="ffHeroExample" type="button">Load example spec</button>
+        <a class="ff-btn" href="#howto">How it works</a>
+      </div>
+      <div class="ff-chip-row">
+        <span class="ff-chip"><b>✓</b> Preview before creating</span>
+        <span class="ff-chip"><b>✓</b> Server-side validation</span>
+        <span class="ff-chip"><b>✓</b> No external database</span>
+      </div>
+    </section>
 
     <div class="ff-grid">
-      <!-- LEFT: editor -->
+      <!-- Step 1: specification -->
       <section class="ff-card" aria-labelledby="ffEditorTitle">
         <div class="ff-card-head">
-          <div><h2 id="ffEditorTitle">1 · Specification (JSON)</h2>
-          <p>Paste JSON without Markdown fences. Edits invalidate validation until re-validated.</p></div>
+          <span class="ff-step" aria-hidden="true">1</span>
+          <div>
+            <h2 id="ffEditorTitle">JSON specification</h2>
+            <p>Paste ChatGPT output — Markdown fences are stripped automatically.</p>
+          </div>
         </div>
         <div class="ff-card-body">
           <div class="ff-toolbar" role="toolbar" aria-label="Editor actions">
-            <button class="ff-btn ff-btn-sm" id="btnPaste">Paste</button>
-            <button class="ff-btn ff-btn-sm" id="btnExample">Load example</button>
-            <button class="ff-btn ff-btn-sm" id="btnValidate">Validate JSON</button>
-            <button class="ff-btn ff-btn-sm" id="btnFormat">Format</button>
-            <button class="ff-btn ff-btn-sm" id="btnClear">Clear</button>
-            <button class="ff-btn ff-btn-sm" id="btnDownload" title="Download current spec as .json">Download</button>
-            <button class="ff-btn ff-btn-sm" id="btnImport" title="Import a .json file">Import</button>
+            <button class="ff-btn ff-btn-sm" id="btnPaste" type="button">Paste</button>
+            <button class="ff-btn ff-btn-sm" id="btnExample" type="button">Load example</button>
+            <button class="ff-btn ff-btn-sm" id="btnFormat" type="button">Format</button>
+            <button class="ff-btn ff-btn-sm" id="btnDownload" type="button" title="Download the current spec as .json">Download</button>
+            <button class="ff-btn ff-btn-sm" id="btnImport" type="button" title="Import a .json file">Import</button>
+            <span class="ff-toolbar-spacer"></span>
+            <button class="ff-btn ff-btn-sm ff-btn-danger-ghost" id="btnClear" type="button">Clear</button>
+            <button class="ff-btn ff-btn-sm ff-btn-primary" id="btnValidate" type="button">Validate JSON</button>
             <input type="file" id="fileImport" accept="application/json,.json" class="sr-only" aria-label="Import JSON file">
           </div>
-          <label class="sr-only" for="ffEditor">JSON specification editor</label>
-          <textarea class="ff-editor" id="ffEditor" spellcheck="false" placeholder='Paste your FormForge JSON here, e.g.&#10;{&#10;  "schemaVersion": "1.0",&#10;  "title": "Student Registration Form",&#10;  ...&#10;}'></textarea>
+
+          <div class="ff-editor-shell">
+            <div class="ff-editor-bar">
+              <span>spec.json</span>
+              <span class="ff-char-count" id="ffCharCount">0 / 262,144 chars</span>
+            </div>
+            <label class="sr-only" for="ffEditor">JSON specification editor</label>
+            <textarea class="ff-editor" id="ffEditor" spellcheck="false" placeholder='Paste your FormForge JSON here, e.g.&#10;{&#10;  "schemaVersion": "1.0",&#10;  "title": "Student Registration Form",&#10;  ...&#10;}'></textarea>
+          </div>
+
           <div class="ff-status" id="ffStatus" role="status" aria-live="polite"><span id="ffStatusText">Not validated yet. Click “Validate JSON”.</span></div>
           <ul class="ff-errors" id="ffErrors" aria-label="Validation errors"></ul>
         </div>
       </section>
 
-      <!-- RIGHT: preview -->
+      <!-- Step 2: preview -->
       <section class="ff-card" aria-labelledby="ffPreviewTitle">
         <div class="ff-card-head">
-          <div><h2 id="ffPreviewTitle">2 · Preview &amp; edit</h2>
-          <p>Visual edits update the JSON automatically.</p></div>
+          <span class="ff-step" aria-hidden="true">2</span>
+          <div>
+            <h2 id="ffPreviewTitle">Preview &amp; edit</h2>
+            <p>Edits sync back to the JSON instantly.</p>
+          </div>
         </div>
         <div class="ff-card-body">
           <div id="ffPreviewEmpty" class="ff-empty">Validate a specification to see a live preview here.</div>
@@ -250,12 +984,12 @@ a { color: var(--accent); }
             <div class="ff-settings" id="pvSettings" aria-label="Form settings"></div>
             <div id="pvQuestions"></div>
             <div class="ff-add-row">
-              <button class="ff-btn ff-btn-sm" id="btnAddQ">+ Add question</button>
-              <button class="ff-btn ff-btn-sm" id="btnSync">Refresh JSON from preview</button>
+              <button class="ff-btn ff-btn-sm" id="btnAddQ" type="button">+ Add question</button>
+              <button class="ff-btn ff-btn-sm" id="btnSync" type="button">Refresh JSON from preview</button>
             </div>
           </div>
           <div class="ff-generate-bar">
-            <button class="ff-btn ff-btn-primary" id="btnGenerate" disabled>Generate Google Form</button>
+            <button class="ff-btn ff-btn-primary" id="btnGenerate" type="button" disabled>Generate Google Form</button>
             <div class="ff-hint" id="ffGenHint">Validate successfully to enable generation.</div>
           </div>
         </div>
@@ -264,55 +998,78 @@ a { color: var(--accent); }
 
     <div id="ffResultSlot" aria-live="polite"></div>
 
-    <!-- HOW TO -->
-    <section class="ff-card ff-howto" aria-labelledby="ffHowTitle">
-      <div class="ff-card-head"><div><h2 id="ffHowTitle">How to use FormForge</h2>
-        <p>ChatGPT writes the spec · FormForge builds the form.</p></div></div>
+    <section class="ff-card ff-howto" id="howto" aria-labelledby="ffHowTitle">
+      <div class="ff-card-head">
+        <span class="ff-step" aria-hidden="true">3</span>
+        <div>
+          <h2 id="ffHowTitle">How it works</h2>
+          <p>ChatGPT writes the spec · FormForge builds the form.</p>
+        </div>
+      </div>
       <div class="ff-card-body">
         <ol>
-          <li>Tell ChatGPT what form you want (purpose, audience, questions, required fields).</li>
-          <li>Ask ChatGPT to return JSON following the FormForge schema (use the prompt below).</li>
-          <li>Copy the JSON <strong>without</strong> surrounding Markdown code fences.</li>
-          <li>Paste it into FormForge and click <strong>Validate JSON</strong>.</li>
-          <li>Review the preview and edit anything.</li>
-          <li>Click <strong>Generate Google Form</strong> and copy your three links.</li>
+          <li>Tell ChatGPT the form you need — purpose, audience, questions and which fields are required.</li>
+          <li>Ask it to answer with JSON using the prompt below, <strong>without</strong> Markdown fences.</li>
+          <li>Paste the JSON, click <strong>Validate JSON</strong>, and fix anything flagged in the preview.</li>
+          <li>Click <strong>Generate Google Form</strong> and copy the respondent link, editor link and response sheet.</li>
         </ol>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <button class="ff-btn ff-btn-sm" id="btnCopyPrompt">Copy ChatGPT Prompt</button>
-          <button class="ff-btn ff-btn-sm" id="btnCopySchema">Copy minimal schema</button>
+        <div class="ff-prompt-actions">
+          <button class="ff-btn ff-btn-sm" id="btnCopyPrompt" type="button">Copy ChatGPT prompt</button>
+          <button class="ff-btn ff-btn-sm" id="btnCopySchema" type="button">Copy minimal schema</button>
         </div>
         <div class="ff-prompt-box" id="ffPromptBox"></div>
       </div>
     </section>
 
-    <p class="ff-footer">FormForge · Google Apps Script · Forms + Sheets are created in your own Google account. No external database.</p>
+    <section class="ff-faq-wrap" aria-labelledby="ffFaqTitle">
+      <div class="ff-section-heading">
+        <p class="ff-eyebrow">Before you generate</p>
+        <h2 id="ffFaqTitle">Frequently asked questions</h2>
+      </div>
+      <details>
+        <summary>Where are the Form and response Sheet created?</summary>
+        <p>They are created in the Google account used to authorize and run this web app. Ownership depends on the Apps Script deployment’s “Execute as” setting.</p>
+      </details>
+      <details>
+        <summary>Does FormForge store my JSON or generated forms?</summary>
+        <p>FormForge has no external database. The JSON is sent to the Apps Script backend only for validation and to create the resources you requested. Generated Forms and Sheets are saved in Google Drive.</p>
+      </details>
+      <details>
+        <summary>Can I inspect the form before it is created?</summary>
+        <p>Yes. Validate the JSON, review the editable preview, and make changes before selecting “Generate Google Form”.</p>
+      </details>
+      <details>
+        <summary>Why might Google ask me to authorize access?</summary>
+        <p>The app needs permission to create Forms and spreadsheets. Review the Google consent screen and grant access only if you want to use these features.</p>
+      </details>
+    </section>
   </main>
 
-  <!-- FormForge — Components.html : reusable icons + modal/toast shells -->
-<template id="ff-icon-set">
-  <span data-icon="check">✓</span>
-</template>
+  <footer class="ff-footer">
+    <a href="https://aloksystems.freedev.app/" target="_blank" rel="noopener">Alok Systems Tools</a>
+    · FormForge creates files only in your Google account.
+  </footer>
 
+  <!-- FormForge — Components.html : help dialog + toast host -->
 <div class="ff-modal-back" id="ffHelpModal" role="dialog" aria-modal="true" aria-labelledby="ffHelpTitle">
   <div class="ff-modal">
     <div class="ff-modal-head">
       <h3 id="ffHelpTitle">Help &amp; authorization</h3>
       <span style="flex:1"></span>
-      <button class="ff-icon-btn" data-close-help aria-label="Close help">✕</button>
+      <button class="ff-icon-btn" data-close-help aria-label="Close help" type="button">✕</button>
     </div>
     <div class="ff-modal-body">
-      <p><strong>FormForge</strong> creates real Google Forms + linked response Sheets in your Google account.</p>
+      <p><strong>FormForge</strong> creates a real Google Form plus a linked response spreadsheet in your Google account.</p>
       <p>On first use Google will ask you to authorize these scopes:</p>
       <ul>
-        <li><code>forms</code> — create &amp; configure forms</li>
+        <li><code>forms</code> — create and configure forms</li>
         <li><code>spreadsheets</code> — create response spreadsheets</li>
         <li><code>drive.file</code> — access files the app creates</li>
-        <li><code>userinfo.email</code> — show your account in the header</li>
+        <li><code>userinfo.email</code> — show your account in the app bar</li>
       </ul>
-      <p>Resources are owned by the account that runs the Web App (see README for Execute-as settings).
-      If you see an authorization error, re-open the deployment URL while signed in and accept the consent screen.</p>
-      <p>Tips: paste JSON <em>without</em> Markdown code fences (no ```json). Use <strong>Validate JSON</strong> before generating.
-      Generation is idempotent — repeated clicks with the same draft won't duplicate forms.</p>
+      <p>Resources are owned by the account that runs the Web App (see the README for Execute-as settings). If you see an authorization error, re-open the deployment URL while signed in and accept the consent screen.</p>
+      <p><strong>Shortcuts:</strong> <code>Ctrl</code>/<code>Cmd</code> + <code>Enter</code> validates the JSON. <code>Esc</code> closes this dialog.</p>
+      <p><strong>Tips:</strong> paste JSON <em>without</em> Markdown fences (no ```json). Validate before generating. Generation is idempotent — repeated clicks with the same draft won’t duplicate forms.</p>
     </div>
   </div>
 </div>
@@ -540,6 +1297,14 @@ function normalizeClient(spec) {
 }
 
 /* ============ Status / errors UI ============ */
+function updateCharCount() {
+  var el = $('ffCharCount');
+  if (!el || !editor) return;
+  var n = editor.value.length;
+  el.textContent = n.toLocaleString('en-US') + ' / ' + LIMITS.MAX_PAYLOAD.toLocaleString('en-US') + ' chars';
+  el.classList.toggle('is-over', n > LIMITS.MAX_PAYLOAD);
+}
+
 function setStatus(kind, msg) {
   statusBox.classList.remove('ok', 'err', 'warn');
   if (kind) statusBox.classList.add(kind);
@@ -563,6 +1328,7 @@ function setGenerateEnabled(on, hint) {
 function invalidate(reason) {
   state.valid = false;
   state.spec = null;
+  state.generationId = null;
   setGenerateEnabled(false, reason || 'JSON changed — re-validate to enable generation.');
 }
 
@@ -835,6 +1601,7 @@ function bindToolbar() {
         if (!t) { toast('Clipboard is empty.'); return; }
         editor.value = t.trim().replace(/^```(json)?/i, '').replace(/```\s*$/, '').trim();
         invalidate(); setStatus('warn', 'Pasted. Click “Validate JSON” to continue.');
+        updateCharCount();
         toast('Pasted from clipboard.');
         editor.focus();
       }, function () { toast('Clipboard blocked — press Ctrl/Cmd+V in the editor.'); editor.focus(); });
@@ -843,18 +1610,20 @@ function bindToolbar() {
   $('btnExample').addEventListener('click', function () {
     editor.value = JSON.stringify(EXAMPLE_SPEC, null, 2);
     invalidate(); setStatus('warn', 'Example loaded. Click “Validate JSON”.');
+    updateCharCount();
     resultSlot.textContent = '';
     toast('Example loaded.');
   });
   $('btnValidate').addEventListener('click', doValidate);
   $('btnFormat').addEventListener('click', function () {
-    try { editor.value = JSON.stringify(JSON.parse(editor.value), null, 2); toast('Formatted.'); }
+    try { editor.value = JSON.stringify(JSON.parse(editor.value), null, 2); updateCharCount(); toast('Formatted.'); }
     catch (e) { toast('Cannot format: invalid JSON.'); }
   });
   $('btnClear').addEventListener('click', function () {
     if (editor.value && !window.confirm('Clear the editor? Unsaved edits will be lost.')) return;
     editor.value = ''; invalidate('Nothing to generate yet.');
     setStatus('warn', 'Editor cleared.'); renderErrors([]);
+    updateCharCount();
     previewEmpty.hidden = false; preview.hidden = true; resultSlot.textContent = '';
   });
   $('btnDownload').addEventListener('click', function () {
@@ -875,6 +1644,7 @@ function bindToolbar() {
     r.onload = function () {
       editor.value = String(r.result || '');
       invalidate(); setStatus('warn', 'Imported "' + f.name + '". Click “Validate JSON”.');
+      updateCharCount();
       toast('Imported file.');
     };
     r.readAsText(f);
@@ -921,7 +1691,7 @@ function bindGenerate() {
       renderLocalNotice();
       return;
     }
-    var gid = uuid();
+    var gid = state.generationId || uuid();
     state.generationId = gid;
     setGenerating(true);
     resultSlot.textContent = '';
@@ -1050,24 +1820,77 @@ function bindMisc() {
   $('btnCopyPrompt').addEventListener('click', function () { copyText(CHATGPT_PROMPT, 'ChatGPT prompt copied.'); });
   $('btnCopySchema').addEventListener('click', function () { copyText(MINIMAL_SCHEMA, 'Minimal schema copied.'); });
   var modal = $('ffHelpModal');
-  $('ffHelpBtn').addEventListener('click', function () { modal.classList.add('open'); });
-  modal.querySelector('[data-close-help]').addEventListener('click', function () { modal.classList.remove('open'); });
-  modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('open'); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') modal.classList.remove('open'); });
+  var helpButton = $('ffHelpBtn');
+  var closeHelpButton = modal.querySelector('[data-close-help]');
+  function closeHelp() { modal.classList.remove('open'); helpButton.focus(); }
+  helpButton.addEventListener('click', function () { modal.classList.add('open'); closeHelpButton.focus(); });
+  closeHelpButton.addEventListener('click', closeHelp);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeHelp(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeHelp(); });
 
-  editor.addEventListener('input', function () { invalidate(); setStatus('warn', 'Edited — re-validate before generating.'); });
+  editor.addEventListener('input', function () {
+    invalidate();
+    setStatus('warn', 'Edited — re-validate before generating.');
+    updateCharCount();
+  });
 
-  if (typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run
-      .withSuccessHandler(function (st) {
-        var dot = $('ffAuthDot'), txt = $('ffAuthText');
-        dot.classList.add('ok');
-        txt.textContent = (st && st.email) ? st.email : 'Signed in (email hidden by deployment)';
-      })
-      .withFailureHandler(function () { $('ffAuthText').textContent = 'Authorization required — accept consent on first run'; })
-      .ffGetAuthStatus();
-  } else {
-    $('ffAuthText').textContent = 'Local preview — deploy to connect account';
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      doValidate();
+    }
+  });
+}
+
+/* ============ App bar: theme, account, hero action ============ */
+function bindChrome() {
+  var themeBtn = $('ffThemeToggle');
+  function paintTheme(theme) {
+    if (themeBtn) {
+      themeBtn.textContent = theme === 'dark' ? '☀' : '☾';
+      themeBtn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    }
+  }
+  paintTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      paintTheme(next);
+      try { localStorage.setItem('tools-theme', next); } catch (e) {}
+    });
+  }
+
+  var account = $('ffAccount');
+  var accountText = $('ffAccountText');
+  var accountDot = $('ffAccountDot');
+  if (account && accountText && accountDot) {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function (status) {
+          var email = status && status.email ? String(status.email) : '';
+          accountText.textContent = email || 'Signed in with Google';
+          account.title = email || 'Authorized through your Google account';
+          accountDot.classList.add('ok');
+        })
+        .withFailureHandler(function () {
+          accountText.textContent = 'Google account';
+          account.title = 'Account status unavailable — generation will ask for authorization.';
+        })
+        .ffGetAuthStatus();
+    } else {
+      accountText.textContent = 'Local preview';
+      account.title = 'Not connected to Apps Script — deploy to generate forms.';
+    }
+  }
+
+  var heroExample = $('ffHeroExample');
+  if (heroExample) {
+    heroExample.addEventListener('click', function () {
+      $('btnExample').click();
+      editor.focus();
+      editor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
   }
 }
 
@@ -1077,7 +1900,8 @@ document.addEventListener('DOMContentLoaded', function () {
   previewEmpty = $('ffPreviewEmpty'); preview = $('ffPreview'); pvTitle = $('pvTitle'); pvDesc = $('pvDesc');
   pvSettings = $('pvSettings'); pvQuestions = $('pvQuestions');
   btnGenerate = $('btnGenerate'); genHint = $('ffGenHint'); resultSlot = $('ffResultSlot'); toastEl = $('ffToast');
-  bindToolbar(); bindGenerate(); bindMisc();
+  bindChrome(); bindToolbar(); bindGenerate(); bindMisc();
+  updateCharCount();
   setGenerateEnabled(false, 'Validate successfully to enable generation.');
 });
 })();

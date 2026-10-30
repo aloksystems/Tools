@@ -1,4 +1,6 @@
-[
+// Alok Systems app catalogue — single source of truth.
+// Loaded as a classic script so the site also works when opened directly from disk.
+window.ALOK_APPS = [
   {
     "id": "driftlock",
     "name": "DriftLock",
@@ -135,4 +137,4 @@
       "android.permission.INTERNET"
     ]
   }
-]
+];

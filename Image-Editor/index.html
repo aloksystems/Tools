@@ -3,228 +3,237 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Professional Image Editor</title>
-  <!-- Cropper.js CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
+  <title>Image Editor – Crop, Resize, Filter &amp; Export Images</title>
+  <meta name="description" content="Crop, resize, rotate, add text and filters, then export your image. A free browser-based photo editor with no uploads and no sign-up." />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <link rel="canonical" href="https://aloksystems.freedev.app/Image-Editor/" />
+  <meta property="og:title" content="Image Editor – Crop, Resize, Filter &amp; Export Images" />
+  <meta property="og:description" content="Crop, resize, rotate, add text and filters, then export your image. Free and private, right in your browser." />
+  <meta property="og:url" content="https://aloksystems.freedev.app/Image-Editor/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Alok Systems Tools" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Image Editor – Crop, Resize, Filter &amp; Export Images" />
+  <meta name="twitter:description" content="A free browser-based image editor for crops, resizes, filters, text and exports. No uploads required." />
+  <meta name="author" content="Alok Systems" />
+  <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EIE%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
+  <meta name="color-scheme" content="light dark" />
 
-    <meta name="description" content="Use Professional Image Editor online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Image-Editor/">
-    <meta property="og:title" content="Professional Image Editor">
-    <meta property="og:description" content="Use Professional Image Editor online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Image-Editor/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Professional Image Editor">
-    <meta name="twitter:description" content="Use Professional Image Editor online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Professional Image Editor",
-    "description":  "Use Professional Image Editor online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/Image-Editor/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" integrity="sha384-oMy41mb/qJnpJlpXOF57hSu2KGi47l/UV9+tPNrBOs7/ap5Vubj/3phrCtjutHMQ" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" />
+  <link rel="stylesheet" href="../back.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="../back.js" defer></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Image Editor",
+    "description": "Crop, resize, rotate, add text and filters, then export your image in the browser.",
+    "url": "https://aloksystems.freedev.app/Image-Editor/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
 </head>
 <body>
-  <!-- Header -->
-  <header class="app-header">
-    <div class="header-left">
-      <i class="fas fa-image logo-icon"></i>
-      <h1>Image Editor Pro</h1>
-    </div>
-    <div class="header-right">
-      <button id="undoBtn" class="icon-btn" title="Undo (Ctrl+Z)" disabled>
-        <i class="fas fa-undo"></i>
-      </button>
-      <button id="redoBtn" class="icon-btn" title="Redo (Ctrl+Y)" disabled>
-        <i class="fas fa-redo"></i>
-      </button>
-      <button id="darkModeToggle" class="icon-btn" title="Toggle Dark Mode">
-        <i class="fas fa-moon"></i>
-      </button>
+  <!-- App toolbar -->
+  <header class="app-toolbar">
+    <h1 class="sr-only">Image Editor</h1>
+    <div class="toolbar-inner">
+      <div class="toolbar-actions">
+        <span class="toolbar-pill"><i class="fas fa-shield-halved" aria-hidden="true"></i> 100% in your browser</span>
+        <button class="toolbar-btn" type="button" onclick="document.getElementById('imageInput').click()" aria-label="Open an image from your device">
+          <i class="fas fa-folder-open" aria-hidden="true"></i><span>Open image</span>
+        </button>
+        <span class="toolbar-divider" aria-hidden="true"></span>
+        <button id="undoBtn" class="toolbar-icon-btn" type="button" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
+          <i class="fas fa-undo" aria-hidden="true"></i>
+        </button>
+        <button id="redoBtn" class="toolbar-icon-btn" type="button" title="Redo (Ctrl+Y)" aria-label="Redo" disabled>
+          <i class="fas fa-redo" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- Main Layout -->
+  <!-- Main editor layout -->
   <div class="main-layout">
-    <!-- Left Sidebar - Tools & Controls -->
-    <aside class="left-sidebar">
-      <!-- Tab Navigation -->
-      <div class="tab-nav">
-        <button class="tab-btn active" data-tab="adjust"><i class="fas fa-sliders-h"></i> Adjust</button>
-        <button class="tab-btn" data-tab="filters"><i class="fas fa-magic"></i> Filters</button>
-        <button class="tab-btn" data-tab="text"><i class="fas fa-font"></i> Text</button>
+    <!-- Left panel: tools & controls -->
+    <aside class="left-sidebar" aria-label="Editing tools">
+      <div class="tab-nav" role="group" aria-label="Editing tool categories">
+        <button class="tab-btn active" type="button" data-tab="adjust"><i class="fas fa-sliders-h" aria-hidden="true"></i><span>Adjust</span></button>
+        <button class="tab-btn" type="button" data-tab="filters"><i class="fas fa-magic" aria-hidden="true"></i><span>Filters</span></button>
+        <button class="tab-btn" type="button" data-tab="text"><i class="fas fa-font" aria-hidden="true"></i><span>Text</span></button>
       </div>
 
-      <!-- Adjust Tab -->
+      <!-- Adjust tab -->
       <div class="tab-content active" id="adjust-tab">
-        <!-- Transform Section -->
-        <div class="control-section">
-          <h3 class="section-title">Transform</h3>
+        <section class="control-section" aria-labelledby="transformTitle">
+          <h3 class="section-title" id="transformTitle">Transform</h3>
           <div class="action-buttons">
-            <button class="primary-btn" onclick="openResizeModal()">
-              <i class="fas fa-expand-arrows-alt"></i> Resize
+            <button class="primary-btn" type="button" onclick="openResizeModal()">
+              <i class="fas fa-expand-arrows-alt" aria-hidden="true"></i> Resize
             </button>
-            <button class="primary-btn" onclick="rotateImage()">
-              <i class="fas fa-redo"></i> Rotate 90°
+            <button class="primary-btn" type="button" onclick="rotateImage()">
+              <i class="fas fa-redo" aria-hidden="true"></i> Rotate 90°
             </button>
-            <button class="primary-btn" id="cropBtn" onclick="cropImage()">
-              <i class="fas fa-crop"></i> <span id="cropBtnText">Crop</span>
+            <button class="primary-btn" id="cropBtn" type="button" onclick="cropImage()">
+              <i class="fas fa-crop" aria-hidden="true"></i> <span id="cropBtnText">Crop</span>
             </button>
-            <button class="secondary-btn" onclick="resetImage()">
-              <i class="fas fa-undo"></i> Reset
+            <button class="secondary-btn" type="button" onclick="resetImage()">
+              <i class="fas fa-rotate-left" aria-hidden="true"></i> Reset
             </button>
-            <button class="primary-btn full-width" onclick="autoEnhance()">
-              <i class="fas fa-wand-magic-sparkles"></i> Auto Enhance
+            <button class="primary-btn full-width" type="button" onclick="autoEnhance()">
+              <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i> Auto Enhance
             </button>
           </div>
-        </div>
+        </section>
 
-        <div class="control-section">
-          <h3 class="section-title">Brush Tool</h3>
+        <section class="control-section" aria-labelledby="brushTitle">
+          <h3 class="section-title" id="brushTitle">Brush &amp; Eraser</h3>
           <div class="brush-tools-row">
-            <button id="moveModeBtn" class="secondary-btn" onclick="setToolMode('move')">
-              <i class="fas fa-mouse-pointer"></i> Move
+            <button id="moveModeBtn" class="secondary-btn" type="button" onclick="setToolMode('move')" aria-label="Move tool">
+              <i class="fas fa-mouse-pointer" aria-hidden="true"></i> Move
             </button>
-            <button id="brushModeBtn" class="secondary-btn" onclick="setToolMode('brush')">
-              <i class="fas fa-paint-brush"></i> Brush
+            <button id="brushModeBtn" class="secondary-btn" type="button" onclick="setToolMode('brush')" aria-label="Brush tool">
+              <i class="fas fa-paint-brush" aria-hidden="true"></i> Brush
             </button>
-            <button id="eraserModeBtn" class="secondary-btn" onclick="setToolMode('eraser')">
-              <i class="fas fa-eraser"></i> Eraser
+            <button id="eraserModeBtn" class="secondary-btn" type="button" onclick="setToolMode('eraser')" aria-label="Eraser tool">
+              <i class="fas fa-eraser" aria-hidden="true"></i> Eraser
             </button>
-            <button class="danger-btn" onclick="clearBrushStrokes()">
-              <i class="fas fa-trash"></i> Clear
+            <button class="danger-btn" type="button" onclick="clearBrushStrokes()" aria-label="Clear all brush strokes">
+              <i class="fas fa-trash" aria-hidden="true"></i> Clear
             </button>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Brush Size</label>
-              <input type="range" id="brushSize" min="2" max="80" value="20" class="slider">
+              <label for="brushSize">Brush size</label>
+              <input type="range" id="brushSize" min="2" max="80" value="20" class="slider" aria-label="Brush size">
             </div>
             <div class="form-group">
-              <label>Brush Color</label>
-              <input type="color" id="brushColor" value="#ff3b30" class="color-input">
+              <label for="brushColor">Brush color</label>
+              <input type="color" id="brushColor" value="#ff3b30" class="color-input" aria-label="Brush color">
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- Basic Adjustments -->
-        <div class="control-section">
+        <section class="control-section">
           <h3 class="section-title collapsible" data-section="basic-adjust">
-            Basic Adjustments <i class="fas fa-chevron-down"></i>
+            Basic adjustments <i class="fas fa-chevron-down" aria-hidden="true"></i>
           </h3>
           <div class="section-content" id="basic-adjust">
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="brightnessInput">
                 <span>Brightness</span>
                 <span id="brightnessValue" class="slider-value">100%</span>
               </label>
               <input type="range" id="brightnessInput" min="50" max="150" value="100" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="contrastInput">
                 <span>Contrast</span>
                 <span id="contrastValue" class="slider-value">100%</span>
               </label>
               <input type="range" id="contrastInput" min="50" max="150" value="100" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="saturationInput">
                 <span>Saturation</span>
                 <span id="saturationValue" class="slider-value">100%</span>
               </label>
               <input type="range" id="saturationInput" min="0" max="200" value="100" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="hueInput">
                 <span>Hue</span>
                 <span id="hueValue" class="slider-value">0°</span>
               </label>
               <input type="range" id="hueInput" min="0" max="360" value="0" class="slider">
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- Advanced Adjustments -->
-        <div class="control-section">
-          <h3 class="section-title collapsible" data-section="advanced-adjust">
-            Advanced <i class="fas fa-chevron-down"></i>
+        <section class="control-section">
+          <h3 class="section-title collapsible collapsed" data-section="advanced-adjust">
+            Advanced <i class="fas fa-chevron-down" aria-hidden="true"></i>
           </h3>
           <div class="section-content collapsed" id="advanced-adjust">
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="blurInput">
                 <span>Blur</span>
                 <span id="blurValue" class="slider-value">0px</span>
               </label>
               <input type="range" id="blurInput" min="0" max="10" value="0" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="sharpenInput">
                 <span>Sharpen</span>
                 <span id="sharpenValue" class="slider-value">0</span>
               </label>
               <input type="range" id="sharpenInput" min="0" max="10" value="0" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="warmthInput">
                 <span>Warmth</span>
                 <span id="warmthValue" class="slider-value">0</span>
               </label>
               <input type="range" id="warmthInput" min="-50" max="50" value="0" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="highlightsInput">
                 <span>Highlights</span>
                 <span id="highlightsValue" class="slider-value">0</span>
               </label>
               <input type="range" id="highlightsInput" min="-50" max="50" value="0" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="shadowsInput">
                 <span>Shadows</span>
                 <span id="shadowsValue" class="slider-value">0</span>
               </label>
               <input type="range" id="shadowsInput" min="-50" max="50" value="0" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="fadeInput">
                 <span>Fade</span>
                 <span id="fadeValue" class="slider-value">0%</span>
               </label>
               <input type="range" id="fadeInput" min="0" max="100" value="0" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="vignetteInput">
                 <span>Vignette</span>
                 <span id="vignetteValue" class="slider-value">0%</span>
               </label>
               <input type="range" id="vignetteInput" min="0" max="100" value="0" class="slider">
             </div>
-            
+
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="grainInput">
                 <span>Grain</span>
                 <span id="grainValue" class="slider-value">0%</span>
               </label>
@@ -232,66 +241,70 @@
             </div>
 
             <div class="slider-group">
-              <label class="slider-label">
+              <label class="slider-label" for="grayscaleInput">
                 <span>Grayscale</span>
                 <span id="grayscaleValue" class="slider-value">0%</span>
               </label>
               <input type="range" id="grayscaleInput" min="0" max="100" value="0" class="slider">
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
-      <!-- Filters Tab -->
+      <!-- Filters tab -->
       <div class="tab-content" id="filters-tab">
-        <div class="control-section">
-          <h3 class="section-title">Preset Filters</h3>
+        <section class="control-section">
+          <h3 class="section-title">Preset filters</h3>
+          <p class="panel-note">Presets update the active layer's colour controls. Fine-tune them in Adjust.</p>
           <div class="filter-grid">
-            <button class="filter-btn active" onclick="applyPresetFilter('normal', this)">
-              <div class="filter-preview"></div>
+            <button class="filter-btn active" type="button" onclick="applyPresetFilter('normal', this)" aria-label="Apply Normal filter">
+              <span class="filter-preview" aria-hidden="true"></span>
               <span>Normal</span>
             </button>
-            <button class="filter-btn" onclick="applyPresetFilter('vintage', this)">
-              <div class="filter-preview vintage-preview"></div>
+            <button class="filter-btn" type="button" onclick="applyPresetFilter('vintage', this)" aria-label="Apply Vintage filter">
+              <span class="filter-preview vintage-preview" aria-hidden="true"></span>
               <span>Vintage</span>
             </button>
-            <button class="filter-btn" onclick="applyPresetFilter('sepia', this)">
-              <div class="filter-preview sepia-preview"></div>
+            <button class="filter-btn" type="button" onclick="applyPresetFilter('sepia', this)" aria-label="Apply Sepia filter">
+              <span class="filter-preview sepia-preview" aria-hidden="true"></span>
               <span>Sepia</span>
             </button>
-            <button class="filter-btn" onclick="applyPresetFilter('clarendon', this)">
-              <div class="filter-preview clarendon-preview"></div>
+            <button class="filter-btn" type="button" onclick="applyPresetFilter('clarendon', this)" aria-label="Apply Clarendon filter">
+              <span class="filter-preview clarendon-preview" aria-hidden="true"></span>
               <span>Clarendon</span>
             </button>
-            <button class="filter-btn" onclick="applyPresetFilter('inkwell', this)">
-              <div class="filter-preview inkwell-preview"></div>
+            <button class="filter-btn" type="button" onclick="applyPresetFilter('inkwell', this)" aria-label="Apply Inkwell filter">
+              <span class="filter-preview inkwell-preview" aria-hidden="true"></span>
               <span>Inkwell</span>
             </button>
-            <button class="filter-btn" onclick="applyPresetFilter('lofi', this)">
-              <div class="filter-preview lofi-preview"></div>
+            <button class="filter-btn" type="button" onclick="applyPresetFilter('lofi', this)" aria-label="Apply Lo-Fi filter">
+              <span class="filter-preview lofi-preview" aria-hidden="true"></span>
               <span>Lo-Fi</span>
             </button>
-            <button class="filter-btn" onclick="applyPresetFilter('toaster', this)">
-              <div class="filter-preview toaster-preview"></div>
+            <button class="filter-btn" type="button" onclick="applyPresetFilter('toaster', this)" aria-label="Apply Toaster filter">
+              <span class="filter-preview toaster-preview" aria-hidden="true"></span>
               <span>Toaster</span>
             </button>
-            <button class="filter-btn" onclick="applyPresetFilter('walden', this)">
-              <div class="filter-preview walden-preview"></div>
+            <button class="filter-btn" type="button" onclick="applyPresetFilter('walden', this)" aria-label="Apply Walden filter">
+              <span class="filter-preview walden-preview" aria-hidden="true"></span>
               <span>Walden</span>
             </button>
           </div>
-        </div>
+        </section>
       </div>
 
-      <!-- Text Tab -->
+      <!-- Text tab -->
       <div class="tab-content" id="text-tab">
-        <div class="control-section">
-          <h3 class="section-title">Add Text</h3>
+        <section class="control-section">
+          <h3 class="section-title">Add text</h3>
           <div class="text-controls-modern">
-            <input type="text" id="textInput" placeholder="Enter your text..." class="text-input">
-            
             <div class="form-group">
-              <label>Font Family</label>
+              <label for="textInput">Your text</label>
+              <input type="text" id="textInput" placeholder="Enter your text…" class="text-input" aria-label="Text to add to the image">
+            </div>
+
+            <div class="form-group">
+              <label for="fontFamily">Font family</label>
               <select id="fontFamily" class="select-input">
                 <option value="Arial">Arial</option>
                 <option value="Helvetica">Helvetica</option>
@@ -303,29 +316,29 @@
                 <option value="Comic Sans MS">Comic Sans MS</option>
               </select>
             </div>
-            
+
             <div class="form-row">
               <div class="form-group">
-                <label>Size</label>
+                <label for="textSize">Size</label>
                 <input type="number" id="textSize" min="10" max="200" value="30" class="number-input">
               </div>
               <div class="form-group">
-                <label>Color</label>
-                <input type="color" id="textColor" value="#ffffff" class="color-input">
+                <label for="textColor">Color</label>
+                <input type="color" id="textColor" value="#ffffff" class="color-input" aria-label="Text color">
               </div>
             </div>
-            
+
             <div class="form-group">
-              <label>Font Weight</label>
+              <label for="fontWeight">Font weight</label>
               <select id="fontWeight" class="select-input">
                 <option value="normal">Normal</option>
                 <option value="bold">Bold</option>
                 <option value="lighter">Light</option>
               </select>
             </div>
-            
+
             <div class="form-group">
-              <label>Font Style</label>
+              <label for="fontStyle">Font style</label>
               <select id="fontStyle" class="select-input">
                 <option value="normal">Normal</option>
                 <option value="italic">Italic</option>
@@ -334,111 +347,115 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label>Stroke Color</label>
-                <input type="color" id="textStrokeColor" value="#000000" class="color-input">
+                <label for="textStrokeColor">Stroke color</label>
+                <input type="color" id="textStrokeColor" value="#000000" class="color-input" aria-label="Text stroke color">
               </div>
               <div class="form-group">
-                <label>Stroke Width</label>
+                <label for="textStrokeWidth">Stroke width</label>
                 <input type="number" id="textStrokeWidth" min="0" max="20" value="0" class="number-input">
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label>Shadow Color</label>
-                <input type="color" id="textShadowColor" value="#000000" class="color-input">
+                <label for="textShadowColor">Shadow color</label>
+                <input type="color" id="textShadowColor" value="#000000" class="color-input" aria-label="Text shadow color">
               </div>
               <div class="form-group">
-                <label>Shadow Blur</label>
+                <label for="textShadowBlur">Shadow blur</label>
                 <input type="number" id="textShadowBlur" min="0" max="50" value="0" class="number-input">
               </div>
             </div>
 
             <div class="form-group">
-              <label>Letter Spacing</label>
-              <input type="range" id="textLetterSpacing" min="0" max="20" value="0" class="slider">
+              <label for="textLetterSpacing">Letter spacing</label>
+              <input type="range" id="textLetterSpacing" min="0" max="20" value="0" class="slider" aria-label="Letter spacing">
             </div>
 
-            <div class="brush-tools-row">
-              <button class="secondary-btn" onclick="alignSelectedText('left')"><i class="fas fa-align-left"></i></button>
-              <button class="secondary-btn" onclick="alignSelectedText('center')"><i class="fas fa-align-center"></i></button>
-              <button class="secondary-btn" onclick="alignSelectedText('right')"><i class="fas fa-align-right"></i></button>
+            <div class="brush-tools-row text-align-row" role="group" aria-label="Align selected text">
+              <button class="secondary-btn" type="button" onclick="alignSelectedText('left')" aria-label="Align selected text left" title="Align left"><i class="fas fa-align-left" aria-hidden="true"></i></button>
+              <button class="secondary-btn" type="button" onclick="alignSelectedText('center')" aria-label="Align selected text center" title="Align center"><i class="fas fa-align-center" aria-hidden="true"></i></button>
+              <button class="secondary-btn" type="button" onclick="alignSelectedText('right')" aria-label="Align selected text right" title="Align right"><i class="fas fa-align-right" aria-hidden="true"></i></button>
             </div>
-            
-            <button class="primary-btn full-width" onclick="addText()">
-              <i class="fas fa-plus"></i> Add Text
+
+            <button class="primary-btn full-width" type="button" onclick="addText()">
+              <i class="fas fa-plus" aria-hidden="true"></i> Add Text
             </button>
-            
-            <button id="deleteTextBtn" class="danger-btn full-width" onclick="deleteSelectedText()" disabled>
-              <i class="fas fa-trash"></i> Delete Selected Text
+
+            <button id="deleteTextBtn" class="danger-btn full-width" type="button" onclick="deleteSelectedText()" disabled>
+              <i class="fas fa-trash" aria-hidden="true"></i> Delete Selected Text
             </button>
           </div>
-        </div>
+        </section>
       </div>
     </aside>
 
-    <!-- Center - Canvas Area -->
-    <main class="canvas-area">
+    <!-- Center: canvas -->
+    <main class="canvas-area" aria-label="Image canvas">
       <div class="canvas-container">
-        <!-- Upload Area -->
-        <div class="drag-area" id="dragArea">
-          <i class="fas fa-cloud-upload-alt upload-icon"></i>
-          <p class="upload-text">Drag & Drop your image here</p>
-          <p class="upload-subtext">or click to browse</p>
+        <div class="drag-area" id="dragArea" role="button" tabindex="0" aria-label="Upload an image by clicking or by dropping a file" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); document.getElementById('imageInput').click(); }">
+          <span class="upload-mark" aria-hidden="true"><i class="fas fa-cloud-arrow-up upload-icon"></i></span>
+          <h2 class="upload-text">Drop an image to begin</h2>
+          <p class="upload-subtext">or click to browse — JPG, PNG, WebP, GIF and more</p>
+          <span class="upload-privacy"><i class="fas fa-lock" aria-hidden="true"></i> Your image never leaves this browser</span>
           <input type="file" id="imageInput" accept="image/*" style="display:none;" />
         </div>
 
-        <!-- Image Preview for Cropper.js -->
-        <img id="imagePreview" style="display: none;" />
+        <img id="imagePreview" alt="Crop preview" style="display: none;" />
 
-        <!-- Main Canvas -->
-        <canvas id="canvas"></canvas>
+        <canvas id="canvas" style="display: none;" aria-label="Image editing canvas">Your browser needs canvas support to edit images.</canvas>
       </div>
 
-      <!-- Download Panel -->
       <div class="download-panel" id="downloadPanel" style="display: none;">
-        <button class="export-btn" onclick="openDownloadModal()">
-          <i class="fas fa-download"></i> Export Image
+        <div class="export-meta">
+          <span class="export-title">Ready to export</span>
+          <span class="export-sub">PNG, JPG or WebP</span>
+        </div>
+        <button class="export-btn" type="button" onclick="openDownloadModal()">
+          <i class="fas fa-download" aria-hidden="true"></i> Export image
         </button>
       </div>
     </main>
 
-    <!-- Right Sidebar - Layers -->
-    <aside class="right-sidebar">
+    <!-- Right panel: layers -->
+    <aside class="right-sidebar" aria-label="Layers">
       <div class="layers-panel">
         <div class="panel-header">
-          <h3>Layers</h3>
+          <div>
+            <h2>Layers</h2>
+            <p>Stack, blend and fine-tune</p>
+          </div>
         </div>
-        
-        <div class="layers-toolbar">
-          <button class="tool-btn" id="addLayerBtn" title="Add Layer">
-            <i class="fas fa-plus"></i>
+
+        <div class="layers-toolbar" role="group" aria-label="Layer actions">
+          <button class="tool-btn" id="addLayerBtn" type="button" title="Add layer" aria-label="Add layer">
+            <i class="fas fa-plus" aria-hidden="true"></i>
           </button>
-          <button class="tool-btn" id="duplicateLayerBtn" title="Duplicate Layer">
-            <i class="fas fa-copy"></i>
+          <button class="tool-btn" id="duplicateLayerBtn" type="button" title="Duplicate layer" aria-label="Duplicate layer">
+            <i class="fas fa-copy" aria-hidden="true"></i>
           </button>
-          <button class="tool-btn" id="deleteLayerBtn" title="Delete Layer">
-            <i class="fas fa-trash"></i>
+          <button class="tool-btn" id="deleteLayerBtn" type="button" title="Delete layer" aria-label="Delete layer">
+            <i class="fas fa-trash" aria-hidden="true"></i>
           </button>
-          <button class="tool-btn" id="moveLayerUpBtn" title="Move Up">
-            <i class="fas fa-arrow-up"></i>
+          <button class="tool-btn" id="moveLayerUpBtn" type="button" title="Move layer up" aria-label="Move layer up">
+            <i class="fas fa-arrow-up" aria-hidden="true"></i>
           </button>
-          <button class="tool-btn" id="moveLayerDownBtn" title="Move Down">
-            <i class="fas fa-arrow-down"></i>
+          <button class="tool-btn" id="moveLayerDownBtn" type="button" title="Move layer down" aria-label="Move layer down">
+            <i class="fas fa-arrow-down" aria-hidden="true"></i>
           </button>
         </div>
-        
+
         <div class="layer-properties">
           <div class="property-group">
-            <label class="property-label">
+            <label class="property-label" for="layerOpacity">
               <span>Opacity</span>
               <span id="layerOpacityValue" class="property-value">100%</span>
             </label>
             <input type="range" id="layerOpacity" min="0" max="100" value="100" class="slider">
           </div>
-          
+
           <div class="property-group">
-            <label class="property-label">Blend Mode</label>
+            <label class="property-label" for="blendModeSelect">Blend mode</label>
             <select id="blendModeSelect" class="select-input">
               <option value="source-over">Normal</option>
               <option value="multiply">Multiply</option>
@@ -455,31 +472,29 @@
             </select>
           </div>
         </div>
-        
-        <div class="layers-list" id="layersList">
-          <!-- Layers will be added here dynamically -->
-        </div>
+
+        <div class="layers-list" id="layersList" aria-label="Layer stack"></div>
       </div>
     </aside>
   </div>
 
-  <!-- Resize Modal -->
-  <div id="resizeModal" class="modal">
+  <!-- Resize modal -->
+  <div id="resizeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="resizeTitle">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Resize Image</h3>
-        <button class="close-btn" onclick="closeResizeModal()">
-          <i class="fas fa-times"></i>
+        <h3 id="resizeTitle">Resize image</h3>
+        <button class="close-btn" type="button" onclick="closeResizeModal()" aria-label="Close resize dialog">
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
       <div class="modal-body">
         <div class="form-row">
           <div class="form-group">
-            <label>Width (px)</label>
+            <label for="widthInput">Width (px)</label>
             <input type="number" id="widthInput" value="300" class="number-input">
           </div>
           <div class="form-group">
-            <label>Height (px)</label>
+            <label for="heightInput">Height (px)</label>
             <input type="number" id="heightInput" value="300" class="number-input">
           </div>
         </div>
@@ -489,63 +504,63 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="secondary-btn" onclick="closeResizeModal()">Cancel</button>
-        <button class="primary-btn" onclick="resizeImage()">Apply</button>
+        <button class="secondary-btn" type="button" onclick="closeResizeModal()">Cancel</button>
+        <button class="primary-btn" type="button" onclick="resizeImage()">Apply resize</button>
       </div>
     </div>
   </div>
 
-  <!-- Download Modal -->
-  <div id="downloadModal" class="modal">
+  <!-- Download modal -->
+  <div id="downloadModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="downloadTitle">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Export Image</h3>
-        <button class="close-btn" onclick="closeDownloadModal()">
-          <i class="fas fa-times"></i>
+        <h3 id="downloadTitle">Export image</h3>
+        <button class="close-btn" type="button" onclick="closeDownloadModal()" aria-label="Close export dialog">
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>Export Size Preset</label>
+          <label for="exportSizePreset">Export size preset</label>
           <select id="exportSizePreset" class="select-input">
-            <option value="current">Current Canvas</option>
-            <option value="original">Original Size</option>
-            <option value="instagram-square">Instagram Square (1080x1080)</option>
-            <option value="instagram-story">Instagram Story (1080x1920)</option>
-            <option value="youtube-thumb">YouTube Thumbnail (1280x720)</option>
+            <option value="current">Current canvas</option>
+            <option value="original">Original size</option>
+            <option value="instagram-square">Instagram Square (1080×1080)</option>
+            <option value="instagram-story">Instagram Story (1080×1920)</option>
+            <option value="youtube-thumb">YouTube Thumbnail (1280×720)</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Quality Profile</label>
+          <label for="exportProfile">Quality profile</label>
           <select id="exportProfile" class="select-input">
-            <option value="high">High Quality</option>
+            <option value="high">High quality</option>
             <option value="balanced">Balanced</option>
-            <option value="web">Web Optimized</option>
+            <option value="web">Web optimized</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Format</label>
+          <label for="exportFormat">Format</label>
           <select id="exportFormat" class="select-input" onchange="toggleQuality()">
-            <option value="png">PNG (Lossless)</option>
+            <option value="png">PNG (lossless)</option>
             <option value="jpeg">JPEG</option>
             <option value="webp">WebP</option>
           </select>
         </div>
         <div class="form-group" id="qualityGroup" style="display: none;">
-          <label>Quality: <span id="qualityValue">90%</span></label>
+          <label for="exportQuality">Quality: <span id="qualityValue">90%</span></label>
           <input type="range" id="exportQuality" min="1" max="100" value="90" class="slider">
         </div>
+        <p class="modal-note"><i class="fas fa-shield-halved" aria-hidden="true"></i> Export is generated locally. Nothing is uploaded.</p>
       </div>
       <div class="modal-footer">
-        <button class="secondary-btn" onclick="closeDownloadModal()">Cancel</button>
-        <button class="primary-btn" onclick="downloadImage()">Download</button>
+        <button class="secondary-btn" type="button" onclick="closeDownloadModal()">Cancel</button>
+        <button class="primary-btn" type="button" onclick="downloadImage()">Download</button>
       </div>
     </div>
   </div>
 
-  <!-- Cropper.js Script -->
+  <!-- Cropper.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha384-r+ljwOAhwY4/kdyzMnuBg7MEVoWpTMp5EYUDntB/E9qzNwL9dAEcNrb2XaV+mJc2" crossorigin="anonymous"></script>
-  <!-- Custom Script -->
   <script src="script.js"></script>
 </body>
 </html>

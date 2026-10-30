@@ -1,609 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Number Counter Animation Tool</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3ENC%3C/text%3E%3C/svg%3E">
+  <title>Number Counter Animation Tool - Count-Up Video Maker</title>
+  <meta name="description" content="Create a smooth count-up animation from any start and end number. Choose a step, colors, font and speed, preview it, and export a video privately in your browser.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="author" content="Alok Systems">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Number-Count/">
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8fafc;
-            color: #0f172a;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Number Counter Animation Tool - Count-Up Video Maker">
+  <meta property="og:description" content="Turn any range into a polished count-up animation and save it as a video. Free, local, and no sign-up.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Number-Count/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Number Counter Animation Tool - Alok Systems Tools">
+  <meta name="twitter:description" content="Make a custom count-up animation with your own colors, font, step, and speed.">
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Number Counter Animation Tool",
+    "description": "Create a custom count-up animation and export it as a video locally in your browser.",
+    "url": "https://aloksystems.freedev.app/Number-Count/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"What does the step control do?","acceptedAnswer":{"@type":"Answer","text":"The step decides how much the visible jumps add. A step of 5 counts 0, 5, 10, and so on. The animation always finishes exactly on the end number."}},
+      {"@type":"Question","name":"What video format will I get?","acceptedAnswer":{"@type":"Answer","text":"The tool asks your browser for a supported recording format, usually WebM in Chrome and Firefox or MP4 where available. If recording is not supported, try a recent Chrome, Edge, Firefox, or Safari."}},
+      {"@type":"Question","name":"Is the sound included in the downloaded video?","acceptedAnswer":{"@type":"Answer","text":"No. The optional sound plays only in the live preview. Exported videos are silent."}},
+      {"@type":"Question","name":"Is this tool free and private?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no sign-up, and the count and video are generated in your browser. Nothing is uploaded."}}
+    ]
+  }
+  </script>
 
-        .container {
-            display: flex;
-            gap: 30px;
-            max-width: 1200px;
-            width: 100%;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 
-        .controls {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            padding: 25px;
-            border-radius: 15px;
-            flex: 1;
-            min-width: 300px;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .preview {
-            flex: 2;
-            min-width: 400px;
-            max-width: 700px;
-        }
-
-        .preview-box {
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .counter-text {
-            font-size: 80px;
-            font-weight: bold;
-            text-align: center;
-            transition: color 0.3s;
-        }
-
-        .control-group {
-            margin-bottom: 20px;
-        }
-
-        .control-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #a0a0a0;
-            font-size: 0.9rem;
-        }
-
-        .control-group input[type="number"],
-        .control-group input[type="text"],
-        .control-group select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #2d3748;
-            border-radius: 8px;
-            background: #ffffff;
-            color: #0f172a;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .control-group input[type="number"]:focus,
-        .control-group input[type="text"]:focus,
-        .control-group select:focus {
-            outline: none;
-            border-color: #0d9488;
-        }
-
-        .color-input-wrapper {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .color-input-wrapper input[type="color"] {
-            width: 50px;
-            height: 40px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: none;
-        }
-
-        .color-input-wrapper input[type="text"] {
-            flex: 1;
-        }
-
-        .range-slider {
-            width: 100%;
-            margin-top: 5px;
-        }
-
-        .range-slider input[type="range"] {
-            width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            background: #2d3748;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        .range-slider input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #667eea;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .range-slider input[type="range"]::-webkit-slider-thumb:hover {
-            background: #764ba2;
-        }
-
-        .range-value {
-            text-align: right;
-            font-size: 0.85rem;
-            color: #667eea;
-            margin-top: 5px;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 25px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-start {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-        }
-
-        .btn-start:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-reset {
-            background: #2d3748;
-            color: #fff;
-        }
-
-        .btn-reset:hover {
-            background: #4a5568;
-        }
-
-        .btn-download {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: #fff;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(56, 239, 125, 0.4);
-        }
-
-        .status {
-            text-align: center;
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 8px;
-            background: #1a1a2e;
-            font-size: 0.9rem;
-        }
-
-        .status.ready { color: #38ef7d; }
-        .status.running { color: #667eea; }
-        .status.done { color: #f6ad55; }
-
-        .presets {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .preset-btn {
-            padding: 6px 12px;
-            border: 1px solid #2d3748;
-            border-radius: 6px;
-            background: #1a1a2e;
-            color: #a0a0a0;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .preset-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
-        }
-
-        .end-text-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .end-text-toggle input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #667eea;
-        }
-
-        @media (max-width: 768px) {
-            h1 { font-size: 1.8rem; }
-            .counter-text { font-size: 50px; }
-            .preview-box { min-height: 250px; }
-        }
-    </style>
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="description" content="Use Number Counter Animation Tool online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Number-Count/">
-    <meta property="og:title" content="Number Counter Animation Tool">
-    <meta property="og:description" content="Use Number Counter Animation Tool online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Number-Count/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Number Counter Animation Tool">
-    <meta name="twitter:description" content="Use Number Counter Animation Tool online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Number Counter Animation Tool",
-    "description":  "Use Number Counter Animation Tool online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/Number-Count/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
 </head>
 <body>
-    <h1>Number Counter Animation Tool</h1>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">COUNT IT, MAKE IT MOVE</p>
+      <h1 id="page-title">Number Counter Animation Tool</h1>
+      <p>Turn any range into a smooth count-up animation and export it as a video.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        Counting and video export happen entirely in your browser.
+      </div>
+    </section>
 
-    <div class="container">
-        <div class="controls">
-            <div class="control-group">
-                <label>Start Number</label>
-                <input type="number" id="startNumber" value="0">
+    <noscript><p class="noscript-note">This tool needs JavaScript to count and export video. Nothing is uploaded.</p></noscript>
+
+    <section class="workspace" aria-label="Number counter animation builder">
+      <div class="controls-column">
+        <section class="panel" aria-labelledby="range-title">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div>
+              <h2 id="range-title">Set the count</h2>
+              <p>Choose where the number starts, where it ends, and how it steps.</p>
             </div>
+          </div>
 
-            <div class="control-group">
-                <label>End Number</label>
-                <input type="number" id="endNumber" value="100000">
-                <div class="presets">
-                    <button class="preset-btn" onclick="setEndNumber(1000)">1K</button>
-                    <button class="preset-btn" onclick="setEndNumber(10000)">10K</button>
-                    <button class="preset-btn" onclick="setEndNumber(100000)">1L</button>
-                    <button class="preset-btn" onclick="setEndNumber(1000000)">10L</button>
-                    <button class="preset-btn" onclick="setEndNumber(10000000)">1Cr</button>
-                </div>
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label" for="startNumber">Start number</label>
+              <input type="number" id="startNumber" value="0" step="1" inputmode="numeric" min="-1000000000000" max="1000000000000">
             </div>
-
-            <div class="control-group">
-                <label>End Text (shown after counting)</label>
-                <input type="text" id="endText" value="+" placeholder="e.g. +, Lakh, Cr">
-                <div class="end-text-toggle">
-                    <input type="checkbox" id="showEndText" checked>
-                    <label for="showEndText" style="margin:0;color:#fff;">Show end text</label>
-                </div>
+            <div class="field">
+              <label class="field-label" for="endNumber">End number</label>
+              <input type="number" id="endNumber" value="100000" step="1" inputmode="numeric" min="-1000000000000" max="1000000000000">
             </div>
+          </div>
 
-            <div class="control-group">
-                <label>Text Color</label>
-                <div class="color-input-wrapper">
-                    <input type="color" id="textColorPicker" value="#efbe06">
-                    <input type="text" id="textColorHex" value="#efbe06">
-                </div>
+          <div class="preset-block">
+            <p class="preset-label" id="preset-label">Quick end values</p>
+            <div class="preset-row" role="group" aria-labelledby="preset-label">
+              <button type="button" class="preset-btn" data-value="1000" aria-label="Set end number to 1,000">1K</button>
+              <button type="button" class="preset-btn" data-value="10000" aria-label="Set end number to 10,000">10K</button>
+              <button type="button" class="preset-btn" data-value="100000" aria-label="Set end number to 100,000">1L</button>
+              <button type="button" class="preset-btn" data-value="1000000" aria-label="Set end number to 1,000,000">10L</button>
+              <button type="button" class="preset-btn" data-value="10000000" aria-label="Set end number to 10,000,000">1Cr</button>
             </div>
+          </div>
 
-            <div class="control-group">
-                <label>Background Color</label>
-                <div class="color-input-wrapper">
-                    <input type="color" id="bgColorPicker" value="#ffffff">
-                    <input type="text" id="bgColorHex" value="#ffffff">
-                </div>
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label" for="stepNumber">Count by</label>
+              <input type="number" id="stepNumber" value="1" min="1" max="1000000000000" step="1" inputmode="numeric">
+              <p class="field-help">Whole numbers only, e.g. 5 or 100.</p>
             </div>
-
-            <div class="control-group">
-                <label>Font Size: <span id="fontSizeValue">80</span>px</label>
-                <div class="range-slider">
-                    <input type="range" id="fontSize" min="20" max="200" value="80">
-                </div>
+            <div class="field">
+              <label class="field-label" for="endText">End text <span class="field-value">optional</span></label>
+              <input type="text" id="endText" value="+" maxlength="16" placeholder="+, Lakh, Cr">
+              <p class="field-help">Shown after the final number.</p>
             </div>
+          </div>
+          <div class="end-options">
+            <label class="check-row" for="showEndText">
+              <input type="checkbox" id="showEndText" checked>
+              <span>Show the end text when the count finishes</span>
+            </label>
+          </div>
 
-            <div class="control-group">
-                <label>Animation Speed: <span id="speedValue">500</span></label>
-                <div class="range-slider">
-                    <input type="range" id="speed" min="10" max="5000" value="500" step="10">
-                </div>
+          <p class="input-error" id="countError" role="alert" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            <span id="countErrorText"></span>
+          </p>
+        </section>
+
+        <section class="panel" aria-labelledby="style-title">
+          <div class="panel-heading">
+            <span class="step-number">02</span>
+            <div>
+              <h2 id="style-title">Style and motion</h2>
+              <p>Make the stage yours. The preview updates as you change it.</p>
             </div>
+          </div>
 
-            <div class="control-group">
-                <label>Font Style</label>
-                <select id="fontStyle">
-                    <option value="'Segoe UI', sans-serif">Segoe UI</option>
-                    <option value="Arial, sans-serif">Arial</option>
-                    <option value="'Courier New', monospace">Courier New</option>
-                    <option value="Georgia, serif">Georgia</option>
-                    <option value="'Times New Roman', serif">Times New Roman</option>
-                    <option value="Verdana, sans-serif">Verdana</option>
-                    <option value="Impact, sans-serif">Impact</option>
-                </select>
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label" for="textColorPicker">Number color</label>
+              <div class="color-line">
+                <input type="color" id="textColorPicker" value="#5eead4">
+                <input type="text" class="hex-input" id="textColorHex" value="#5eead4" maxlength="7" spellcheck="false" aria-label="Number color hex code">
+              </div>
             </div>
-
-            <div class="btn-group">
-                <button class="btn btn-start" id="startBtn" onclick="startAnimation()">Start</button>
-                <button class="btn btn-reset" onclick="resetAnimation()">Reset</button>
+            <div class="field">
+              <label class="field-label" for="bgColorPicker">Background color</label>
+              <div class="color-line">
+                <input type="color" id="bgColorPicker" value="#0f172a">
+                <input type="text" class="hex-input" id="bgColorHex" value="#0f172a" maxlength="7" spellcheck="false" aria-label="Background color hex code">
+              </div>
             </div>
-            <button class="btn btn-download" onclick="downloadRecording()">Download as Video</button>
+          </div>
 
-            <div class="status ready" id="status">Ready</div>
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label" for="fontStyle">Font style</label>
+              <select id="fontStyle">
+                <option value="Inter, sans-serif">Inter</option>
+                <option value="'Segoe UI', sans-serif" selected>Segoe UI</option>
+                <option value="Arial, sans-serif">Arial</option>
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="Georgia, serif">Georgia</option>
+                <option value="'Times New Roman', serif">Times New Roman</option>
+                <option value="Verdana, sans-serif">Verdana</option>
+                <option value="Impact, sans-serif">Impact</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label" for="fontSize">Number size: <span class="field-value" id="fontSizeValue">80</span> px</label>
+              <input type="range" id="fontSize" min="20" max="200" value="80" step="1">
+              <p class="field-help">Large numbers shrink to fit the stage.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="speed">Animation length: <span class="field-value" id="speedValue">0.5 s</span></label>
+            <input type="range" id="speed" min="10" max="5000" value="500" step="10">
+            <p class="field-help">How long the count-up takes. Changes apply on the next run.</p>
+          </div>
+
+          <label class="check-row sound-row" for="soundToggle">
+            <input type="checkbox" id="soundToggle">
+            <span>
+              <strong>Soft counting sounds</strong>
+              <small>Optional ticks and a finish chime in the live preview. Off by default; not included in exported video.</small>
+            </span>
+          </label>
+        </section>
+      </div>
+
+      <section class="preview-panel" aria-labelledby="preview-title">
+        <div class="preview-heading">
+          <div>
+            <p class="eyebrow">LIVE PREVIEW</p>
+            <h2 id="preview-title">Your count-up</h2>
+          </div>
+          <span class="ratio-chip">16:9</span>
         </div>
 
-        <div class="preview">
-            <div class="preview-box" id="previewBox">
-                <div class="counter-text" id="counterText">0</div>
-            </div>
+        <div class="stage-shell">
+          <div class="preview-box" id="previewBox">
+            <output class="counter-text" id="counterText" aria-label="Counter preview">0</output>
+          </div>
         </div>
-    </div>
 
-    <script>
-        let animationInterval = null;
-        let mediaRecorder = null;
-        let recordedChunks = [];
-        let isRecording = false;
+        <p class="preview-caption" id="countSummary">Counts 0 to 100,000 by 1</p>
 
-        const startNumberInput = document.getElementById('startNumber');
-        const endNumberInput = document.getElementById('endNumber');
-        const endTextInput = document.getElementById('endText');
-        const showEndText = document.getElementById('showEndText');
-        const textColorPicker = document.getElementById('textColorPicker');
-        const textColorHex = document.getElementById('textColorHex');
-        const bgColorPicker = document.getElementById('bgColorPicker');
-        const bgColorHex = document.getElementById('bgColorHex');
-        const fontSizeSlider = document.getElementById('fontSize');
-        const fontSizeValue = document.getElementById('fontSizeValue');
-        const speedSlider = document.getElementById('speed');
-        const speedValue = document.getElementById('speedValue');
-        const fontStyle = document.getElementById('fontStyle');
-        const counterText = document.getElementById('counterText');
-        const previewBox = document.getElementById('previewBox');
-        const startBtn = document.getElementById('startBtn');
-        const status = document.getElementById('status');
+        <div class="preview-actions">
+          <button type="button" id="startBtn" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7Z"/></svg>
+            Start counting
+          </button>
+          <button type="button" id="resetBtn" class="btn btn-outline">Reset</button>
+        </div>
 
-        function setEndNumber(num) {
-            endNumberInput.value = num;
-        }
+        <button type="button" id="downloadBtn" class="btn btn-outline download-btn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg>
+          Download video
+        </button>
 
-        textColorPicker.addEventListener('input', (e) => {
-            textColorHex.value = e.target.value;
-            counterText.style.color = e.target.value;
-        });
+        <p class="status ready" id="status" role="status" aria-live="polite">Ready</p>
+        <p class="preview-note">The video is rendered frame by frame on this device. Export format depends on your browser.</p>
+      </section>
+    </section>
 
-        textColorHex.addEventListener('input', (e) => {
-            if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
-                textColorPicker.value = e.target.value;
-                counterText.style.color = e.target.value;
-            }
-        });
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to make a count-up video</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Pick the range</h3><p>Set the start and end numbers, choose a step, and add optional end text.</p></div></li>
+        <li><span>02</span><div><h3>Make it yours</h3><p>Tune colors, font, size, and length. Add a soft sound if you want one.</p></div></li>
+        <li><span>03</span><div><h3>Preview and export</h3><p>Start the count, then download a silent 16:9 video generated locally.</p></div></li>
+      </ol>
+    </section>
 
-        bgColorPicker.addEventListener('input', (e) => {
-            bgColorHex.value = e.target.value;
-            previewBox.style.backgroundColor = e.target.value;
-        });
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details>
+        <summary>What does the step control do?</summary>
+        <p>The step decides how much the visible jumps add. A step of 5 counts 0, 5, 10, and so on. The animation always finishes exactly on the end number.</p>
+      </details>
+      <details>
+        <summary>What video format will I get?</summary>
+        <p>The tool asks your browser for a supported recording format, usually WebM in Chrome and Firefox or MP4 where available. If recording is not supported, try a recent Chrome, Edge, Firefox, or Safari.</p>
+      </details>
+      <details>
+        <summary>Is the sound included in the downloaded video?</summary>
+        <p>No. The optional sound plays only in the live preview. Exported videos are silent.</p>
+      </details>
+      <details>
+        <summary>Is this tool free and private?</summary>
+        <p>Yes. There is no sign-up, and the count and video are generated in your browser. Nothing is uploaded.</p>
+      </details>
+    </section>
+  </main>
 
-        bgColorHex.addEventListener('input', (e) => {
-            if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
-                bgColorPicker.value = e.target.value;
-                previewBox.style.backgroundColor = e.target.value;
-            }
-        });
-
-        fontSizeSlider.addEventListener('input', (e) => {
-            fontSizeValue.textContent = e.target.value;
-            counterText.style.fontSize = e.target.value + 'px';
-        });
-
-        speedSlider.addEventListener('input', (e) => {
-            speedValue.textContent = e.target.value;
-        });
-
-        fontStyle.addEventListener('change', (e) => {
-            counterText.style.fontFamily = e.target.value;
-        });
-
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-
-        function startAnimation() {
-            if (animationInterval) {
-                clearInterval(animationInterval);
-            }
-
-            const startNum = parseInt(startNumberInput.value) || 0;
-            const endNum = parseInt(endNumberInput.value) || 100000;
-            const speed = parseInt(speedSlider.value) || 500;
-            const endTextStr = endTextInput.value || '+';
-            const showEnd = showEndText.checked;
-
-            let currentNum = startNum;
-            counterText.style.color = textColorPicker.value;
-            previewBox.style.backgroundColor = bgColorPicker.value;
-            counterText.style.fontSize = fontSizeSlider.value + 'px';
-            counterText.style.fontFamily = fontStyle.value;
-
-            status.className = 'status running';
-            status.textContent = 'Running...';
-            startBtn.disabled = true;
-
-            const totalSteps = 200;
-            const increment = Math.max(1, Math.ceil((endNum - startNum) / totalSteps));
-
-            animationInterval = setInterval(() => {
-                currentNum += increment;
-
-                if (currentNum >= endNum) {
-                    currentNum = endNum;
-                    clearInterval(animationInterval);
-                    animationInterval = null;
-
-                    if (showEnd) {
-                        counterText.textContent = formatNumber(currentNum) + endTextStr;
-                    } else {
-                        counterText.textContent = formatNumber(currentNum);
-                    }
-
-                    status.className = 'status done';
-                    status.textContent = 'Done!';
-                    startBtn.disabled = false;
-                    return;
-                }
-
-                counterText.textContent = formatNumber(currentNum);
-            }, speed / totalSteps);
-        }
-
-        function resetAnimation() {
-            if (animationInterval) {
-                clearInterval(animationInterval);
-                animationInterval = null;
-            }
-
-            const startNum = parseInt(startNumberInput.value) || 0;
-            counterText.textContent = formatNumber(startNum);
-            status.className = 'status ready';
-            status.textContent = 'Ready';
-            startBtn.disabled = false;
-
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-            recordedChunks = [];
-        }
-
-        async function downloadRecording() {
-            try {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = 1280;
-                canvas.height = 720;
-
-                const startNum = parseInt(startNumberInput.value) || 0;
-                const endNum = parseInt(endNumberInput.value) || 100000;
-                const speed = parseInt(speedSlider.value) || 500;
-                const endTextStr = endTextInput.value || '+';
-                const showEnd = showEndText.checked;
-                const increment = Math.max(1, Math.ceil((endNum - startNum) / 200));
-
-                const stream = canvas.captureStream(60);
-                const recorder = new MediaRecorder(stream, {
-                    mimeType: 'video/webm;codecs=vp9'
-                });
-
-                recordedChunks = [];
-                recorder.ondataavailable = (e) => {
-                    if (e.data.size > 0) recordedChunks.push(e.data);
-                };
-
-                recorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'counter-animation.webm';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    status.className = 'status done';
-                    status.textContent = 'Video downloaded!';
-                    startBtn.disabled = false;
-                };
-
-                recorder.start();
-                status.className = 'status running';
-                status.textContent = 'Recording...';
-                startBtn.disabled = true;
-
-                let currentNum = startNum;
-                let frame = 0;
-                const totalFrames = 200;
-
-                function drawFrame() {
-                    const bgColor = bgColorPicker.value;
-                    const txtColor = textColorPicker.value;
-                    const size = parseInt(fontSizeSlider.value) || 80;
-                    const font = fontStyle.value;
-
-                    ctx.fillStyle = bgColor;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    const displayNum = frame < totalFrames
-                        ? Math.min(startNum + Math.ceil(((endNum - startNum) / totalFrames) * frame), endNum)
-                        : endNum;
-
-                    const displayText = (frame >= totalFrames && showEnd)
-                        ? formatNumber(displayNum) + endTextStr
-                        : formatNumber(displayNum);
-
-                    ctx.fillStyle = txtColor;
-                    ctx.font = `bold ${size * (canvas.width / previewBox.offsetWidth)}px ${font}`;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(displayText, canvas.width / 2, canvas.height / 2);
-
-                    frame++;
-
-                    if (frame <= totalFrames + 60) {
-                        requestAnimationFrame(drawFrame);
-                    } else {
-                        recorder.stop();
-                    }
-                }
-
-                drawFrame();
-            } catch (err) {
-                status.className = 'status done';
-                status.textContent = 'Error: ' + err.message;
-                startBtn.disabled = false;
-            }
-        }
-
-        counterText.style.color = textColorPicker.value;
-        previewBox.style.backgroundColor = bgColorPicker.value;
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>

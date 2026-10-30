@@ -4,7 +4,7 @@ Turn a ChatGPT-generated JSON specification into a **real Google Form** with a *
 
 ## Current web app deployment
 
-Production Web App URL: https://script.google.com/macros/s/AKfycbwmpwPqUR2QfuaUDw636muhCWxCu2c2LE7f3OE5C0DN5Jrqfw1eEIxPNz7KptI6E43z/exec
+Production Web App URL: https://script.google.com/macros/s/AKfycbx1AGk1GHLlva2hf7tuK4k62JYLaIV-a89vqRsUE9qrykZQp6TseDQURARuwMJ9pZLb/exec
 
 ## Project files
 
@@ -16,14 +16,30 @@ FormForge/
 ├── Validation.gs          # Authoritative server validation + normalization
 ├── FormService.gs         # FormApp creation, per-type mapping, URL retrieval
 ├── SpreadsheetService.gs  # Spreadsheet creation, setDestination linking, URL retrieval
-├── Index.html             # App shell (header, editor, preview, result, how-to)
-├── Styles.html            # Design system CSS (included via templating)
-├── Components.html        # Help modal + toast (included via templating)
+├── Index.html             # App shell (app bar, hero, editor, preview, how-to, FAQ)
+├── Styles.html            # Teal design system CSS (included via templating, light + dark)
+├── Components.html        # Help dialog + toast (included via templating)
 ├── Client.html            # Frontend JS (included via templating)
+├── preview-local.html     # Generated single-file preview (not deployed to Apps Script)
 ├── example-form.json      # Standard example (student registration)
 ├── example-all-types.json # Covers all 8 supported question types
 └── README.md
 ```
+
+## Updating an existing deployment (manual)
+
+The `.gs` files are unchanged by the UI refresh, so a visual update only needs the four HTML files:
+
+1. Open the project at <https://script.google.com>.
+2. Replace the contents of `Index.html`, `Styles.html`, `Components.html`, and `Client.html` one by one
+   (keep the exact file names — `include('Styles')` etc. depend on them).
+3. **Deploy → Manage deployments → edit the active deployment → Version: New version → Deploy.**
+   The `/exec` URL stays the same.
+4. Hard-reload the web app (Ctrl/Cmd + Shift + R) and check the dark-mode toggle and the app bar account chip.
+
+`preview-local.html` is a generated single-file copy of the four HTML files for previewing the UI without
+Apps Script. Open it from a local web server (`python -m http.server`). It intentionally has no
+`google.script.run`, so the account chip reads “Local preview” and Generate shows a deploy notice.
 
 ## JSON schema (v1.0)
 

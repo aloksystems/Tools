@@ -1,66 +1,151 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image to Text Converter</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EIT%3C/text%3E%3C/svg%3E">
+  <title>Image to Text Converter | Private OCR in Your Browser</title>
+  <meta name="description" content="Extract text from JPG, PNG, and WebP images in your browser. Copy or download the recognised text privately — no uploads, no sign-up.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Image-To-Text/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Image to Text Converter - Alok Systems Tools">
+  <meta property="og:description" content="Extract text from images locally in your browser. Copy or download the result privately.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Image-To-Text/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Image to Text Converter - Alok Systems Tools">
+  <meta name="twitter:description" content="Extract text from images locally in your browser. Copy or download the result privately.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Image to Text Converter",
+    "description":"Extract text from images locally in your browser. Copy or download the result privately.",
+    "url":"https://aloksystems.freedev.app/Image-To-Text/",
+    "applicationCategory":"UtilityApplication",
+    "operatingSystem":"Any",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Are my images uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. Text recognition runs inside your browser and the image is never uploaded. Closing the page clears the preview and the extracted text."}},
+      {"@type":"Question","name":"Which languages can be recognised?","acceptedAnswer":{"@type":"Answer","text":"This tool uses the English OCR model. It works best on clear, high-contrast images with printed text."}},
+      {"@type":"Question","name":"Which image formats are supported?","acceptedAnswer":{"@type":"Answer","text":"You can use JPG, PNG, WebP, BMP, and other common image formats that the browser can open."}},
+      {"@type":"Question","name":"Why did the extracted text come out imperfect?","acceptedAnswer":{"@type":"Answer","text":"Recognition depends on image quality. Sharper photos, straight scans, and larger text usually produce better results."}}
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="description" content="Use Image to Text Converter online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Image-To-Text/">
-    <meta property="og:title" content="Image to Text Converter">
-    <meta property="og:description" content="Use Image to Text Converter online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Image-To-Text/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Image to Text Converter">
-    <meta name="twitter:description" content="Use Image to Text Converter online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Image to Text Converter",
-    "description":  "Use Image to Text Converter online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/Image-To-Text/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
 <body>
-  <div class="container">
-    <h1 class="title">📄 Image to Text Converter</h1>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">IMAGE OCR, WITHOUT UPLOADS</p>
+      <h1 id="page-title">Image to Text</h1>
+      <p>Turn a photo or scan into selectable text with OCR that runs inside your browser.</p>
+      <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>Your image and extracted text stay in this browser.</div>
+    </section>
 
-    <div class="drop-area" id="drop-area">
-      <p>Drag & Drop or <span>Click to Upload</span></p>
-      <input type="file" id="fileInput" accept="image/*" hidden>
-    </div>
+    <p id="inputError" class="input-error" role="alert" hidden></p>
 
-    <div class="preview-container">
-      <img id="previewImage" src="" alt="Image Preview" class="hidden">
-    </div>
+    <section class="workspace" aria-label="Image to text converter">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="upload-title">
+          <div class="panel-heading"><span class="step-number">01</span><div><h2 id="upload-title">Upload image</h2><p>Drag and drop or browse for a clear photo or scan.</p></div></div>
+          <div class="upload-area" id="drop-area" tabindex="0" role="button" aria-label="Upload image. Click or drag and drop.">
+            <input type="file" id="fileInput" accept="image/*" hidden>
+            <svg class="upload-icon" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <p class="upload-main-text">Drag &amp; drop your image here</p>
+            <p class="upload-divider">— or —</p>
+            <button id="chooseBtn" class="btn btn-secondary" type="button">Choose image</button>
+            <p class="upload-hint">JPG, PNG, WebP, or BMP · or press <kbd>Ctrl</kbd> + <kbd>V</kbd> to paste · processed locally</p>
+          </div>
+          <p id="pasteToast" class="paste-toast" role="status" hidden>Image pasted from clipboard — ready to convert.</p>
+          <div class="preview-container">
+            <img id="previewImage" alt="Uploaded image preview" class="preview-image" hidden>
+          </div>
+        </section>
 
-    <div class="controls">
-      <button id="convertBtn" class="convert-btn">Convert to Text</button>
-      <!-- New Copy Button -->
-      <button id="copyBtn" class="copy-btn hidden">Copy Text</button>
-      <!-- Existing Download Button -->
-      <button id="downloadBtn" class="download-btn hidden">Download Text</button>
-    </div>
+        <section class="panel" aria-labelledby="extract-title">
+          <div class="panel-heading"><span class="step-number">02</span><div><h2 id="extract-title">Extract text</h2><p>English printed text works best on clear, high-contrast images.</p></div></div>
+          <button id="convertBtn" class="btn btn-primary convert-btn" type="button" disabled>Convert to text</button>
+          <div id="loadingAnimation" class="loading-state hidden" role="status" aria-live="polite">
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="loadingText">Starting OCR…</span>
+          </div>
+          <p class="field-help">Recognition uses the Tesseract OCR engine and may take a few seconds for large images.</p>
+        </section>
+      </div>
 
-    <div class="output-container hidden">
-      <textarea id="outputText" readonly></textarea>
-    </div>
+      <section class="summary-panel" aria-labelledby="output-title">
+        <div class="summary-heading"><p class="eyebrow">EXTRACTED TEXT</p><h2 id="output-title">Recognised text</h2><p class="summary-period" id="summaryPeriod">Upload an image and convert it to see the result.</p></div>
+        <div class="output-frame">
+          <label class="field-label" for="outputText">Result</label>
+          <textarea id="outputText" class="output-text" readonly placeholder="Recognised text will appear here." aria-describedby="textStats"></textarea>
+          <p class="text-stats" id="textStats">0 characters · 0 words</p>
+        </div>
+        <div class="export-actions">
+          <button id="copyBtn" class="btn btn-primary" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy text
+          </button>
+          <button id="downloadBtn" class="btn btn-outline" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download .txt
+          </button>
+        </div>
+        <p class="export-note">Nothing is uploaded — the text is extracted on this device.</p>
+      </section>
+    </section>
 
-    <div id="loadingAnimation" class="hidden">
-      <div class="spinner"></div>
-      <p>Extracting text, please wait...</p>
-    </div>
-  </div>
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to extract text from an image</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Add your image</h3><p>Drag and drop a photo or scan, or browse from your device.</p></div></li>
+        <li><span>02</span><div><h3>Convert to text</h3><p>Run OCR in the browser and wait for the progress to finish.</p></div></li>
+        <li><span>03</span><div><h3>Copy or download</h3><p>Review the recognised text, then copy it or save a .txt file.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Are my images uploaded to a server?</summary><p>No. Text recognition runs inside your browser and the image is never uploaded. Closing the page clears the preview and the extracted text.</p></details>
+      <details><summary>Which languages can be recognised?</summary><p>This tool uses the English OCR model. It works best on clear, high-contrast images with printed text.</p></details>
+      <details><summary>Which image formats are supported?</summary><p>You can use JPG, PNG, WebP, BMP, and other common image formats that the browser can open.</p></details>
+      <details><summary>Why did the extracted text come out imperfect?</summary><p>Recognition depends on image quality. Sharper photos, straight scans, and larger text usually produce better results.</p></details>
+    </section>
+  </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js" integrity="sha384-p0lyrUSwAXKW8+KUuu0G96F+bX2fnB1MGFTx5X/Y/99IjrwU1BnTzW+H71bs1Vrn" crossorigin="anonymous"></script>
   <script src="script.js"></script>

@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <base href="/apk-website/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
@@ -16,20 +15,22 @@
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#0d1118" />
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
-    <link rel="canonical" href="https://aloksystems.freedev.app/" />
-    <meta property="og:url" content="https://aloksystems.freedev.app/" />
-    <link rel="stylesheet" href="assets/css/site.css" />
+    <link rel="canonical" href="https://aloksystems.freedev.app/apk-website/" />
+    <meta property="og:url" content="https://aloksystems.freedev.app/apk-website/" />
+    <script>try{var t=localStorage.getItem('alok-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');</script>
+    <link rel="stylesheet" href="assets/css/site.css?v=20261030" />
     <title>Alok Systems Apps — Useful Apps for a Better Digital Life</title>
-    <script defer src="assets/js/site.js"></script>
+    <script defer src="assets/js/site.js?v=20261030"></script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <header class="topbar">
       <div class="wrap navrow">
         <a class="brand" href="index.html" aria-label="Alok Systems Apps home"
           ><span class="brand-mark">A.</span><span>Alok Systems</span></a
         >
         <nav class="navlinks" aria-label="Main navigation">
-          <a href="index.html">Home</a><a href="apps.html">Apps</a
+          <a href="index.html" aria-current="page">Home</a><a href="apps.html">Apps</a
           ><a href="about.html">About</a><a href="contact.html">Contact</a>
         </nav>
         <div class="nav-actions">
@@ -65,7 +66,7 @@
         ><a href="https://github.com/aloksystems" rel="noopener">GitHub ↗</a>
       </nav>
     </header>
-    <main>
+    <main id="main" tabindex="-1">
       <section class="wrap hero" data-reveal>
         <div>
           <span class="eyebrow">Independent Android studio</span>

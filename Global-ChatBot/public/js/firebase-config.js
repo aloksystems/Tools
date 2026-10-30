@@ -1,10 +1,11 @@
+// Firebase web app config for the alok-global-chat project.
+// This key is public by design; security is enforced by the Firebase rules.
 window.APP_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBFBddgcyGzlbZdY5THBv2s0kCWZG8qNb8",
-  authDomain: "ai-chatbot-a0107.firebaseapp.com",
-  databaseURL: "https://ai-chatbot-a0107-default-rtdb.firebaseio.com",
-  projectId: "ai-chatbot-a0107",
-  storageBucket: "ai-chatbot-a0107.firebasestorage.app",
-  messagingSenderId: "921898897940",
-  appId: "1:921898897940:web:5b6f59a47d9b46d7308d01",
-  measurementId: "G-J67DFPCXJC"
+  apiKey: "AIzaSyCo6OVQhaYuEXTZFzAS6OShzVSbiNcwwXg",
+  authDomain: "alok-global-chat.firebaseapp.com",
+  databaseURL: "https://alok-global-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "alok-global-chat",
+  storageBucket: "alok-global-chat.firebasestorage.app",
+  messagingSenderId: "526649389595",
+  appId: "1:526649389595:web:4356024e9a1eaaf2057ebe"
 };

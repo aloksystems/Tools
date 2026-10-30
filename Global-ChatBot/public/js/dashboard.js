@@ -1,887 +1,663 @@
-const firebaseConfig = window.APP_FIREBASE_CONFIG;
+(function () {
+  'use strict';
 
-if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey.includes('REPLACE_WITH_NEW_RESTRICTED_API_KEY')) {
-        throw new Error('Firebase config missing. Set js/firebase-config.js with your new restricted API key.');
-}
+  var MAX_OWNED_ROOMS = 3;
+  var config = window.APP_FIREBASE_CONFIG;
+  var configMissing = !config ||
+    !config.apiKey ||
+    String(config.apiKey).indexOf('REPLACE_WITH_NEW_RESTRICTED_API_KEY') !== -1 ||
+    String(config.projectId || '').indexOf('YOUR_PROJECT') !== -1;
 
-if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-}
-const auth = firebase.auth();
-const db = firebase.firestore();
-const realtimeDb = firebase.database();
+  var auth = null;
+  var db = null;
+  var rtdb = null;
+  var storage = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Get DOM elements for menu
-    const menuButton = document.getElementById('menu-button');
-    const sideMenu = document.getElementById('side-menu');
-    const menuOverlay = document.getElementById('menu-overlay');
-    const menuClose = document.getElementById('menu-close');
-    const profilePic = document.getElementById('profile-pic');
-    const usernameEl = document.getElementById('username');
-    const userEmailEl = document.getElementById('user-email');
-    const logoutBtn = document.getElementById('logout-btn');
-    const profileSettings = document.getElementById('profile-settings');
-    const themeToggle = document.getElementById('theme-toggle');
-    const chatRoomsContainer = document.getElementById('chat-rooms');
-    const globalLastTime = document.getElementById('global-last-time');
-    const globalLastSender = document.getElementById('global-last-sender');
-    const globalLastMessage = document.getElementById('global-last-message');
-    const aboutFunChat = document.getElementById('about-funchat');
-    const accentThemeToggle = document.getElementById('accent-theme-toggle');
-    const accentThemeOptions = document.getElementById('accent-theme-options');
-    const colorOptions = document.querySelectorAll('.color-option');
-    const fontSettingsToggle = document.getElementById('font-settings-toggle');
-    const fontSettingsOptions = document.getElementById('font-settings-options');
-    const fontOptions = document.querySelectorAll('.font-option');
-    const settingsToggle = document.getElementById('settings-toggle');
-    const settingsSection = document.getElementById('settings-section');
-    
-    let currentUser = null;
-    
-    // Check if user is logged in
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            currentUser = user;
-            // Update UI with user info
-            updateUserInfo(user);
-            // Load chat rooms
-            loadChatRooms();
-            // Load global chat last message
-            loadGlobalChatLastMessage();
-        } else {
-            // Redirect to login if not authenticated
-            window.location.href = 'login.html';
-        }
-    });
-    
-    // Update user info in UI
-    function updateUserInfo(user) {
-        // Set username and email
-        usernameEl.textContent = user.displayName || 'User';
-        userEmailEl.textContent = user.email || '';
-        
-        // Set profile pic
-        if (user.photoURL) {
-            profilePic.innerHTML = `<img src="${user.photoURL}" alt="${user.displayName}" style="width:100%;height:100%;border-radius:50%;">`;
-        } else {
-            // Use first letter of display name as avatar
-            const initials = (user.displayName || 'User').charAt(0).toUpperCase();
-            profilePic.textContent = initials;
-        }
-    }
-    
-    // Load chat rooms
-    function loadChatRooms() {
-        // In a real app, you would fetch user's chat rooms from Firestore
-        // For now, we'll just display the global chat
-        
-        // You can add code here to fetch and display user's personal chats
-        db.collection('users').doc(currentUser.uid).collection('chats')
-            .orderBy('lastMessageTime', 'desc')
-            .get()
-            .then(snapshot => {
-                if (!snapshot.empty) {
-                    snapshot.forEach(doc => {
-                        const chatData = doc.data();
-                        addChatRoomToUI(doc.id, chatData);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error("Error loading chat rooms: ", error);
-            });
-    }
-    
-    // Add a chat room to UI
-    function addChatRoomToUI(id, data) {
-        const roomElement = document.createElement('div');
-        roomElement.className = 'chat-room';
-        roomElement.setAttribute('data-id', id);
-        roomElement.addEventListener('click', () => {
-            window.location.href = `chat.html?id=${id}`;
-        });
-        
-        // Format timestamp
-        let timeString = 'Now';
-        if (data.lastMessageTime) {
-            const timestamp = data.lastMessageTime.toDate();
-            const now = new Date();
-            const diffDays = Math.floor((now - timestamp) / (1000 * 60 * 60 * 24));
-            
-            if (diffDays === 0) {
-                timeString = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            } else if (diffDays === 1) {
-                timeString = 'Yesterday';
-        } else {
-                timeString = timestamp.toLocaleDateString();
-            }
-        }
-        
-        roomElement.innerHTML = `
-            <div class="room-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="room-details">
-                <div class="room-header">
-                    <div class="room-name">${data.name}</div>
-                    <div class="last-message-time">${timeString}</div>
-                </div>
-                <div class="last-message">
-                    <div class="message-sender">${data.lastMessageSender || 'System'}:</div>
-                    <div>${data.lastMessageText || 'No messages yet'}</div>
-                </div>
-            </div>
-        `;
-        
-        chatRoomsContainer.appendChild(roomElement);
-    }
-    
-    // Load last message in global chat
-    function loadGlobalChatLastMessage() {
-        realtimeDb.ref('messages').orderByChild('timestamp').limitToLast(1).on('value', snapshot => {
-            if (snapshot.exists()) {
-                snapshot.forEach(childSnapshot => {
-                    const message = childSnapshot.val();
-                    
-                    // Format timestamp
-                    let timeString = 'Now';
-                    if (message.timestamp) {
-                        const timestamp = new Date(message.timestamp);
-                        const now = new Date();
-                        const diffMs = now - timestamp;
-                        const diffMins = Math.floor(diffMs / (1000 * 60));
-                        
-                        if (diffMins < 1) {
-                            timeString = 'Now';
-                        } else if (diffMins < 60) {
-                            timeString = `${diffMins}m ago`;
-        } else {
-                            const diffHours = Math.floor(diffMins / 60);
-                            if (diffHours < 24) {
-                                timeString = `${diffHours}h ago`;
-                            } else {
-                                timeString = timestamp.toLocaleDateString();
-                            }
-                        }
-                    }
-                    
-                    // Update UI
-                    globalLastTime.textContent = timeString;
-                    globalLastSender.textContent = message.displayName || 'Anonymous';
-                    globalLastMessage.textContent = message.message;
-                });
-            }
-        });
-    }
-    
-    // Toggle menu
-    menuButton.addEventListener('click', () => {
-        sideMenu.classList.add('active');
-        menuOverlay.classList.add('active');
-    });
-    
-    menuClose.addEventListener('click', () => {
-        sideMenu.classList.remove('active');
-        menuOverlay.classList.remove('active');
-    });
-    
-    menuOverlay.addEventListener('click', () => {
-        sideMenu.classList.remove('active');
-        menuOverlay.classList.remove('active');
-    });
-    
-    // Logout handler
-    function handleLogout() {
-        auth.signOut().then(() => {
-            window.location.href = 'login.html';
-        }).catch(error => {
-            console.error("Error signing out: ", error);
-        });
-    }
-    
-    logoutBtn.addEventListener('click', handleLogout);
-    
-    // Profile settings handler
-    profileSettings.addEventListener('click', () => {
-        // First close the side menu
-        sideMenu.classList.remove('active');
-        menuOverlay.classList.remove('active');
-        
-        // Only proceed if user is logged in
-        if (currentUser) {
-            // Update profile data in modal
-            displayUsername.textContent = currentUser.displayName || 'User';
-            displayEmail.textContent = currentUser.email || '';
-            
-            // Update profile picture
-            updateProfilePicInModal();
-            
-            // Show the modal
-            profileSettingsModal.style.display = 'flex';
-            profileSettingsModal.style.opacity = '1';
-            profileSettingsModal.style.pointerEvents = 'auto';
-        }
-    });
-    
-    // Simple Profile Settings Modal Functions
-    const profileSettingsModal = document.getElementById('profileSettingsModal');
-    const closeProfileBtn = document.getElementById('closeProfileBtn');
-    const displayUsername = document.getElementById('displayUsername');
-    const displayEmail = document.getElementById('displayEmail');
-    const editUsernameBtn = document.getElementById('editUsernameBtn');
-    const logoutProfileBtn = document.getElementById('logoutProfileBtn');
-    const profilePicContainer = document.getElementById('profilePicContainer');
-    const changeProfilePicBtn = document.getElementById('changeProfilePicBtn');
-    const profilePicInput = document.getElementById('profilePicInput');
-    
-    // Update profile picture in the modal
-    function updateProfilePicInModal() {
-        if (currentUser.photoURL) {
-            profilePicContainer.innerHTML = `<img src="${currentUser.photoURL}" alt="${currentUser.displayName}" style="width:100%; height:100%; object-fit:cover;">`;
-        } else {
-            // Use first letter of display name as avatar
-            const initials = (currentUser.displayName || 'User').charAt(0).toUpperCase();
-            profilePicContainer.innerHTML = initials;
-        }
-    }
-    
-    // Handle profile picture change
-    changeProfilePicBtn.addEventListener('click', () => {
-        profilePicInput.click();
-    });
-    
-    profilePicInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        
-        // Validate file type
-        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        if (!validImageTypes.includes(file.type)) {
-            showCustomNotification('फ़ाइल प्रकार समर्थित नहीं है। कृपया JPEG, PNG, GIF या WEBP छवि चुनें।', 'error');
-            return;
-        }
-        
-        // Validate file size (max 2MB)
-        const maxSize = 2 * 1024 * 1024; // 2MB
-        if (file.size > maxSize) {
-            showCustomNotification('छवि बहुत बड़ी है। अधिकतम आकार 2MB है।', 'error');
-            return;
-        }
-        
-        // Create storage reference
-        const storageRef = firebase.storage().ref();
-        const profilePicRef = storageRef.child(`profile_pics/${currentUser.uid}`);
-        
-        // Show loading state
-        profilePicContainer.innerHTML = `<div class="spinner" style="border:3px solid rgba(255,255,255,0.3); border-radius:50%; border-top:3px solid white; width:30px; height:30px; animation:spin 1s linear infinite;"></div>`;
-        
-        // Create preview first using FileReader
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            // Compress image if needed before upload
-            const img = new Image();
-            img.onload = () => {
-                // Only compress if image is large
-                if (file.size > 500 * 1024) {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    const MAX_HEIGHT = 800;
-                    let width = img.width;
-                    let height = img.height;
-                    
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // Convert to blob and upload
-                    canvas.toBlob((blob) => {
-                        uploadImageToFirebase(blob);
-                    }, file.type, 0.85); // 85% quality
-                } else {
-                    // Small image, upload directly
-                    uploadImageToFirebase(file);
-                }
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-        
-        function uploadImageToFirebase(fileOrBlob) {
-            // Upload to Firebase Storage
-            profilePicRef.put(fileOrBlob).then(snapshot => {
-                return snapshot.ref.getDownloadURL();
-            }).then(downloadURL => {
-                // Update Firebase Auth profile
-                return currentUser.updateProfile({
-                    photoURL: downloadURL
-                });
-            }).then(() => {
-                // Update UI
-                updateProfilePicInModal();
-                updateUserInfo(currentUser);
-                
-                // Show success notification
-                showCustomNotification('प्रोफाइल फोटो सफलतापूर्वक अपडेट किया गया!', 'success');
-            }).catch(error => {
-                console.error('Error updating profile picture:', error);
-                showCustomNotification('प्रोफाइल फोटो अपडेट करने में विफल। कृपया पुनः प्रयास करें।', 'error');
-                updateProfilePicInModal();
-            });
-        }
-    });
-    
-    // Close profile modal when clicking the X button
-    if (closeProfileBtn) {
-        closeProfileBtn.addEventListener('click', () => {
-            closeProfileModal();
-        });
-    }
-    
-    // Close profile modal when clicking outside the modal
-    if (profileSettingsModal) {
-        profileSettingsModal.addEventListener('click', (e) => {
-            if (e.target === profileSettingsModal) {
-                closeProfileModal();
-            }
-        });
-    }
-    
-    // Function to close the profile modal with animation
-    function closeProfileModal() {
-        profileSettingsModal.style.opacity = '0';
-        setTimeout(() => {
-        profileSettingsModal.style.display = 'none';
-            profileSettingsModal.style.pointerEvents = 'none';
-        }, 300);
-    }
-    
-    // Edit username when clicking the edit button
-    if (editUsernameBtn) {
-        editUsernameBtn.addEventListener('click', () => {
-            const newUsername = prompt('Enter new username:', currentUser.displayName);
-            
-            if (newUsername && newUsername.trim() !== '') {
-                // Update username in Firebase
-                currentUser.updateProfile({
-                    displayName: newUsername
-                }).then(() => {
-                    // Update UI in real-time
-                    displayUsername.textContent = newUsername;
-                    usernameEl.textContent = newUsername;
-                    
-                    // Show success notification
-                    alert('Username updated successfully!');
-                }).catch(error => {
-                    console.error('Error updating username:', error);
-                    alert('Failed to update username. Please try again.');
-                });
-            }
-        });
-    }
-    
-    // Logout when clicking the logout button in profile modal
-    if (logoutProfileBtn) {
-        logoutProfileBtn.addEventListener('click', handleLogout);
-    }
-    
-    // Check if user previously selected dark mode
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-        themeToggle.checked = true;
-    }
-    
-    themeToggle.addEventListener('change', function() {
-        if (this.checked) {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('darkMode', 'enabled');
-        } else {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('darkMode', 'disabled');
-        }
-    });
-    
-    // Handle clicks on other menu items
-    aboutFunChat.addEventListener('click', () => {
-        // First close the side menu
-        sideMenu.classList.remove('active');
-        menuOverlay.classList.remove('active');
-        
-        // Show the About modal
-        aboutAIChatModal.style.display = 'flex';
-        aboutAIChatModal.style.opacity = '1';
-        aboutAIChatModal.style.pointerEvents = 'auto';
-    });
-    
-    // Toggle settings section
-    settingsToggle.addEventListener('click', () => {
-        settingsSection.classList.toggle('active');
-    });
-    
-    // Make sure accent theme options are not active by default
-    accentThemeOptions.classList.remove('active');
-    
-    // Toggle accent theme options
-    accentThemeToggle.addEventListener('click', () => {
-        accentThemeOptions.classList.toggle('active');
-        // Close font settings if open
-        fontSettingsOptions.classList.remove('active');
-    });
-    
-    // Toggle font settings options
-    fontSettingsToggle.addEventListener('click', () => {
-        fontSettingsOptions.classList.toggle('active');
-        // Close accent theme if open
-        accentThemeOptions.classList.remove('active');
-    });
-    
-    // Handle color selection
-    colorOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            // Remove selected class from all options
-            colorOptions.forEach(opt => opt.classList.remove('selected'));
-            // Add selected class to clicked option
-            option.classList.add('selected');
-            
-            // Get selected color
-            const color = option.getAttribute('data-color');
-            
-            // Save to localStorage
-            localStorage.setItem('accentColor', color);
-            
-            // Apply to UI elements
-            applyAccentColor(color);
-            
-            // Close the color options dropdown after selection
-            setTimeout(() => {
-                accentThemeOptions.classList.remove('active');
-            }, 300);
-        });
-    });
-    
-    // Apply accent color to UI elements
-    function applyAccentColor(color) {
-        document.documentElement.style.setProperty('--accent-color', color);
-        
-        // Apply color to interactive elements
-        const buttons = document.querySelectorAll('.btn-primary, .send-btn');
-        buttons.forEach(btn => {
-            btn.style.backgroundColor = color;
-        });
-        
-        // Apply to other elements that need accent color
-        const accentElements = document.querySelectorAll('.active-tab, .radio-inner, .room-avatar, .menu-user-avatar, .chat-avatar');
-        accentElements.forEach(el => {
-            el.style.backgroundColor = color;
-            if (color === '#ffffff') {
-                el.style.color = '#333'; // Dark text for white background
-        } else {
-                el.style.color = 'white'; // White text for colored backgrounds
-            }
-        });
-        
-        // Apply to border elements
-        const borderElements = document.querySelectorAll('.font-radio.selected');
-        borderElements.forEach(el => {
-            el.style.borderColor = color;
-        });
-        
-        // For message bubbles in chat
-        if (document.querySelector('.my-message .message-bubble')) {
-            const myMessageBubbles = document.querySelectorAll('.my-message .message-bubble');
-            myMessageBubbles.forEach(bubble => {
-                bubble.style.backgroundColor = color === '#ffffff' ? '#dcf8c6' : color;
-                bubble.style.color = color === '#ffffff' || color === '#dcf8c6' ? '#333' : 'white';
-            });
-        }
-    }
-    
-    // Handle font selection
-    fontOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            // Remove selected class from all options
-            fontOptions.forEach(opt => {
-                opt.querySelector('.font-radio').classList.remove('selected');
-            });
-            
-            // Add selected class to clicked option
-            option.querySelector('.font-radio').classList.add('selected');
-            
-            // Get selected font
-            const font = option.getAttribute('data-font');
-            
-            // Save to localStorage
-            localStorage.setItem('selectedFont', font);
-            
-            // Apply to body and all text elements
-            applyFont(font);
-        });
-    });
-    
-    // Apply font to the entire app
-    function applyFont(font) {
-        document.body.style.fontFamily = `'${font}', sans-serif`;
-        
-        // Also apply to all text elements for consistency
-        const textElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, button, input, textarea, a, div');
-        textElements.forEach(el => {
-            el.style.fontFamily = `'${font}', sans-serif`;
-        });
-    }
-    
-    // Load saved settings
-    function loadSavedSettings() {
-        // Load accent color
-        const savedColor = localStorage.getItem('accentColor');
-        if (savedColor) {
-            // Mark the correct color as selected
-            colorOptions.forEach(opt => {
-                if (opt.getAttribute('data-color') === savedColor) {
-                    opt.classList.add('selected');
-                }
-            });
-            // Apply the color
-            applyAccentColor(savedColor);
-        } else {
-            // Default is the first color
-            colorOptions[0].classList.add('selected');
-            applyAccentColor(colorOptions[0].getAttribute('data-color'));
-        }
-        
-        // Load font
-        const savedFont = localStorage.getItem('selectedFont');
-        if (savedFont) {
-            // Mark the correct font as selected
-            fontOptions.forEach(opt => {
-                if (opt.getAttribute('data-font') === savedFont) {
-                    opt.querySelector('.font-radio').classList.add('selected');
-                }
-            });
-            // Apply the font
-            applyFont(savedFont);
-        } else {
-            // Default is the first font (Poppins)
-            fontOptions[0].querySelector('.font-radio').classList.add('selected');
-            applyFont(fontOptions[0].getAttribute('data-font'));
-        }
-    }
-    
-    // Load saved settings when the page loads
-    loadSavedSettings();
+  if (!configMissing) {
+    if (!firebase.apps.length) firebase.initializeApp(config);
+    auth = firebase.auth();
+    db = firebase.firestore();
+    rtdb = firebase.database();
+    storage = firebase.storage();
+  }
 
-    // About Global Chat Modal functionality
-    const aboutAIChatModal = document.getElementById('aboutAIChatModal');
-    const closeAboutBtn = document.getElementById('closeAboutBtn');
-    
-    // Close About modal when clicking the X button
-    if (closeAboutBtn) {
-        closeAboutBtn.addEventListener('click', () => {
-            closeAboutModal();
-        });
-    }
-    
-    // Close About modal when clicking outside the modal
-    if (aboutAIChatModal) {
-        aboutAIChatModal.addEventListener('click', (e) => {
-            if (e.target === aboutAIChatModal) {
-                closeAboutModal();
-            }
-        });
-    }
-    
-    // Function to close the About modal with animation
-    function closeAboutModal() {
-        aboutAIChatModal.style.opacity = '0';
-        setTimeout(() => {
-            aboutAIChatModal.style.display = 'none';
-            aboutAIChatModal.style.pointerEvents = 'none';
-        }, 300);
-    }
+  var els = {};
+  var currentUser = null;
+  var roomPreviewRefs = [];
+  var roomUnsubscribers = [];
 
-    // Manage Rooms Modal
-    const createRoomFab = document.getElementById('create-room-fab');
-    const manageRoomsModal = document.getElementById('manageRoomsModal');
-    const closeManageRoomsBtn = document.getElementById('closeManageRoomsBtn');
-    const roomIconOptions = document.querySelectorAll('.room-icon-option');
-    const createRoomBtn = document.getElementById('createRoomBtn');
-    const joinRoomBtn = document.getElementById('joinRoomBtn');
-    const newRoomNameInput = document.getElementById('newRoomName');
-    const roomIdInput = document.getElementById('roomIdInput');
-    
-    let selectedRoomIcon = 'fa-users'; // Default icon
-    
-    // Show manage rooms modal when clicking the FAB
-    if (createRoomFab) {
-        createRoomFab.addEventListener('click', () => {
-            manageRoomsModal.style.display = 'flex';
-            manageRoomsModal.style.opacity = '1';
-            manageRoomsModal.style.pointerEvents = 'auto';
-        });
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  function showToast(message, type) {
+    var container = els.toasts || $('notification-container');
+    if (!container || !message) return;
+    var toast = document.createElement('div');
+    toast.className = 'gc-toast' + (type === 'error' ? ' error' : '');
+    var icon = document.createElement('i');
+    icon.className = type === 'error' ? 'fas fa-circle-exclamation' : 'fas fa-circle-check';
+    icon.setAttribute('aria-hidden', 'true');
+    var text = document.createElement('span');
+    text.textContent = message;
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    container.appendChild(toast);
+    window.setTimeout(function () {
+      toast.classList.add('is-leaving');
+      window.setTimeout(function () {
+        toast.remove();
+      }, 220);
+    }, 4200);
+  }
+
+  function setNotice(message) {
+    if (!els.configNotice) return;
+    var text = els.configNotice.querySelector('div');
+    if (text && message) text.textContent = message;
+    els.configNotice.hidden = false;
+  }
+
+  function initials(name) {
+    return (String(name || 'U').trim().charAt(0) || 'U').toUpperCase();
+  }
+
+  function paintAvatar(element, user) {
+    if (!element) return;
+    var photo = user && user.photoURL;
+    if (photo) {
+      element.textContent = '';
+      var img = document.createElement('img');
+      img.src = photo;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:inherit;';
+      element.appendChild(img);
+    } else {
+      element.textContent = initials(user && (user.displayName || user.email));
     }
-    
-    // Close manage rooms modal when clicking the X button
-    if (closeManageRoomsBtn) {
-        closeManageRoomsBtn.addEventListener('click', () => {
-            closeManageRoomsModal();
-        });
-    }
-    
-    // Close manage rooms modal when clicking outside the modal
-    if (manageRoomsModal) {
-        manageRoomsModal.addEventListener('click', (e) => {
-            if (e.target === manageRoomsModal) {
-                closeManageRoomsModal();
-            }
-        });
-    }
-    
-    // Select room icon
-    roomIconOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            // Remove selected class from all options
-            roomIconOptions.forEach(opt => opt.classList.remove('selected'));
-            // Add selected class to clicked option
-            option.classList.add('selected');
-            // Save selected icon
-            selectedRoomIcon = option.getAttribute('data-icon');
-        });
+  }
+
+  function escapeHTML(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeIcon(icon) {
+    return /^fa-[a-z0-9-]+$/.test(String(icon || '')) ? icon : 'fa-users';
+  }
+
+  function toMillis(value) {
+    if (!value) return 0;
+    if (typeof value === 'number') return value;
+    if (typeof value.toDate === 'function') return value.toDate().getTime();
+    var parsed = new Date(value).getTime();
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function formatRelativeTime(value) {
+    var time = toMillis(value);
+    if (!time) return '';
+    var diff = Date.now() - time;
+    if (diff < 60000) return 'now';
+    if (diff < 3600000) return Math.floor(diff / 60000) + 'm';
+    if (diff < 86400000) return Math.floor(diff / 3600000) + 'h';
+    if (diff < 604800000) return Math.floor(diff / 86400000) + 'd';
+    return new Date(time).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  /* ---------- Theme ---------- */
+
+  function bindTheme() {
+    if (!els.themeToggle) return;
+    els.themeToggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
+    els.themeToggle.addEventListener('change', function () {
+      var next = els.themeToggle.checked ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem('tools-theme', next);
+      } catch (e) {}
     });
-    
-    // Create room button handler
-    if (createRoomBtn) {
-        createRoomBtn.addEventListener('click', () => {
-            const roomName = newRoomNameInput.value.trim();
-            if (roomName.length < 3) {
-                alert('Room name must be at least 3 characters long.');
-                return;
-            }
-            
-            createNewRoom(roomName, selectedRoomIcon);
-        });
+  }
+
+  /* ---------- Drawer & modals ---------- */
+
+  function openDrawer() {
+    if (!els.sideMenu) return;
+    els.sideMenu.classList.add('active');
+    if (els.menuOverlay) els.menuOverlay.classList.add('active');
+    if (els.menuButton) els.menuButton.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeDrawer() {
+    if (!els.sideMenu) return;
+    els.sideMenu.classList.remove('active');
+    if (els.menuOverlay) els.menuOverlay.classList.remove('active');
+    if (els.menuButton) els.menuButton.setAttribute('aria-expanded', 'false');
+  }
+
+  function openModal(modal) {
+    if (modal) modal.classList.add('is-open');
+  }
+
+  function closeModal(modal) {
+    if (modal) modal.classList.remove('is-open');
+  }
+
+  function closeTopLayer() {
+    var open = document.querySelector('.gc-modal.is-open');
+    if (open) {
+      closeModal(open);
+      return;
     }
-    
-    // Join room button handler
-    if (joinRoomBtn) {
-        joinRoomBtn.addEventListener('click', () => {
-            const roomId = roomIdInput.value.trim();
-            if (!roomId) {
-                alert('Please enter a valid Room ID.');
-                return;
-            }
-            
-            joinRoomById(roomId);
-        });
-    }
-    
-    // Function to close the manage rooms modal with animation
-    function closeManageRoomsModal() {
-        manageRoomsModal.style.opacity = '0';
-        setTimeout(() => {
-            manageRoomsModal.style.display = 'none';
-            manageRoomsModal.style.pointerEvents = 'none';
-        }, 300);
-    }
-    
-    // Function to create a new room
-    function createNewRoom(name, icon) {
-        // Only proceed if user is logged in
-        if (!currentUser) {
-            alert('You must be logged in to create a room.');
-            return;
-        }
-        
-        // Create new room document in Firestore
-        db.collection('rooms').add({
-            name: name,
-            icon: icon,
-            createdBy: currentUser.uid,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            members: [currentUser.uid],
-            admins: [currentUser.uid]
-        })
-        .then(docRef => {
-            // Add room to user's rooms
-            return db.collection('users').doc(currentUser.uid).collection('rooms').doc(docRef.id).set({
-                joined: firebase.firestore.FieldValue.serverTimestamp(),
-                isAdmin: true,
-                unreadCount: 0
-            })
-            .then(() => {
-                // Create welcome message in realtime database
-                return realtimeDb.ref(`room_messages/${docRef.id}`).push({
-                    type: 'system',
-                    message: `Welcome to ${name}! This room was created by ${currentUser.displayName || 'Anonymous'}.`,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-            })
-            .then(() => {
-                // Show more detailed alert with room ID to help user find it later if needed
-                alert(`Room "${name}" created successfully! Room ID: ${docRef.id}\nYou will now be redirected to the chat room.`);
-                
-                // Close modal
-                closeManageRoomsModal();
-                
-                // Clear input
-                newRoomNameInput.value = '';
-                
-                // Add the room to the UI before redirecting
-                addChatRoomToUI(docRef.id, {
-                    name: name,
-                    lastMessageSender: 'System',
-                    lastMessageText: `Welcome to ${name}!`,
-                    lastMessageTime: firebase.firestore.Timestamp.now()
-                });
-                
-                // Redirect to the new room with proper parameter
-                const chatUrl = `chat.html?room=${docRef.id}`;
-                console.log('Redirecting to:', chatUrl);
-                setTimeout(() => {
-                    window.location.href = chatUrl;
-                }, 500); // Short delay to ensure the alert is seen
-            });
-        })
-        .catch(error => {
-            console.error('Error creating room:', error);
-            alert('Failed to create room. Please try again.');
-        });
-    }
-    
-    // Function to join a room by ID
-    function joinRoomById(roomId) {
-        // Only proceed if user is logged in
-        if (!currentUser) {
-            alert('You must be logged in to join a room.');
-            return;
-        }
-        
-        // Check if room exists
-        db.collection('rooms').doc(roomId).get()
-            .then(doc => {
-                if (!doc.exists) {
-                    alert('Room not found. Please check the ID and try again.');
-                    return;
-                }
-                
-                const roomData = doc.data();
-                
-                // Check if user is already a member
-                if (roomData.members && roomData.members.includes(currentUser.uid)) {
-                    // User is already a member, just redirect
-                    window.location.href = `chat.html?room=${roomId}`;
-                    return;
-                }
-                
-                // Add user to room members
-                return db.collection('rooms').doc(roomId).update({
-                    members: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-                })
-                .then(() => {
-                    // Add room to user's rooms
-                    return db.collection('users').doc(currentUser.uid).collection('rooms').doc(roomId).set({
-                        joined: firebase.firestore.FieldValue.serverTimestamp(),
-                        isAdmin: false,
-                        unreadCount: 0
-                    });
-                })
-                .then(() => {
-                    // Add system message about new member
-                    return realtimeDb.ref(`room_messages/${roomId}`).push({
-                        type: 'system',
-                        message: `${currentUser.displayName || 'Anonymous'} joined the room.`,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
-                })
-                .then(() => {
-                    alert(`You have joined "${roomData.name}"!`);
-                    // Close modal
-                    closeManageRoomsModal();
-                    // Clear input
-                    roomIdInput.value = '';
-                    // Redirect to the room
-                    window.location.href = `chat.html?room=${roomId}`;
-                });
-            })
-            .catch(error => {
-                console.error('Error joining room:', error);
-                alert('Failed to join room. Please try again.');
-            });
-    }
-    
-    // Allow enter key to create/join room
-    newRoomNameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            createRoomBtn.click();
-        }
-    });
-    
-    roomIdInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            joinRoomBtn.click();
-        }
+    closeDrawer();
+  }
+
+  function bindShell() {
+    if (els.menuButton) els.menuButton.addEventListener('click', openDrawer);
+    if (els.menuClose) els.menuClose.addEventListener('click', closeDrawer);
+    if (els.menuOverlay) els.menuOverlay.addEventListener('click', closeDrawer);
+
+    Array.prototype.forEach.call(document.querySelectorAll('.gc-modal'), function (modal) {
+      modal.addEventListener('click', function (event) {
+        if (event.target === modal) closeModal(modal);
+      });
     });
 
-    // Add custom notification function
-    function showCustomNotification(message, type = 'success') {
-        // Check if a notification container already exists
-        let notificationContainer = document.getElementById('notification-container');
-        
-        if (!notificationContainer) {
-            // Create container if it doesn't exist
-            notificationContainer = document.createElement('div');
-            notificationContainer.id = 'notification-container';
-            notificationContainer.style.position = 'fixed';
-            notificationContainer.style.top = '20px';
-            notificationContainer.style.right = '20px';
-            notificationContainer.style.zIndex = '9999';
-            document.body.appendChild(notificationContainer);
-        }
-        
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = `custom-notification ${type}`;
-        notification.textContent = message;
-        
-        // Add styles to notification
-        notification.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
-        notification.style.color = 'white';
-        notification.style.padding = '15px 20px';
-        notification.style.marginBottom = '10px';
-        notification.style.borderRadius = '4px';
-        notification.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-        notification.style.minWidth = '250px';
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateY(-20px)';
-        notification.style.transition = 'all 0.3s ease';
-        
-        // Add to container
-        notificationContainer.appendChild(notification);
-        
-        // Trigger animation
-        setTimeout(() => {
-            notification.style.opacity = '1';
-            notification.style.transform = 'translateY(0)';
-        }, 10);
-        
-        // Auto remove after delay
-        setTimeout(() => {
-            notification.style.opacity = '0';
-            notification.style.transform = 'translateY(-20px)';
-            setTimeout(() => {
-                notification.remove();
-            }, 300);
-        }, 4000);
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeTopLayer();
+    });
+
+    if (els.closeProfileBtn) els.closeProfileBtn.addEventListener('click', function () { closeModal(els.profileSettingsModal); });
+    if (els.closeAboutBtn) els.closeAboutBtn.addEventListener('click', function () { closeModal(els.aboutAIChatModal); });
+    if (els.closeManageRoomsBtn) els.closeManageRoomsBtn.addEventListener('click', function () { closeModal(els.manageRoomsModal); });
+
+    if (els.profileSettings) {
+      els.profileSettings.addEventListener('click', function () {
+        closeDrawer();
+        fillProfileModal();
+        openModal(els.profileSettingsModal);
+      });
     }
-});
+
+    if (els.aboutFunChat) {
+      els.aboutFunChat.addEventListener('click', function () {
+        closeDrawer();
+        openModal(els.aboutAIChatModal);
+      });
+    }
+
+    [els.createRoomFab, els.newChatHeaderBtn, els.emptyCreateBtn].forEach(function (button) {
+      if (!button) return;
+      button.addEventListener('click', function () {
+        openModal(els.manageRoomsModal);
+        window.setTimeout(function () {
+          if (els.newRoomName) els.newRoomName.focus();
+        }, 120);
+      });
+    });
+
+    els.iconOptions.forEach(function (option) {
+      option.addEventListener('click', function () {
+        els.iconOptions.forEach(function (item) { item.classList.remove('selected'); });
+        option.classList.add('selected');
+      });
+    });
+
+    if (els.newRoomName) {
+      els.newRoomName.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          createRoom();
+        }
+      });
+    }
+
+    if (els.roomIdInput) {
+      els.roomIdInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          joinRoom();
+        }
+      });
+    }
+  }
+
+  /* ---------- Profile ---------- */
+
+  function renderUser(user) {
+    if (!user) return;
+    if (els.username) els.username.textContent = user.displayName || 'User';
+    if (els.userEmail) els.userEmail.textContent = user.email || '';
+    paintAvatar(els.profilePic, user);
+    paintAvatar(els.profilePicContainer, user);
+  }
+
+  function fillProfileModal() {
+    if (!currentUser) return;
+    if (els.displayUsername) els.displayUsername.textContent = currentUser.displayName || 'User';
+    if (els.displayEmail) els.displayEmail.textContent = currentUser.email || '';
+    paintAvatar(els.profilePicContainer, currentUser);
+    if (els.usernameForm) els.usernameForm.hidden = true;
+  }
+
+  function handleLogout() {
+    if (!auth) return;
+    closeDrawer();
+    auth.signOut().then(function () {
+      window.location.href = 'login.html';
+    }).catch(function (error) {
+      console.error('Sign out failed', error);
+      showToast('Could not sign out. Try again.', 'error');
+    });
+  }
+
+  function bindProfile() {
+    if (els.logoutBtn) els.logoutBtn.addEventListener('click', handleLogout);
+    if (els.logoutProfileBtn) els.logoutProfileBtn.addEventListener('click', handleLogout);
+
+    if (els.editUsernameBtn) {
+      els.editUsernameBtn.addEventListener('click', function () {
+        if (!els.usernameForm || !currentUser) return;
+        els.usernameForm.hidden = false;
+        els.usernameInput.value = currentUser.displayName || '';
+        els.usernameInput.focus();
+        els.usernameInput.select();
+      });
+    }
+
+    if (els.cancelUsernameBtn) {
+      els.cancelUsernameBtn.addEventListener('click', function () {
+        if (els.usernameForm) els.usernameForm.hidden = true;
+      });
+    }
+
+    if (els.usernameForm) {
+      els.usernameForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!currentUser) return;
+        var name = (els.usernameInput.value || '').trim();
+        if (name.length < 2) {
+          showToast('Username must be at least 2 characters.', 'error');
+          return;
+        }
+        els.saveUsernameBtn.disabled = true;
+        currentUser.updateProfile({ displayName: name }).then(function () {
+          if (els.displayUsername) els.displayUsername.textContent = name;
+          renderUser(currentUser);
+          if (rtdb) rtdb.ref('online/' + currentUser.uid).update({ displayName: name }).catch(function () {});
+          els.usernameForm.hidden = true;
+          showToast('Username updated.');
+        }).catch(function (error) {
+          console.error('Username update failed', error);
+          showToast('Could not update username. Try again.', 'error');
+        }).then(function () {
+          els.saveUsernameBtn.disabled = false;
+        });
+      });
+    }
+
+    if (els.changeProfilePicBtn && els.profilePicInput) {
+      els.changeProfilePicBtn.addEventListener('click', function () {
+        els.profilePicInput.click();
+      });
+      els.profilePicInput.addEventListener('change', handlePhotoSelected);
+    }
+  }
+
+  function handlePhotoSelected(event) {
+    var file = event.target.files && event.target.files[0];
+    if (!file || !currentUser || !storage) return;
+    event.target.value = '';
+
+    if (['image/jpeg', 'image/png', 'image/gif', 'image/webp'].indexOf(file.type) === -1) {
+      showToast('Choose a JPG, PNG, GIF or WEBP image.', 'error');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('Image is larger than 2 MB.', 'error');
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function (loadEvent) {
+      var image = new Image();
+      image.onload = function () {
+        var max = 320;
+        var scale = Math.min(1, max / Math.max(image.width, image.height));
+        var canvas = document.createElement('canvas');
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(function (blob) {
+          uploadPhoto(blob || file);
+        }, 'image/jpeg', 0.86);
+      };
+      image.src = loadEvent.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function uploadPhoto(blob) {
+    var button = els.changeProfilePicBtn;
+    if (button) button.disabled = true;
+    var ref = storage.ref('profile_pics/' + currentUser.uid + '.jpg');
+    ref.put(blob).then(function (snapshot) {
+      return snapshot.ref.getDownloadURL();
+    }).then(function (url) {
+      return currentUser.updateProfile({ photoURL: url });
+    }).then(function () {
+      renderUser(currentUser);
+      fillProfileModal();
+      showToast('Profile photo updated.');
+    }).catch(function (error) {
+      console.error('Photo upload failed', error);
+      showToast('Could not upload the photo. Check Storage rules.', 'error');
+    }).then(function () {
+      if (button) button.disabled = false;
+    });
+  }
+
+  /* ---------- Global preview ---------- */
+
+  function watchGlobalPreview() {
+    if (!rtdb || !els.globalLastMessage) return;
+    rtdb.ref('global_messages').orderByChild('timestamp').limitToLast(1).on('value', function (snapshot) {
+      if (!snapshot.exists()) return;
+      snapshot.forEach(function (child) {
+        var message = child.val() || {};
+        if (els.globalLastTime) els.globalLastTime.textContent = formatRelativeTime(message.timestamp);
+        if (els.globalLastSender) els.globalLastSender.textContent = (message.displayName || message.sender || 'Someone') + ':';
+        if (els.globalLastMessage) els.globalLastMessage.textContent = message.deleted ? 'Message deleted' : (message.message || message.text || '');
+      });
+    });
+  }
+
+  /* ---------- Rooms ---------- */
+
+  function stopPreviewWatchers() {
+    roomPreviewRefs.forEach(function (item) {
+      try {
+        item.ref.off('value', item.handler);
+      } catch (e) {}
+    });
+    roomPreviewRefs = [];
+  }
+
+  function watchRoomPreview(roomId, card) {
+    if (!rtdb) return;
+    var ref = rtdb.ref('room_messages/' + roomId).orderByChild('timestamp').limitToLast(1);
+    var handler = ref.on('value', function (snapshot) {
+      if (!snapshot.exists()) return;
+      snapshot.forEach(function (child) {
+        var message = child.val() || {};
+        var time = card.querySelector('.gc-room-time');
+        var preview = card.querySelector('.gc-room-preview');
+        if (time) time.textContent = formatRelativeTime(message.timestamp);
+        if (preview) {
+          var name = escapeHTML(message.displayName || message.sender || 'Someone');
+          var body = escapeHTML(message.deleted ? 'Message deleted' : (message.message || message.text || ''));
+          preview.innerHTML = '<strong>' + name + ':</strong><span>' + body + '</span>';
+        }
+      });
+    });
+    roomPreviewRefs.push({ ref: ref, handler: handler });
+  }
+
+  function roomCard(roomId, room) {
+    var card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'gc-room-card';
+    card.innerHTML =
+      '<span class="gc-room-icon"><i class="fas ' + safeIcon(room.icon) + '" aria-hidden="true"></i></span>' +
+      '<span class="gc-room-body">' +
+      '<span class="gc-room-top"><span class="gc-room-name">' + escapeHTML(room.name || 'Room') + '</span>' +
+      '<span class="gc-room-time"></span></span>' +
+      '<span class="gc-room-preview"><strong>No messages yet</strong><span></span></span>' +
+      '</span>' +
+      '<span class="gc-room-chevron"><i class="fas fa-chevron-right" aria-hidden="true"></i></span>';
+    card.addEventListener('click', function () {
+      window.location.href = 'chat.html?room=' + encodeURIComponent(roomId);
+    });
+    watchRoomPreview(roomId, card);
+    return card;
+  }
+
+  function renderRooms(rooms) {
+    if (!els.chatRooms) return;
+    stopPreviewWatchers();
+    els.chatRooms.textContent = '';
+    if (!rooms.length) {
+      if (els.roomsEmpty) els.roomsEmpty.hidden = false;
+      if (els.roomsCount) els.roomsCount.hidden = true;
+      return;
+    }
+    if (els.roomsEmpty) els.roomsEmpty.hidden = true;
+    if (els.roomsCount) {
+      els.roomsCount.textContent = String(rooms.length);
+      els.roomsCount.hidden = false;
+    }
+    rooms.forEach(function (room) {
+      els.chatRooms.appendChild(roomCard(room.id, room));
+    });
+  }
+
+  function loadRooms() {
+    if (!db || !currentUser) return;
+    roomUnsubscribers.forEach(function (unsubscribe) {
+      try {
+        unsubscribe();
+      } catch (e) {}
+    });
+    roomUnsubscribers = [];
+    var unsubscribe = db.collection('users').doc(currentUser.uid).collection('rooms')
+      .onSnapshot(function (snapshot) {
+        var rooms = [];
+        snapshot.forEach(function (doc) {
+          var data = doc.data() || {};
+          rooms.push({ id: doc.id, name: data.name, icon: data.icon, joined: data.joined });
+        });
+        rooms.sort(function (a, b) {
+          return toMillis(b.joined) - toMillis(a.joined);
+        });
+        renderRooms(rooms);
+      }, function (error) {
+        console.error('Room list failed', error);
+        showToast('Could not load your rooms. Check Firestore rules.', 'error');
+      });
+    roomUnsubscribers.push(unsubscribe);
+  }
+
+  function createRoom() {
+    if (!db || !currentUser) {
+      showToast('Sign in to create a room.', 'error');
+      return;
+    }
+    var name = (els.newRoomName && els.newRoomName.value || '').trim();
+    if (name.length < 3) {
+      showToast('Room name needs at least 3 characters.', 'error');
+      return;
+    }
+    var selected = document.querySelector('.room-icon-option.selected');
+    var icon = selected ? selected.getAttribute('data-icon') : 'fa-users';
+    var dbRef = db;
+
+    if (els.createRoomBtn) els.createRoomBtn.disabled = true;
+    dbRef.collection('users').doc(currentUser.uid).collection('rooms').get().then(function (snapshot) {
+      if (snapshot.size >= MAX_OWNED_ROOMS) {
+        throw new Error('LIMIT');
+      }
+      return dbRef.collection('rooms').add({
+        name: name,
+        icon: icon,
+        createdBy: currentUser.uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        members: [currentUser.uid],
+        admins: [currentUser.uid]
+      });
+    }).then(function (docRef) {
+      return dbRef.collection('users').doc(currentUser.uid).collection('rooms').doc(docRef.id).set({
+        name: name,
+        icon: icon,
+        joined: firebase.firestore.FieldValue.serverTimestamp(),
+        isAdmin: true
+      }).then(function () {
+        return docRef.id;
+      });
+    }).then(function (roomId) {
+      if (!rtdb) return roomId;
+      return rtdb.ref('room_members/' + roomId + '/' + currentUser.uid).set(true)
+        .then(function () { return roomId; })
+        .catch(function () { return roomId; });
+    }).then(function (roomId) {
+      if (els.newRoomName) els.newRoomName.value = '';
+      window.location.href = 'chat.html?room=' + encodeURIComponent(roomId);
+    }).catch(function (error) {
+      console.error('Create room failed', error);
+      if (error && error.message === 'LIMIT') {
+        showToast('You can own up to ' + MAX_OWNED_ROOMS + ' rooms.', 'error');
+      } else {
+        showToast('Could not create the room. Check Firestore rules.', 'error');
+      }
+    }).then(function () {
+      if (els.createRoomBtn) els.createRoomBtn.disabled = false;
+    });
+  }
+
+  function joinRoom() {
+    if (!db || !currentUser) {
+      showToast('Sign in to join a room.', 'error');
+      return;
+    }
+    var roomId = (els.roomIdInput && els.roomIdInput.value || '').trim();
+    if (!roomId) {
+      showToast('Paste a room ID first.', 'error');
+      return;
+    }
+    var dbRef = db;
+    var roomRef = dbRef.collection('rooms').doc(roomId);
+    if (els.joinRoomBtn) els.joinRoomBtn.disabled = true;
+    roomRef.get().then(function (doc) {
+      if (!doc.exists) throw new Error('MISSING');
+      var data = doc.data() || {};
+      return roomRef.update({
+        members: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+      }).then(function () {
+        return dbRef.collection('users').doc(currentUser.uid).collection('rooms').doc(roomId).set({
+          name: data.name || 'Room',
+          icon: data.icon || 'fa-users',
+          joined: firebase.firestore.FieldValue.serverTimestamp(),
+          isAdmin: Array.isArray(data.admins) && data.admins.indexOf(currentUser.uid) !== -1
+        });
+      }).then(function () {
+        return roomId;
+      });
+    }).then(function (id) {
+      if (!rtdb) return id;
+      return rtdb.ref('room_members/' + id + '/' + currentUser.uid).set(true)
+        .then(function () { return id; })
+        .catch(function () { return id; });
+    }).then(function (id) {
+      if (els.roomIdInput) els.roomIdInput.value = '';
+      window.location.href = 'chat.html?room=' + encodeURIComponent(id);
+    }).catch(function (error) {
+      console.error('Join room failed', error);
+      showToast(error && error.message === 'MISSING' ? 'No room found with that ID.' : 'Could not join the room.', 'error');
+    }).then(function () {
+      if (els.joinRoomBtn) els.joinRoomBtn.disabled = false;
+    });
+  }
+
+  /* ---------- Boot ---------- */
+
+  function cacheElements() {
+    els = {
+      toasts: $('notification-container'),
+      configNotice: $('config-notice'),
+      menuButton: $('menu-button'),
+      sideMenu: $('side-menu'),
+      menuOverlay: $('menu-overlay'),
+      menuClose: $('menu-close'),
+      profilePic: $('profile-pic'),
+      username: $('username'),
+      userEmail: $('user-email'),
+      logoutBtn: $('logout-btn'),
+      profileSettings: $('profile-settings'),
+      themeToggle: $('theme-toggle'),
+      chatRooms: $('chat-rooms'),
+      roomsEmpty: $('rooms-empty'),
+      roomsCount: $('rooms-count'),
+      emptyCreateBtn: $('empty-create-btn'),
+      newChatHeaderBtn: $('new-chat-header-btn'),
+      createRoomFab: $('create-room-fab'),
+      globalLastTime: $('global-last-time'),
+      globalLastSender: $('global-last-sender'),
+      globalLastMessage: $('global-last-message'),
+      aboutFunChat: $('about-funchat'),
+      profileSettingsModal: $('profileSettingsModal'),
+      closeProfileBtn: $('closeProfileBtn'),
+      displayUsername: $('displayUsername'),
+      displayEmail: $('displayEmail'),
+      editUsernameBtn: $('editUsernameBtn'),
+      logoutProfileBtn: $('logoutProfileBtn'),
+      profilePicContainer: $('profilePicContainer'),
+      changeProfilePicBtn: $('changeProfilePicBtn'),
+      profilePicInput: $('profilePicInput'),
+      usernameForm: $('username-form'),
+      usernameInput: $('usernameInput'),
+      cancelUsernameBtn: $('cancelUsernameBtn'),
+      saveUsernameBtn: $('saveUsernameBtn'),
+      aboutAIChatModal: $('aboutAIChatModal'),
+      closeAboutBtn: $('closeAboutBtn'),
+      manageRoomsModal: $('manageRoomsModal'),
+      closeManageRoomsBtn: $('closeManageRoomsBtn'),
+      newRoomName: $('newRoomName'),
+      createRoomBtn: $('createRoomBtn'),
+      roomIdInput: $('roomIdInput'),
+      joinRoomBtn: $('joinRoomBtn'),
+      iconOptions: Array.prototype.slice.call(document.querySelectorAll('.room-icon-option'))
+    };
+  }
+
+  function boot() {
+    cacheElements();
+    bindTheme();
+    bindShell();
+    bindProfile();
+    if (els.createRoomBtn) els.createRoomBtn.addEventListener('click', createRoom);
+    if (els.joinRoomBtn) els.joinRoomBtn.addEventListener('click', joinRoom);
+
+    if (configMissing) {
+      setNotice('Chat is not configured. Add your Firebase web config to js/firebase-config.js to enable sign-in and messaging.');
+      return;
+    }
+
+    auth.onAuthStateChanged(function (user) {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      currentUser = user;
+      renderUser(user);
+      loadRooms();
+      watchGlobalPreview();
+    }, function (error) {
+      console.error('Auth failed', error);
+      if (error && String(error.code).indexOf('configuration') !== -1) {
+        setNotice('Firebase Authentication is not enabled yet. Open the Firebase Console, choose Authentication, and click Get started.');
+      } else {
+        showToast('Sign-in service is unavailable right now.', 'error');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
+  }
+})();

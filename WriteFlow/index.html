@@ -1,253 +1,385 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="auto">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="PaceWrite — write at your own pace. A focused copy-writing assistant that highlights one word, phrase, or sentence at a time.">
   <meta name="color-scheme" content="light dark">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23555dd0'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='bold' fill='white' text-anchor='middle'%3EW%3C/text%3E%3C/svg%3E">
-  <title>PaceWrite — Write at your own pace</title>
+  <meta name="theme-color" content="#0f766e">
+  <title>Assignment Writer — Write Assignments at Your Own Pace</title>
+  <meta name="description" content="Paste an assignment and follow it word, phrase, or sentence at a time while you write it out by hand. Set your pace, keep your place with a highlight, and stay focused.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/WriteFlow/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Assignment Writer — Write Assignments at Your Own Pace">
+  <meta property="og:description" content="Paste an assignment, set your pace, and follow the highlight while you write it out by hand. Nothing is uploaded.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/WriteFlow/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Assignment Writer — Write Assignments at Your Own Pace">
+  <meta name="twitter:description" content="Paste an assignment, set your pace, and follow the highlight while you write it out by hand. Nothing is uploaded.">
+  <meta name="author" content="Alok Systems">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EA%3C/text%3E%3C/svg%3E">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Assignment Writer",
+    "description": "Paste an assignment and follow it word, phrase, or sentence at a time with an adjustable pace and a moving highlight.",
+    "url": "https://aloksystems.freedev.app/WriteFlow/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is my text uploaded to a server?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. Assignment Writer runs entirely in your browser. Your text is not sent anywhere, and saved texts stay in your browser's local storage." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between word, phrase, and sentence mode?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Word mode highlights one word at a time, phrase mode groups a chosen number of words, and sentence mode highlights one complete sentence." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I change the pace during a session?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Use the up and down arrow keys to speed up or slow down while a session is open, or pause and adjust the speed in settings." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I reuse text later?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Choose Save text to keep up to six texts in this browser. Open Recent to load or delete a saved text at any time." }
+      }
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/WriteFlow/">
-    <meta property="og:title" content="PaceWrite — Write at your own pace">
-    <meta property="og:description" content="PaceWrite — write at your own pace. A focused copy-writing assistant that highlights one word, phrase, or sentence at a time.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/WriteFlow/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="PaceWrite — Write at your own pace">
-    <meta name="twitter:description" content="PaceWrite — write at your own pace. A focused copy-writing assistant that highlights one word, phrase, or sentence at a time.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "PaceWrite — Write at your own pace",
-    "description":  "PaceWrite — write at your own pace. A focused copy-writing assistant that highlights one word, phrase, or sentence at a time.",
-    "url":  "https://aloksystems.freedev.app/WriteFlow/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
 <body>
 
   <!-- ============================== SETUP VIEW ============================== -->
   <section id="setupView" class="view setup-view" aria-label="Setup">
-    <header class="topbar">
-      <div class="brand">
-        <span class="brand-mark">P</span>
-        <span class="brand-name">PaceWrite</span>
-        <span class="brand-tagline">Write at your own pace.</span>
-      </div>
+    <div class="page-shell">
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">WRITE ASSIGNMENTS AT YOUR PACE</p>
+        <h1 id="page-title">Assignment Writer</h1>
+        <p class="hero-lead">Paste an assignment and follow the highlight as you write it out by hand.</p>
+        <p class="privacy-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+          Your text stays in this browser.
+        </p>
+      </section>
 
-      <div class="top-actions">
-        <button class="btn btn-icon" id="btnSettings" type="button" title="Settings" aria-label="Open settings">
-          <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </button>
-      </div>
-    </header>
+      <main class="setup-layout">
+        <!-- left / input and pace -->
+        <div class="setup-input-col">
+          <section class="panel input-card" aria-labelledby="input-title">
+            <div class="panel-heading">
+              <span class="step-number">01</span>
+              <div class="panel-heading-copy">
+                <h2 id="input-title">Your assignment</h2>
+                <p>Paste or type the assignment you want to write out.</p>
+              </div>
+              <button class="btn btn-icon panel-tool" id="btnSettings" type="button" title="Settings" aria-label="Open settings">
+                <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </button>
+            </div>
 
-    <main class="setup-layout">
-      <!-- left / input -->
-      <div class="setup-input-col">
-        <section class="card input-card">
-          <h2 class="card-title">Your text</h2>
-          <div class="textarea-wrap">
-            <textarea id="textInput" class="text-input" placeholder="Paste or type your text here…" spellcheck="false" aria-label="Paste or type your text here"></textarea>
-          </div>
+            <div class="textarea-wrap">
+              <textarea id="textInput" class="text-input" placeholder="Paste or type your assignment here…" spellcheck="false" aria-label="Paste or type your assignment here"></textarea>
+            </div>
 
-          <div class="stats-row" id="statsRow">
-            <span data-count="words">0 words</span>
-            <span class="stat-dot">·</span>
-            <span data-count="chars">0 characters</span>
-            <span class="stat-dot">·</span>
-            <span data-count="sentences">0 sentences</span>
-          </div>
+            <div class="stats-row" id="statsRow" aria-live="polite">
+              <span data-count="words">0 words</span>
+              <span class="stat-dot" aria-hidden="true">·</span>
+              <span data-count="chars">0 characters</span>
+              <span class="stat-dot" aria-hidden="true">·</span>
+              <span data-count="sentences">0 sentences</span>
+            </div>
 
-          <div class="input-tools">
-            <button class="btn btn-sm" id="btnLoadSample" type="button">Load Sample</button>
-            <button class="btn btn-sm" id="btnClearText" type="button">Clear Text</button>
-            <span class="tool-spacer"></span>
-            <div class="recent-wrap">
-              <button class="btn btn-sm" id="btnRecent" type="button" aria-haspopup="true" aria-expanded="false">Recent ▾</button>
-              <div class="popover recent-pop" id="recentPop" hidden>
-                <div class="pop-head"><span>Saved texts</span><span class="micro muted">Local only</span></div>
-                <div id="recentList"></div>
-                <div class="pop-empty muted" id="recentEmpty">No saved texts yet — save one to reuse it later.</div>
+            <div class="input-tools">
+              <button class="btn btn-sm" id="btnLoadSample" type="button">Load Sample</button>
+              <button class="btn btn-sm" id="btnClearText" type="button">Clear Text</button>
+              <span class="tool-spacer"></span>
+              <div class="recent-wrap">
+                <button class="btn btn-sm" id="btnRecent" type="button" aria-haspopup="true" aria-expanded="false">Recent ▾</button>
+                <div class="popover recent-pop" id="recentPop" hidden>
+                  <div class="pop-head"><span>Saved texts</span><span class="micro muted">Local only</span></div>
+                  <div id="recentList"></div>
+                  <div class="pop-empty muted" id="recentEmpty">No saved texts yet — save one to reuse it later.</div>
+                </div>
+              </div>
+              <button class="btn btn-sm" id="btnSaveText" type="button">Save text</button>
+            </div>
+          </section>
+
+          <section class="panel pace-card" aria-labelledby="pace-title">
+            <div class="panel-heading">
+              <span class="step-number">02</span>
+              <div class="panel-heading-copy">
+                <h2 id="pace-title">Mode &amp; pace</h2>
+                <p>Choose how much text appears at once and how long each portion stays.</p>
               </div>
             </div>
-            <button class="btn btn-sm" id="btnSaveText" type="button">Save text</button>
-          </div>
-        </section>
 
-        <section class="card">
-          <h2 class="card-title">Mode &amp; pace</h2>
-
-          <div class="field">
-            <span class="field-label">Highlight</span>
-            <div class="segmented" id="modeSeg" role="group" aria-label="Highlight mode">
-              <button class="seg-btn" data-mode="word" type="button">Word</button>
-              <button class="seg-btn" data-mode="phrase" type="button">Phrase</button>
-              <button class="seg-btn" data-mode="sentence" type="button">Sentence</button>
-            </div>
-          </div>
-
-          <div class="field" id="phraseField" hidden>
-            <span class="field-label">Words per chunk</span>
-            <div class="stepper">
-              <button class="btn btn-icon" id="phraseMinus" type="button" aria-label="Fewer words per chunk">−</button>
-              <div class="stepper-num" id="phraseNum">3</div>
-              <input type="range" id="phraseRange" class="range phrase-range" min="1" max="10" step="1" value="3" aria-label="Words per chunk">
-              <button class="btn btn-icon" id="phrasePlus" type="button" aria-label="More words per chunk">+</button>
-            </div>
-          </div>
-
-          <div class="field">
-            <span class="field-label">Speed</span>
-            <div class="chips-row" id="speedChips" role="group" aria-label="Speed preset">
-              <button class="chip" data-speed="4.0" type="button">Very Slow</button>
-              <button class="chip" data-speed="2.8" type="button">Slow</button>
-              <button class="chip" data-speed="2.0" type="button">Normal</button>
-              <button class="chip" data-speed="1.2" type="button">Fast</button>
-              <button class="chip" data-speed="0.8" type="button">Very Fast</button>
-            </div>
-            <div class="slider-row">
-              <span class="slider-min small muted">0.5s</span>
-              <input type="range" id="speedSlider" class="range" min="0.5" max="10" step="0.1" value="2.0" aria-label="Custom speed">
-              <span class="slider-max small muted">10s</span>
-              <span class="chip chip-readout" id="speedReadout">2.0s</span>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="switch-row" for="autoAdvance">
-              <span class="switch-label">Auto advance</span>
-              <input type="checkbox" id="autoAdvance" checked>
-              <span class="switch" aria-hidden="true"></span>
-            </label>
-            <label class="switch-row" for="smartPace">
-              <span class="switch-label">Smart pace <span class="micro muted">longer text → more time</span></span>
-              <input type="checkbox" id="smartPace">
-              <span class="switch" aria-hidden="true"></span>
-            </label>
-            <div class="field-back" id="multiplierField" hidden>
-              <span class="field-label">Pace multiplier</span>
-              <div class="chips-row" id="multiplierChips" role="group" aria-label="Pace multiplier">
-                <button class="chip" data-mult="0.5" type="button">0.5×</button>
-                <button class="chip" data-mult="0.75" type="button">0.75×</button>
-                <button class="chip" data-mult="1" type="button">1×</button>
-                <button class="chip" data-mult="1.25" type="button">1.25×</button>
-                <button class="chip" data-mult="1.5" type="button">1.5×</button>
-                <button class="chip" data-mult="2" type="button">2×</button>
+            <div class="field">
+              <span class="field-label">Highlight</span>
+              <div class="segmented" id="modeSeg" role="group" aria-label="Highlight mode">
+                <button class="seg-btn" data-mode="word" type="button">Word</button>
+                <button class="seg-btn" data-mode="phrase" type="button">Phrase</button>
+                <button class="seg-btn" data-mode="sentence" type="button">Sentence</button>
               </div>
             </div>
-            <label class="switch-row" for="autoScroll">
-              <span class="switch-label">Auto scroll</span>
-              <input type="checkbox" id="autoScroll">
-              <span class="switch" aria-hidden="true"></span>
-            </label>
-          </div>
-        </section>
-      </div>
 
-      <!-- right / summary -->
-      <aside class="setup-side-col">
-        <section class="card summary-card">
-          <h2 class="card-title">Session preview</h2>
-          <dl class="summary-list">
-            <div class="summary-row"><dt>Writing Mode</dt><dd id="sumMode">Word</dd></div>
-            <div class="summary-row"><dt>Speed</dt><dd id="sumSpeed">Normal</dd></div>
-            <div class="summary-row"><dt>Auto Advance</dt><dd id="sumAuto">ON</dd></div>
-            <div class="summary-row"><dt>Auto Scroll</dt><dd id="sumScroll">ON</dd></div>
-            <div class="summary-row"><dt>Highlight</dt><dd id="sumHighlight">Yellow</dd></div>
-            <div class="summary-row"><dt>Font Size</dt><dd id="sumFontSize">22px</dd></div>
-          </dl>
-        </section>
+            <div class="field" id="phraseField" hidden>
+              <span class="field-label">Words per chunk</span>
+              <div class="stepper">
+                <button class="btn btn-icon" id="phraseMinus" type="button" aria-label="Fewer words per chunk">−</button>
+                <div class="stepper-num" id="phraseNum">3</div>
+                <input type="range" id="phraseRange" class="range phrase-range" min="1" max="10" step="1" value="3" aria-label="Words per chunk">
+                <button class="btn btn-icon" id="phrasePlus" type="button" aria-label="More words per chunk">+</button>
+              </div>
+            </div>
 
-        <button class="btn btn-primary btn-start" id="btnStart" type="button">Start Writing&nbsp;&nbsp;→</button>
-        <p class="start-hint small muted">Tip: press Ctrl+Enter to start.</p>
-      </aside>
-    </main>
+            <div class="field">
+              <span class="field-label">Time per portion</span>
+              <div class="chips-row" id="speedChips" role="group" aria-label="Speed preset">
+                <button class="chip" data-speed="4.0" type="button">Very Slow</button>
+                <button class="chip" data-speed="2.8" type="button">Slow</button>
+                <button class="chip" data-speed="2.0" type="button">Normal</button>
+                <button class="chip" data-speed="1.2" type="button">Fast</button>
+                <button class="chip" data-speed="0.8" type="button">Very Fast</button>
+              </div>
+              <div class="slider-row">
+                <span class="slider-min small muted">0.5s</span>
+                <input type="range" id="speedSlider" class="range" min="0.5" max="10" step="0.1" value="2.0" aria-label="Custom speed">
+                <span class="slider-max small muted">10s</span>
+                <span class="chip chip-readout" id="speedReadout">2.0s</span>
+              </div>
+            </div>
+
+            <div class="field field-switches">
+              <label class="switch-row" for="autoAdvance">
+                <span class="switch-label">Auto advance <span class="micro muted">move on without pressing a key</span></span>
+                <input type="checkbox" id="autoAdvance" checked>
+                <span class="switch" aria-hidden="true"></span>
+              </label>
+              <label class="switch-row" for="smartPace">
+                <span class="switch-label">Smart pace <span class="micro muted">longer text → more time</span></span>
+                <input type="checkbox" id="smartPace">
+                <span class="switch" aria-hidden="true"></span>
+              </label>
+              <div class="field-back" id="multiplierField" hidden>
+                <span class="field-label">Pace multiplier</span>
+                <div class="chips-row" id="multiplierChips" role="group" aria-label="Pace multiplier">
+                  <button class="chip" data-mult="0.5" type="button">0.5×</button>
+                  <button class="chip" data-mult="0.75" type="button">0.75×</button>
+                  <button class="chip" data-mult="1" type="button">1×</button>
+                  <button class="chip" data-mult="1.25" type="button">1.25×</button>
+                  <button class="chip" data-mult="1.5" type="button">1.5×</button>
+                  <button class="chip" data-mult="2" type="button">2×</button>
+                </div>
+              </div>
+              <label class="switch-row" for="autoScroll">
+                <span class="switch-label">Auto scroll <span class="micro muted">keep the highlight in view</span></span>
+                <input type="checkbox" id="autoScroll">
+                <span class="switch" aria-hidden="true"></span>
+              </label>
+            </div>
+          </section>
+        </div>
+
+        <!-- right / reader and start -->
+        <aside class="setup-side-col" aria-label="Reader and session setup">
+          <section class="panel reader-panel">
+            <div class="reader-panel-head">
+              <span class="reader-label">Writing stage preview</span>
+              <span class="ready-pill"><span class="ready-dot" aria-hidden="true"></span>Ready</span>
+            </div>
+
+            <div class="preview-canvas" aria-hidden="true">
+              <p class="preview-text">Handwriting builds a <span class="preview-mark">direct, physical</span> connection between your eyes and your hand.</p>
+            </div>
+
+            <dl class="summary-list">
+              <div class="summary-row"><dt>Writing mode</dt><dd id="sumMode">Word</dd></div>
+              <div class="summary-row"><dt>Speed</dt><dd id="sumSpeed">Normal</dd></div>
+              <div class="summary-row"><dt>Auto advance</dt><dd id="sumAuto">ON</dd></div>
+              <div class="summary-row"><dt>Auto scroll</dt><dd id="sumScroll">ON</dd></div>
+              <div class="summary-row"><dt>Highlight</dt><dd id="sumHighlight">Yellow</dd></div>
+              <div class="summary-row"><dt>Font size</dt><dd id="sumFontSize">22px</dd></div>
+            </dl>
+
+            <button class="btn btn-primary btn-start" id="btnStart" type="button">
+              Start Writing
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+            <p class="start-hint small muted">Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> in the editor to start.</p>
+          </section>
+
+          <section class="panel shortcuts-panel" aria-labelledby="shortcuts-title">
+            <h2 class="mini-title" id="shortcuts-title">Session shortcuts</h2>
+            <div class="shortcut-grid">
+              <span><kbd>Space</kbd> Play / pause</span>
+              <span><kbd>←</kbd><kbd>→</kbd> Previous / next</span>
+              <span><kbd>↑</kbd><kbd>↓</kbd> Speed up / down</span>
+              <span><kbd>R</kbd> Restart</span>
+              <span><kbd>F</kbd> Focus mode</span>
+              <span><kbd>Esc</kbd> Pause</span>
+            </div>
+          </section>
+        </aside>
+      </main>
+
+      <section class="content-section" aria-labelledby="how-title">
+        <div class="section-heading">
+          <p class="eyebrow">A SIMPLE WORKFLOW</p>
+          <h2 id="how-title">Three steps to a steady pace</h2>
+          <p>No account, no timer to fiddle with mid-sentence. Just text and a rhythm you can follow.</p>
+        </div>
+        <div class="steps-grid">
+          <article class="info-card">
+            <span class="step-badge">1</span>
+            <h3>Paste your assignment</h3>
+            <p>Bring an essay, a worksheet answer, or any passage you need to copy by hand.</p>
+          </article>
+          <article class="info-card">
+            <span class="step-badge">2</span>
+            <h3>Set the rhythm</h3>
+            <p>Pick words, phrases, or sentences, then tune the speed until the pace feels comfortable.</p>
+          </article>
+          <article class="info-card">
+            <span class="step-badge">3</span>
+            <h3>Follow the highlight</h3>
+            <p>Start the session and move through the text one portion at a time, hands free.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section faq-section" aria-labelledby="faq-title">
+        <div class="section-heading">
+          <p class="eyebrow">GOOD TO KNOW</p>
+          <h2 id="faq-title">Assignment Writer questions</h2>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>Is my text uploaded to a server?</summary>
+            <p>No. Assignment Writer runs entirely in your browser. Your text is not sent anywhere, and saved texts stay in your browser's local storage.</p>
+          </details>
+          <details>
+            <summary>What is the difference between word, phrase, and sentence mode?</summary>
+            <p>Word mode highlights one word at a time, phrase mode groups a chosen number of words, and sentence mode highlights one complete sentence.</p>
+          </details>
+          <details>
+            <summary>Can I change the pace during a session?</summary>
+            <p>Yes. Use the up and down arrow keys to speed up or slow down while a session is open, or pause and adjust the speed in settings.</p>
+          </details>
+          <details>
+            <summary>Can I reuse text later?</summary>
+            <p>Yes. Choose Save text to keep up to six texts in this browser. Open Recent to load or delete a saved text at any time.</p>
+          </details>
+        </div>
+      </section>
+    </div>
   </section>
+
   <!-- ============================== SESSION VIEW ============================== -->
   <section id="sessionView" class="view session-view" hidden aria-label="Writing session">
-    <header class="session-topbar">
-      <div class="brand sm">
-        <span class="brand-mark">P</span>
-        <span class="brand-name">PaceWrite</span>
-        <span class="session-mode-chip" id="sessionModeChip">Word</span>
-      </div>
-
-      <div class="session-topbar-actions">
-        <div class="session-progress-top">
-          <span id="sessionPercent">0%</span>
-          <span class="micro muted" id="sessionPortionTop">1 / 1</span>
+    <div class="session-shell">
+      <header class="session-topbar">
+        <div class="session-ident">
+          <span class="session-eyebrow">Writing session</span>
+          <span class="session-mode-chip" id="sessionModeChip">Word</span>
         </div>
-        <button class="btn btn-icon" id="btnFocus" type="button" title="Focus mode (F)" aria-label="Toggle focus mode">
-          <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
-        </button>
-        <button class="btn btn-icon" id="btnHelp" type="button" title="Keyboard shortcuts" aria-label="Keyboard shortcuts">
-          <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9a3 3 0 1 1 4 2.83c-.62.31-1 .9-1 1.67"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
-        </button>
-        <button class="btn btn-icon" id="btnSettings2" type="button" title="Settings" aria-label="Open settings">
-          <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </button>
-        <div class="help-popover" id="helpPop" hidden>
-          <div class="pop-head"><span>Keyboard shortcuts</span></div>
-          <div class="kbd-list">
-            <span><kbd>Space</kbd> Play / Pause</span>
-            <span><kbd>←</kbd> <kbd>→</kbd> Previous / Next</span>
-            <span><kbd>R</kbd> Restart</span>
-            <span><kbd>Esc</kbd> Pause</span>
-            <span><kbd>↑</kbd> <kbd>↓</kbd> Faster / Slower</span>
-            <span><kbd>F</kbd> Focus mode</span>
+
+        <div class="session-topbar-actions">
+          <div class="session-progress-top">
+            <span id="sessionPercent">0%</span>
+            <span class="micro muted" id="sessionPortionTop">1 / 1</span>
+          </div>
+          <button class="btn btn-icon" id="btnFocus" type="button" title="Focus mode (F)" aria-label="Toggle focus mode">
+            <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+          </button>
+          <button class="btn btn-icon" id="btnHelp" type="button" title="Keyboard shortcuts" aria-label="Keyboard shortcuts" aria-expanded="false">
+            <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9a3 3 0 1 1 4 2.83c-.62.31-1 .9-1 1.67"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+          </button>
+          <button class="btn btn-icon" id="btnSettings2" type="button" title="Settings" aria-label="Open settings">
+            <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+          <div class="help-popover" id="helpPop" hidden>
+            <div class="pop-head"><span>Keyboard shortcuts</span><span class="micro muted">Session only</span></div>
+            <div class="kbd-list">
+              <span><kbd>Space</kbd> Play / Pause</span>
+              <span><kbd>←</kbd> <kbd>→</kbd> Previous / Next</span>
+              <span><kbd>R</kbd> Restart</span>
+              <span><kbd>Esc</kbd> Pause</span>
+              <span><kbd>↑</kbd> <kbd>↓</kbd> Faster / Slower</span>
+              <span><kbd>F</kbd> Focus mode</span>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
 
-    <main class="write-stage" id="writeStage">
-      <div class="text-output" id="textOutput" aria-live="polite"></div>
-    </main>
+      <main class="write-stage" id="writeStage">
+        <div class="text-output" id="textOutput" aria-live="polite"></div>
+      </main>
 
-    <footer class="session-controls">
-      <button class="btn" id="btnRestart" type="button" title="Restart → first portion (R)">
-        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-        &nbsp;Restart
-      </button>
-
-      <div class="transport">
-        <button class="btn btn-nav" id="btnPrev" type="button" title="Previous (←)" aria-label="Previous portion">
-          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      <footer class="session-controls">
+        <button class="btn btn-control" id="btnRestart" type="button" title="Restart → first portion (R)">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          <span class="btn-label">Restart</span>
         </button>
-        <button class="btn btn-primary btn-play" id="btnPlay" type="button" title="Pause (Space)" aria-label="Pause">
-          <svg class="icon-pause" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-          <svg class="icon-play" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-        <button class="btn btn-nav" id="btnNext" type="button" title="Next (→)" aria-label="Next portion">
-          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </button>
-      </div>
 
-      <button class="btn" id="btnEnd" type="button" title="End session">⏹&nbsp; End</button>
-    </footer>
+        <div class="transport">
+          <button class="btn btn-nav" id="btnPrev" type="button" title="Previous (←)" aria-label="Previous portion">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          </button>
+          <button class="btn btn-primary btn-play" id="btnPlay" type="button" title="Pause (Space)" aria-label="Pause">
+            <svg class="icon-pause" aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+            <svg class="icon-play" aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button class="btn btn-nav" id="btnNext" type="button" title="Next (→)" aria-label="Next portion">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
 
-    <div class="session-progress">
-      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="progress-meta">
-        <span class="progress-label" id="progressLabel">Word 1 / 1</span>
-        <span id="progressPct">0%</span>
-        <span class="progress-dots" aria-hidden="true"></span>
-        <span class="micro muted" id="etaLabel">remaining —</span>
-        <span class="micro muted" id="elapsedLabel">elapsed 00:00</span>
+        <button class="btn btn-control" id="btnEnd" type="button" title="End session">
+          <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+          <span class="btn-label">End</span>
+        </button>
+      </footer>
+
+      <div class="session-progress">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-meta">
+          <span class="progress-label" id="progressLabel">Word 1 / 1</span>
+          <span id="progressPct">0%</span>
+          <span class="progress-dots" aria-hidden="true"></span>
+          <span class="micro muted" id="etaLabel">remaining —</span>
+          <span class="micro muted" id="elapsedLabel">elapsed 00:00</span>
+        </div>
       </div>
     </div>
 
-    <div class="paused-banner" id="pausedBanner" hidden>
+    <div class="paused-banner" id="pausedBanner" hidden role="status">
       <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
       PAUSED
     </div>
@@ -260,20 +392,32 @@
   <!-- ============================== COMPLETION VIEW ============================== -->
   <section id="completeView" class="view complete-view" hidden aria-label="Session complete">
     <div class="complete-card">
-      <div class="complete-emoji" aria-hidden="true">🎉</div>
-      <h1 class="complete-title">Writing Complete</h1>
-      <p class="complete-sub muted">You finished the entire text.</p>
+      <div class="complete-badge" aria-hidden="true">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>
+      </div>
+      <p class="eyebrow">SESSION COMPLETE</p>
+      <h1 class="complete-title">Writing complete</h1>
+      <p class="complete-sub muted">You worked through the entire text at your own pace.</p>
 
       <dl class="complete-stats">
         <div><dt id="completePortions">0 / 0</dt><dd>portions completed</dd></div>
-        <div><dt id="completeWords">0</dt><dd>words written</dd></div>
+        <div><dt id="completeWords">0</dt><dd>words covered</dd></div>
         <div><dt id="completeTime">00:00</dt><dd>session time</dd></div>
       </dl>
 
       <div class="complete-actions">
-        <button class="btn btn-primary" id="btnAgain" type="button">↺&nbsp; Write Again</button>
-        <button class="btn" id="btnEditText" type="button">✏️&nbsp; Edit Text</button>
-        <button class="btn" id="btnHome" type="button">←&nbsp; Back to Home</button>
+        <button class="btn btn-primary" id="btnAgain" type="button">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Write again
+        </button>
+        <button class="btn" id="btnEditText" type="button">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          Edit text
+        </button>
+        <button class="btn" id="btnHome" type="button">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+          Back to setup
+        </button>
       </div>
     </div>
   </section>
@@ -282,7 +426,10 @@
   <div class="drawer-backdrop" id="settingsBackdrop" hidden></div>
   <aside class="drawer" id="settingsDrawer" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
     <header class="drawer-head">
-      <h2 id="settingsTitle">Settings</h2>
+      <div>
+        <h2 id="settingsTitle">Settings</h2>
+        <p class="small muted">Appearance and writing preferences</p>
+      </div>
       <button class="btn btn-icon" id="btnCloseSettings" type="button" aria-label="Close settings">
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -389,6 +536,7 @@
             <button class="seg-btn" data-theme="light" type="button">Light</button>
             <button class="seg-btn" data-theme="dark" type="button">Dark</button>
           </div>
+          <p class="field-hint micro muted">Auto follows the site theme toggle in the header or your system preference.</p>
         </div>
       </section>
 

@@ -4,8 +4,8 @@ Work through these top-to-bottom. Items marked **you** need a decision only you 
 
 ## State
 
-- ✅ Static site validated: all pages, `data/apps.json`, CSS/JS, and APK downloads serve HTTP 200.
-- ✅ APK hashes in `data/apps.json` match `downloads/`.
+- ✅ Static site validated: all pages, `data/apps.js`, CSS/JS, and APK downloads serve HTTP 200.
+- ✅ APK hashes in `data/apps.js` match `downloads/`.
 - ✅ Duplicate root-level `*.apk` copies removed; only `downloads/` ships.
 - ✅ `site.js` is host-agnostic (no hardcoded host).
 - ✅ Contact form posts to your Google Apps Script / FormForge endpoint (no PHP, no keys).
@@ -42,7 +42,7 @@ Submit a test message from the live site and confirm it appears in your Drive sp
 
 ## 5. Real icons & metadata (you)
 
-In `data/apps.json` for each app:
+In `data/apps.js` for each app:
 
 - Replace placeholder icons (`iconIsPlaceholder: true`) with real exported artwork.
 - Fill `releaseDate` (currently null), `screenshots` (currently empty), and verify descriptions/features/package/permission/changelog fields.

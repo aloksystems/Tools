@@ -1,252 +1,791 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23e23636'/%3E%3Cstop offset='100%25' stop-color='%23ff6b6b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-family='Arial,sans-serif' font-size='58' font-weight='bold' fill='white' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E" />
-    <title>YouTube Downloader - YT Downloader | Alok Systems Tools</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <style>
-        :root {
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --card: #ffffff;
-            --border: #e2e8f0;
-            --text: #0f172a;
-            --text-muted: #64748b;
-            --primary: #0d9488;
-            --primary-hover: #0f766e;
-            --accent: #14b8a6;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            max-width: 800px;
-            width: 100%;
-            padding: 40px 24px;
-        }
-        header {
-            text-align: center;
-            padding: 40px 0 30px;
-        }
-        header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 12px;
-        }
-        header p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        .badge {
-            display: inline-block;
-            background: rgba(226, 54, 54, 0.15);
-            color: var(--primary);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            border: 1px solid rgba(226, 54, 54, 0.25);
-        }
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 20px;
-        }
-        .card h2 {
-            font-size: 1.3rem;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card h2 i { color: var(--primary); }
-        .card p, .card li {
-            color: var(--text-muted);
-            line-height: 1.7;
-            font-size: 0.95rem;
-        }
-        .card ul {
-            list-style: none;
-            padding: 0;
-        }
-        .card li {
-            padding: 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card li i {
-            width: 20px;
-            color: var(--accent);
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(226, 54, 54, 0.3);
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        .btn-outline:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        .actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .code-block {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 20px;
-            font-family: 'Cascadia Code', 'Fira Code', monospace;
-            font-size: 0.85rem;
-            overflow-x: auto;
-            margin: 12px 0;
-            color: #a8d8ea;
-        }
-        .code-block .comment { color: #6a9955; }
-        footer {
-            text-align: center;
-            padding: 30px 24px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-        footer a { color: var(--primary); text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.8rem; }
-            .card { padding: 20px; }
-            .code-block { font-size: 0.75rem; }
-        }
-    </style>
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="description" content="Use YouTube Downloader - YT Downloader | Alok Systems Tools online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Yt_Downloader/">
-    <meta property="og:title" content="YouTube Downloader - YT Downloader | Alok Systems Tools">
-    <meta property="og:description" content="Use YouTube Downloader - YT Downloader | Alok Systems Tools online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Yt_Downloader/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="YouTube Downloader - YT Downloader | Alok Systems Tools">
-    <meta name="twitter:description" content="Use YouTube Downloader - YT Downloader | Alok Systems Tools online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "YouTube Downloader - YT Downloader | Alok Systems Tools",
-    "description":  "Use YouTube Downloader - YT Downloader | Alok Systems Tools online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/Yt_Downloader/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EYT%3C/text%3E%3C/svg%3E">
+  <title>YouTube Downloader for Desktop | Queue Checker &amp; Setup</title>
+  <meta name="description" content="Plan YouTube video, playlist, and MP3 downloads for the yt-dlp desktop app. Check links in your browser, copy the setup commands, then download locally on your PC.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Yt_Downloader/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="YouTube Downloader for Desktop - Alok Systems Tools">
+  <meta property="og:description" content="Build and validate a YouTube download queue, then run the Python yt-dlp app on your own computer.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Yt_Downloader/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="YouTube Downloader for Desktop - Alok Systems Tools">
+  <meta name="twitter:description" content="Build and validate a YouTube download queue, then run the Python yt-dlp app on your own computer.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"YouTube Downloader Queue Planner",
+    "description":"Plan and check YouTube video, playlist, and MP3 downloads for the local yt-dlp desktop application.",
+    "url":"https://aloksystems.freedev.app/Yt_Downloader/",
+    "applicationCategory":"UtilityApplication",
+    "operatingSystem":"Windows, macOS, Linux",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Can I download YouTube videos from this page?","acceptedAnswer":{"@type":"Answer","text":"No. This page checks links and plans settings. The download itself runs in the Python desktop app, because browsers cannot run yt-dlp or FFmpeg."}},
+      {"@type":"Question","name":"Do I need to start a web server?","acceptedAnswer":{"@type":"Answer","text":"No. main.py is a desktop window, not a web server or API. There is no localhost endpoint to start."}},
+      {"@type":"Question","name":"What formats and qualities does the app support?","acceptedAnswer":{"@type":"Answer","text":"MP4 video with best video and audio merged, or MP3 audio at 192 kbps. Resolution caps range from 4320p down to 144p, and the best available quality is used by default."}},
+      {"@type":"Question","name":"Does it support playlists and subtitles?","acceptedAnswer":{"@type":"Answer","text":"Yes. Playlist downloading is on by default. English subtitles, including auto-generated ones, can be enabled, and thumbnails can be saved and embedded in MP4 videos."}},
+      {"@type":"Question","name":"Where are downloaded files saved?","acceptedAnswer":{"@type":"Answer","text":"By default the app saves to a YouTube folder inside your Downloads directory. You can choose any output folder before starting."}}
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f8fafc;
+      --surface: #fff;
+      --surface-soft: #f1f5f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --brand: #14b8a6;
+      --brand-strong: #0d9488;
+      --brand-deep: #0f766e;
+      --brand-soft: rgba(20, 184, 166, .09);
+      --danger-border: #fecaca;
+      --danger-bg: #fef2f2;
+      --danger-text: #b91c1c;
+      --success-dot: #0d9488;
+      --warning-dot: #d97706;
+      --danger-dot: #dc2626;
+      --code-bg: #0f172a;
+      --code-text: #dbeafe;
+      --code-muted: #94a3b8;
+      --shadow: 0 8px 26px rgba(15, 23, 42, .06);
+      --radius: 18px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    }
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --page: #0b1120;
+      --surface: #101a2e;
+      --surface-soft: #16223a;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --line: #26354a;
+      --brand: #2dd4bf;
+      --brand-strong: #14b8a6;
+      --brand-deep: #2dd4bf;
+      --brand-soft: rgba(45, 212, 191, .1);
+      --danger-border: #7f1d1d;
+      --danger-bg: #351c27;
+      --danger-text: #fecaca;
+      --success-dot: #2dd4bf;
+      --warning-dot: #fbbf24;
+      --danger-dot: #f87171;
+      --code-bg: #07101f;
+      --code-text: #dbeafe;
+      --code-muted: #94a3b8;
+      --shadow: 0 12px 30px rgba(0, 0, 0, .2);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { min-width: 320px; min-height: 100vh; min-height: 100dvh; margin: 0; display: flex; flex-direction: column; background: var(--page); color: var(--text); font: 16px/1.6 var(--font); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    button, input, textarea { font: inherit; }
+    :focus-visible { outline: 3px solid var(--brand-strong); outline-offset: 3px; }
+    .page-shell { width: min(100% - 48px, 1180px); margin: 0 auto; padding: 44px 0 64px; flex: 1; }
+    .hero { max-width: 800px; margin: 0 auto 26px; text-align: center; }
+    .eyebrow { margin: 0 0 7px; color: var(--brand-deep); font-size: .72rem; font-weight: 800; letter-spacing: .12em; }
+    .hero h1 { margin: 0; font-size: clamp(1.75rem, 3.4vw, 2.4rem); line-height: 1.15; letter-spacing: -.035em; text-wrap: balance; }
+    .hero > p:not(.eyebrow) { max-width: 680px; margin: 10px auto 0; color: var(--muted); font-size: 1rem; text-wrap: balance; }
+    .privacy-note { width: fit-content; max-width: 100%; margin: 18px auto 0; display: flex; align-items: center; gap: 8px; padding: 8px 13px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .82rem; }
+    .privacy-note svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--brand-deep); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .desktop-note { display: flex; align-items: flex-start; gap: 12px; margin: 0 0 20px; padding: 13px 15px; border: 1px solid var(--brand); border-radius: 13px; background: var(--brand-soft); color: var(--brand-deep); }
+    .desktop-note svg { width: 20px; height: 20px; flex: none; margin-top: 2px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .desktop-note strong { display: block; font-size: .88rem; }
+    .desktop-note p { margin: 2px 0 0; font-size: .82rem; line-height: 1.55; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(320px, .88fr); align-items: start; gap: 20px; }
+    .input-column { display: grid; gap: 16px; min-width: 0; }
+    .panel, .summary-panel, .content-section { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .panel { padding: clamp(18px, 2.8vw, 24px); }
+    .panel-heading { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 19px; }
+    .step-number { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border-radius: 11px; background: var(--brand-soft); color: var(--brand-deep); font-size: .75rem; font-weight: 800; }
+    .panel-heading h2, .summary-heading h2 { margin: 0; font-size: 1.12rem; letter-spacing: -.02em; }
+    .panel-heading p { margin: 2px 0 0; color: var(--muted); font-size: .85rem; }
+    .field-label, legend { display: block; margin-bottom: 7px; font-size: .84rem; font-weight: 700; }
+    fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .queue-form { display: grid; }
+    .queue-input { width: 100%; min-height: 134px; resize: vertical; padding: 11px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--page); color: var(--text); font-size: .88rem; line-height: 1.6; }
+    .queue-input::placeholder { color: #94a3b8; opacity: .85; }
+    .queue-input:focus { border-color: var(--brand-strong); outline: 0; box-shadow: 0 0 0 3px var(--brand-soft); }
+    .queue-input:disabled { opacity: .6; cursor: wait; }
+    .queue-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-top: 8px; }
+    .field-hint { margin: 0; color: var(--muted); font-size: .77rem; line-height: 1.5; }
+    .count-pill { flex: none; padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); color: var(--muted); font-size: .72rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .input-error { margin: 10px 0 0; padding: 9px 11px; border: 1px solid var(--danger-border); border-radius: 9px; background: var(--danger-bg); color: var(--danger-text); font-size: .8rem; }
+    .queue-actions { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 8px; margin-top: 13px; }
+    .btn { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 7px; padding: 9px 13px; border: 1px solid transparent; border-radius: 11px; cursor: pointer; font-size: .83rem; font-weight: 750; text-decoration: none; transition: transform .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease; }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn svg { flex: none; }
+    .btn-primary { background: linear-gradient(135deg, var(--brand-deep), var(--brand)); color: #fff; }
+    .btn-primary:hover:not(:disabled) { box-shadow: 0 7px 17px rgba(20, 184, 166, .2); }
+    .btn-outline { border-color: var(--line); background: var(--surface); color: var(--text); }
+    .btn-outline:hover:not(:disabled) { border-color: var(--brand); color: var(--brand-deep); }
+    .btn.full { width: 100%; }
+    .check-progress { margin-top: 13px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--page); }
+    .check-progress-top { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 7px; color: var(--muted); font-size: .76rem; font-weight: 600; }
+    .progress-track { width: 100%; height: 7px; overflow: hidden; border-radius: 999px; background: var(--line); }
+    .progress-fill { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--brand-deep), var(--brand)); transition: width .2s ease; }
+    .queue-results { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .queue-results-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
+    .queue-results-head h3 { margin: 0; font-size: .89rem; }
+    .text-btn { padding: 2px 4px; border: 0; background: transparent; color: var(--brand-deep); cursor: pointer; font-size: .76rem; font-weight: 750; }
+    .text-btn:hover { text-decoration: underline; }
+    .text-btn:disabled { opacity: .45; cursor: not-allowed; text-decoration: none; }
+    .queue-list { display: grid; gap: 7px; max-height: 292px; overflow-y: auto; margin: 0; padding: 0 3px 0 0; list-style: none; scrollbar-gutter: stable; }
+    .queue-item { display: flex; align-items: flex-start; gap: 9px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--page); }
+    .queue-dot { width: 8px; height: 8px; flex: none; margin-top: 6px; border-radius: 50%; background: var(--muted); box-shadow: 0 0 0 3px var(--surface-soft); }
+    .queue-item.is-ready .queue-dot { background: var(--success-dot); }
+    .queue-item.is-attention .queue-dot { background: var(--warning-dot); }
+    .queue-item.is-invalid .queue-dot { background: var(--danger-dot); }
+    .queue-item-copy { min-width: 0; flex: 1; }
+    .queue-item-copy strong { display: block; font-size: .8rem; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .queue-item-copy span { display: block; margin-top: 1px; color: var(--muted); font-size: .71rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .queue-tag { flex: none; padding: 2px 6px; border: 1px solid var(--line); border-radius: 5px; color: var(--brand-deep); font-size: .63rem; font-weight: 800; letter-spacing: .03em; }
+    .queue-summary { margin: 9px 0 0; color: var(--muted); font-size: .76rem; }
+    .settings-block { display: grid; gap: 17px; }
+    .format-group legend { margin-bottom: 8px; }
+    .format-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .format-card { position: relative; display: block; cursor: pointer; }
+    .format-card > input, .quality-chip > input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .format-card-inner { display: flex; align-items: flex-start; gap: 9px; min-height: 84px; padding: 11px; border: 1px solid var(--line); border-radius: 11px; background: var(--page); transition: border-color .16s ease, background-color .16s ease; }
+    .format-card:hover .format-card-inner { border-color: var(--brand); }
+    .format-card input:checked + .format-card-inner { border-color: var(--brand-strong); background: var(--brand-soft); }
+    .format-card input:focus-visible + .format-card-inner { outline: 3px solid var(--brand-strong); outline-offset: 2px; }
+    .format-icon { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 8px; background: var(--surface); color: var(--brand-deep); }
+    .format-icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .format-body strong { display: block; font-size: .8rem; line-height: 1.35; }
+    .format-body span { display: block; margin-top: 2px; color: var(--muted); font-size: .7rem; line-height: 1.4; }
+    .quality-group.is-disabled { opacity: .6; }
+    .quality-group legend span { color: var(--muted); font-size: .72rem; font-weight: 500; }
+    .quality-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .quality-chip { position: relative; cursor: pointer; }
+    .quality-chip span { display: inline-flex; min-height: 32px; align-items: center; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .74rem; font-weight: 700; transition: border-color .16s ease, background-color .16s ease, color .16s ease; }
+    .quality-chip:hover span { border-color: var(--brand); color: var(--brand-deep); }
+    .quality-chip input:checked + span { border-color: var(--brand-strong); background: var(--brand-soft); color: var(--brand-deep); }
+    .quality-chip input:focus-visible + span { outline: 3px solid var(--brand-strong); outline-offset: 2px; }
+    .quality-chip input:disabled + span { cursor: not-allowed; }
+    .quality-help { margin: 8px 0 0; color: var(--muted); font-size: .73rem; }
+    .options-group { display: grid; gap: 7px; }
+    .options-group legend { margin-bottom: 2px; }
+    .check-row { display: flex; align-items: flex-start; gap: 9px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--page); cursor: pointer; }
+    .check-row input { width: 17px; height: 17px; flex: none; margin: 3px 0 0; accent-color: var(--brand-strong); cursor: pointer; }
+    .check-row span { min-width: 0; }
+    .check-row strong { display: block; font-size: .8rem; line-height: 1.35; }
+    .check-row small { display: block; margin-top: 1px; color: var(--muted); font-size: .71rem; line-height: 1.4; }
+    .summary-panel { padding: clamp(18px, 2.8vw, 25px); align-self: start; }
+    .summary-heading { margin-bottom: 14px; }
+    .summary-heading .eyebrow { margin-bottom: 4px; }
+    .summary-heading h2 { font-size: 1.3rem; }
+    .summary-period { margin: 4px 0 0; color: var(--muted); font-size: .83rem; }
+    .plan-box { margin: 13px 0; padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--page); }
+    .plan-label { margin: 0 0 3px; color: var(--muted); font-size: .65rem; font-weight: 800; letter-spacing: .08em; }
+    .plan-text { margin: 0; font-size: .82rem; font-weight: 650; line-height: 1.5; overflow-wrap: anywhere; }
+    .app-status { display: flex; align-items: flex-start; gap: 9px; margin: 13px 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-soft); }
+    .app-status-dot { width: 8px; height: 8px; flex: none; margin-top: 6px; border-radius: 50%; background: var(--success-dot); box-shadow: 0 0 0 4px var(--brand-soft); }
+    .app-status strong { display: block; font-size: .8rem; }
+    .app-status p { margin: 1px 0 0; color: var(--muted); font-size: .73rem; line-height: 1.45; }
+    .summary-actions { display: grid; gap: 8px; }
+    .setup-block { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .setup-block h3 { margin: 0 0 7px; font-size: .9rem; }
+    .setup-list { margin: 0 0 9px; padding-left: 18px; color: var(--muted); font-size: .77rem; }
+    .setup-list li { margin-bottom: 4px; }
+    .code-block { overflow-x: auto; margin: 0 0 8px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--code-bg); color: var(--code-text); font: .74rem/1.7 var(--mono); white-space: pre; }
+    .code-comment { color: var(--code-muted); }
+    .setup-note { margin: 8px 0 0; color: var(--muted); font-size: .71rem; line-height: 1.5; }
+    .setup-note a { color: var(--brand-deep); font-weight: 650; }
+    .export-note { margin: 12px 0 0; color: var(--muted); font-size: .72rem; text-align: center; }
+    .content-section { margin-top: 24px; padding: clamp(20px, 3vw, 28px); }
+    .section-heading { margin-bottom: 17px; }
+    .section-heading .eyebrow { margin-bottom: 4px; }
+    .section-heading h2 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.6rem); letter-spacing: -.03em; }
+    .steps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .steps-grid li { display: flex; gap: 11px; padding: 14px; border-radius: 13px; background: var(--page); }
+    .steps-grid li > span { color: var(--brand-deep); font-size: .74rem; font-weight: 800; }
+    .steps-grid h3 { margin: 0 0 4px; font-size: .89rem; }
+    .steps-grid p, .faq-section details p { margin: 0; color: var(--muted); font-size: .83rem; }
+    .faq-section details { border-top: 1px solid var(--line); }
+    .faq-section summary { padding: 13px 2px; cursor: pointer; font-weight: 700; }
+    .faq-section details p { padding: 0 2px 14px; }
+    .faq-section summary::marker { color: var(--brand-deep); }
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 10000; display: flex; max-width: min(400px, calc(100vw - 32px)); align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: var(--text); color: var(--surface); box-shadow: 0 12px 32px rgba(15, 23, 42, .22); font-size: .83rem; font-weight: 600; animation: toast-in .2s ease; }
+    .toast.is-error { background: var(--danger-text); color: var(--surface); }
+    @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .toast-close { width: 26px; height: 26px; display: grid; flex: none; place-items: center; padding: 0; border: 0; border-radius: 7px; background: transparent; color: inherit; cursor: pointer; opacity: .7; }
+    .toast-close:hover { background: rgba(148, 163, 184, .2); opacity: 1; }
+    @media (min-width: 901px) {
+      .summary-panel { position: sticky; top: 18px; max-height: calc(100vh - 36px); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+    }
+    @media (max-width: 900px) {
+      .workspace { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+      .summary-panel { position: static; max-height: none; overflow: visible; }
+      .steps-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .page-shell { width: min(100% - 32px, 620px); padding-top: 32px; }
+      .format-cards { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 440px) {
+      .page-shell { width: min(100% - 24px, 400px); padding-top: 25px; }
+      .hero { margin-bottom: 20px; }
+      .hero > p:not(.eyebrow) { font-size: .96rem; }
+      .privacy-note { align-items: flex-start; border-radius: 12px; font-size: .76rem; }
+      .desktop-note { padding: 11px 12px; }
+      .panel, .summary-panel { padding: 17px; }
+      .queue-actions { grid-template-columns: 1fr; }
+      .queue-meta { flex-direction: column; gap: 5px; }
+      .queue-item-copy strong, .queue-item-copy span { white-space: normal; overflow-wrap: anywhere; }
+      .toast { right: 12px; bottom: 12px; left: 12px; max-width: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="badge"><i class="fas fa-cube"></i> Desktop App &bull; Python</div>
-            <h1>YouTube Downloader</h1>
-            <p>Modern, fast, and easy-to-use desktop app to download YouTube videos, playlists, or audio with best quality using yt-dlp.</p>
-            <div class="actions">
-                <a href="https://github.com/aloksystems/Tools/tree/main/Yt_Downloader" target="_blank" class="btn btn-primary">
-                    <i class="fab fa-github"></i> View Source
-                </a>
-                <a href="https://github.com/aloksystems/Tools/archive/refs/heads/main.zip" target="_blank" class="btn btn-outline">
-                    <i class="fas fa-download"></i> Download ZIP
-                </a>
-            </div>
-        </header>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">YOUTUBE DOWNLOADS, ON YOUR MACHINE</p>
+      <h1 id="page-title">YouTube Downloader</h1>
+      <p>Queue video, playlist, or MP3 downloads and run them locally with the yt-dlp desktop app.</p>
+      <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>Files save to your computer. This page never hosts or receives downloads.</div>
+    </section>
 
-        <div class="card">
-            <h2><i class="fas fa-info-circle"></i> About</h2>
-            <p>Ultimate YouTube Downloader is a feature-rich desktop GUI application for downloading YouTube videos, playlists, and audio tracks. It supports up to 8K resolution, merges best video+audio, embeds metadata and thumbnails, and optionally downloads subtitles.</p>
-        </div>
-
-        <div class="card">
-            <h2><i class="fas fa-check-circle"></i> Features</h2>
-            <ul>
-                <li><i class="fas fa-video"></i> Download videos in best quality up to 8K/4320p</li>
-                <li><i class="fas fa-music"></i> Extract high-quality MP3 audio with metadata</li>
-                <li><i class="fas fa-list"></i> Full playlist support</li>
-                <li><i class="fas fa-closed-captioning"></i> Download English + auto-generated subtitles</li>
-                <li><i class="fas fa-image"></i> Embed thumbnails and artwork</li>
-                <li><i class="fas fa-tachometer-alt"></i> Live progress with percent, speed, and ETA</li>
-                <li><i class="fas fa-folder-open"></i> Smart output naming: <code>Uploader - Title.ext</code></li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2><i class="fas fa-terminal"></i> Quick Setup</h2>
-            <p>Requires Python 3.9+ and FFmpeg in PATH. Run these commands:</p>
-            <div class="code-block">
-                <span class="comment"># Install Python dependencies</span><br>
-                pip install yt-dlp customtkinter Pillow<br><br>
-                <span class="comment"># Navigate to Yt_Downloader &amp; run</span><br>
-                cd Yt_Downloader<br>
-                python main.py
-            </div>
-            <p style="margin-top:12px"><i class="fas fa-external-link-alt"></i> <strong>FFmpeg:</strong> Download from <a href="https://www.gyan.dev/ffmpeg/builds/" target="_blank" style="color:#e23636">gyan.dev</a> and add <code>bin</code> folder to your PATH.</p>
-        </div>
-
-        <div class="card">
-            <h2><i class="fas fa-download"></i> Usage</h2>
-            <ul>
-                <li><i class="fas fa-1"></i> Paste YouTube URLs (one per line, playlists supported)</li>
-                <li><i class="fas fa-2"></i> Choose format: Video (MP4) or Audio (MP3)</li>
-                <li><i class="fas fa-3"></i> Set resolution, subtitles, and thumbnail options</li>
-                <li><i class="fas fa-4"></i> Pick output folder &amp; click <strong>"Start Epic Download"</strong></li>
-            </ul>
-        </div>
-
-        <footer>
-            <p><a href="https://github.com/aloksystems">&#8592; Back to Tools</a></p>
-            <p style="margin-top:8px">&copy; 2026 Alok Systems Tools</p>
-        </footer>
+    <div class="desktop-note" role="note">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <div>
+        <strong>This is a desktop app, not a web downloader.</strong>
+        <p>Browsers cannot run yt-dlp and FFmpeg, and the project has no web API or localhost endpoint. Use this page to check your links and plan settings, then run <code>main.py</code> to download.</p>
+      </div>
     </div>
+
+    <section class="workspace" aria-label="YouTube downloader queue planner">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="queue-title">
+          <div class="panel-heading"><span class="step-number">01</span><div><h2 id="queue-title">Build your queue</h2><p>Add one YouTube link per line. Playlist links are welcome.</p></div></div>
+          <form id="queueForm" class="queue-form" novalidate>
+            <label class="field-label" for="urlInput">YouTube URLs</label>
+            <textarea id="urlInput" class="queue-input" rows="5" spellcheck="false" placeholder="https://www.youtube.com/watch?v=...&#10;https://youtu.be/...&#10;https://www.youtube.com/playlist?list=..." aria-describedby="queueHint"></textarea>
+            <div class="queue-meta">
+              <p class="field-hint" id="queueHint">Checking asks YouTube for public video titles. Your links are not sent to Alok Systems.</p>
+              <span class="count-pill" id="linkCount">0 links</span>
+            </div>
+            <p id="queueError" class="input-error" role="alert" hidden></p>
+            <div class="queue-actions">
+              <button id="checkQueue" class="btn btn-primary" type="submit">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+                <span id="checkBtnText">Check queue</span>
+              </button>
+              <button id="clearQueue" class="btn btn-outline" type="button">Clear</button>
+            </div>
+            <div id="checkProgress" class="check-progress" hidden>
+              <div class="check-progress-top"><span id="checkStatusText" role="status" aria-live="polite">Checking links…</span><span id="checkCountText">0 / 0</span></div>
+              <div class="progress-track" id="checkProgressTrack" role="progressbar" aria-label="Link checking progress" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><span class="progress-fill" id="checkProgressFill"></span></div>
+            </div>
+            <div id="queueResults" class="queue-results" hidden>
+              <div class="queue-results-head"><h3>Checked links</h3><button id="copyQueue" class="text-btn" type="button">Copy URLs</button></div>
+              <ul id="queueList" class="queue-list"></ul>
+              <p class="queue-summary" id="queueSummary" aria-live="polite"></p>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel" aria-labelledby="settings-title">
+          <div class="panel-heading"><span class="step-number">02</span><div><h2 id="settings-title">Plan your download</h2><p>These mirror the options inside the desktop app.</p></div></div>
+          <div class="settings-block">
+            <fieldset class="format-group">
+              <legend>Format</legend>
+              <div class="format-cards">
+                <label class="format-card">
+                  <input type="radio" name="format" value="mp4" checked>
+                  <span class="format-card-inner">
+                    <span class="format-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m10 9 5 3-5 3V9Z"/></svg></span>
+                    <span class="format-body"><strong>Video · MP4</strong><span>Best video and audio merged with FFmpeg, up to 8K when available.</span></span>
+                  </span>
+                </label>
+                <label class="format-card">
+                  <input type="radio" name="format" value="mp3">
+                  <span class="format-card-inner">
+                    <span class="format-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg></span>
+                    <span class="format-body"><strong>Audio · MP3</strong><span>Best available audio extracted to 192 kbps MP3 with metadata.</span></span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="quality-group" id="qualityGroup">
+              <legend>Resolution cap <span>(video only)</span></legend>
+              <div class="quality-chips">
+                <label class="quality-chip"><input type="radio" name="quality" value="best" checked><span>Best</span></label>
+                <label class="quality-chip"><input type="radio" name="quality" value="4320p"><span>4320p</span></label>
+                <label class="quality-chip"><input type="radio" name="quality" value="2160p"><span>2160p</span></label>
+                <label class="quality-chip"><input type="radio" name="quality" value="1440p"><span>1440p</span></label>
+                <label class="quality-chip"><input type="radio" name="quality" value="1080p"><span>1080p</span></label>
+                <label class="quality-chip"><input type="radio" name="quality" value="720p"><span>720p</span></label>
+                <label class="quality-chip"><input type="radio" name="quality" value="480p"><span>480p</span></label>
+                <label class="quality-chip"><input type="radio" name="quality" value="360p"><span>360p</span></label>
+                <label class="quality-chip"><input type="radio" name="quality" value="240p"><span>240p</span></label>
+                <label class="quality-chip"><input type="radio" name="quality" value="144p"><span>144p</span></label>
+              </div>
+              <p class="quality-help" id="qualityHelp">The app downloads the best stream at or below this height.</p>
+            </fieldset>
+
+            <fieldset class="options-group">
+              <legend>Advanced options</legend>
+              <label class="check-row"><input type="checkbox" id="optPlaylist" checked><span><strong>Download playlists</strong><small>Expand a playlist link or a watch link that includes a list.</small></span></label>
+              <label class="check-row"><input type="checkbox" id="optSubtitles"><span><strong>English subtitles</strong><small>Includes auto-generated subtitles when the video has them.</small></span></label>
+              <label class="check-row"><input type="checkbox" id="optThumbs" checked><span><strong>Save thumbnails</strong><small>Embeds artwork in MP4 output when FFmpeg supports it.</small></span></label>
+            </fieldset>
+          </div>
+        </section>
+      </div>
+
+      <aside class="summary-panel" aria-labelledby="setup-title">
+        <div class="summary-heading">
+          <p class="eyebrow">DESKTOP APP</p>
+          <h2 id="setup-title">Run it locally</h2>
+          <p class="summary-period">No sign-in, no cloud queue, no web server.</p>
+        </div>
+        <div class="plan-box">
+          <p class="plan-label">YOUR PLAN</p>
+          <p class="plan-text" id="planSummary">No links yet · MP4 · best available</p>
+        </div>
+        <div class="app-status">
+          <span class="app-status-dot" aria-hidden="true"></span>
+          <div><strong>Downloads start in main.py</strong><p>Open the desktop window with <code>python main.py</code>. This page has no download button because there is no browser backend.</p></div>
+        </div>
+        <div class="summary-actions">
+          <a class="btn btn-primary full" href="https://github.com/aloksystems/Tools/archive/refs/heads/main.zip" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg>
+            Download source ZIP
+          </a>
+          <a class="btn btn-outline full" href="https://github.com/aloksystems/Tools/tree/main/Yt_Downloader" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            View source on GitHub
+          </a>
+        </div>
+        <div class="setup-block">
+          <h3>Quick setup</h3>
+          <ol class="setup-list">
+            <li>Install Python 3.9+ and FFmpeg, then add FFmpeg’s <code>bin</code> folder to PATH.</li>
+            <li>In the Yt_Downloader folder, run:</li>
+          </ol>
+          <div class="code-block"><code id="setupCode"><span class="code-comment"># install Python dependencies</span>
+pip install yt-dlp customtkinter Pillow
+
+<span class="code-comment"># launch the desktop app</span>
+python main.py</code></div>
+          <button id="copySetup" class="btn btn-outline full" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="copySetupText">Copy setup commands</span>
+          </button>
+          <p class="setup-note">FFmpeg builds are available from <a href="https://www.gyan.dev/ffmpeg/builds/" target="_blank" rel="noopener noreferrer">gyan.dev</a>. The app runs on Windows, macOS, and Linux.</p>
+        </div>
+        <p class="export-note">Only download content you have the rights to use.</p>
+      </aside>
+    </section>
+
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to download with the desktop app</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Check your links</h3><p>Paste up to as many URLs as you need and confirm the titles above. Invalid links are flagged before you start.</p></div></li>
+        <li><span>02</span><div><h3>Run and match settings</h3><p>Install the requirements, launch <code>python main.py</code>, then choose the same format and quality in the app window.</p></div></li>
+        <li><span>03</span><div><h3>Pick a folder and download</h3><p>Choose an output directory you can write to, paste the queue, and click Start Epic Download.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND EXPECTATIONS</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Can I download YouTube videos from this page?</summary><p>No. This page checks links and plans settings. The download itself runs in the Python desktop app, because browsers cannot run yt-dlp or FFmpeg.</p></details>
+      <details><summary>Do I need to start a web server?</summary><p>No. <code>main.py</code> is a desktop window, not a web server or API. There is no localhost endpoint to start.</p></details>
+      <details><summary>What formats and qualities does the app support?</summary><p>MP4 video with best video and audio merged, or MP3 audio at 192 kbps. Resolution caps range from 4320p down to 144p, and the best available quality is used by default.</p></details>
+      <details><summary>Does it support playlists and subtitles?</summary><p>Yes. Playlist downloading is on by default. English subtitles, including auto-generated ones, can be enabled, and thumbnails can be saved and embedded in MP4 videos.</p></details>
+      <details><summary>Where are downloaded files saved?</summary><p>By default the app saves to a YouTube folder inside your Downloads directory. You can choose any output folder before starting.</p></details>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden>
+    <span id="toastMessage"></span>
+    <button id="toastClose" class="toast-close" type="button" aria-label="Dismiss notification">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const els = {
+        form: document.getElementById('queueForm'),
+        input: document.getElementById('urlInput'),
+        linkCount: document.getElementById('linkCount'),
+        error: document.getElementById('queueError'),
+        checkBtn: document.getElementById('checkQueue'),
+        checkText: document.getElementById('checkBtnText'),
+        clearBtn: document.getElementById('clearQueue'),
+        progress: document.getElementById('checkProgress'),
+        progressTrack: document.getElementById('checkProgressTrack'),
+        progressFill: document.getElementById('checkProgressFill'),
+        progressText: document.getElementById('checkStatusText'),
+        progressCount: document.getElementById('checkCountText'),
+        results: document.getElementById('queueResults'),
+        list: document.getElementById('queueList'),
+        summary: document.getElementById('queueSummary'),
+        copyQueue: document.getElementById('copyQueue'),
+        qualityGroup: document.getElementById('qualityGroup'),
+        qualityHelp: document.getElementById('qualityHelp'),
+        plan: document.getElementById('planSummary'),
+        copySetup: document.getElementById('copySetup'),
+        copySetupText: document.getElementById('copySetupText'),
+        toast: document.getElementById('toast'),
+        toastMessage: document.getElementById('toastMessage'),
+        toastClose: document.getElementById('toastClose')
+      };
+      const formatRadios = Array.from(document.querySelectorAll('input[name="format"]'));
+      const qualityRadios = Array.from(document.querySelectorAll('input[name="quality"]'));
+      const optPlaylist = document.getElementById('optPlaylist');
+      const optSubtitles = document.getElementById('optSubtitles');
+      const optThumbs = document.getElementById('optThumbs');
+      const SETUP_COMMANDS = 'pip install yt-dlp customtkinter Pillow\n\npython main.py';
+
+      let queueItems = [];
+      let isChecking = false;
+      let toastTimer = null;
+      let buttonTimer = null;
+
+      function cleanLine(line) {
+        return line.trim().replace(/^['"\s,]+|['"\s,]+$/g, '');
+      }
+
+      function countLinks() {
+        return els.input.value.split(/\r?\n/).map(cleanLine).filter(Boolean).length;
+      }
+
+      function parseYouTubeUrl(value) {
+        const candidate = /^https?:\/\//i.test(value) ? value : 'https://' + value;
+        let url;
+        try {
+          url = new URL(candidate);
+        } catch (error) {
+          return { type: 'invalid', raw: value };
+        }
+        const host = url.hostname.toLowerCase();
+        const isYouTube = /(^|\.)youtube\.com$/.test(host) || /(^|\.)youtube-nocookie\.com$/.test(host) || host === 'youtu.be';
+        if (!isYouTube) return { type: 'invalid', raw: value };
+
+        const list = url.searchParams.get('list');
+        let id = url.searchParams.get('v');
+        if (!id && host === 'youtu.be') {
+          id = url.pathname.split('/').filter(Boolean)[0] || null;
+        }
+        if (!id) {
+          const match = url.pathname.match(/\/(?:embed|shorts|live|v)\/([A-Za-z0-9_-]{11})(?:\/|$)/);
+          if (match) id = match[1];
+        }
+        if (id && /^[A-Za-z0-9_-]{11}$/.test(id)) {
+          return { type: list ? 'video-playlist' : 'video', raw: value, id: id, hasList: Boolean(list) };
+        }
+        if (list && (url.pathname === '/playlist' || url.pathname === '/watch')) {
+          return { type: 'playlist', raw: value, hasList: true };
+        }
+        return { type: 'invalid', raw: value };
+      }
+
+      function selectedFormat() {
+        const checked = formatRadios.find(function (radio) { return radio.checked; });
+        return checked ? checked.value : 'mp4';
+      }
+
+      function selectedQuality() {
+        const checked = qualityRadios.find(function (radio) { return radio.checked; });
+        return checked ? checked.value : 'best';
+      }
+
+      function updatePlan() {
+        const count = countLinks();
+        const format = selectedFormat();
+        const parts = [count === 0 ? 'No links yet' : count + (count === 1 ? ' link' : ' links')];
+        if (format === 'mp3') {
+          parts.push('MP3 · 192 kbps');
+        } else {
+          const quality = selectedQuality();
+          parts.push('MP4 · ' + (quality === 'best' ? 'best available' : 'up to ' + quality));
+        }
+        if (optPlaylist.checked) parts.push('playlists');
+        if (optSubtitles.checked) parts.push('English subtitles');
+        if (optThumbs.checked) parts.push('thumbnails');
+        els.plan.textContent = parts.join(' · ');
+        els.linkCount.textContent = count + (count === 1 ? ' link' : ' links');
+      }
+
+      function syncFormatState() {
+        const isAudio = selectedFormat() === 'mp3';
+        els.qualityGroup.disabled = isAudio;
+        els.qualityGroup.classList.toggle('is-disabled', isAudio);
+        els.qualityHelp.textContent = isAudio
+          ? 'MP3 uses the best available audio stream; the resolution cap does not apply.'
+          : 'The app downloads the best stream at or below this height.';
+        updatePlan();
+      }
+
+      function showToast(message, type) {
+        els.toastMessage.textContent = message;
+        els.toast.classList.toggle('is-error', type === 'error');
+        els.toast.hidden = false;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { els.toast.hidden = true; }, 5200);
+      }
+
+      function hideToast() {
+        clearTimeout(toastTimer);
+        els.toast.hidden = true;
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text).then(function () { return true; }).catch(function () { return fallbackCopy(text); });
+        }
+        return Promise.resolve(fallbackCopy(text));
+      }
+
+      function fallbackCopy(text) {
+        const area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.left = '-9999px';
+        document.body.appendChild(area);
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (error) { ok = false; }
+        area.remove();
+        return ok;
+      }
+
+      function setProgress(done, total) {
+        const percent = total ? Math.round((done / total) * 100) : 0;
+        els.progressFill.style.width = percent + '%';
+        els.progressCount.textContent = done + ' / ' + total;
+        els.progressText.textContent = done === total ? 'Check complete.' : 'Checking links… ' + done + ' of ' + total;
+        els.progressTrack.setAttribute('aria-valuemax', String(total));
+        els.progressTrack.setAttribute('aria-valuenow', String(done));
+      }
+
+      function resetQueueResults() {
+        queueItems = [];
+        els.results.hidden = true;
+        els.list.replaceChildren();
+        els.summary.textContent = '';
+        els.progress.hidden = true;
+        els.error.hidden = true;
+      }
+
+      function makeQueueRow(item) {
+        const row = document.createElement('li');
+        row.className = 'queue-item';
+        const dot = document.createElement('span');
+        dot.className = 'queue-dot';
+        dot.setAttribute('aria-hidden', 'true');
+        const copy = document.createElement('div');
+        copy.className = 'queue-item-copy';
+        const title = document.createElement('strong');
+        const meta = document.createElement('span');
+        const tag = document.createElement('span');
+        tag.className = 'queue-tag';
+
+        if (item.type === 'invalid') {
+          row.classList.add('is-invalid');
+          title.textContent = 'Not a YouTube link';
+          meta.textContent = item.raw.length > 100 ? item.raw.slice(0, 100) + '…' : item.raw;
+          meta.title = item.raw;
+          tag.textContent = 'Invalid';
+        } else if (item.type === 'playlist') {
+          row.classList.add('is-ready');
+          title.textContent = 'Playlist link';
+          meta.textContent = optPlaylist.checked ? 'The app will expand this playlist.' : 'Playlists are currently turned off in settings.';
+          tag.textContent = 'Playlist';
+        } else {
+          const isPlaylistVideo = item.type === 'video-playlist';
+          if (item.fetchFailed) {
+            row.classList.add('is-attention');
+            title.textContent = 'Video link found';
+            meta.textContent = 'Title unavailable — the app can still try this URL.';
+          } else {
+            row.classList.add('is-ready');
+            title.textContent = item.title || 'YouTube video';
+            meta.textContent = (item.author ? item.author + ' · ' : '') + 'youtube.com/watch?v=' + item.id;
+          }
+          tag.textContent = isPlaylistVideo ? 'Video + list' : 'Video';
+        }
+        copy.append(title, meta);
+        row.append(dot, copy, tag);
+        return row;
+      }
+
+      function renderQueue() {
+        const ready = queueItems.filter(function (item) { return item.type !== 'invalid' && !item.fetchFailed; }).length;
+        const attention = queueItems.length - ready;
+        els.list.replaceChildren();
+        queueItems.forEach(function (item) { els.list.appendChild(makeQueueRow(item)); });
+        els.results.hidden = false;
+        els.copyQueue.disabled = ready === 0;
+        els.summary.textContent = ready === 0
+          ? 'No usable YouTube links found. Check the URLs and try again.'
+          : ready + ' of ' + queueItems.length + ' link' + (queueItems.length === 1 ? '' : 's') + ' ready' +
+            (attention ? ' · ' + attention + ' need' + (attention === 1 ? 's' : '') + ' attention' : '.');
+        if (ready === 0) {
+          showToast('No usable YouTube links found.', 'error');
+        } else if (attention) {
+          showToast(ready + ' ready, ' + attention + ' need a look.', 'error');
+        } else {
+          showToast(ready + ' link' + (ready === 1 ? '' : 's') + ' checked and ready.');
+        }
+      }
+
+      async function checkQueue(event) {
+        if (event) event.preventDefault();
+        if (isChecking) return;
+        const values = els.input.value.split(/\r?\n/).map(cleanLine).filter(Boolean);
+        if (!values.length) {
+          els.error.textContent = 'Add at least one YouTube link to check.';
+          els.error.hidden = false;
+          els.input.focus();
+          return;
+        }
+        els.error.hidden = true;
+        isChecking = true;
+        els.input.disabled = true;
+        els.clearBtn.disabled = true;
+        els.checkBtn.disabled = true;
+        els.checkText.textContent = 'Checking…';
+        els.results.hidden = true;
+        els.progress.hidden = false;
+        setProgress(0, values.length);
+
+        const items = values.map(parseYouTubeUrl).map(function (item) {
+          return Object.assign({}, item, { title: '', author: '', fetchFailed: false });
+        });
+        let done = 0;
+        const checked = await Promise.all(items.map(async function (item) {
+          if (item.type === 'video' || item.type === 'video-playlist') {
+            const controller = new AbortController();
+            const timer = setTimeout(function () { controller.abort(); }, 8000);
+            try {
+              const watchUrl = 'https://www.youtube.com/watch?v=' + item.id;
+              const response = await fetch('https://www.youtube.com/oembed?url=' + encodeURIComponent(watchUrl) + '&format=json', { signal: controller.signal });
+              if (!response.ok) throw new Error('oEmbed failed');
+              const data = await response.json();
+              item.title = data.title ? String(data.title) : 'YouTube video';
+              item.author = data.author_name ? String(data.author_name) : '';
+            } catch (error) {
+              item.fetchFailed = true;
+            } finally {
+              clearTimeout(timer);
+            }
+          }
+          done += 1;
+          setProgress(done, items.length);
+          return item;
+        }));
+
+        queueItems = checked;
+        isChecking = false;
+        els.input.disabled = false;
+        els.clearBtn.disabled = false;
+        els.checkBtn.disabled = false;
+        els.checkText.textContent = 'Check queue';
+        els.progress.hidden = true;
+        renderQueue();
+        updatePlan();
+      }
+
+      function clearQueue() {
+        if (isChecking) return;
+        els.input.value = '';
+        els.input.disabled = false;
+        resetQueueResults();
+        updatePlan();
+        hideToast();
+        els.input.focus();
+      }
+
+      async function copySetupCommands() {
+        const ok = await copyText(SETUP_COMMANDS);
+        if (!ok) {
+          showToast('Copy failed. Select the commands manually.', 'error');
+          return;
+        }
+        els.copySetupText.textContent = 'Copied';
+        clearTimeout(buttonTimer);
+        buttonTimer = setTimeout(function () {
+          els.copySetupText.textContent = 'Copy setup commands';
+        }, 1800);
+        showToast('Setup commands copied.');
+      }
+
+      async function copyValidUrls() {
+        const urls = queueItems.filter(function (item) { return item.type !== 'invalid'; }).map(function (item) { return item.raw; });
+        if (!urls.length) {
+          showToast('No valid links to copy.', 'error');
+          return;
+        }
+        const ok = await copyText(urls.join('\n'));
+        if (!ok) {
+          showToast('Copy failed. Select the links manually.', 'error');
+          return;
+        }
+        els.copyQueue.textContent = 'Copied';
+        clearTimeout(buttonTimer);
+        buttonTimer = setTimeout(function () { els.copyQueue.textContent = 'Copy URLs'; }, 1800);
+        showToast('Copied ' + urls.length + ' link' + (urls.length === 1 ? '' : 's') + '.');
+      }
+
+      els.form.addEventListener('submit', checkQueue);
+      els.input.addEventListener('input', function () {
+        if (!isChecking) resetQueueResults();
+        updatePlan();
+      });
+      els.clearBtn.addEventListener('click', clearQueue);
+      els.copyQueue.addEventListener('click', copyValidUrls);
+      els.copySetup.addEventListener('click', copySetupCommands);
+      els.toastClose.addEventListener('click', hideToast);
+      formatRadios.forEach(function (radio) { radio.addEventListener('change', syncFormatState); });
+      qualityRadios.forEach(function (radio) { radio.addEventListener('change', updatePlan); });
+      [optPlaylist, optSubtitles, optThumbs].forEach(function (box) { box.addEventListener('change', updatePlan); });
+      syncFormatState();
+      updatePlan();
+    })();
+  </script>
 </body>
 </html>

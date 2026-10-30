@@ -3,398 +3,304 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EGC%3C/text%3E%3C/svg%3E">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Chat - FunChat</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/chat.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat&family=Nunito&family=Open+Sans&family=Poppins&family=Roboto&display=swap"
-        rel="stylesheet">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" integrity="sha384-v3Z/Xdw1sCeo6M/geW7sn1Lt9obIm7MhAk8laVV+rvYFmzuWDELOiygx7dVte2dX" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" integrity="sha384-p62xBRve8PdqGDGASZtZMuHgPsyPcT5VsFwgmz2p4zaFdEtt5ZzNqxK+CLzQS7xP" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js" integrity="sha384-fuqdSwJXSvcAuKu5FbSJcHqHK474liv5ji8tuDnHz1rpfrnuXZPdM0oRaSK6c95L" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" integrity="sha384-3LctmFHtNDZwkVOSZ0fvJZJD9XR5Og5ol/MVEfNt36gUUnSYBRJN0iFjIMbFecOg" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js" integrity="sha384-ayVBbw9YX9MPY7GPpwsmhrJWJc4fpI2GuJOcWUlFuvgKLbpT0krR2eJpJ5kC20Mr" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="../../back.css">
-    <script src="../../back.js" defer></script>
-
-    <meta name="description" content="Use Global Chat - FunChat online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Global-ChatBot/public/chat.html">
-    <meta property="og:title" content="Global Chat - FunChat">
-    <meta property="og:description" content="Use Global Chat - FunChat online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Global-ChatBot/public/chat">
+    <title>Global Chat — Chat</title>
+    <meta name="description" content="Chat in real time in the Global Chat room. Send messages, reply, react and edit — right in your browser.">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="canonical" href="https://aloksystems.freedev.app/Global-ChatBot/chat.html">
+    <meta property="og:title" content="Global Chat — Chat">
+    <meta property="og:description" content="Real-time chat in your browser, powered by Firebase.">
+    <meta property="og:url" content="https://aloksystems.freedev.app/Global-ChatBot/chat.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alok Systems Tools">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Global Chat - FunChat">
-    <meta name="twitter:description" content="Use Global Chat - FunChat online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Global Chat - FunChat",
-    "description":  "Use Global Chat - FunChat online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/Global-ChatBot/public/chat.html",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
+    <meta name="author" content="Alok Systems">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="../back.css">
+    <script src="../back.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Global Chat",
+        "description": "Real-time chat in the browser, powered by Firebase.",
+        "url": "https://aloksystems.freedev.app/Global-ChatBot/chat.html",
+        "applicationCategory": "CommunicationApplication",
+        "operatingSystem": "Any"
+    }
     </script>
 </head>
 
 <body>
-    <div class="chat-header">
-        <div class="menu-button" id="menu-button">
-            <i class="fas fa-arrow-left"></i>
-        </div>
-        <div class="chat-info" style="font-family: Montserrat, sans-serif;">
-            <h3 style="font-family: Montserrat, sans-serif;">Global Chat</h3> &nbsp;
-            <p style="font-family: Montserrat, sans-serif;"><span id="online-users-display"></span></p>
-        </div>
-        <div style="width: 40px;"></div> <!-- Empty div for balance -->
-    </div>
+    <main class="chat-app">
+        <header class="chat-topbar">
+            <button class="gc-icon-btn" id="menu-button" type="button" aria-label="Back to chats">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            <div class="chat-head">
+                <span class="chat-avatar" id="chat-avatar" aria-hidden="true"><i class="fas fa-globe"></i></span>
+                <div class="chat-head-text">
+                    <h1 class="chat-name">Global Chat</h1>
+                    <p class="chat-status">
+                        <span id="online-users-display"></span>
+                        <span id="user-status" hidden></span>
+                    </p>
+                </div>
+            </div>
+            <button class="gc-icon-btn" id="open-menu-btn" type="button" aria-label="Open menu" aria-expanded="false">
+                <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+        </header>
 
-    <!-- Add side menu structure -->
-    <div class="side-menu" id="side-menu">
-        <div class="menu-header">
-            <div class="menu-close" id="menu-close">
-                <i class="fas fa-times"></i>
+        <section class="messages-container" id="messages-container" aria-live="polite" aria-label="Messages">
+            <div class="system-message"><span>Loading messages…</span></div>
+        </section>
+
+        <div class="chat-typing" id="typing-indicator">
+            <span class="chat-typing-name" id="typing-username"></span>
+            <span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        </div>
+
+        <footer class="chat-composer">
+            <div class="reply-preview" id="reply-preview" hidden>
+                <div class="reply-preview-body">
+                    <strong id="reply-preview-name"></strong>
+                    <span id="reply-preview-text"></span>
+                </div>
+                <button class="reply-preview-close" id="cancel-reply-btn" type="button" aria-label="Cancel reply">
+                    <i class="fas fa-xmark" aria-hidden="true"></i>
+                </button>
             </div>
-        </div>
-        <div class="menu-user-section">
-            <div class="menu-user-avatar" id="profile-pic">
-                <!-- Will be populated with profile pic or initials -->
-            </div>
-            <div class="menu-user-name" id="username">User</div>
-            <div class="menu-user-email" id="user-email">user@example.com</div>
-        </div>
-        <div class="menu-divider"></div>
-        <div class="menu-item" id="profile-settings">
-            <i class="fas fa-user-cog"></i>
-            Profile Settings
-        </div>
-        <div class="menu-item" id="appearance-toggle">
-            <i class="fas fa-palette"></i>
-            Appearance
-            <i class="fas fa-chevron-down appearance-arrow"></i>
-        </div>
-        <div class="appearance-section" id="appearance-section">
-            <div class="theme-toggle-container">
-                <span class="toggle-label">Dark Mode</span>
-                <label class="switch">
-                    <input type="checkbox" id="theme-toggle">
-                    <span class="switch-slider"></span>
+            <div class="chat-composer-row">
+                <button class="composer-icon-btn" id="emoji-btn" type="button" aria-label="Insert emoji">
+                    <i class="far fa-face-smile" aria-hidden="true"></i>
+                </button>
+                <label class="composer-field">
+                    <span class="visually-hidden">Message</span>
+                    <input class="message-input" id="message-input" type="text" placeholder="Type a message…" autocomplete="off" maxlength="2000">
                 </label>
+                <button class="send-btn" id="send-btn" type="button" aria-label="Send message">
+                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                </button>
             </div>
-            <div class="menu-item" id="accent-theme-toggle">
-                <i class="fas fa-palette"></i>
-                Change Accent Theme
-            </div>
-            <div class="accent-theme-options" id="accent-theme-options">
-                <div class="color-option" data-color="#2196F3" style="background-color: #2196F3;"></div>
-                <div class="color-option" data-color="#4CAF50" style="background-color: #4CAF50;"></div>
-                <div class="color-option" data-color="#E91E63" style="background-color: #E91E63;"></div>
-                <div class="color-option" data-color="#FF9800" style="background-color: #FF9800;"></div>
-                <div class="color-option" data-color="#9C27B0" style="background-color: #9C27B0;"></div>
-                <div class="color-option" data-color="#607D8B" style="background-color: #607D8B;"></div>
-            </div>
-            <div class="menu-item" id="font-settings-toggle">
-                <i class="fas fa-font"></i>
-                Font Settings
-            </div>
-            <div class="font-settings-options" id="font-settings-options">
-                <div class="font-option" data-font="Poppins">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Poppins', sans-serif;">Poppins</span>
-                </div>
-                <div class="font-option" data-font="Roboto">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Roboto', sans-serif;">Roboto</span>
-                </div>
-                <div class="font-option" data-font="Open Sans">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Open Sans', sans-serif;">Open Sans</span>
-                </div>
-                <div class="font-option" data-font="Nunito">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Nunito', sans-serif;">Nunito</span>
-                </div>
-                <div class="font-option" data-font="Lato">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Lato', sans-serif;">Lato</span>
-                </div>
-            </div>
-        </div>
-        <div class="menu-item" id="settings-toggle">
-            <i class="fas fa-cog"></i>
-            Settings
-        </div>
-        <div class="settings-section" id="settings-section">
-            <div class="menu-item sub-item">
-                <i class="fas fa-bell"></i>
-                Notifications
-            </div>
-            <div class="menu-item sub-item">
-                <i class="fas fa-lock"></i>
-                Privacy
-            </div>
-        </div>
-        <div class="menu-item" id="about-funchat">
-            <i class="fas fa-info-circle"></i>
-            About Global Chat
-        </div>
-        <div class="menu-item" id="return-dashboard">
-            <i class="fas fa-th-large"></i>
-            Dashboard
-        </div>
-        <div class="menu-divider"></div>
-        <div class="menu-item" id="logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-            Logout
-        </div>
-    </div>
+        </footer>
+    </main>
+
+    <!-- Account drawer -->
     <div class="menu-overlay" id="menu-overlay"></div>
-
-    <div class="messages-container" id="messages-container">
-        <div class="system-message">
-            <span>Today</span>
-        </div>
-
-        <!-- Typing indicator will appear here -->
-        <div class="typing-indicator" id="typing-indicator" style="display: none; text-align: left; margin: 10px 0;">
-            <div
-                style="display: inline-flex; align-items: center; background-color: rgba(0,0,0,0.05); padding: 8px 15px; border-radius: 18px; max-width: 150px;">
-                <span id="typing-username" style="margin-right: 5px; font-weight: 500; font-size: 14px;"></span>
-                <div class="typing-dots" style="display: flex;">
-                    <span
-                        style="height: 6px; width: 6px; border-radius: 50%; background-color: #777; margin: 0 1px; animation: typingAnimation 1.4s infinite ease-in-out both; animation-delay: 0s;"></span>
-                    <span
-                        style="height: 6px; width: 6px; border-radius: 50%; background-color: #777; margin: 0 1px; animation: typingAnimation 1.4s infinite ease-in-out both; animation-delay: 0.2s;"></span>
-                    <span
-                        style="height: 6px; width: 6px; border-radius: 50%; background-color: #777; margin: 0 1px; animation: typingAnimation 1.4s infinite ease-in-out both; animation-delay: 0.4s;"></span>
-                </div>
+    <aside class="side-menu gc-drawer" id="side-menu" aria-label="Account menu">
+        <div class="gc-drawer-head">
+            <div class="gc-avatar menu-user-avatar" id="profile-pic">U</div>
+            <div class="gc-drawer-user">
+                <strong id="username">User</strong>
+                <span id="user-email"></span>
             </div>
-        </div>
-
-        <!-- Messages will be dynamically added here -->
-    </div>
-
-    <div class="chat-input-container">
-        <div class="attachment-options" id="attachment-options">
-            <div class="attachment-option attachment-photo">
-                <i class="fas fa-image"></i>
-            </div>
-            <div class="attachment-option attachment-document">
-                <i class="fas fa-file"></i>
-            </div>
-            <div class="attachment-option attachment-camera">
-                <i class="fas fa-camera"></i>
-            </div>
-        </div>
-        <div class="chat-input">
-            <div class="attach-btn" id="attach-btn">
-                <i class="fas fa-paperclip"></i>
-            </div>
-            <div class="emoji-btn">
-                <i class="far fa-smile"></i>
-            </div>
-            <input type="text" class="message-input" id="message-input" placeholder="Type a message...">
-            <button class="send-btn" id="send-btn">
-                <i class="fas fa-paper-plane"></i>
+            <button class="gc-icon-btn" id="menu-close" type="button" aria-label="Close menu">
+                <i class="fas fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
+
+        <nav class="gc-menu" aria-label="Chat actions">
+            <button class="gc-menu-item" id="profile-settings" type="button">
+                <i class="fas fa-user" aria-hidden="true"></i> Profile settings
+            </button>
+            <button class="gc-menu-item" id="about-funchat" type="button">
+                <i class="fas fa-circle-info" aria-hidden="true"></i> About Global Chat
+            </button>
+            <button class="gc-menu-item" id="return-dashboard" type="button">
+                <i class="fas fa-table-cells-large" aria-hidden="true"></i> All chats
+            </button>
+            <div class="gc-menu-divider"></div>
+            <div class="room-id-row" id="room-id-row" hidden>
+                <span>Room ID</span>
+                <code id="room-id-value"></code>
+                <button class="gc-icon-btn" id="copy-room-id" type="button" aria-label="Copy room ID">
+                    <i class="fas fa-copy" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="gc-menu-divider" id="room-id-divider" hidden></div>
+            <label class="gc-menu-item gc-menu-switch">
+                <span><i class="fas fa-moon" aria-hidden="true"></i> Dark mode</span>
+                <span class="gc-switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="gc-switch-track" aria-hidden="true"></span>
+                </span>
+            </label>
+            <div class="gc-menu-divider"></div>
+            <button class="gc-menu-item gc-menu-danger" id="leave-room-btn" type="button" hidden>
+                <i class="fas fa-right-from-bracket" aria-hidden="true"></i> Leave room
+            </button>
+            <button class="gc-menu-item gc-menu-danger" id="logout-btn" type="button">
+                <i class="fas fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out
+            </button>
+        </nav>
+        <p class="gc-drawer-note">Messages are visible to signed-in members of this chat.</p>
+    </aside>
+
+    <!-- Message actions -->
+    <div class="message-options" id="message-options" role="menu" aria-label="Message actions">
+        <button class="message-option react-option" type="button" role="menuitem">
+            <i class="far fa-face-smile" aria-hidden="true"></i><span>React</span>
+        </button>
+        <button class="message-option reply-option" type="button" role="menuitem">
+            <i class="fas fa-reply" aria-hidden="true"></i><span>Reply</span>
+        </button>
+        <button class="message-option edit-option" type="button" role="menuitem" hidden>
+            <i class="fas fa-pen" aria-hidden="true"></i><span>Edit</span>
+        </button>
+        <button class="message-option delete-option" type="button" role="menuitem" hidden>
+            <i class="fas fa-trash" aria-hidden="true"></i><span class="delete-label">Delete</span>
+        </button>
     </div>
 
-    <div class="message-options" id="message-options">
-        <div class="message-option react-option">
-            <i class="far fa-smile"></i>
-            <span>React</span>
-        </div>
-        <div class="message-option reply-option">
-            <i class="fas fa-reply"></i>
-            <span>Reply</span>
-        </div>
-        <div class="message-option edit-option" style="display: none;">
-            <i class="fas fa-pencil-alt"></i>
-            <span>Edit</span>
-        </div>
-        <div class="message-option delete-option" style="display: none;">
-            <i class="fas fa-trash"></i>
-            <span style="color: #F44336;">Delete</span>
-        </div>
-    </div>
-
-    <!-- Add Emoji Picker Panel (hidden initially) -->
-    <div id="emoji-picker"
-        style="position: absolute; display: none; background-color: var(--card-bg, white); border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); padding: 10px; z-index: 101;">
-        <div style="display: flex; gap: 8px;">
-            <span class="emoji-reaction" data-emoji="👍">👍</span>
-            <span class="emoji-reaction" data-emoji="❤️">❤️</span>
-            <span class="emoji-reaction" data-emoji="😂">😂</span>
-            <span class="emoji-reaction" data-emoji="😮">😮</span>
-            <span class="emoji-reaction" data-emoji="😢">😢</span>
-            <span class="emoji-reaction" data-emoji="🙏">🙏</span>
+    <!-- Emoji picker (used for the composer and for reactions) -->
+    <div id="emoji-picker" class="emoji-picker" role="dialog" aria-label="Pick an emoji">
+        <div class="emoji-grid">
+            <span class="emoji" data-emoji="👍">👍</span>
+            <span class="emoji" data-emoji="❤️">❤️</span>
+            <span class="emoji" data-emoji="😂">😂</span>
+            <span class="emoji" data-emoji="😮">😮</span>
+            <span class="emoji" data-emoji="😢">😢</span>
+            <span class="emoji" data-emoji="🙏">🙏</span>
+            <span class="emoji" data-emoji="👏">👏</span>
+            <span class="emoji" data-emoji="🔥">🔥</span>
+            <span class="emoji" data-emoji="🎉">🎉</span>
+            <span class="emoji" data-emoji="😍">😍</span>
+            <span class="emoji" data-emoji="😅">😅</span>
+            <span class="emoji" data-emoji="😎">😎</span>
+            <span class="emoji" data-emoji="🤔">🤔</span>
+            <span class="emoji" data-emoji="🙌">🙌</span>
+            <span class="emoji" data-emoji="💯">💯</span>
+            <span class="emoji" data-emoji="✨">✨</span>
         </div>
     </div>
 
-    <!-- Add Edit Message Modal (hidden initially) -->
-    <div id="edit-message-modal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 1001; align-items: center; justify-content: center;">
-        <div
-            style="background-color: var(--card-bg); padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-            <h4 style="margin-bottom: 15px; color: var(--text-color);">Edit Message</h4>
-            <textarea id="edit-message-input"
-                style="width: 100%; min-height: 80px; padding: 10px; border-radius: 5px; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); margin-bottom: 15px; font-size: 15px;"></textarea>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button id="cancel-edit-btn"
-                    style="padding: 8px 15px; border-radius: 5px; border: 1px solid var(--secondary-text); background-color: transparent; color: var(--secondary-text); cursor: pointer;">Cancel</button>
-                <button id="save-edit-btn"
-                    style="padding: 8px 15px; border-radius: 5px; border: none; background-color: #2196F3; color: white; cursor: pointer;">Save</button>
+    <!-- Edit message modal -->
+    <div id="edit-message-modal" class="gc-modal" style="display:none;">
+        <div class="gc-modal-card" style="max-width:420px;">
+            <div class="gc-modal-head"><h2>Edit message</h2></div>
+            <div class="gc-modal-body">
+                <label class="gc-field">
+                    <span>Message</span>
+                    <textarea class="gc-textarea" id="edit-message-input" maxlength="2000"></textarea>
+                </label>
+            </div>
+            <div class="gc-modal-foot">
+                <button class="gc-btn gc-btn-ghost" id="cancel-edit-btn" type="button">Cancel</button>
+                <button class="gc-btn gc-btn-primary" id="save-edit-btn" type="button">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- New simple Profile Settings modal -->
-    <div id="profileSettingsModal"
-        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s; pointer-events:none;">
-        <div
-            style="background-color:var(--bg-color); color:var(--text-color); border-radius:15px; width:90%; max-width:500px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,0.3);">
-            <div
-                style="display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid var(--border-color);">
-                <div style="font-size:22px; font-weight:bold;">Profile Settings</div>
-                <div id="closeProfileBtn" style="font-size:28px; cursor:pointer; color:var(--text-color);">×</div>
+    <!-- Delete for everyone -->
+    <div id="delete-confirmation-modal" style="display:none; position:fixed; inset:0; z-index:2000; align-items:center; justify-content:center; padding:20px; background:rgba(15,23,42,.55); opacity:0; transition:opacity .2s ease;">
+        <div class="gc-modal-card" style="max-width:390px;">
+            <div class="gc-modal-head"><h2>Delete message</h2></div>
+            <div class="gc-modal-body">
+                <p class="gc-hint">This message will be replaced with “This message was deleted” for everyone in the chat.</p>
             </div>
-            <div style="padding:25px 20px;">
-                <!-- Profile Picture Section -->
-                <div style="margin-bottom:25px; display:flex; flex-direction:column; align-items:center;">
-                    <div id="profilePicContainer"
-                        style="width:100px; height:100px; border-radius:50%; background-color:#2196F3; color:white; display:flex; justify-content:center; align-items:center; font-size:36px; margin-bottom:10px; position:relative; overflow:hidden;">
-                        <!-- Will be populated with profile pic or initials -->
+            <div class="gc-modal-foot">
+                <button class="gc-btn gc-btn-ghost" id="cancel-delete" type="button">Cancel</button>
+                <button class="gc-btn gc-btn-danger" id="confirm-delete" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete for me -->
+    <div id="delete-for-me-confirmation-modal" class="confirmation-modal-overlay">
+        <div class="confirmation-modal-content">
+            <p>Hide this message for you?</p>
+            <div class="confirmation-modal-note">Others will still see it.</div>
+            <div class="confirmation-modal-actions">
+                <button id="cancel-delete-for-me" class="confirmation-modal-button cancel" type="button">Cancel</button>
+                <button id="confirm-delete-for-me" class="confirmation-modal-button confirm" type="button">Hide</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile settings modal -->
+    <div id="profileSettingsModal" class="gc-modal" role="dialog" aria-modal="true" aria-labelledby="chat-profile-title" style="display:none;">
+        <div class="gc-modal-card">
+            <div class="gc-modal-head">
+                <h2 id="chat-profile-title">Profile settings</h2>
+                <button class="gc-icon-btn" id="closeProfileBtn" type="button" aria-label="Close profile settings">
+                    <i class="fas fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="gc-modal-body">
+                <div class="gc-profile-pic-row">
+                    <div class="gc-avatar gc-avatar-lg" id="profilePicContainer">U</div>
+                    <div>
+                        <button class="gc-btn gc-btn-ghost" id="changeProfilePicBtn" type="button">
+                            <i class="fas fa-camera" aria-hidden="true"></i> Change photo
+                        </button>
+                        <p class="gc-hint">JPG, PNG, GIF or WEBP · max 2 MB</p>
                     </div>
-                    <button id="changeProfilePicBtn"
-                        style="background-color:#2196F3; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; display:inline-flex; align-items:center; margin-top:10px;">
-                        <i class="fas fa-camera" style="margin-right:6px;"></i> Change Photo
-                    </button>
-                    <input type="file" id="profilePicInput" style="display:none;" accept="image/*">
+                    <input type="file" id="profilePicInput" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
                 </div>
-
-                <div style="margin-bottom:30px; display:flex; align-items:center;">
-                    <div style="width:40%; color:var(--text-color-dim); font-size:18px;">Username:</div>
-                    <div id="displayUsername" style="flex:1; font-size:18px;"></div>
-                    <div id="editUsernameBtn" style="color:#2196F3; cursor:pointer; margin-left:10px;">
-                        <i class="fas fa-pencil-alt" style="font-size:20px;"></i>
+                <div class="gc-readonly">
+                    <span>Username</span>
+                    <div class="gc-readonly-value">
+                        <strong id="displayUsername">User</strong>
+                        <button class="gc-icon-btn" id="editUsernameBtn" type="button" aria-label="Edit username">
+                            <i class="fas fa-pen" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </div>
-                <div style="margin-bottom:10px; display:flex; align-items:center;">
-                    <div style="width:40%; color:var(--text-color-dim); font-size:18px;">Email:</div>
-                    <div id="displayEmail" style="flex:1; font-size:18px;"></div>
+                <div class="gc-readonly">
+                    <span>Email</span>
+                    <strong id="displayEmail"></strong>
                 </div>
             </div>
-            <div style="padding:20px; text-align:right; border-top:1px solid var(--border-color);">
-                <button id="logoutProfileBtn"
-                    style="background-color:#e74c3c; color:white; border:none; padding:12px 25px; border-radius:30px; font-size:16px; cursor:pointer; display:inline-flex; align-items:center;">
-                    <i class="fas fa-sign-out-alt" style="margin-right:8px;"></i> Logout
+            <div class="gc-modal-foot">
+                <button class="gc-btn gc-btn-danger" id="logoutProfileBtn" type="button">
+                    <i class="fas fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Add the About Global Chat Modal -->
-    <div id="aboutAIChatModal"
-        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s; pointer-events:none;">
-        <div
-            style="background-color:var(--header-bg); color:var(--text-color); border-radius:15px; width:90%; max-width:500px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,0.3);">
-            <div
-                style="display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid var(--border-color);">
-                <div style="font-size:24px; font-weight:bold;">About Global Chat</div>
-                <div id="closeAboutBtn" style="font-size:28px; cursor:pointer; color:var(--text-color);">×</div>
+    <!-- About modal -->
+    <div id="aboutAIChatModal" class="gc-modal" role="dialog" aria-modal="true" aria-labelledby="chat-about-title" style="display:none;">
+        <div class="gc-modal-card">
+            <div class="gc-modal-head">
+                <h2 id="chat-about-title">About Global Chat</h2>
+                <button class="gc-icon-btn" id="closeAboutBtn" type="button" aria-label="Close about">
+                    <i class="fas fa-xmark" aria-hidden="true"></i>
+                </button>
             </div>
-            <div style="padding:25px 20px; overflow-y:auto; max-height:70vh;">
-                <div style="margin-bottom:20px;">
-                    <span style="color:#2196F3; font-size:22px; font-weight:bold;">Global Chat</span> is a real-time
-                    chat application built using Firebase.
-                </div>
-
-                <div style="margin-bottom:20px;">
-                    <div style="font-size:20px; margin-bottom:15px;">Features:</div>
-                    <ul style="list-style-type:none; padding-left:10px;">
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Real-time messaging</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Global (Pinned) and Private Rooms (Max 3 created per user)</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>User Authentication</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Presence Tracking</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Typing Indicators</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Message Replies, Reactions (1 per user), Editing</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Customizable Themes & Fonts</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Room Ownership & Admin Roles</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Leave/Kick Functionality</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Pin Chats</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div style="text-align:center; margin-top:30px; color:var(--secondary-text);">
-                    Developed by You.
-                </div>
+            <div class="gc-modal-body">
+                <p class="gc-hint" style="font-size:.88rem;line-height:1.6;">
+                    <strong style="color:var(--text);">Global Chat</strong> is a real-time chat app built on Firebase.
+                    Messages sync instantly, and the last 50 messages of a chat are loaded when you open it.
+                </p>
+                <ul class="gc-feature-list">
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Long-press or right-click a message for actions</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Reply, react, edit your own messages and delete</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Presence and typing indicators</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Light and dark themes that match the rest of the tools</li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <!-- "Delete for me" Custom Confirmation Modal -->
-    <div id="delete-for-me-confirmation-modal" class="confirmation-modal-overlay">
-        <div class="confirmation-modal-content">
-            <p>Delete this message placeholder for you?</p>
-            <div class="confirmation-modal-note">(This won't affect others)</div>
-            <div class="confirmation-modal-actions">
-                <button id="cancel-delete-for-me" class="confirmation-modal-button cancel">Cancel</button>
-                <button id="confirm-delete-for-me" class="confirmation-modal-button confirm">Delete</button>
-            </div>
-        </div>
-    </div>
+    <div id="notification-container" class="gc-toasts" aria-live="polite" aria-atomic="false"></div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" integrity="sha384-v3Z/Xdw1sCeo6M/geW7sn1Lt9obIm7MhAk8laVV+rvYFmzuWDELOiygx7dVte2dX" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" integrity="sha384-p62xBRve8PdqGDGASZtZMuHgPsyPcT5VsFwgmz2p4zaFdEtt5ZzNqxK+CLzQS7xP" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js" integrity="sha384-fuqdSwJXSvcAuKu5FbSJcHqHK474liv5ji8tuDnHz1rpfrnuXZPdM0oRaSK6c95L" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" integrity="sha384-3LctmFHtNDZwkVOSZ0fvJZJD9XR5Og5ol/MVEfNt36gUUnSYBRJN0iFjIMbFecOg" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js" integrity="sha384-ayVBbw9YX9MPY7GPpwsmhrJWJc4fpI2GuJOcWUlFuvgKLbpT0krR2eJpJ5kC20Mr" crossorigin="anonymous"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/chat.js"></script>
-
 </body>
 
 </html>

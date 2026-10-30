@@ -1,134 +1,292 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator - Free Online QR Creator</title>
-    <meta name="description" content="Generate QR codes instantly for URLs, text, WiFi, vCard, and more. Free online QR code generator with download and customization options.">
-    <meta name="keywords" content="QR code generator, free QR code, create QR code, QR maker, custom QR">
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem('tools-theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-theme', savedTheme === 'dark' || (!savedTheme && prefersDark) ? 'dark' : 'light');
-        })();
-    </script>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/QR-Generator/">
-    <meta property="og:title" content="QR Code Generator - Free Online QR Creator">
-    <meta property="og:description" content="Generate QR codes instantly for URLs, text, WiFi, vCard, and more. Free online QR code generator with download and customization options.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/QR-Generator/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="QR Code Generator - Free Online QR Creator">
-    <meta name="twitter:description" content="Generate QR codes instantly for URLs, text, WiFi, vCard, and more. Free online QR code generator with download and customization options.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "QR Code Generator - Free Online QR Creator",
-    "description":  "Generate QR codes instantly for URLs, text, WiFi, vCard, and more. Free online QR code generator with download and customization options.",
-    "url":  "https://aloksystems.freedev.app/QR-Generator/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EQR%3C/text%3E%3C/svg%3E">
+  <title>QR Code Generator | URL, Wi-Fi, Email &amp; vCard</title>
+  <meta name="description" content="Create QR codes for URLs, text, Wi-Fi, email, SMS, and vCards. Customise size and colours, check contrast, then download a crisp PNG or SVG — all in your browser.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/QR-Generator/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="QR Code Generator - Alok Systems Tools">
+  <meta property="og:description" content="Create QR codes for links, Wi-Fi, email, SMS, and vCards with live preview, contrast checks, and PNG or SVG downloads.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/QR-Generator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="QR Code Generator - Alok Systems Tools">
+  <meta name="twitter:description" content="Create QR codes for links, Wi-Fi, email, SMS, and vCards with live preview, contrast checks, and PNG or SVG downloads.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"QR Code Generator",
+    "description":"Generate static QR codes for URLs, text, Wi-Fi networks, email, SMS, and vCards locally in the browser.",
+    "url":"https://aloksystems.freedev.app/QR-Generator/",
+    "applicationCategory":"UtilityApplication",
+    "operatingSystem":"Any",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Are the QR codes free and private?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every QR code is generated locally in your browser with an open-source JavaScript library. Nothing is uploaded, tracked, or stored."}},
+      {"@type":"Question","name":"Which content types can I create?","acceptedAnswer":{"@type":"Answer","text":"The generator supports website URLs, plain text, Wi-Fi network details, email messages, SMS messages, and vCard contact cards."}},
+      {"@type":"Question","name":"Why will my QR code not scan?","acceptedAnswer":{"@type":"Answer","text":"Use a dark foreground on a light background with a contrast ratio of at least 4.5:1, keep the built-in quiet zone, and print or display the code large enough. Inverted colours may not work in every scanner."}},
+      {"@type":"Question","name":"Does a Wi-Fi QR code reveal the password?","acceptedAnswer":{"@type":"Answer","text":"Yes. The password is encoded inside the QR code so compatible devices can join the network. Share the code only with people you trust."}},
+      {"@type":"Question","name":"Do the QR codes expire?","acceptedAnswer":{"@type":"Answer","text":"No. These are static QR codes, so the encoded content is fixed and there is no redirect service, expiry date, or tracking."}}
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-            <h1>QR Code Generator</h1>
-            <p>Generate beautiful QR codes instantly — URLs, text, WiFi, vCard, and more. No server, no upload, 100% private.</p>
-        </header>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">INSTANT, PRIVATE QR CODES</p>
+      <h1 id="page-title">QR Code Generator</h1>
+      <p>Turn a link, message, network, or contact card into a crisp QR code.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        Your data is encoded locally and never uploaded.
+      </div>
+    </section>
 
-        <main class="main-content">
-            <div class="input-section">
-                <div class="type-selector">
-                    <button class="type-btn active" data-type="text">Text / URL</button>
-                    <button class="type-btn" data-type="wifi">WiFi</button>
-                    <button class="type-btn" data-type="vcard">vCard</button>
-                </div>
+    <p id="statusMessage" class="status-banner" role="status" aria-live="polite" hidden></p>
 
-                <div class="input-group" id="input-text">
-                    <label for="qr-text">Enter text or URL</label>
-                    <input type="text" id="qr-text" placeholder="https://example.com" value="https://aloksystems.freedev.app/">
-                </div>
+    <section class="workspace" aria-label="QR code generator">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="content-title">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div><h2 id="content-title">Choose your content</h2><p>Pick a type and fill in the fields. The preview updates as you type.</p></div>
+          </div>
 
-                <div class="input-group hidden" id="input-wifi">
-                    <label for="wifi-ssid">WiFi Name (SSID)</label>
-                    <input type="text" id="wifi-ssid" placeholder="Network name">
-                    <label for="wifi-password">Password</label>
-                    <input type="text" id="wifi-password" placeholder="WiFi password">
-                    <label for="wifi-encryption">Encryption</label>
-                    <select id="wifi-encryption">
-                        <option value="WPA">WPA/WPA2</option>
-                        <option value="WEP">WEP</option>
-                        <option value="">None</option>
-                    </select>
-                </div>
+          <div class="type-tabs" id="typeTabs" role="tablist" aria-label="QR content type">
+            <button type="button" class="type-tab active" id="tab-url" role="tab" aria-selected="true" aria-controls="panel-url" data-type="url">URL</button>
+            <button type="button" class="type-tab" id="tab-text" role="tab" aria-selected="false" aria-controls="panel-text" data-type="text" tabindex="-1">Text</button>
+            <button type="button" class="type-tab" id="tab-wifi" role="tab" aria-selected="false" aria-controls="panel-wifi" data-type="wifi" tabindex="-1">Wi-Fi</button>
+            <button type="button" class="type-tab" id="tab-email" role="tab" aria-selected="false" aria-controls="panel-email" data-type="email" tabindex="-1">Email</button>
+            <button type="button" class="type-tab" id="tab-sms" role="tab" aria-selected="false" aria-controls="panel-sms" data-type="sms" tabindex="-1">SMS</button>
+            <button type="button" class="type-tab" id="tab-vcard" role="tab" aria-selected="false" aria-controls="panel-vcard" data-type="vcard" tabindex="-1">vCard</button>
+          </div>
 
-                <div class="input-group hidden" id="input-vcard">
-                    <label for="vcard-name">Full Name</label>
-                    <input type="text" id="vcard-name" placeholder="John Doe">
-                    <label for="vcard-phone">Phone</label>
-                    <input type="text" id="vcard-phone" placeholder="+1 555-123-4567">
-                    <label for="vcard-email">Email</label>
-                    <input type="email" id="vcard-email" placeholder="john@example.com">
-                    <label for="vcard-org">Organization</label>
-                    <input type="text" id="vcard-org" placeholder="Company Inc.">
-                </div>
-
-                <div class="options-row">
-                    <div class="option-group">
-                        <label for="qr-size">Size</label>
-                        <select id="qr-size">
-                            <option value="128">Small (128×128)</option>
-                            <option value="256" selected>Medium (256×256)</option>
-                            <option value="512">Large (512×512)</option>
-                            <option value="1024">X-Large (1024×1024)</option>
-                        </select>
-                    </div>
-                    <div class="option-group">
-                        <label for="qr-fg">Color</label>
-                        <input type="color" id="qr-fg" value="#000000">
-                    </div>
-                    <div class="option-group">
-                        <label for="qr-bg">Background</label>
-                        <input type="color" id="qr-bg" value="#ffffff">
-                    </div>
-                </div>
-
-                <button class="generate-btn" id="generate-btn"><i class="fas fa-qrcode"></i> Generate QR Code</button>
+          <div id="contentForms" class="content-forms">
+            <div class="form-panel" id="panel-url" role="tabpanel" aria-labelledby="tab-url">
+              <div class="field-group">
+                <label class="field-label" for="qr-url">Website URL</label>
+                <input type="url" id="qr-url" value="https://aloksystems.freedev.app/" placeholder="https://example.com" inputmode="url" autocomplete="url" spellcheck="false">
+                <p class="helper">If you leave out the protocol, <strong>https://</strong> is added automatically.</p>
+              </div>
             </div>
 
-            <div class="output-section" id="output-section">
-                <div class="qr-display" id="qr-display"></div>
-                <div class="download-actions">
-                    <button class="action-btn" id="download-png"><i class="fas fa-download"></i> Download PNG</button>
-                    <button class="action-btn secondary" id="download-svg"><i class="fas fa-code"></i> Download SVG</button>
-                </div>
+            <div class="form-panel" id="panel-text" role="tabpanel" aria-labelledby="tab-text" hidden>
+              <div class="field-group">
+                <label class="field-label" for="qr-text">Text</label>
+                <textarea id="qr-text" rows="5" placeholder="Enter any text, note, or code snippet."></textarea>
+                <p class="helper">Line breaks are kept exactly as entered.</p>
+              </div>
             </div>
-        </main>
 
-        <section class="faq-section">
-            <h2>Frequently Asked Questions</h2>
-            <div class="faq-item"><strong>Is this QR code generator free?</strong><p>Yes, completely free with no limits. All processing happens in your browser — no server involved.</p></div>
-            <div class="faq-item"><strong>Can I change QR code colors?</strong><p>Yes. Use the color pickers to set foreground and background colors.</p></div>
-            <div class="faq-item"><strong>Do you track or store my data?</strong><p>No. Everything runs locally in your browser. Nothing is uploaded or stored.</p></div>
-            <div class="faq-item"><strong>Can I download the QR code?</strong><p>Yes. Download as PNG or SVG format.</p></div>
+            <div class="form-panel" id="panel-wifi" role="tabpanel" aria-labelledby="tab-wifi" hidden>
+              <div class="form-grid-2">
+                <div class="field-group">
+                  <label class="field-label" for="wifi-ssid">Network name (SSID)</label>
+                  <input type="text" id="wifi-ssid" placeholder="My home Wi-Fi" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="wifi-encryption">Security</label>
+                  <select id="wifi-encryption">
+                    <option value="WPA" selected>WPA / WPA2 / WPA3</option>
+                    <option value="WEP">WEP</option>
+                    <option value="">None (open)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="wifi-password">Password</label>
+                <input type="text" id="wifi-password" placeholder="Network password" autocomplete="off" spellcheck="false">
+                <p class="helper">The SSID is required. Open networks ignore the password. Special characters are escaped for scanners.</p>
+              </div>
+            </div>
+
+            <div class="form-panel" id="panel-email" role="tabpanel" aria-labelledby="tab-email" hidden>
+              <div class="field-group">
+                <label class="field-label" for="email-to">To</label>
+                <input type="email" id="email-to" placeholder="hello@example.com" inputmode="email" autocomplete="email" spellcheck="false">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="email-subject">Subject</label>
+                <input type="text" id="email-subject" placeholder="Hello from a QR code">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="email-body">Message</label>
+                <textarea id="email-body" rows="4" placeholder="Write a short message."></textarea>
+                <p class="helper">Recipient is required; subject and message are optional.</p>
+              </div>
+            </div>
+
+            <div class="form-panel" id="panel-sms" role="tabpanel" aria-labelledby="tab-sms" hidden>
+              <div class="field-group">
+                <label class="field-label" for="sms-phone">Phone number</label>
+                <input type="tel" id="sms-phone" placeholder="+1 555 123 4567" inputmode="tel" autocomplete="tel" spellcheck="false">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="sms-message">Message</label>
+                <textarea id="sms-message" rows="4" placeholder="Write the text message."></textarea>
+                <p class="helper">The phone number is required. Include the country code for international scans.</p>
+              </div>
+            </div>
+
+            <div class="form-panel" id="panel-vcard" role="tabpanel" aria-labelledby="tab-vcard" hidden>
+              <div class="field-group">
+                <label class="field-label" for="vcard-name">Full name</label>
+                <input type="text" id="vcard-name" placeholder="John Doe" autocomplete="name">
+              </div>
+              <div class="form-grid-2">
+                <div class="field-group">
+                  <label class="field-label" for="vcard-phone">Phone</label>
+                  <input type="tel" id="vcard-phone" placeholder="+1 555 123 4567" inputmode="tel" autocomplete="tel" spellcheck="false">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="vcard-email">Email</label>
+                  <input type="email" id="vcard-email" placeholder="john@example.com" inputmode="email" autocomplete="email" spellcheck="false">
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="vcard-org">Organisation</label>
+                <input type="text" id="vcard-org" placeholder="Company Inc." autocomplete="organization">
+                <p class="helper">Fill at least one field. A vCard 3.0 contact is created automatically.</p>
+              </div>
+            </div>
+          </div>
         </section>
-    </div>
-    <footer class="footer">
-        <p>Alok Systems Tools &copy; 2026. Fully client-side, your privacy is protected.</p>
-    </footer>
-    <script src="script.js"></script>
+
+        <section class="panel" aria-labelledby="design-title">
+          <div class="panel-heading">
+            <span class="step-number">02</span>
+            <div><h2 id="design-title">Style &amp; size</h2><p>Choose an export size and colours that keep the code easy to scan.</p></div>
+          </div>
+
+          <div class="design-block">
+            <span class="field-label" id="size-label">Export size</span>
+            <div class="chip-row" role="radiogroup" aria-labelledby="size-label">
+              <button type="button" class="chip size-chip" data-size="128" role="radio" aria-checked="false">128 px</button>
+              <button type="button" class="chip size-chip active" data-size="256" role="radio" aria-checked="true">256 px</button>
+              <button type="button" class="chip size-chip" data-size="512" role="radio" aria-checked="false">512 px</button>
+              <button type="button" class="chip size-chip" data-size="1024" role="radio" aria-checked="false">1024 px</button>
+            </div>
+          </div>
+
+          <div class="color-grid">
+            <div class="color-field">
+              <label class="field-label" for="fgColor">Foreground</label>
+              <div class="color-control">
+                <input type="color" id="fgColor" value="#0f172a">
+                <output id="fgColorValue" for="fgColor">#0f172a</output>
+              </div>
+            </div>
+            <div class="color-field">
+              <label class="field-label" for="bgColor">Background</label>
+              <div class="color-control">
+                <input type="color" id="bgColor" value="#ffffff">
+                <output id="bgColorValue" for="bgColor">#ffffff</output>
+              </div>
+            </div>
+          </div>
+
+          <div id="contrastWarning" class="notice" role="status" aria-live="polite" hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span id="contrastWarningText"></span>
+          </div>
+
+          <p class="helper design-note">Every code is generated with high error correction (30%) and a 4-module quiet zone for reliable scanning.</p>
+        </section>
+      </div>
+
+      <aside class="summary-panel" aria-labelledby="preview-title">
+        <div class="summary-heading">
+          <p class="eyebrow">LIVE PREVIEW</p>
+          <h2 id="preview-title">Your QR code</h2>
+          <p class="summary-period">This is exactly what the downloaded file will contain.</p>
+        </div>
+
+        <div class="qr-stage">
+          <canvas id="qrCanvas" role="img" aria-label="QR code preview" hidden></canvas>
+          <div id="qrPlaceholder" class="qr-placeholder">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><path d="M14 14h3v3h-3zM20 14h1M14 20v1M18 18h3v3h-3z"></path></svg>
+            <span id="qrPlaceholderText">Enter content to see your QR code.</span>
+          </div>
+        </div>
+        <p id="qrError" class="error-message" role="alert" hidden></p>
+
+        <dl class="meta-grid">
+          <div><dt>Type</dt><dd id="metaType">URL</dd></div>
+          <div><dt>Size</dt><dd id="metaSize">256 × 256 px</dd></div>
+          <div><dt>Modules</dt><dd id="metaModules">—</dd></div>
+          <div><dt>Contrast</dt><dd id="metaContrast">—</dd></div>
+        </dl>
+
+        <div class="payload-block">
+          <div class="payload-head">
+            <span class="field-label">Encoded payload</span>
+            <button id="copyPayloadBtn" class="btn btn-outline btn-copy" type="button" disabled>Copy payload</button>
+          </div>
+          <code id="payloadPreview" class="payload-code">—</code>
+        </div>
+
+        <div class="export-actions">
+          <button id="downloadPngBtn" class="btn btn-primary" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download PNG
+          </button>
+          <button id="downloadSvgBtn" class="btn btn-outline" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download SVG
+          </button>
+        </div>
+        <p class="export-note">Static QR codes never expire and contain no tracking.</p>
+      </aside>
+    </section>
+
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to make a QR code</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Pick the content</h3><p>Choose URL, text, Wi-Fi, email, SMS, or vCard and fill in the fields.</p></div></li>
+        <li><span>02</span><div><h3>Check the preview</h3><p>Adjust the size and colours, and keep the contrast warning clear.</p></div></li>
+        <li><span>03</span><div><h3>Download</h3><p>Save a crisp PNG for screens or an SVG for print and design work.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND SCANNING</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Are the QR codes free and private?</summary><p>Yes. Every QR code is generated locally in your browser with an open-source JavaScript library. Nothing is uploaded, tracked, or stored.</p></details>
+      <details><summary>Which content types can I create?</summary><p>The generator supports website URLs, plain text, Wi-Fi network details, email messages, SMS messages, and vCard contact cards. Each type uses the format scanners expect.</p></details>
+      <details><summary>Why will my QR code not scan?</summary><p>Use a dark foreground on a light background with a contrast ratio of at least 4.5:1, keep the built-in quiet zone, and print or display the code large enough. Inverted colours may not work in every scanner.</p></details>
+      <details><summary>Does a Wi-Fi QR code reveal the password?</summary><p>Yes. The password is encoded inside the QR code so compatible devices can join the network. Share the code only with people you trust, and change the password if it is posted publicly.</p></details>
+      <details><summary>Do the QR codes expire?</summary><p>No. These are static QR codes, so the encoded content is fixed. There is no redirect service, expiry date, or scan tracking.</p></details>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU" crossorigin="anonymous"></script>
+  <script src="script.js"></script>
 </body>
 </html>

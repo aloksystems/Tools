@@ -389,8 +389,8 @@
       const actions = document.createElement('div');
       actions.className = 'thumb-item-actions';
       actions.innerHTML = `
-        <button class="thumb-action rotate" title="Rotate" data-action="rotate" data-id="${page.id}">↻</button>
-        <button class="thumb-action delete" title="Remove" data-action="delete" data-id="${page.id}">×</button>
+        <button class="thumb-action rotate" type="button" title="Rotate" aria-label="Rotate page ${idx + 1}" data-action="rotate" data-id="${page.id}">↻</button>
+        <button class="thumb-action delete" type="button" title="Remove" aria-label="Remove page ${idx + 1}" data-action="delete" data-id="${page.id}">×</button>
       `;
 
       const label = document.createElement('div');

@@ -39,7 +39,6 @@
     const errorMessage = document.getElementById('errorMessage');
     const errorCloseBtn = document.getElementById('errorCloseBtn');
 
-    const currentYearSpan = document.getElementById('currentYear');
 
     // ===== State =====
     let originalFile = null;
@@ -474,11 +473,11 @@
 
         // Error close
         errorCloseBtn.addEventListener('click', hideError);
+
     }
 
     // ===== Initialize =====
     function init() {
-        currentYearSpan.textContent = new Date().getFullYear();
         resetToInitialState();
         setupEventListeners();
     }

@@ -256,10 +256,10 @@ const handlers = {
 };
 
 const fieldTemplates = {
-    'crop-pdf': '<div class="tool-field"><label>Crop margin in points</label><input class="tool-input" name="margin" type="number" min="0" max="180" value="24"></div>',
-    'highlight-pdf': '<div class="tool-field"><label>Pages</label><input class="tool-input" name="pages" placeholder="All pages, or 1,3-5"></div><div class="tool-field"><label>Highlight note</label><input class="tool-input" name="note" value="Review"></div>',
-    'edit-pdf-text': '<div class="tool-field"><label>Replacement text overlay</label><input class="tool-input" name="text" placeholder="Approved for release"></div>',
-    'protect-pdf': '<div class="tool-field"><label>Owner / author</label><input class="tool-input" name="owner" value="PDF Studio"></div>',
+    'crop-pdf': '<div class="tool-field"><label for="pdfCropMargin">Crop margin in points</label><input id="pdfCropMargin" class="tool-input" name="margin" type="number" min="0" max="180" value="24"></div>',
+    'highlight-pdf': '<div class="tool-field"><label for="pdfHighlightPages">Pages</label><input id="pdfHighlightPages" class="tool-input" name="pages" placeholder="All pages, or 1,3-5"></div><div class="tool-field"><label for="pdfHighlightNote">Highlight note</label><input id="pdfHighlightNote" class="tool-input" name="note" value="Review"></div>',
+    'edit-pdf-text': '<div class="tool-field"><label for="pdfEditText">Replacement text overlay</label><input id="pdfEditText" class="tool-input" name="text" placeholder="Approved for release"></div>',
+    'protect-pdf': '<div class="tool-field"><label for="pdfProtectOwner">Owner / author</label><input id="pdfProtectOwner" class="tool-input" name="owner" value="PDF Studio"></div>',
     'scan-to-pdf': '<p class="suite-note">Upload camera scans or images. Multi-select is supported.</p>',
     'ocr-pdf': '<p class="suite-note">Uses native browser text detection when available. Unsupported browsers receive a clear fallback file.</p>'
 };

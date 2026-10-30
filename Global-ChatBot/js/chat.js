@@ -1,1777 +1,1531 @@
-const firebaseConfig = window.APP_FIREBASE_CONFIG;
+/* Global Chat — chat page
+   Wires the RTDB message stream, presence, typing, reactions, replies,
+   edits, deletes and the account drawer to chat.html. */
 
-if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey.includes('REPLACE_WITH_NEW_RESTRICTED_API_KEY')) {
-    throw new Error('Firebase config missing. Set js/firebase-config.js with your new restricted API key.');
-}
+(function () {
+  'use strict';
 
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const auth = firebase.auth();
-const db = firebase.database();
+  var $ = function (id) { return document.getElementById(id); };
 
-// Profile settings modal elements - define these at global scope
-const profileSettingsModal = document.getElementById('profileSettingsModal');
-const closeProfileBtn = document.getElementById('closeProfileBtn');
-const displayUsername = document.getElementById('displayUsername');
-const displayEmail = document.getElementById('displayEmail');
-const editUsernameBtn = document.getElementById('editUsernameBtn');
-const logoutProfileBtn = document.getElementById('logoutProfileBtn');
-const profilePicContainer = document.getElementById('profilePicContainer');
-const changeProfilePicBtn = document.getElementById('changeProfilePicBtn');
-const profilePicInput = document.getElementById('profilePicInput');
+  var cfg = window.APP_FIREBASE_CONFIG || {};
+  var configMissing = !cfg.apiKey || !cfg.projectId ||
+    String(cfg.apiKey).indexOf('REPLACE_WITH') !== -1 ||
+    String(cfg.projectId).indexOf('YOUR_PROJECT') !== -1;
 
-// Global variable for current user - MAKE SURE IT'S DEFINED GLOBALLY
-let currentUser = null;
-// Global variable for message path - needed by functions outside DOMContentLoaded
-let messagesPath = 'global_messages'; // Default, will be updated later
-let typingPath = 'typing/global';
-// Global variable for storing element to delete - needed by confirm/delete functions
-let elementToDeleteForMe = null;
-// Global variable for typing timeout - needed by updateTypingStatus
-let typingTimeout;
-// Global variable for messages container - needed by functions
-let messagesContainer = null; // Define globally but initialize in DOMContentLoaded
+  var els = {};
+  var auth = null;
+  var rtdb = null;
+  var firestore = null;
+  var storage = null;
 
-function getTypingPathForRoom(roomId) {
-    return roomId ? `typing/rooms/${roomId}` : 'typing/global';
-}
+  var rawRoomId = new URLSearchParams(window.location.search).get('room') || '';
+  var roomId = /^[A-Za-z0-9_-]{6,64}$/.test(rawRoomId) ? rawRoomId : null;
 
-function normalizeMessageData(message) {
-    if (!message || typeof message !== 'object') {
-        return {
-            uid: '',
-            sender: 'Unknown',
-            displayName: 'Unknown',
-            text: '',
-            message: '',
-            timestamp: Date.now(),
-            reactions: null,
-            replyTo: null,
-            replyToName: null,
-            replyToText: null,
-            deleted: false
-        };
-    }
+  var state = {
+    user: null,
+    started: false,
+    redirecting: false,
+    authErrored: false,
+    messages: new Map(),
+    hidden: new Set(),
+    messagesPath: roomId ? 'room_messages/' + roomId : 'global_messages',
+    typingPath: roomId ? 'typing/rooms/' + roomId : 'typing/global',
+    optionsKey: null,
+    editKey: null,
+    reply: null,
+    emojiMode: null,
+    reactionKey: null,
+    firstRender: true,
+    renderQueued: false,
+    typingTimer: null,
+    typingSent: false,
+    messagesErrorShown: false,
+    onlineCount: 0
+  };
 
-    const senderName = message.sender || message.displayName || 'Unknown';
-    const textValue = message.text || message.message || '';
+  /* ---------- Small helpers ---------- */
 
+  function escapeHTML(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function displayNameOf(user) {
+    if (!user) return 'Anonymous';
+    if (user.displayName) return user.displayName;
+    if (user.email) return user.email.split('@')[0];
+    return 'Anonymous';
+  }
+
+  function initials(name) {
+    var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '?';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
+
+  function safeIcon(icon) {
+    return /^fa-[a-z0-9-]+$/.test(String(icon || '')) ? icon : '';
+  }
+
+  function toMillis(value) {
+    if (typeof value === 'number' && isFinite(value)) return value;
+    var n = Number(value);
+    return isFinite(n) ? n : Date.now();
+  }
+
+  function formatTime(ts) {
+    return new Date(toMillis(ts)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function dateLabel(ts) {
+    var date = new Date(toMillis(ts));
+    var today = new Date();
+    var yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (date.toDateString() === today.toDateString()) return 'Today';
+    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    return date.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function normalizeMessage(raw) {
+    var m = raw && typeof raw === 'object' ? raw : {};
+    var sender = m.sender || m.displayName || 'Unknown';
+    var text = typeof m.text === 'string' ? m.text : (typeof m.message === 'string' ? m.message : '');
     return {
-        ...message,
-        sender: senderName,
-        displayName: message.displayName || senderName,
-        text: textValue,
-        message: message.message || textValue,
-        timestamp: Number.isFinite(message.timestamp) ? message.timestamp : Date.now()
+      uid: m.uid || '',
+      sender: sender,
+      text: text,
+      timestamp: toMillis(m.timestamp),
+      reactions: m.reactions && typeof m.reactions === 'object' ? m.reactions : null,
+      replyTo: m.replyTo || null,
+      replyToName: m.replyToName || null,
+      replyToText: m.replyToText || null,
+      deleted: m.deleted === true,
+      edited: m.edited === true
     };
-}
+  }
 
-// Function to close the profile modal with animation
-function closeProfileModal() {
-    profileSettingsModal.style.opacity = '0';
-    setTimeout(() => {
-        profileSettingsModal.style.display = 'none';
-        profileSettingsModal.style.pointerEvents = 'none';
-    }, 300);
-}
-
-// --- Functions defined OUTSIDE DOMContentLoaded ---
-function deleteMessage(key) {
-    // In a real app, you might want to consider different deletion strategies:
-    // 1. Complete removal from database (for your own messages only)
-    // 2. Setting a "deleted" flag (what we're doing here)
-    // 3. Keeping a log of deleted messages
-
-    db.ref(`${messagesPath}/${key}`).update({
-        deleted: true,
-        // message: "This message was deleted" // Optional: Keep original message for potential undelete? Or just rely on 'deleted' flag.
-    })
-        .then(() => {
-            // Success notification
-            // showDeletedNotification(); // Note: This function seems undefined elsewhere in the code.
-            showNotification('Message deleted successfully.', 'success'); // Using existing notification function
-            console.log(`Message ${key} marked as deleted in ${messagesPath}`);
-        })
-        .catch(error => {
-            console.error("Error deleting message: ", error);
-            alert("Failed to delete message. Please try again.");
-        });
-}
-
-function addOrUpdateReaction(messageKey, emoji) {
-    if (!currentUser || !messageKey) return;
-
-    const reactionRef = db.ref(`${messagesPath}/${messageKey}/reactions/${currentUser.uid}`);
-
-    reactionRef.once('value').then(snapshot => {
-        if (snapshot.exists() && snapshot.val() === emoji) {
-            // If user clicked the same emoji, remove their reaction
-            reactionRef.remove()
-                .catch(error => console.error("Error removing reaction:", error));
-        } else {
-            // Otherwise, set/update their reaction
-            reactionRef.set(emoji)
-                .catch(error => console.error("Error setting reaction:", error));
-        }
-    }).catch(error => console.error("Error checking existing reaction:", error));
-}
-
-function setupDeletedPlaceholderLongPress(element, messageRowElement) {
-    let pressTimer;
-    let isLongPressing = false;
-
-    const startPress = function (e) {
-        // Prevent triggering on anything other than the main placeholder bubble/row
-        if (e.target !== element && !element.contains(e.target)) {
-            return;
-        }
-        e.stopPropagation(); // Prevent event bubbling
-
-        isLongPressing = false;
-        element.classList.add('pressing'); // Optional visual feedback
-
-        pressTimer = setTimeout(function () {
-            isLongPressing = true;
-            element.classList.remove('pressing');
-            // Call the function to show the custom confirmation modal
-            confirmDeletePlaceholderForMe(messageRowElement);
-        }, 500); // 500ms for long press
-    };
-
-    const endPress = function (e) {
-        e.stopPropagation();
-        element.classList.remove('pressing');
-        clearTimeout(pressTimer);
-    };
-
-    const cancelPress = function (e) {
-         e.stopPropagation();
-        if (!isLongPressing) {
-            element.classList.remove('pressing');
-            clearTimeout(pressTimer);
-        }
-    };
-
-    // Use mouse events for desktop and touch events for mobile
-    element.addEventListener('mousedown', startPress);
-    element.addEventListener('touchstart', startPress, { passive: true });
-
-    element.addEventListener('mouseup', endPress);
-    element.addEventListener('mouseleave', cancelPress);
-    element.addEventListener('touchend', endPress);
-    element.addEventListener('touchcancel', endPress);
-
-    console.log("Attaching long press listener to deleted placeholder:", messageRowElement); // Log attachment
-}
-
-function confirmDeletePlaceholderForMe(messageElement) {
-    console.log("ConfirmDeletePlaceholderForMe called for:", messageElement); // Log function call
-    const modal = document.getElementById('delete-for-me-confirmation-modal');
-    if (modal) {
-        elementToDeleteForMe = messageElement; // Store the element to delete
-        modal.classList.add('active'); // Show the modal
-        console.log("Modal activated"); // Log modal activation
-    } else {
-        console.error("Delete confirmation modal not found!");
-    }
-}
-
-function hideConfirmationModal() {
-    console.log("hideConfirmationModal called"); // Log function call
-    const modal = document.getElementById('delete-for-me-confirmation-modal');
-    if (modal) {
-        modal.classList.remove('active');
-        console.log("Modal 'active' class removed"); // Log class removal
-    } else {
-         console.error("Modal not found in hideConfirmationModal");
-    }
-    elementToDeleteForMe = null; // Clear the stored element
-}
-
-function deletePlaceholderForMe(messageElement) {
-    console.log("deletePlaceholderForMe called for:", messageElement); // Log function call
-    if (messageElement) {
-        messageElement.style.transition = 'opacity 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease';
-        messageElement.style.opacity = '0';
-        messageElement.style.height = '0';
-        messageElement.style.marginTop = '0';
-        messageElement.style.marginBottom = '0';
-        messageElement.style.paddingTop = '0';
-        messageElement.style.paddingBottom = '0';
-        messageElement.style.overflow = 'hidden';
-        console.log("Fading out and removing placeholder"); // Log removal start
-        setTimeout(() => {
-            messageElement.remove();
-             console.log("Placeholder removed from DOM"); // Log removal end
-        }, 300);
-    } else {
-         console.error("messageElement is null in deletePlaceholderForMe");
-    }
-}
-
-function showMessageOptions(event, messageKey, isMyMessage) {
-    console.log(`showMessageOptions called for key: ${messageKey}, isMyMessage: ${isMyMessage}`);
-    const messageOptions = document.getElementById('message-options');
-    if (!messageOptions) {
-        console.error("Message options container (#message-options) not found!");
-        return;
-    }
-
-    const deleteOption = messageOptions.querySelector('.delete-option');
-    const replyOption = messageOptions.querySelector('.reply-option');
-    const reactOption = messageOptions.querySelector('.react-option');
-    const emojiPicker = document.getElementById('emoji-picker');
-
-    if (!deleteOption || !replyOption || !reactOption) {
-        console.error("One or more options elements not found within #message-options!");
-        return;
-    }
-
-    // Show/hide delete option based on whether it's the user's message
-    if (isMyMessage) {
-        deleteOption.style.display = 'flex';
-    } else {
-        deleteOption.style.display = 'none';
-    }
-
-    // Position the options menu in the center of the message instead of fixed position
-    const messageElement = event.currentTarget;
-    const messageRect = messageElement.getBoundingClientRect();
-    
-    // Calculate position to center the popup relative to the message
-    const centerX = messageRect.left + messageRect.width / 2 - messageOptions.offsetWidth / 2;
-    const centerY = messageRect.top + messageRect.height / 2 - messageOptions.offsetHeight / 2;
-    
-    // Ensure the popup stays within viewport boundaries
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    
-    let finalX = Math.max(10, centerX); // Keep at least 10px from left edge
-    finalX = Math.min(finalX, viewportWidth - messageOptions.offsetWidth - 10); // Keep at least 10px from right edge
-    
-    let finalY = Math.max(10, centerY); // Keep at least 10px from top edge
-    finalY = Math.min(finalY, viewportHeight - messageOptions.offsetHeight - 10); // Keep at least 10px from bottom edge
-
-    // Apply the position
-    messageOptions.style.left = `${finalX}px`;
-    messageOptions.style.top = `${finalY}px`;
-    messageOptions.classList.add('active');
-
-    // Store the current message key to use with action handlers
-    messageOptions.dataset.messageKey = messageKey;
-
-    // Add event handlers for options
-    deleteOption.onclick = () => {
-        messageOptions.classList.remove('active');
-        showDeleteConfirmation(messageKey);
-    };
-
-    replyOption.onclick = () => {
-        messageOptions.classList.remove('active');
-        // Get message data to prepare reply
-        const messageElement = document.querySelector(`.message-row[data-key="${messageKey}"]`);
-        if (messageElement) {
-            const namePart = messageElement.querySelector('.message-sender')?.textContent || 'Someone';
-            const textPart = messageElement.querySelector('.message-text')?.textContent || '';
-            prepareReply(namePart, textPart, messageKey);
-        }
-    };
-
-    reactOption.onclick = () => {
-        // Close options menu and show emoji picker specifically for reaction
-        messageOptions.classList.remove('active');
-        
-        // Position emoji picker near the message
-        if (emojiPicker) {
-            emojiPicker.classList.add('reaction-mode');
-            emojiPicker.dataset.reactionTarget = messageKey;
-            
-            // Position emoji picker
-            emojiPicker.style.left = `${finalX}px`;
-            emojiPicker.style.top = `${finalY}px`;
-            emojiPicker.classList.add('active');
-            
-            // Add one-time event listener to handle emoji selection for reaction
-            const handleEmojiSelection = (e) => {
-                if (e.target.classList.contains('emoji')) {
-                    const emoji = e.target.textContent;
-                    addOrUpdateReaction(messageKey, emoji);
-                    emojiPicker.classList.remove('active');
-                    emojiPicker.classList.remove('reaction-mode');
-                    emojiPicker.removeEventListener('click', handleEmojiSelection);
-                }
-            };
-            
-            emojiPicker.addEventListener('click', handleEmojiSelection);
-            
-            // Close emoji picker when clicking outside
-            const closeEmojiPicker = (e) => {
-                if (!emojiPicker.contains(e.target) && e.target !== reactOption) {
-                    emojiPicker.classList.remove('active');
-                    emojiPicker.classList.remove('reaction-mode');
-                    emojiPicker.removeEventListener('click', handleEmojiSelection);
-                    document.removeEventListener('click', closeEmojiPicker);
-                }
-            };
-            
-            // Add with a slight delay to prevent immediate closing
-            setTimeout(() => {
-                document.addEventListener('click', closeEmojiPicker);
-            }, 100);
-        }
-    };
-
-    // Add event listener to close the options when clicking outside
-    const closePopupsListener = (e) => {
-        if (!messageOptions.contains(e.target) && e.target !== messageElement && !emojiPicker?.contains(e.target)) {
-            messageOptions.classList.remove('active');
-            document.removeEventListener('click', closePopupsListener);
-        }
-    };
-    
-    // Add with a slight delay to prevent immediate closing
-    setTimeout(() => {
-        document.addEventListener('click', closePopupsListener);
-    }, 100);
-}
-
-function closePopups(e) {
-    // Implementation of closePopups function
-}
-
-function setupLongPress(element, messageKey, isMyMessage) {
-    let pressTimer;
-    let isLongPressing = false;
-    
-    const startPress = function(e) {
-        isLongPressing = false;
-        element.classList.add('pressing');
-        
-        pressTimer = setTimeout(function() {
-            isLongPressing = true;
-            element.classList.remove('pressing');
-            showMessageOptions(e, messageKey, isMyMessage);
-        }, 500); // 500ms for long press
-    };
-    
-    const endPress = function() {
-        clearTimeout(pressTimer);
-        element.classList.remove('pressing');
-    };
-    
-    const cancelPress = function() {
-        if (!isLongPressing) {
-            clearTimeout(pressTimer);
-            element.classList.remove('pressing');
-        }
-    };
-    
-    // Use mouse events for desktop and touch events for mobile
-    element.addEventListener('mousedown', startPress);
-    element.addEventListener('touchstart', startPress, { passive: true });
-    
-    element.addEventListener('mouseup', endPress);
-    element.addEventListener('mouseleave', cancelPress);
-    element.addEventListener('touchend', endPress);
-    element.addEventListener('touchcancel', cancelPress);
-}
-
-function showNotification(message, type = 'success') {
-    // Implementation of showNotification function
-}
-
-function updateUserInfo(user) {
-    const usernameEl = document.getElementById('username'); // Get element inside function
-    const userEmailEl = document.getElementById('user-email'); // Get element inside function
-    const profilePic = document.getElementById('profile-pic'); // Get element inside function
-
-    if (user) { // Only update if user is not null
-        if (usernameEl) {
-            usernameEl.textContent = user.displayName || 'User';
-        }
-        if (userEmailEl) {
-            userEmailEl.textContent = user.email || '';
-        }
-        if (profilePic) {
-            if (user.photoURL) {
-                profilePic.innerHTML = `<img src="${user.photoURL}" alt="${user.displayName || 'User'}" style="width:100%;height:100%;border-radius:50%;">`;
-            } else {
-                const initials = (user.displayName || 'User').charAt(0).toUpperCase();
-                profilePic.textContent = initials;
-            }
-        }
-         // Update profile modal if open (optional, but good practice)
-         const displayUsernameModal = document.getElementById('displayUsername');
-         const displayEmailModal = document.getElementById('displayEmail');
-         if (profileSettingsModal && profileSettingsModal.style.display !== 'none') {
-              if (displayUsernameModal) displayUsernameModal.textContent = user.displayName || 'User';
-              if (displayEmailModal) displayEmailModal.textContent = user.email || '';
-              updateProfilePicInModal(); // Assumes this uses currentUser internally or gets passed user
-         }
-
-    } else {
-        // Handle case where user logs out or isn't loaded yet
-        if (usernameEl) usernameEl.textContent = 'User';
-        if (userEmailEl) userEmailEl.textContent = '';
-        if (profilePic) profilePic.textContent = '?'; // Or a placeholder icon
-    }
-}
-
-function updateProfilePicInModal() {
-    // Implementation of updateProfilePicInModal function
-}
-
-function addOnlineUser(user) {
-     if (!user || !user.uid) {
-         console.error("Cannot add online user: user data is invalid", user);
-         return;
-     }
-    const userRef = db.ref(`online/${user.uid}`);
-    userRef.set({
-        displayName: user.displayName || 'Anonymous',
-        lastOnline: firebase.database.ServerValue.TIMESTAMP
+  function formatMessageHTML(text) {
+    var escaped = escapeHTML(text);
+    var linked = escaped.replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+      var clean = url.replace(/[.,;:!?)]+$/, '');
+      var trailing = url.slice(clean.length);
+      return '<a href="' + clean + '" target="_blank" rel="noopener noreferrer">' + clean + '</a>' + trailing;
     });
-    userRef.onDisconnect().remove();
+    return linked
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  }
 
-    // Listen for online users count - move this listener setup outside this function?
-    // Maybe attach it once in DOMContentLoaded after initial auth.
-    // db.ref('online').on('value', snapshot => { ... });
-}
+  /* ---------- Toasts ---------- */
 
-function updateOnlineCount(count) {
-     const onlineUsersDisplay = document.getElementById('online-users-display'); // Get element inside
-     if (onlineUsersDisplay) {
-        if (count > 0) {
-            const statusText = count === 1 ? 'user online' : 'users online';
-            onlineUsersDisplay.textContent = `${count} ${statusText}`;
-        } else {
-            onlineUsersDisplay.textContent = '';
-        }
-     } else {
-         console.warn("Online users display element not found.");
-     }
-}
-
-function sendMessage() {
-    const messageInput = document.getElementById('message-input'); // Get element inside
-     if (!currentUser) {
-         console.error("Cannot send message: user not logged in.");
-         showNotification("You must be logged in to send messages.", "error");
-         return;
-     }
-     if (!messageInput) {
-          console.error("Message input element not found.");
-          return;
-     }
-
-    const message = messageInput.value.trim();
+  function showNotification(message, type) {
     if (!message) return;
+    var container = els.toasts || $('notification-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'notification-container';
+      container.className = 'gc-toasts';
+      container.setAttribute('aria-live', 'polite');
+      document.body.appendChild(container);
+    }
+    var toast = document.createElement('div');
+    toast.className = 'gc-toast' + (type === 'error' ? ' error' : '');
+    var icon = document.createElement('i');
+    icon.className = type === 'error' ? 'fas fa-circle-exclamation' : 'fas fa-circle-check';
+    icon.setAttribute('aria-hidden', 'true');
+    var text = document.createElement('span');
+    text.textContent = message;
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    container.appendChild(toast);
+    window.setTimeout(function () {
+      toast.classList.add('is-leaving');
+      window.setTimeout(function () { toast.remove(); }, 220);
+    }, 4200);
+  }
 
-    const senderName = currentUser.displayName || currentUser.email?.split('@')[0] || 'Anonymous';
+  /* ---------- Theme ---------- */
 
-    const newMessage = {
-        uid: currentUser.uid,
-        sender: senderName,
-        displayName: senderName,
-        photoURL: currentUser.photoURL,
-        text: message,
-        message: message,
-        timestamp: firebase.database.ServerValue.TIMESTAMP,
-        status: 'sent'
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (els.themeToggle) els.themeToggle.checked = theme === 'dark';
+  }
+
+  function initTheme() {
+    var stored = null;
+    try { stored = localStorage.getItem('tools-theme'); } catch (e) {}
+    var theme = (stored === 'dark' || stored === 'light')
+      ? stored
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(theme);
+    if (els.themeToggle) {
+      els.themeToggle.addEventListener('change', function () {
+        var next = els.themeToggle.checked ? 'dark' : 'light';
+        applyTheme(next);
+        try { localStorage.setItem('tools-theme', next); } catch (e) {}
+      });
+    }
+  }
+
+  /* ---------- Notice / locked states ---------- */
+
+  function setComposerEnabled(enabled) {
+    if (els.messageInput) {
+      els.messageInput.disabled = !enabled;
+      els.messageInput.placeholder = enabled ? 'Type a message…' : 'Chat unavailable';
+    }
+    if (els.sendBtn) els.sendBtn.disabled = !enabled;
+    if (els.emojiBtn) els.emojiBtn.disabled = !enabled;
+  }
+
+  function showLockedNotice(options) {
+    if (!els.messages) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'gc-empty';
+    wrap.style.margin = '28px auto';
+    wrap.style.maxWidth = '420px';
+
+    var iconWrap = document.createElement('div');
+    iconWrap.className = 'gc-empty-icon';
+    var icon = document.createElement('i');
+    icon.className = 'fas ' + (options.icon || 'fa-circle-exclamation');
+    icon.setAttribute('aria-hidden', 'true');
+    iconWrap.appendChild(icon);
+
+    var title = document.createElement('h3');
+    title.textContent = options.title || 'Chat unavailable';
+    var text = document.createElement('p');
+    text.textContent = options.text || '';
+
+    wrap.appendChild(iconWrap);
+    wrap.appendChild(title);
+    wrap.appendChild(text);
+
+    if (options.action) {
+      var btn = document.createElement('a');
+      btn.className = 'gc-btn gc-btn-primary';
+      btn.href = options.href || 'dashboard.html';
+      btn.textContent = options.action;
+      wrap.appendChild(btn);
+    }
+
+    els.messages.replaceChildren(wrap);
+  }
+
+  function showConfigNotice() {
+    showLockedNotice({
+      icon: 'fa-plug-circle-xmark',
+      title: 'Firebase is not configured',
+      text: 'Add the project config to Global-ChatBot/js/firebase-config.js, then reload this page.',
+      action: 'All chats',
+      href: 'dashboard.html'
+    });
+    setComposerEnabled(false);
+  }
+
+  function showAuthNotice(error) {
+    var code = error && error.code ? error.code : '';
+    var text = 'Could not reach the sign-in service. Check your connection and reload.';
+    if (code === 'auth/configuration-not-found' || /configuration/i.test(error && error.message || '')) {
+      text = 'Sign-in is not enabled for this Firebase project yet. Enable Authentication in the Firebase console, then reload.';
+    }
+    showLockedNotice({
+      icon: 'fa-user-lock',
+      title: 'Sign-in unavailable',
+      text: text,
+      action: 'Back to sign in',
+      href: 'login.html'
+    });
+    setComposerEnabled(false);
+  }
+
+  /* ---------- Avatars / profile paint ---------- */
+
+  function paintAvatar(el, user) {
+    if (!el) return;
+    el.replaceChildren();
+    if (user && user.photoURL) {
+      var img = document.createElement('img');
+      img.src = user.photoURL;
+      img.alt = '';
+      el.appendChild(img);
+    } else {
+      el.textContent = initials(displayNameOf(user));
+    }
+  }
+
+  function paintUser() {
+    if (!state.user) return;
+    if (els.username) els.username.textContent = displayNameOf(state.user);
+    if (els.userEmail) els.userEmail.textContent = state.user.email || '';
+    paintAvatar(els.profilePic, state.user);
+    if (els.displayUsername) els.displayUsername.textContent = displayNameOf(state.user);
+    if (els.displayEmail) els.displayEmail.textContent = state.user.email || '';
+    paintAvatar(els.picContainer, state.user);
+  }
+
+  /* ---------- Drawer & modals ---------- */
+
+  function openDrawer() {
+    if (!els.sideMenu) return;
+    closeFloating();
+    els.sideMenu.classList.add('active');
+    if (els.menuOverlay) els.menuOverlay.classList.add('active');
+    if (els.openMenuBtn) els.openMenuBtn.setAttribute('aria-expanded', 'true');
+    if (els.menuClose) els.menuClose.focus();
+  }
+
+  function closeDrawer() {
+    if (!els.sideMenu) return;
+    els.sideMenu.classList.remove('active');
+    if (els.menuOverlay) els.menuOverlay.classList.remove('active');
+    if (els.openMenuBtn) els.openMenuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  function openModal(modal) {
+    if (!modal) return;
+    modal.style.display = 'flex';
+    modal.classList.add('is-open');
+  }
+
+  function closeModal(modal) {
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.style.display = 'none';
+  }
+
+  function showFadeModal(modal) {
+    if (!modal) return;
+    window.clearTimeout(modal._hideTimer);
+    modal.style.display = 'flex';
+    window.requestAnimationFrame(function () { modal.style.opacity = '1'; });
+  }
+
+  function hideFadeModal(modal) {
+    if (!modal) return;
+    modal.style.opacity = '0';
+    window.clearTimeout(modal._hideTimer);
+    modal._hideTimer = window.setTimeout(function () { modal.style.display = 'none'; }, 220);
+  }
+
+  function anyModalOpen() {
+    return [els.profileModal, els.aboutModal, els.editModal].some(function (modal) {
+      return modal && modal.classList.contains('is-open');
+    }) || (els.deleteModal && els.deleteModal.style.display === 'flex') ||
+      (els.deleteForMeModal && els.deleteForMeModal.classList.contains('active'));
+  }
+
+  function bindModalDismiss(modal, closeFn) {
+    if (!modal) return;
+    modal.addEventListener('click', function (event) {
+      if (event.target === modal) closeFn();
+    });
+  }
+
+  function bindChrome() {
+    if (els.menuButton) {
+      els.menuButton.addEventListener('click', function () {
+        window.location.assign('dashboard.html');
+      });
+    }
+    if (els.openMenuBtn) els.openMenuBtn.addEventListener('click', openDrawer);
+    if (els.menuClose) els.menuClose.addEventListener('click', closeDrawer);
+    if (els.menuOverlay) els.menuOverlay.addEventListener('click', closeDrawer);
+
+    if (els.profileSettingsBtn) {
+      els.profileSettingsBtn.addEventListener('click', function () {
+        closeDrawer();
+        paintUser();
+        openModal(els.profileModal);
+      });
+    }
+    if (els.aboutBtn) {
+      els.aboutBtn.addEventListener('click', function () {
+        closeDrawer();
+        openModal(els.aboutModal);
+      });
+    }
+    if (els.returnDashboardBtn) {
+      els.returnDashboardBtn.addEventListener('click', function () {
+        window.location.assign('dashboard.html');
+      });
+    }
+    if (els.copyRoomIdBtn) els.copyRoomIdBtn.addEventListener('click', copyRoomId);
+    if (els.leaveRoomBtn) els.leaveRoomBtn.addEventListener('click', confirmLeaveRoom);
+    if (els.logoutBtn) els.logoutBtn.addEventListener('click', logout);
+    if (els.logoutProfileBtn) els.logoutProfileBtn.addEventListener('click', logout);
+
+    if (els.closeProfileBtn) els.closeProfileBtn.addEventListener('click', function () { closeModal(els.profileModal); });
+    if (els.closeAboutBtn) els.closeAboutBtn.addEventListener('click', function () { closeModal(els.aboutModal); });
+    bindModalDismiss(els.profileModal, function () { closeModal(els.profileModal); });
+    bindModalDismiss(els.aboutModal, function () { closeModal(els.aboutModal); });
+    bindModalDismiss(els.editModal, closeEditModal);
+
+    if (els.editUsernameBtn) els.editUsernameBtn.addEventListener('click', startUsernameEdit);
+    if (els.changePicBtn) els.changePicBtn.addEventListener('click', function () { els.picInput.click(); });
+    if (els.picInput) els.picInput.addEventListener('change', handlePhotoSelected);
+
+    if (els.cancelEditBtn) els.cancelEditBtn.addEventListener('click', closeEditModal);
+    if (els.saveEditBtn) els.saveEditBtn.addEventListener('click', saveEdit);
+
+    if (els.cancelDeleteBtn) els.cancelDeleteBtn.addEventListener('click', function () { hideFadeModal(els.deleteModal); });
+    if (els.confirmDeleteBtn) {
+      els.confirmDeleteBtn.addEventListener('click', function () {
+        var key = els.deleteModal.dataset.messageKey;
+        hideFadeModal(els.deleteModal);
+        if (key) deleteForEveryone(key);
+      });
+    }
+    if (els.deleteModal) {
+      els.deleteModal.addEventListener('click', function (event) {
+        if (event.target === els.deleteModal) hideFadeModal(els.deleteModal);
+      });
+    }
+
+    if (els.cancelDeleteForMeBtn) {
+      els.cancelDeleteForMeBtn.addEventListener('click', function () {
+        if (els.deleteForMeModal) els.deleteForMeModal.classList.remove('active');
+        state.optionsKey = null;
+      });
+    }
+    if (els.confirmDeleteForMeBtn) {
+      els.confirmDeleteForMeBtn.addEventListener('click', function () {
+        var key = state.optionsKey;
+        if (els.deleteForMeModal) els.deleteForMeModal.classList.remove('active');
+        if (key) hideForMe(key);
+      });
+    }
+    if (els.deleteForMeModal) {
+      els.deleteForMeModal.addEventListener('click', function (event) {
+        if (event.target === els.deleteForMeModal) els.deleteForMeModal.classList.remove('active');
+      });
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape') return;
+      if (anyModalOpen()) {
+        closeModal(els.profileModal);
+        closeModal(els.aboutModal);
+        closeEditModal();
+        hideFadeModal(els.deleteModal);
+        if (els.deleteForMeModal) els.deleteForMeModal.classList.remove('active');
+        return;
+      }
+      if (els.sideMenu && els.sideMenu.classList.contains('active')) {
+        closeDrawer();
+        return;
+      }
+      closeFloating();
+    });
+  }
+
+  function logout() {
+    if (!auth) return;
+    auth.signOut().then(function () {
+      state.redirecting = true;
+      window.location.replace('login.html');
+    }).catch(function (error) {
+      console.error('Sign out failed', error);
+      showNotification('Could not sign out. Try again.', 'error');
+    });
+  }
+
+  /* ---------- Username ---------- */
+
+  function startUsernameEdit() {
+    if (!state.user) return;
+    if ($('username-edit-input')) return;
+    var strong = els.displayUsername;
+    if (!strong) return;
+
+    var current = displayNameOf(state.user);
+    var input = document.createElement('input');
+    input.id = 'username-edit-input';
+    input.className = 'gc-input';
+    input.value = current;
+    input.maxLength = 40;
+    input.setAttribute('aria-label', 'Username');
+
+    strong.hidden = true;
+    strong.insertAdjacentElement('afterend', input);
+    input.focus();
+    input.select();
+
+    var finished = false;
+    function finish(save) {
+      if (finished) return;
+      finished = true;
+      var next = input.value.trim();
+      input.remove();
+      strong.hidden = false;
+      if (!save || !next || next === current || !state.user) return;
+      if (next.length < 2) {
+        showNotification('Username needs at least 2 characters.', 'error');
+        return;
+      }
+      state.user.updateProfile({ displayName: next }).then(function () {
+        if (els.username) els.username.textContent = next;
+        strong.textContent = next;
+        if (rtdb) rtdb.ref('online/' + state.user.uid + '/displayName').set(next).catch(function () {});
+        showNotification('Username updated.');
+      }).catch(function (error) {
+        console.error('Username update failed', error);
+        showNotification('Could not update the username.', 'error');
+      });
+    }
+
+    input.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        finish(true);
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        finish(false);
+      }
+    });
+    input.addEventListener('blur', function () { finish(true); });
+  }
+
+  /* ---------- Profile photo ---------- */
+
+  var PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  var PHOTO_LIMIT = 2 * 1024 * 1024;
+
+  function readFile(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(reader.result); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function loadImage(src) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () { resolve(img); };
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  function squareThumbnail(img) {
+    return new Promise(function (resolve) {
+      var size = 320;
+      var canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      var ctx = canvas.getContext('2d');
+      var side = Math.min(img.width, img.height);
+      var sx = (img.width - side) / 2;
+      var sy = (img.height - side) / 2;
+      ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+      canvas.toBlob(function (blob) { resolve(blob); }, 'image/jpeg', 0.86);
+    });
+  }
+
+  function handlePhotoSelected(event) {
+    var file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    if (!state.user) return;
+    if (PHOTO_TYPES.indexOf(file.type) === -1) {
+      showNotification('Use a JPG, PNG, GIF or WEBP image.', 'error');
+      return;
+    }
+    if (file.size > PHOTO_LIMIT) {
+      showNotification('Image must be smaller than 2 MB.', 'error');
+      return;
+    }
+    if (!storage) {
+      showNotification('Photo upload needs Firebase Storage.', 'error');
+      return;
+    }
+
+    if (els.changePicBtn) els.changePicBtn.disabled = true;
+    readFile(file)
+      .then(loadImage)
+      .then(squareThumbnail)
+      .then(function (blob) {
+        if (!blob) throw new Error('Could not process the image');
+        var ref = storage.ref().child('profile_pics/' + state.user.uid + '.jpg');
+        return ref.put(blob, { contentType: 'image/jpeg' }).then(function (snapshot) {
+          return snapshot.ref.getDownloadURL();
+        });
+      })
+      .then(function (url) {
+        return state.user.updateProfile({ photoURL: url }).then(function () {
+          paintUser();
+          if (rtdb) rtdb.ref('online/' + state.user.uid + '/photoURL').set(url).catch(function () {});
+          showNotification('Profile photo updated.');
+        });
+      })
+      .catch(function (error) {
+        console.error('Photo update failed', error);
+        showNotification('Could not update the photo. Check Storage rules.', 'error');
+      })
+      .then(function () {
+        if (els.changePicBtn) els.changePicBtn.disabled = false;
+      });
+  }
+
+  /* ---------- Room helpers ---------- */
+
+  function copyRoomId() {
+    if (!roomId) return;
+    function done() { showNotification('Room ID copied.'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(roomId).then(done).catch(fallback);
+    } else {
+      fallback();
+    }
+    function fallback() {
+      var temp = document.createElement('textarea');
+      temp.value = roomId;
+      temp.setAttribute('readonly', '');
+      temp.style.position = 'fixed';
+      temp.style.opacity = '0';
+      document.body.appendChild(temp);
+      temp.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      temp.remove();
+      if (ok) done();
+      else showNotification('Could not copy the room ID.', 'error');
+    }
+  }
+
+  function confirmLeaveRoom() {
+    if (!roomId || !firestore || !state.user) return;
+    var overlay = document.createElement('div');
+    overlay.className = 'confirmation-modal-overlay active';
+    var content = document.createElement('div');
+    content.className = 'confirmation-modal-content';
+    content.setAttribute('role', 'alertdialog');
+    content.setAttribute('aria-modal', 'true');
+
+    var title = document.createElement('p');
+    title.textContent = 'Leave this room?';
+    var note = document.createElement('div');
+    note.className = 'confirmation-modal-note';
+    note.textContent = 'You can rejoin anytime from All chats.';
+
+    var actions = document.createElement('div');
+    actions.className = 'confirmation-modal-actions';
+    var cancel = document.createElement('button');
+    cancel.type = 'button';
+    cancel.className = 'confirmation-modal-button cancel';
+    cancel.textContent = 'Cancel';
+    var confirm = document.createElement('button');
+    confirm.type = 'button';
+    confirm.className = 'confirmation-modal-button confirm';
+    confirm.textContent = 'Leave room';
+    actions.append(cancel, confirm);
+    content.append(title, note, actions);
+    overlay.appendChild(content);
+    document.body.appendChild(overlay);
+
+    function onKey(event) {
+      if (event.key === 'Escape') close();
+    }
+    function close() {
+      document.removeEventListener('keydown', onKey);
+      overlay.remove();
+    }
+    document.addEventListener('keydown', onKey);
+    cancel.addEventListener('click', close);
+    overlay.addEventListener('click', function (event) {
+      if (event.target === overlay) close();
+    });
+    confirm.addEventListener('click', function () {
+      close();
+      leaveRoom();
+    });
+    confirm.focus();
+  }
+
+  function leaveRoom() {
+    if (!roomId || !firestore || !state.user) return;
+    var uid = state.user.uid;
+    firestore.collection('users').doc(uid).collection('rooms').doc(roomId).delete()
+      .then(function () {
+        if (rtdb) rtdb.ref('room_members/' + roomId + '/' + uid).remove().catch(function () {});
+        showNotification('You left the room.');
+        window.setTimeout(function () { window.location.assign('dashboard.html'); }, 500);
+      })
+      .catch(function (error) {
+        console.error('Leave room failed', error);
+        showNotification('Could not leave the room. Try again.', 'error');
+      });
+  }
+
+  function setHeader(name, icon) {
+    if (els.chatName) els.chatName.textContent = name;
+    if (!els.chatAvatar) return;
+    els.chatAvatar.replaceChildren();
+    var i = document.createElement('i');
+    i.className = 'fas ' + (safeIcon(icon) || 'fa-globe');
+    i.setAttribute('aria-hidden', 'true');
+    els.chatAvatar.appendChild(i);
+  }
+
+  function setupRoom() {
+    if (!roomId) {
+      document.title = 'Global Chat — Chat';
+      setHeader('Global Chat', 'fa-globe');
+      return Promise.resolve(true);
+    }
+    return firestore.collection('rooms').doc(roomId).get().then(function (snap) {
+      if (!snap.exists) {
+        showLockedNotice({
+          icon: 'fa-circle-question',
+          title: 'Room not found',
+          text: 'This chat room does not exist or was deleted.',
+          action: 'All chats',
+          href: 'dashboard.html'
+        });
+        setComposerEnabled(false);
+        return false;
+      }
+      var room = snap.data() || {};
+      var name = room.name || 'Room';
+      document.title = name + ' — Global Chat';
+      setHeader(name, room.icon || 'fa-users');
+
+      if (els.roomIdRow) els.roomIdRow.hidden = false;
+      if (els.roomIdDivider) els.roomIdDivider.hidden = false;
+      if (els.roomIdValue) els.roomIdValue.textContent = roomId;
+      if (els.leaveRoomBtn) els.leaveRoomBtn.hidden = false;
+
+      return firestore.collection('users').doc(state.user.uid).collection('rooms').doc(roomId).get()
+        .then(function (memberSnap) {
+          if (memberSnap.exists) {
+            if (rtdb) rtdb.ref('room_members/' + roomId + '/' + state.user.uid).set(true).catch(function () {});
+            return true;
+          }
+          showLockedNotice({
+            icon: 'fa-lock',
+            title: 'You are not a member',
+            text: 'Join this room from All chats before opening it.',
+            action: 'All chats',
+            href: 'dashboard.html'
+          });
+          setComposerEnabled(false);
+          return false;
+        });
+    }).catch(function (error) {
+      console.error('Room load failed', error);
+      showLockedNotice({
+        icon: 'fa-plug-circle-xmark',
+        title: 'Could not open this room',
+        text: 'Check your connection and reload the page.',
+        action: 'All chats',
+        href: 'dashboard.html'
+      });
+      setComposerEnabled(false);
+      return false;
+    });
+  }
+
+  /* ---------- Presence & typing ---------- */
+
+  function setupPresence() {
+    if (!rtdb || !state.user) return;
+    var ref = rtdb.ref('online/' + state.user.uid);
+    ref.set({
+      displayName: displayNameOf(state.user),
+      photoURL: state.user.photoURL || null,
+      lastOnline: firebase.database.ServerValue.TIMESTAMP
+    }).catch(function (error) { console.warn('Presence write failed', error); });
+    ref.onDisconnect().remove();
+
+    rtdb.ref('online').on('value', function (snapshot) {
+      state.onlineCount = snapshot.numChildren();
+      if (els.onlineDisplay) {
+        els.onlineDisplay.textContent = state.onlineCount > 0 ? state.onlineCount + ' online' : '';
+      }
+    }, function () {});
+  }
+
+  function setTyping(isTyping) {
+    if (!rtdb || !state.user) return;
+    if (state.typingSent === isTyping) return;
+    state.typingSent = isTyping;
+    var ref = rtdb.ref(state.typingPath + '/' + state.user.uid);
+    if (isTyping) {
+      ref.set({
+        uid: state.user.uid,
+        displayName: displayNameOf(state.user),
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      }).catch(function () {});
+      ref.onDisconnect().remove();
+    } else {
+      ref.remove().catch(function () {});
+    }
+  }
+
+  function bindComposer() {
+    if (els.messageInput) {
+      els.messageInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          sendMessage();
+        }
+      });
+      els.messageInput.addEventListener('input', function () {
+        var hasText = els.messageInput.value.trim().length > 0;
+        if (hasText) {
+          setTyping(true);
+          window.clearTimeout(state.typingTimer);
+          state.typingTimer = window.setTimeout(function () { setTyping(false); }, 2500);
+        } else {
+          setTyping(false);
+          window.clearTimeout(state.typingTimer);
+        }
+      });
+    }
+    if (els.sendBtn) els.sendBtn.addEventListener('click', sendMessage);
+    if (els.cancelReplyBtn) els.cancelReplyBtn.addEventListener('click', cancelReply);
+    if (els.emojiBtn) {
+      els.emojiBtn.addEventListener('click', function (event) {
+        event.stopPropagation();
+        if (els.emojiPicker && els.emojiPicker.classList.contains('active') && state.emojiMode === 'composer') {
+          closeFloating();
+          return;
+        }
+        openEmojiPicker('composer', null, els.emojiBtn.getBoundingClientRect());
+      });
+    }
+  }
+
+  function startTypingIndicator() {
+    if (!rtdb || !state.user) return;
+    rtdb.ref(state.typingPath).on('value', function (snapshot) {
+      if (!state.user) return;
+      var name = '';
+      snapshot.forEach(function (child) {
+        if (child.key === state.user.uid) return;
+        var data = child.val();
+        if (data && typeof data === 'object') {
+          name = data.displayName || 'Someone';
+          return true;
+        }
+      });
+      if (els.typingUsername) els.typingUsername.textContent = name ? name + ' is typing' : '';
+      if (els.typingIndicator) els.typingIndicator.classList.toggle('active', !!name);
+    }, function () {});
+  }
+
+  /* ---------- Messages ---------- */
+
+  function scheduleRender() {
+    if (state.renderQueued) return;
+    state.renderQueued = true;
+    window.requestAnimationFrame(function () {
+      state.renderQueued = false;
+      renderMessages();
+    });
+  }
+
+  function scrollToBottom() {
+    if (!els.messages) return;
+    els.messages.scrollTop = els.messages.scrollHeight;
+  }
+
+  function isNearBottom() {
+    if (!els.messages) return true;
+    return els.messages.scrollTop + els.messages.clientHeight > els.messages.scrollHeight - 160;
+  }
+
+  function renderMessages() {
+    if (!els.messages) return;
+    closeMessageOptions();
+
+    var stick = state.firstRender || isNearBottom();
+    var previousTop = els.messages.scrollTop;
+
+    var list = Array.prototype.slice.call(state.messages.entries()).sort(function (a, b) {
+      var diff = toMillis(a[1] && a[1].timestamp) - toMillis(b[1] && b[1].timestamp);
+      return diff !== 0 ? diff : (a[0] < b[0] ? -1 : 1);
+    });
+
+    var fragment = document.createDocumentFragment();
+    var lastDate = '';
+    var shown = 0;
+
+    list.forEach(function (entry) {
+      var key = entry[0];
+      if (state.hidden.has(key)) return;
+      var message = normalizeMessage(entry[1]);
+      var label = dateLabel(message.timestamp);
+      if (label !== lastDate) {
+        var dateEl = document.createElement('div');
+        dateEl.className = 'message-date';
+        var dateChip = document.createElement('span');
+        dateChip.textContent = label;
+        dateEl.appendChild(dateChip);
+        fragment.appendChild(dateEl);
+        lastDate = label;
+      }
+      fragment.appendChild(buildMessageRow(key, message));
+      shown += 1;
+    });
+
+    if (!shown) {
+      var empty = document.createElement('div');
+      empty.className = 'system-message';
+      var chip = document.createElement('span');
+      chip.textContent = 'No messages yet. Say hello!';
+      empty.appendChild(chip);
+      fragment.appendChild(empty);
+    }
+
+    els.messages.replaceChildren(fragment);
+    state.firstRender = false;
+
+    if (stick) scrollToBottom();
+    else els.messages.scrollTop = previousTop;
+  }
+
+  function buildMessageRow(key, message) {
+    var mine = state.user && message.uid === state.user.uid;
+    var row = document.createElement('div');
+    row.className = 'message-row' + (mine ? ' my-message' : '') + (message.deleted ? ' deleted' : '');
+    row.dataset.key = key;
+
+    var info = document.createElement('div');
+    info.className = 'message-info';
+    var sender = document.createElement('span');
+    sender.className = 'message-sender';
+    sender.textContent = message.sender;
+    var time = document.createElement('span');
+    time.className = 'message-time';
+    time.textContent = formatTime(message.timestamp);
+    info.append(sender, time);
+
+    var bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+
+    if (message.deleted) {
+      var placeholder = document.createElement('div');
+      placeholder.className = 'message-text';
+      placeholder.textContent = 'This message was deleted';
+      bubble.appendChild(placeholder);
+      bindBubble(bubble, key, true);
+      row.append(info, bubble);
+      return row;
+    }
+
+    if (message.replyTo) {
+      var ref = document.createElement('div');
+      ref.className = 'reply-reference';
+      var author = document.createElement('div');
+      author.className = 'reply-author';
+      author.textContent = message.replyToName || 'Someone';
+      var snippet = document.createElement('div');
+      snippet.className = 'reply-text';
+      snippet.textContent = message.replyToText || '';
+      ref.append(author, snippet);
+      bubble.appendChild(ref);
+    }
+
+    var text = document.createElement('div');
+    text.className = 'message-text';
+    text.innerHTML = formatMessageHTML(message.text);
+    bubble.appendChild(text);
+
+    if (message.edited) {
+      var edited = document.createElement('span');
+      edited.className = 'edited-tag';
+      edited.textContent = '(edited)';
+      bubble.appendChild(edited);
+    }
+
+    var reactions = buildReactions(key, message.reactions);
+    if (reactions) bubble.appendChild(reactions);
+
+    bindBubble(bubble, key, false);
+    row.append(info, bubble);
+    return row;
+  }
+
+  function buildReactions(key, reactions) {
+    if (!reactions) return null;
+    var counts = new Map();
+    var mine = new Set();
+    Object.keys(reactions).forEach(function (uid) {
+      var emoji = reactions[uid];
+      if (typeof emoji !== 'string' || !emoji) return;
+      counts.set(emoji, (counts.get(emoji) || 0) + 1);
+      if (state.user && uid === state.user.uid) mine.add(emoji);
+    });
+    if (!counts.size) return null;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'message-reactions';
+    counts.forEach(function (count, emoji) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'reaction' + (mine.has(emoji) ? ' active' : '');
+      chip.title = mine.has(emoji) ? 'Remove your reaction' : 'React with ' + emoji;
+      var emojiSpan = document.createElement('span');
+      emojiSpan.className = 'reaction-emoji';
+      emojiSpan.textContent = emoji;
+      var countSpan = document.createElement('span');
+      countSpan.className = 'count';
+      countSpan.textContent = String(count);
+      chip.append(emojiSpan, countSpan);
+      chip.addEventListener('click', function () { toggleReaction(key, emoji); });
+      wrap.appendChild(chip);
+    });
+    return wrap;
+  }
+
+  function bindBubble(bubble, key, deleted) {
+    var timer = null;
+    var longPressed = false;
+
+    function start(event) {
+      if (event.type === 'mousedown' && event.button !== 0) return;
+      longPressed = false;
+      bubble.classList.add('pressing');
+      timer = window.setTimeout(function () {
+        longPressed = true;
+        bubble.classList.remove('pressing');
+        if (navigator.vibrate) navigator.vibrate(12);
+        if (deleted) openDeleteForMe(key);
+        else openMessageOptions(key, bubble);
+      }, 450);
+    }
+
+    function stop() {
+      if (timer) window.clearTimeout(timer);
+      timer = null;
+      bubble.classList.remove('pressing');
+    }
+
+    bubble.addEventListener('touchstart', start, { passive: true });
+    bubble.addEventListener('mousedown', start);
+    bubble.addEventListener('touchend', stop);
+    bubble.addEventListener('touchmove', stop);
+    bubble.addEventListener('touchcancel', stop);
+    bubble.addEventListener('mouseup', stop);
+    bubble.addEventListener('mouseleave', stop);
+    bubble.addEventListener('contextmenu', function (event) {
+      event.preventDefault();
+      stop();
+      if (deleted) openDeleteForMe(key);
+      else openMessageOptions(key, bubble);
+    });
+    bubble.addEventListener('click', function () {
+      longPressed = false;
+    });
+  }
+
+  function startMessages() {
+    if (!rtdb) return;
+    els.messages.replaceChildren();
+    state.firstRender = true;
+
+    var query = rtdb.ref(state.messagesPath).orderByChild('timestamp').limitToLast(50);
+    query.on('child_added', function (snapshot) {
+      state.messages.set(snapshot.key, snapshot.val());
+      scheduleRender();
+    }, handleMessagesError);
+    query.on('child_changed', function (snapshot) {
+      state.messages.set(snapshot.key, snapshot.val());
+      scheduleRender();
+    }, handleMessagesError);
+    query.on('child_removed', function (snapshot) {
+      state.messages.delete(snapshot.key);
+      scheduleRender();
+    }, handleMessagesError);
+  }
+
+  function handleMessagesError(error) {
+    console.error('Messages listener failed', error);
+    if (state.messagesErrorShown) return;
+    state.messagesErrorShown = true;
+    var denied = (error && (error.code === 'PERMISSION_DENIED' || /permission/i.test(error.message || '')));
+    showLockedNotice({
+      icon: denied ? 'fa-lock' : 'fa-plug-circle-xmark',
+      title: denied ? 'No access to this chat' : 'Could not load messages',
+      text: denied
+        ? 'Join this room from All chats, or ask a member for the room ID.'
+        : 'Check your connection and reload the page.',
+      action: 'All chats',
+      href: 'dashboard.html'
+    });
+    setComposerEnabled(false);
+  }
+
+  function sendMessage() {
+    if (!rtdb || !state.user || !els.messageInput) return;
+    var value = els.messageInput.value.trim();
+    if (!value) return;
+
+    var name = displayNameOf(state.user);
+    var message = {
+      uid: state.user.uid,
+      sender: name,
+      displayName: name,
+      photoURL: state.user.photoURL || null,
+      text: value,
+      message: value,
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
+      status: 'sent'
     };
 
-    if (messageInput.dataset.replyTo) {
-        newMessage.replyTo = messageInput.dataset.replyTo;
-        newMessage.replyToName = messageInput.dataset.replyToName;
-        newMessage.replyToText = messageInput.dataset.replyToText;
+    if (state.reply) {
+      message.replyTo = state.reply.key;
+      message.replyToName = state.reply.name;
+      message.replyToText = (state.reply.text || '').slice(0, 180);
     }
 
-    // Clear typing status
-    updateTypingStatus(false);
-    // Clear typing timeout if it exists in this scope
-    if (typeof typingTimeout !== 'undefined') {
-        clearTimeout(typingTimeout);
-    }
+    els.messageInput.value = '';
+    setTyping(false);
+    window.clearTimeout(state.typingTimer);
+    cancelReply();
+    if (els.sendBtn) els.sendBtn.disabled = true;
 
-    // Use the globally defined messagesPath
-    db.ref(messagesPath).push(newMessage)
-        .then(() => {
-            messageInput.value = '';
-            // Cancel reply if function exists
-            if (typeof cancelReply === 'function') {
-                cancelReply();
-            }
-            // Scroll to bottom if function exists
-            if (typeof scrollToBottom === 'function') {
-                scrollToBottom();
-            }
-            console.log("Message sent successfully to", messagesPath);
-        })
-        .catch(error => {
-            console.error("Error sending message:", error);
-            // Show notification if function exists
-            if (typeof showNotification === 'function') {
-                showNotification("Failed to send message. Please try again.", "error");
-            } else {
-                alert("Failed to send message. Please try again.");
-            }
-        });
-}
-
-function loadMessages(userForDisplay) {
-    if (!userForDisplay) {
-        console.error("loadMessages called without a valid user object.");
-        return; // Don't proceed without user
-    }
-    console.log(`Connecting to Firebase path: ${messagesPath} for user: ${userForDisplay.uid}`);
-    
-    // Use the global messagesContainer reference - try both possible IDs
-    if (!messagesContainer) {
-        messagesContainer = document.getElementById('messages-container') || document.getElementById('messages');
-        if (!messagesContainer) {
-            console.error("Messages container not found with ID 'messages-container' or 'messages'. Cannot load messages.");
-            return;
-        }
-    }
-
-    const query = db.ref(messagesPath).orderByChild('timestamp').limitToLast(50);
-    query.on('value', snapshot => {
-        messagesContainer.innerHTML = '';
-        let lastDateString = '';
-        try {
-            if (snapshot.exists()) {
-                snapshot.forEach(childSnapshot => {
-                    const message = childSnapshot.val();
-                    const key = childSnapshot.key;
-                    if (!message || !key) {
-                         console.warn("Skipping invalid message data:", message, key);
-                         return;
-                    }
-                    const timestamp = new Date(message.timestamp);
-                    if (isNaN(timestamp.getTime())) {
-                         console.warn("Skipping message with invalid timestamp:", key, message.timestamp);
-                         return;
-                    }
-                    // Date separator logic...
-                    const today = new Date();
-                    const yesterday = new Date(today);
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    let currentDateString = '';
-                    if (timestamp.toDateString() === today.toDateString()) {
-                        currentDateString = 'Today';
-                    } else if (timestamp.toDateString() === yesterday.toDateString()) {
-                        currentDateString = 'Yesterday';
-                    } else {
-                        currentDateString = timestamp.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
-                    }
-                    if (currentDateString !== lastDateString) {
-                         const dateEl = document.createElement('div');
-                         dateEl.className = 'message-date';
-                         dateEl.setAttribute('data-date', currentDateString);
-                         dateEl.innerHTML = `<span>${currentDateString}</span>`;
-                         messagesContainer.appendChild(dateEl);
-                         lastDateString = currentDateString;
-                    }
-                    // Pass the user object to displayMessage
-                    displayMessage(message, key, userForDisplay);
-                });
-                console.log(`Loaded/Updated ${snapshot.numChildren()} messages from ${messagesPath}`);
-            } else {
-                console.log(`No messages found in ${messagesPath}`);
-                const noMessagesEl = document.createElement('div');
-                noMessagesEl.className = 'system-message';
-                noMessagesEl.innerHTML = '<span>No messages yet. Be the first to say hello!</span>';
-                messagesContainer.appendChild(noMessagesEl);
-            }
-        } catch (error) {
-            console.error("Error processing messages:", error);
-            messagesContainer.innerHTML = '<div class="system-message"><span>Error processing messages. Please try refreshing.</span></div>';
-        }
-        if (typeof scrollToBottom === 'function') scrollToBottom();
-    }, error => {
-        console.error("Error loading messages from Firebase:", error);
-         messagesContainer.innerHTML = '<div class="system-message"><span>Error connecting to chat. Please check your connection.</span></div>';
-    });
-}
-
-function displayMessage(message, key, user) {
-    const normalizedMessage = normalizeMessageData(message);
-
-    // Check if the message is already displayed
-    if (document.querySelector(`.message-row[data-key="${key}"]`)) {
-        return;
-    }
-    
-    // Make sure we have the messages container - try both possible IDs
-    if (!messagesContainer) {
-        messagesContainer = document.getElementById('messages-container') || document.getElementById('messages');
-        if (!messagesContainer) {
-            console.error("Messages container not found with ID 'messages-container' or 'messages'. Cannot display message.");
-            return;
-        }
-    }
-    
-    const isMyMessage = normalizedMessage.uid === currentUser?.uid;
-    const messageElement = document.createElement('div');
-    messageElement.className = `message-row ${isMyMessage ? 'my-message' : 'other-message'}`;
-    messageElement.dataset.key = key;
-    
-    // If message is deleted, show a placeholder
-    if (normalizedMessage.deleted) {
-        messageElement.classList.add('deleted');
-        messageElement.innerHTML = `
-            <div class="message-info">
-                <span class="message-sender">${escapeHTML(normalizedMessage.sender)}</span>
-                <span class="message-time">${formatTime(normalizedMessage.timestamp)}</span>
-            </div>
-            <div class="message-bubble deleted-message">
-                <div class="message-text">This message was deleted</div>
-            </div>
-        `;
-        
-        // Add long press event for deleted messages (for "delete for me" functionality)
-        setupDeletedPlaceholderLongPress(messageElement.querySelector('.message-bubble'), messageElement);
-        
-        messagesContainer.appendChild(messageElement);
-        return;
-    }
-    
-    // Regular message
-    const messageBubble = document.createElement('div');
-    messageBubble.className = 'message-bubble';
-    
-    // Add long press event for message options
-    setupLongPress(messageBubble, key, isMyMessage);
-    
-    // Format the message text (handle links, styling, etc.)
-    let messageText = escapeHTML(normalizedMessage.text || '');
-    
-    // Convert URLs to clickable links
-    messageText = messageText.replace(
-        /(https?:\/\/[^\s]+)/g, 
-        '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
-    );
-    
-    // Convert markdown-style bold text
-    messageText = messageText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
-    // Convert markdown-style italic text
-    messageText = messageText.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    
-    // Handle reply reference
-    let replyHtml = '';
-    if (normalizedMessage.replyTo) {
-        replyHtml = `
-            <div class="reply-reference">
-                <div class="reply-author">${escapeHTML(normalizedMessage.replyToName || 'Someone')}</div>
-                <div class="reply-text">${escapeHTML(normalizedMessage.replyToText || '')}</div>
-            </div>
-        `;
-    }
-    
-    // Create reactions HTML if there are any
-    let reactionsHtml = '';
-    if (normalizedMessage.reactions && Object.keys(normalizedMessage.reactions).length > 0) {
-        // Count reactions by emoji
-        const reactionCounts = {};
-        const userReactions = {};
-        
-        // Process all reactions
-        Object.entries(normalizedMessage.reactions).forEach(([uid, emoji]) => {
-            // Count by emoji
-            reactionCounts[emoji] = (reactionCounts[emoji] || 0) + 1;
-            // Track if current user reacted
-            if (uid === currentUser?.uid) {
-                userReactions[emoji] = true;
-            }
-        });
-        
-        // Generate reaction elements
-        const reactionElements = Object.entries(reactionCounts).map(([emoji, count]) => {
-            const isActive = userReactions[emoji] ? 'active' : '';
-            return `<div class="reaction ${isActive}" data-emoji="${emoji}" data-key="${key}">
-                      <span class="emoji">${emoji}</span>
-                      <span class="count">${count}</span>
-                    </div>`;
-        }).join('');
-        
-        // Add the reactions container if there are reactions
-        if (reactionElements) {
-            reactionsHtml = `<div class="message-reactions">${reactionElements}</div>`;
-        }
-    }
-    
-    // Construct the full message HTML
-    messageElement.innerHTML = `
-        <div class="message-info">
-            <span class="message-sender">${escapeHTML(normalizedMessage.sender)}</span>
-            <span class="message-time">${formatTime(normalizedMessage.timestamp)}</span>
-        </div>
-        ${messageBubble.outerHTML}
-    `;
-    
-    // Add content to the message bubble after it's in the DOM
-    const bubbleElement = messageElement.querySelector('.message-bubble');
-    bubbleElement.innerHTML = `
-        ${replyHtml}
-        <div class="message-text">${messageText}</div>
-        ${reactionsHtml}
-    `;
-    
-    // Add click handler to reactions
-    if (reactionsHtml) {
-        const reactionsContainer = bubbleElement.querySelector('.message-reactions');
-        if (reactionsContainer) {
-            reactionsContainer.querySelectorAll('.reaction').forEach(reaction => {
-                reaction.addEventListener('click', () => {
-                    const emoji = reaction.dataset.emoji;
-                    const msgKey = reaction.dataset.key;
-                    addOrUpdateReaction(msgKey, emoji);
-                });
-            });
-        }
-    }
-    
-    // Add the message to the container
-    messagesContainer.appendChild(messageElement);
-    
-    // Auto-scroll if near the bottom
-    if (isNearBottom()) {
+    rtdb.ref(state.messagesPath).push(message)
+      .then(function () {
         scrollToBottom();
+      })
+      .catch(function (error) {
+        console.error('Send failed', error);
+        els.messageInput.value = value;
+        showNotification('Message not sent. Check your connection.', 'error');
+      })
+      .then(function () {
+        if (els.sendBtn) els.sendBtn.disabled = false;
+      });
+  }
+
+  /* ---------- Reply ---------- */
+
+  function prepareReply(name, text, key) {
+    state.reply = { key: key, name: name || 'Message', text: text || '' };
+    if (els.replyName) els.replyName.textContent = state.reply.name;
+    if (els.replyText) els.replyText.textContent = state.reply.text;
+    if (els.replyPreview) els.replyPreview.hidden = false;
+    if (els.messageInput) els.messageInput.focus();
+  }
+
+  function cancelReply() {
+    state.reply = null;
+    if (els.replyPreview) els.replyPreview.hidden = true;
+    if (els.replyName) els.replyName.textContent = '';
+    if (els.replyText) els.replyText.textContent = '';
+  }
+
+  /* ---------- Message options ---------- */
+
+  function openMessageOptions(key, bubble) {
+    var raw = state.messages.get(key);
+    if (!raw || !els.messageOptions) return;
+    var message = normalizeMessage(raw);
+    var mine = state.user && message.uid === state.user.uid;
+
+    state.optionsKey = key;
+    closeEmojiPicker();
+
+    if (els.editOption) els.editOption.hidden = !mine;
+    if (els.deleteOption) els.deleteOption.hidden = !mine;
+    if (els.deleteLabel) els.deleteLabel.textContent = 'Delete';
+
+    var rect = bubble.getBoundingClientRect();
+    els.messageOptions.classList.add('active');
+
+    var menuWidth = els.messageOptions.offsetWidth;
+    var menuHeight = els.messageOptions.offsetHeight;
+    var left = rect.left + rect.width / 2 - menuWidth / 2;
+    var top = rect.top - menuHeight - 8;
+    if (top < 8) top = Math.min(rect.bottom + 8, window.innerHeight - menuHeight - 8);
+    left = Math.min(Math.max(8, left), window.innerWidth - menuWidth - 8);
+    top = Math.min(Math.max(8, top), window.innerHeight - menuHeight - 8);
+
+    els.messageOptions.style.left = left + 'px';
+    els.messageOptions.style.top = top + 'px';
+
+    if (els.reactOption) {
+      els.reactOption.onclick = function () {
+        closeMessageOptions();
+        openEmojiPicker('react', key, rect);
+      };
     }
-}
-
-function scrollToBottom() {
-    if (!messagesContainer) {
-        messagesContainer = document.getElementById('messages-container') || document.getElementById('messages');
-        if (!messagesContainer) return; // Exit if not found
+    if (els.replyOption) {
+      els.replyOption.onclick = function () {
+        closeMessageOptions();
+        prepareReply(message.sender, message.text, key);
+      };
     }
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-function isNearBottom() {
-    if (!messagesContainer) {
-        messagesContainer = document.getElementById('messages-container') || document.getElementById('messages');
-        if (!messagesContainer) return true; // Default to true if not found
+    if (els.editOption) {
+      els.editOption.onclick = function () {
+        closeMessageOptions();
+        openEditModal(key);
+      };
     }
-    const threshold = 150;
-    const position = messagesContainer.scrollTop + messagesContainer.offsetHeight;
-    const height = messagesContainer.scrollHeight;
-    return position > height - threshold;
-}
-
-function escapeHTML(str) {
-    if (!str || typeof str !== 'string') return '';
-    return str.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-function getRandomColor(uid) {
-    // Generate a consistent color based on uid
-    let hash = 0;
-    for (let i = 0; i < uid.length; i++) {
-        hash = uid.charCodeAt(i) + ((hash << 5) - hash);
+    if (els.deleteOption) {
+      els.deleteOption.onclick = function () {
+        closeMessageOptions();
+        openDeleteConfirm(key);
+      };
     }
 
-    const colors = [
-        '#2196F3', '#4CAF50', '#FF9800', '#9C27B0',
-        '#E91E63', '#F44336', '#3F51B5', '#00BCD4'
-    ];
+    window.setTimeout(function () {
+      document.addEventListener('pointerdown', outsideOptions);
+      if (els.messages) els.messages.addEventListener('scroll', closeFloating, { passive: true, once: true });
+    }, 0);
+  }
 
-    return colors[Math.abs(hash) % colors.length];
-}
+  function outsideOptions(event) {
+    if (els.messageOptions && els.messageOptions.contains(event.target)) return;
+    closeMessageOptions();
+    document.removeEventListener('pointerdown', outsideOptions);
+  }
 
-function applyAccentColor(color) {
-    // Get elements inside function
-    const buttons = document.querySelectorAll('.btn-primary, .send-btn');
-    const accentElements = document.querySelectorAll('.active-tab, .radio-inner, .chat-avatar, .menu-user-avatar');
-    const borderElements = document.querySelectorAll('.font-radio.selected');
-    const myMessageBubbles = document.querySelectorAll('.my-message .message-bubble');
+  function closeMessageOptions() {
+    if (els.messageOptions) els.messageOptions.classList.remove('active');
+    document.removeEventListener('pointerdown', outsideOptions);
+  }
 
-    document.documentElement.style.setProperty('--accent-color', color);
-    buttons.forEach(btn => { btn.style.backgroundColor = color; });
-    accentElements.forEach(el => {
-        el.style.backgroundColor = color;
-        if (color === '#ffffff') {
-            el.style.color = '#333'; // Dark text for white background
-        } else {
-            el.style.color = 'white'; // White text for colored backgrounds
-        }
+  function openDeleteConfirm(key) {
+    if (!els.deleteModal) return;
+    els.deleteModal.dataset.messageKey = key;
+    showFadeModal(els.deleteModal);
+  }
+
+  function openDeleteForMe(key) {
+    state.optionsKey = key;
+    if (els.deleteForMeModal) els.deleteForMeModal.classList.add('active');
+  }
+
+  function hideForMe(key) {
+    state.hidden.add(key);
+    saveHidden();
+    renderMessages();
+    showNotification('Message hidden for you.');
+  }
+
+  function hiddenStorageKey() {
+    return 'gc-hidden:' + state.messagesPath;
+  }
+
+  function loadHidden() {
+    try {
+      var raw = localStorage.getItem(hiddenStorageKey());
+      var list = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(list)) state.hidden = new Set(list.filter(function (key) { return typeof key === 'string'; }).slice(-300));
+    } catch (e) {
+      state.hidden = new Set();
+    }
+  }
+
+  function saveHidden() {
+    try {
+      var list = Array.from(state.hidden).slice(-300);
+      localStorage.setItem(hiddenStorageKey(), JSON.stringify(list));
+    } catch (e) {}
+  }
+
+  function deleteForEveryone(key) {
+    if (!rtdb || !state.user) return;
+    var message = normalizeMessage(state.messages.get(key));
+    if (message.uid !== state.user.uid) return;
+    rtdb.ref(state.messagesPath + '/' + key).update({
+      deleted: true,
+      text: null,
+      message: null,
+      reactions: null,
+      replyTo: null,
+      replyToName: null,
+      replyToText: null,
+      edited: null
+    }).then(function () {
+      showNotification('Message deleted.');
+    }).catch(function (error) {
+      console.error('Delete failed', error);
+      showNotification('Could not delete the message.', 'error');
     });
-    borderElements.forEach(el => { el.style.borderColor = color; });
-    myMessageBubbles.forEach(el => {
-        el.style.backgroundColor = color === '#ffffff' ? '#dcf8c6' : color;
-        el.style.color = color === '#ffffff' || color === '#dcf8c6' ? '#333' : 'white';
+  }
+
+  /* ---------- Reactions ---------- */
+
+  function toggleReaction(key, emoji) {
+    if (!rtdb || !state.user) return;
+    var ref = rtdb.ref(state.messagesPath + '/' + key + '/reactions/' + state.user.uid);
+    ref.once('value').then(function (snapshot) {
+      if (snapshot.val() === emoji) return ref.remove();
+      return ref.set(emoji);
+    }).catch(function (error) {
+      console.error('Reaction failed', error);
+      showNotification('Could not update the reaction.', 'error');
     });
-}
+  }
 
-function applyFont(font) {
-    // Maybe select elements here if needed, or rely on CSS variables
-    document.body.style.fontFamily = font + ', sans-serif'; // Example
-}
+  /* ---------- Emoji picker ---------- */
 
-function loadSavedSettings() {
-    // Get elements inside function
-    const colorOptions = document.querySelectorAll('.color-option');
-    const fontOptions = document.querySelectorAll('.font-option');
-    const savedColor = localStorage.getItem('accentColor');
-    if (savedColor) {
-        colorOptions.forEach(opt => {
-            opt.classList.remove('selected');
-            opt.classList.add('selected');
-            applyAccentColor(opt.getAttribute('data-color'));
-        });
+  function openEmojiPicker(mode, key, anchorRect) {
+    if (!els.emojiPicker) return;
+    closeMessageOptions();
+    state.emojiMode = mode;
+    state.reactionKey = key || null;
+    els.emojiPicker.classList.toggle('reaction-mode', mode === 'react');
+    els.emojiPicker.classList.add('active');
+
+    var width = els.emojiPicker.offsetWidth;
+    var height = els.emojiPicker.offsetHeight;
+    var left = anchorRect ? (anchorRect.left + anchorRect.width / 2 - width / 2) : 12;
+    var top;
+
+    if (mode === 'composer') {
+      top = anchorRect.top - height - 10;
+      if (top < 8) top = Math.min(anchorRect.bottom + 10, window.innerHeight - height - 8);
     } else {
-        if (colorOptions.length > 0) {
-             colorOptions[0].classList.add('selected');
-             applyAccentColor(colorOptions[0].getAttribute('data-color'));
-        }
-    }
-    // ... (font logic similar) ...
-}
-
-function prepareReply(name, text, messageId) {
-    // Get elements inside function
-    const messageInput = document.getElementById('message-input');
-    // ... (rest of prepareReply logic) ...
-}
-
-function cancelReply() {
-     // Get elements inside function
-     const messageInput = document.getElementById('message-input');
-     const replyPreview = document.querySelector('.reply-preview');
-    // ... (rest of cancelReply logic) ...
-}
-
-function updateMessageStatus() {
-    // Get elements inside function
-    const myMessages = document.querySelectorAll('.my-message .message-status i');
-    // ... (rest of updateMessageStatus logic) ...
-}
-
-function updateTypingStatus(isTyping) {
-     if (currentUser) {
-         db.ref(`${typingPath}/${currentUser.uid}`).set(isTyping ? {
-             uid: currentUser.uid,
-             displayName: currentUser.displayName || 'Anonymous',
-             timestamp: firebase.database.ServerValue.TIMESTAMP
-         } : null);
-     }
-}
-
-function closeAboutModal() {
-    // Implementation of closeAboutModal function
-}
-
-function loadUserProfile() {
-    // Implementation of loadUserProfile function
-}
-
-// --- DOMContentLoaded Listener ---
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOMContentLoaded event fired");
-
-    // Initialize the messagesContainer reference - try both possible IDs
-    messagesContainer = document.getElementById('messages-container') || document.getElementById('messages');
-    if (!messagesContainer) {
-        console.error("Messages container not found with ID 'messages-container' or 'messages'. Chat functionality may be limited.");
+      top = anchorRect.bottom + 8;
+      if (top + height > window.innerHeight - 8) top = Math.max(8, anchorRect.top - height - 8);
     }
 
-    // Get DOM elements
-    const messageInput = document.getElementById('message-input');
-    const sendBtn = document.getElementById('send-btn');
-    const menuButton = document.getElementById('menu-button');
-    const menuClose = document.getElementById('menu-close');
-    const sideMenu = document.getElementById('side-menu');
-    const menuOverlay = document.getElementById('menu-overlay');
-    const profileSettings = document.getElementById('profile-settings');
-    const settingsToggle = document.getElementById('settings-toggle');
-    const settingsSection = document.getElementById('settings-section');
-    const appearanceToggle = document.getElementById('appearance-toggle');
-    const appearanceSection = document.getElementById('appearance-section');
-    const appearanceArrow = document.getElementById('appearance-arrow');
-    const darkModeToggle = document.getElementById('theme-toggle');
-    const aboutFunChat = document.getElementById('about-funchat');
-    const returnDashboard = document.getElementById('return-dashboard');
-    const usernameEl = document.getElementById('username');
-    const userStatus = document.getElementById('user-status');
-    const colorOptions = document.querySelectorAll('.color-option');
-    const fontOptions = document.querySelectorAll('.font-option');
-    const onlineUsersCount = document.getElementById('online-users-display');
-    const profilePic = document.getElementById('profile-pic');
+    left = Math.min(Math.max(8, left), window.innerWidth - width - 8);
+    els.emojiPicker.style.left = left + 'px';
+    els.emojiPicker.style.top = top + 'px';
 
-    // --- Add these missing element definitions ---
-    const accentThemeToggle = document.getElementById('accent-theme-toggle');
-    const accentThemeOptions = document.getElementById('accent-theme-options');
-    const fontSettingsToggle = document.getElementById('font-settings-toggle');
-    const fontSettingsOptions = document.getElementById('font-settings-options');
-    // --- End of added definitions ---
+    window.setTimeout(function () {
+      document.addEventListener('pointerdown', outsideEmoji);
+    }, 0);
+  }
 
-    const attachBtn = document.getElementById('attach-btn');
-    const attachmentOptions = document.getElementById('attachment-options');
-    const typingIndicator = document.getElementById('typing-indicator');
-    const typingUsername = document.getElementById('typing-username');
+  function outsideEmoji(event) {
+    if (els.emojiPicker && els.emojiPicker.contains(event.target)) return;
+    if (els.emojiBtn && els.emojiBtn.contains(event.target)) return;
+    closeEmojiPicker();
+  }
 
-    // Get room ID from URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomId = urlParams.get('room');
-
-    // Set the appropriate message path based on room ID
-    messagesPath = roomId ? `room_messages/${roomId}` : 'global_messages';
-    typingPath = getTypingPathForRoom(roomId);
-
-    // Update title based on room ID
-    if (roomId) {
-        document.title = "Room Chat - Global Chat";
-        // Try to get room name from Firestore
-        firebase.firestore().collection('rooms').doc(roomId).get()
-            .then(doc => {
-                if (doc.exists) {
-                    const roomData = doc.data();
-                    document.title = `${roomData.name} - Global Chat`;
-                    // Update room info in header if that element exists
-                    const chatName = document.querySelector('.chat-name');
-                    if (chatName) {
-                        chatName.textContent = roomData.name;
-                    }
-                }
-            })
-            .catch(error => console.error("Error fetching room data:", error));
+  function closeEmojiPicker() {
+    if (els.emojiPicker) {
+      els.emojiPicker.classList.remove('active');
+      els.emojiPicker.classList.remove('reaction-mode');
     }
-
-    // Authentication listener MUST come first
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            currentUser = user; // Assign to the global variable
-            console.log("Auth state changed: User logged in", currentUser.uid);
-
-            // *** Call functions AFTER user is set ***
-            updateUserInfo(currentUser);
-            addOnlineUser(currentUser);
-
-            // Set up listeners that depend on currentUser
-            db.ref('online').on('value', snapshot => {
-                 updateOnlineCount(snapshot.numChildren());
-             });
-            db.ref(`${typingPath}/${currentUser.uid}`).onDisconnect().remove();
-            db.ref(`online/${currentUser.uid}`).onDisconnect().remove(); // Ensure online status is also cleared
-
-            // *** NOW load messages, passing the confirmed user ***
-            loadMessages(currentUser);
-
-        } else {
-            currentUser = null;
-            console.log("Auth state changed: User logged out");
-            window.location.href = 'login.html';
-        }
-    });
-
-    // Update user info in UI
-    function updateUserInfo(user) {
-        // Check if elements exist before trying to update them
-        if (usernameEl) {
-            usernameEl.textContent = user.displayName || 'User';
-        }
-
-        const userEmailEl = document.getElementById('user-email');
-        if (userEmailEl) {
-            userEmailEl.textContent = user.email || '';
-        }
-
-        // Set profile pic if the element exists
-        if (profilePic) {
-            if (user.photoURL) {
-                profilePic.innerHTML = `<img src="${user.photoURL}" alt="${user.displayName}" style="width:100%;height:100%;border-radius:50%;">`;
-            } else {
-                // Use first letter of display name as avatar
-                const initials = (user.displayName || 'User').charAt(0).toUpperCase();
-                profilePic.textContent = initials;
-            }
-        }
-    }
-
-    // Toggle menu
-    menuButton.addEventListener('click', () => {
-        window.location.href = 'dashboard.html';
-    });
-
-    menuClose.addEventListener('click', () => {
-        sideMenu.classList.remove('active');
-        menuOverlay.classList.remove('active');
-    });
-
-    menuOverlay.addEventListener('click', () => {
-        sideMenu.classList.remove('active');
-        menuOverlay.classList.remove('active');
-    });
-
-    // Send message
-    sendBtn.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
-
-    // Load messages
-    function loadMessages(userForDisplay) {
-        console.log(`Connecting to Firebase path: ${messagesPath} for user: ${userForDisplay.uid}`);
-        
-        // Use the global messagesContainer
-        if (!messagesContainer) {
-            messagesContainer = document.getElementById('messages-container') || document.getElementById('messages');
-            if (!messagesContainer) {
-                console.error("Messages container not found with ID 'messages-container' or 'messages'. Cannot load messages.");
-                return;
-            }
-        }
-
-        const query = db.ref(messagesPath).orderByChild('timestamp').limitToLast(50);
-        query.on('value', snapshot => {
-            messagesContainer.innerHTML = '';
-            let lastDateString = '';
-            try {
-                if (snapshot.exists()) {
-                    snapshot.forEach(childSnapshot => {
-                        const message = childSnapshot.val();
-                        const key = childSnapshot.key;
-                        if (!message || !key) {
-                             console.warn("Skipping invalid message data:", message, key);
-                             return;
-                        }
-                        const timestamp = new Date(message.timestamp);
-                        if (isNaN(timestamp.getTime())) {
-                             console.warn("Skipping message with invalid timestamp:", key, message.timestamp);
-                             return;
-                        }
-                        // Date separator logic...
-                        const today = new Date();
-                        const yesterday = new Date(today);
-                        yesterday.setDate(yesterday.getDate() - 1);
-                        let currentDateString = '';
-                        if (timestamp.toDateString() === today.toDateString()) {
-                            currentDateString = 'Today';
-                        } else if (timestamp.toDateString() === yesterday.toDateString()) {
-                            currentDateString = 'Yesterday';
-                        } else {
-                            currentDateString = timestamp.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
-                        }
-                        if (currentDateString !== lastDateString) {
-                             const dateEl = document.createElement('div');
-                             dateEl.className = 'message-date';
-                             dateEl.setAttribute('data-date', currentDateString);
-                             dateEl.innerHTML = `<span>${currentDateString}</span>`;
-                             messagesContainer.appendChild(dateEl);
-                             lastDateString = currentDateString;
-                        }
-                        // Pass the user object to displayMessage
-                        displayMessage(message, key, userForDisplay);
-                    });
-                    console.log(`Loaded/Updated ${snapshot.numChildren()} messages from ${messagesPath}`);
-                } else {
-                    console.log(`No messages found in ${messagesPath}`);
-                    const noMessagesEl = document.createElement('div');
-                    noMessagesEl.className = 'system-message';
-                    noMessagesEl.innerHTML = '<span>No messages yet. Be the first to say hello!</span>';
-                    messagesContainer.appendChild(noMessagesEl);
-                }
-            } catch (error) {
-                console.error("Error processing messages:", error);
-                messagesContainer.innerHTML = '<div class="system-message"><span>Error processing messages. Please try refreshing.</span></div>';
-            }
-            if (typeof scrollToBottom === 'function') scrollToBottom();
-        }, error => {
-            console.error("Error loading messages from Firebase:", error);
-            messagesContainer.innerHTML = '<div class="system-message"><span>Error connecting to chat. Please check your connection.</span></div>';
-        });
-    }
-
-    // Online users tracking
-    function addOnlineUser(user) {
-        const userRef = db.ref(`online/${user.uid}`);
-
-        // Add to online users
-        userRef.set({
-            displayName: user.displayName || 'Anonymous',
-            lastOnline: firebase.database.ServerValue.TIMESTAMP
-        });
-
-        // Remove when disconnected
-        userRef.onDisconnect().remove();
-
-        // Listen for online users count
-        db.ref('online').on('value', snapshot => {
-            const count = snapshot.numChildren();
-            onlineUsersCount.textContent = count;
-            updateOnlineCount(count);
-        });
-    }
-
-    // Update online users count in header
-    function updateOnlineCount(count) {
-        const onlineUsersDisplay = document.getElementById('online-users-display');
-        if (count > 0) {
-            const statusText = count === 1 ? 'user online' : 'users online';
-            onlineUsersDisplay.textContent = `${count} ${statusText}`;
-        } else {
-            onlineUsersDisplay.textContent = '';
-        }
-    }
-
-    // Helper functions
-    function scrollToBottom() {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function isNearBottom() {
-        const threshold = 150;
-        const position = messagesContainer.scrollTop + messagesContainer.offsetHeight;
-        const height = messagesContainer.scrollHeight;
-        return position > height - threshold;
-    }
-
-    function escapeHTML(str) {
-        if (!str || typeof str !== 'string') return '';
-        return str.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    function getRandomColor(uid) {
-        // Generate a consistent color based on uid
-        let hash = 0;
-        for (let i = 0; i < uid.length; i++) {
-            hash = uid.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        const colors = [
-            '#2196F3', '#4CAF50', '#FF9800', '#9C27B0',
-            '#E91E63', '#F44336', '#3F51B5', '#00BCD4'
-        ];
-
-        return colors[Math.abs(hash) % colors.length];
-    }
-
-    // Logout handler
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-        auth.signOut().then(() => {
-            window.location.href = 'login.html';
-        }).catch(error => {
-            console.error("Error signing out: ", error);
-        });
-    });
-    } else {
-        console.error("Logout button not found");
-    }
-
-    // Check if user previously selected dark mode
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-        if (darkModeToggle) {
-            darkModeToggle.checked = true;
-        }
-    }
-
-    // Dark mode toggle
-    if (darkModeToggle) {
-        darkModeToggle.addEventListener('change', function () {
-        if (this.checked) {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('darkMode', 'enabled');
-        } else {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('darkMode', 'disabled');
-        }
-    });
-    } else {
-        console.error("Dark mode toggle button not found");
-    }
-
-    // Make sure accent theme options are not active by default
-    if (accentThemeOptions) {
-    accentThemeOptions.classList.remove('active');
-    } else {
-        console.error("accentThemeOptions element not found");
-    }
-
-    // Toggle accent theme options
-    if (accentThemeToggle && accentThemeOptions && fontSettingsOptions) {
-    accentThemeToggle.addEventListener('click', () => {
-        accentThemeOptions.classList.toggle('active');
-        fontSettingsOptions.classList.remove('active');
-    });
-    } else {
-        console.error("Could not attach listener to accentThemeToggle - one or more elements missing");
-    }
-
-    // Toggle font settings options
-    if (fontSettingsToggle && fontSettingsOptions && accentThemeOptions) {
-    fontSettingsToggle.addEventListener('click', () => {
-        fontSettingsOptions.classList.toggle('active');
-        accentThemeOptions.classList.remove('active');
-    });
-    } else {
-        console.error("Could not attach listener to fontSettingsToggle - one or more elements missing");
-    }
-
-    // Handle color selection
-    colorOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            // Remove selected class from all options
-            colorOptions.forEach(opt => opt.classList.remove('selected'));
-            // Add selected class to clicked option
-            option.classList.add('selected');
-
-            // Get selected color
-            const color = option.getAttribute('data-color');
-
-            // Save to localStorage
-            localStorage.setItem('accentColor', color);
-
-            // Apply to UI elements
-            applyAccentColor(color);
-
-            // Close the color options dropdown after selection
-            if (accentThemeOptions) {
-            setTimeout(() => {
-                accentThemeOptions.classList.remove('active');
-            }, 300);
-            }
-        });
-    });
-
-    // Handle font selection
-    fontOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            // Remove selected class from all options
-            fontOptions.forEach(opt => {
-                opt.querySelector('.font-radio').classList.remove('selected');
-            });
-
-            // Add selected class to clicked option
-            option.querySelector('.font-radio').classList.add('selected');
-
-            // Get selected font
-            const font = option.getAttribute('data-font');
-
-            // Save to localStorage
-            localStorage.setItem('selectedFont', font);
-
-            // Apply to body and all text elements
-            applyFont(font);
-        });
-    });
-
-    // Toggle settings section
-    if (settingsToggle && settingsSection) {
-    settingsToggle.addEventListener('click', () => {
-        settingsSection.classList.toggle('active');
-    });
-    } else {
-        console.error("Settings toggle or section not found");
-    }
-
-    // About Funchat handler
-    if (aboutFunChat && sideMenu && menuOverlay) {
-    aboutFunChat.addEventListener('click', () => {
-        // First close the side menu
-        sideMenu.classList.remove('active');
-        menuOverlay.classList.remove('active');
-
-        // Show the About modal
-        const aboutAIChatModal = document.getElementById('aboutAIChatModal');
-        aboutAIChatModal.style.display = 'flex';
-        aboutAIChatModal.style.opacity = '1';
-        aboutAIChatModal.style.pointerEvents = 'auto';
-    });
-    } else {
-        console.error("About funchat button, side menu or overlay not found");
-    }
-
-    // Return to dashboard handler
-    if (returnDashboard) {
-    returnDashboard.addEventListener('click', () => {
-        window.location.href = 'dashboard.html';
-    });
-        } else {
-        console.error("Return dashboard button not found");
-    }
-
-    // Toggle appearance section
-    if (appearanceToggle && appearanceSection && appearanceArrow) {
-    appearanceToggle.addEventListener('click', () => {
-        appearanceSection.classList.toggle('active');
-        appearanceArrow.classList.toggle('active');
-    });
-    } else {
-        console.error("Appearance toggle, section or arrow not found");
-    }
-
-    // Toggle attachment options
-    if (attachBtn && attachmentOptions) {
-    attachBtn.addEventListener('click', () => {
-        attachmentOptions.classList.toggle('active');
-    });
-    } else {
-        console.error("Attach button or options not found");
-    }
-
-    // Hide attachment options when clicking elsewhere
-    document.addEventListener('click', (e) => {
-        if (attachBtn && attachmentOptions && !attachBtn.contains(e.target) && !attachmentOptions.contains(e.target)) {
-            attachmentOptions.classList.remove('active');
-        }
-        if (window.innerWidth <= 768) {
-            if (!sideMenu.contains(e.target) && e.target !== menuButton) {
-                sideMenu.classList.remove('active');
-            }
-        }
-    });
-
-    // Handle attachment option clicks
-    document.querySelectorAll('.attachment-option').forEach(option => {
-        option.addEventListener('click', () => {
-            alert(`${option.classList.contains('attachment-photo') ? 'Photo' :
-                option.classList.contains('attachment-document') ? 'Document' :
-                    'Camera'} upload would open here`);
-            attachmentOptions.classList.remove('active');
-        });
-    });
-
-    // Typing indicator listener
-    if (messageInput) {
-    messageInput.addEventListener('input', () => {
-        // Only send typing status if there's content in the input
-        if (messageInput.value.trim().length > 0) {
-            // Update user's typing status in firebase
-            updateTypingStatus(true);
-
-            // Clear existing timeout
-            clearTimeout(typingTimeout);
-
-            // Set timeout to stop typing indicator after 3 seconds of inactivity
-            typingTimeout = setTimeout(() => {
-                updateTypingStatus(false);
-            }, 3000);
-        } else {
-            // If input is empty, stop typing indicator
-            updateTypingStatus(false);
-            clearTimeout(typingTimeout);
-        }
-    });
-    } else {
-        console.error("Message input element not found");
-    }
-
-    // Listen for changes in typing status
-    db.ref(typingPath).on('value', snapshot => {
-        let someoneTyping = false;
-        let typingUser = '';
-
-        snapshot.forEach(childSnapshot => {
-            const uid = childSnapshot.key;
-            const typingData = childSnapshot.val();
-
-            // Ignore our own typing indicator
-            if (uid !== currentUser.uid) {
-                someoneTyping = true;
-                typingUser = typingData.displayName;
-                return false; // Break the loop after finding first person typing
-            }
-        });
-
-        // Display typing indicator
-        if (someoneTyping) {
-            typingUsername.textContent = typingUser;
-            typingIndicator.style.display = 'block';
-        } else {
-            typingIndicator.style.display = 'none';
-        }
-    });
-
-    // Clear typing status when user disconnects
-    db.ref(`${typingPath}/${currentUser?.uid}`).onDisconnect().remove();
-
-    // --- Add references for the new confirmation modal ---
-    const deleteConfirmationModal = document.getElementById('delete-for-me-confirmation-modal');
-    const cancelDeleteForMeBtn = document.getElementById('cancel-delete-for-me');
-    const confirmDeleteForMeBtn = document.getElementById('confirm-delete-for-me');
-
-    // --- Add listeners for the new modal buttons ---
-    if (cancelDeleteForMeBtn) {
-        console.log("Attaching listener to Cancel button");
-        cancelDeleteForMeBtn.addEventListener('click', () => {
-            console.log("Cancel button clicked");
-            hideConfirmationModal();
-        });
-    } else {
-        console.error("Cancel button not found");
-    }
-
-    if (confirmDeleteForMeBtn) {
-        console.log("Attaching listener to Confirm Delete button");
-        confirmDeleteForMeBtn.addEventListener('click', () => {
-            console.log("Confirm Delete button clicked. Element to delete:", elementToDeleteForMe);
-            if (elementToDeleteForMe) {
-                deletePlaceholderForMe(elementToDeleteForMe);
-            } else {
-                console.error("elementToDeleteForMe is null when confirm button clicked");
-            }
-            hideConfirmationModal();
-        });
-    } else {
-        console.error("Confirm Delete button not found");
-    }
-
-    // Close modal if overlay is clicked
-    if (deleteConfirmationModal) {
-        console.log("Attaching listener to Modal Overlay");
-        deleteConfirmationModal.addEventListener('click', (e) => {
-            if (e.target === deleteConfirmationModal) {
-                console.log("Modal overlay clicked");
-                hideConfirmationModal();
-            }
-        });
-    } else {
-        console.error("Delete confirmation modal overlay not found");
-    }
-
-    loadSavedSettings(); // Load settings once DOM is ready
-});
-
-// About Global Chat Modal functionality
-const aboutAIChatModal = document.getElementById('aboutAIChatModal');
-const closeAboutBtn = document.getElementById('closeAboutBtn');
-
-// Close About modal when clicking the X button
-if (closeAboutBtn) {
-    closeAboutBtn.addEventListener('click', () => {
-        closeAboutModal();
-    });
-}
-
-// Close About modal when clicking outside the modal
-if (aboutAIChatModal) {
-    aboutAIChatModal.addEventListener('click', (e) => {
-        if (e.target === aboutAIChatModal) {
-            closeAboutModal();
-        }
-    });
-}
-
-// Function to close the About modal with animation
-function closeAboutModal() {
-    aboutAIChatModal.style.opacity = '0';
-    setTimeout(() => {
-        aboutAIChatModal.style.display = 'none';
-        aboutAIChatModal.style.pointerEvents = 'none';
-    }, 300);
-}
-
-// Get reference to profile menu item
-const profileMenuItem = document.getElementById('profile-settings');
-
-// Event listener for opening the profile settings modal
-profileMenuItem.addEventListener('click', () => {
-    // Close the menu if it's open
-    if (sideMenu.classList.contains('active')) {
-        sideMenu.classList.remove('active');
-    }
-
-    // Show the profile modal
-    profileSettingsModal.style.display = 'flex';
-    setTimeout(() => {
-        profileSettingsModal.style.opacity = '1';
-        profileSettingsModal.style.pointerEvents = 'auto';
-    }, 10);
-
-    // Load user profile data
-    loadUserProfile();
-});
-
-// Event listener for closing the profile settings modal
-closeProfileBtn.addEventListener('click', closeProfileModal);
-
-// Load and display user profile info
-function loadUserProfile() {
-    const auth = firebase.auth();
-    const user = auth.currentUser;
-
-    if (user) {
-        // Display email
-        displayEmail.textContent = user.email;
-
-        // Display username or email if no display name
-        const username = user.displayName || user.email.split('@')[0];
-        displayUsername.textContent = username;
-
-        // Set profile pic if the element exists
-        if (user.photoURL) {
-            profilePicContainer.innerHTML = `<img src="${user.photoURL}" alt="Profile" style="width:100%; height:100%; object-fit:cover;">`;
-        } else {
-            // Display initials
-            const initials = username.slice(0, 2).toUpperCase();
-            profilePicContainer.textContent = initials;
-        }
-    }
-}
-
-// Handle profile picture change
-changeProfilePicBtn.addEventListener('click', () => {
-    profilePicInput.click();
-});
-
-profilePicInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            // Display the selected image
-            profilePicContainer.innerHTML = `<img src="${event.target.result}" alt="Profile" style="width:100%; height:100%; object-fit:cover;">`;
-
-            // Here you would typically upload to storage and update user profile
-            const user = firebase.auth().currentUser;
-            if (user && file) {
-                // Create storage reference
-                const storageRef = firebase.storage().ref();
-                const profilePicRef = storageRef.child(`profile_pics/${user.uid}`);
-
-                // Upload file
-                profilePicRef.put(file).then(snapshot => {
-                    return snapshot.ref.getDownloadURL();
-                }).then(downloadURL => {
-                    // Update profile
-                    return user.updateProfile({
-                        photoURL: downloadURL
-                    });
-                }).then(() => {
-                    showNotification('Profile picture updated successfully!', 'success');
-                }).catch(error => {
-                    console.error('Error updating profile picture:', error);
-                    showNotification('Failed to update profile picture: ' + error.message, 'error');
-                });
-            } else {
-                // Fallback to localStorage if Firebase storage not available
-                localStorage.setItem('userProfilePic', event.target.result);
-                showNotification('Profile picture saved locally.', 'success');
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// Handle logout from profile modal
-logoutProfileBtn.addEventListener('click', () => {
-    const auth = firebase.auth();
-    auth.signOut().then(() => {
-        // Redirect to login page
-        window.location.href = 'login.html';
-    }).catch((error) => {
-        showNotification('Error signing out: ' + error.message, 'error');
-    });
-});
-
-// Add style to css for the centered message options
-document.addEventListener('DOMContentLoaded', function() {
-    // Add styles dynamically for message options
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
-        .message-options {
-            position: fixed;
-            background-color: #2d2d2d;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            min-width: 150px;
-            transform: scale(0.95);
-            opacity: 0;
-            transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-        
-        .message-options.active {
-            display: flex;
-            transform: scale(1);
-            opacity: 1;
-        }
-        
-        .emoji-picker.reaction-mode {
-            /* Smaller emoji picker when in reaction mode */
-            max-width: 250px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-    `;
-    document.head.appendChild(styleElement);
-
-    // Add CSS for the confirmation modals
-    const modalStyleElement = document.createElement('style');
-    modalStyleElement.textContent = `
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal-content {
-            background-color: #2d2d2d;
-            border-radius: 10px;
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
-            gap: 10px;
-        }
-        
-        .cancel-btn, .close-btn {
-            background-color: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .delete-btn {
-            background-color: #e74c3c;
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .cancel-btn:hover, .close-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .delete-btn:hover {
-            background-color: #c0392b;
-        }
-    `;
-    document.head.appendChild(modalStyleElement);
-
-    // Add global click listener to close popups
-    document.addEventListener('click', closePopups);
-});
-
-// Add the delete confirmation function
-function showDeleteConfirmation(messageKey) {
-    const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
-    const cancelDeleteBtn = document.getElementById('cancel-delete');
-    const confirmDeleteBtn = document.getElementById('confirm-delete');
-    
-    if (!deleteConfirmationModal || !cancelDeleteBtn || !confirmDeleteBtn) {
-        console.error("Delete confirmation modal elements not found");
+    state.emojiMode = null;
+    state.reactionKey = null;
+    document.removeEventListener('pointerdown', outsideEmoji);
+  }
+
+  function closeFloating() {
+    closeMessageOptions();
+    closeEmojiPicker();
+  }
+
+  function bindEmojiPicker() {
+    if (!els.emojiPicker) return;
+    els.emojiPicker.addEventListener('click', function (event) {
+      var tile = event.target.closest('.emoji');
+      if (!tile) return;
+      var emoji = tile.getAttribute('data-emoji') || tile.textContent;
+      if (!emoji) return;
+      if (state.emojiMode === 'react' && state.reactionKey) {
+        toggleReaction(state.reactionKey, emoji);
+        closeEmojiPicker();
         return;
-    }
-    
-    // Store message key in the modal
-    deleteConfirmationModal.dataset.messageKey = messageKey;
-    
-    // Show the modal with animation
-    deleteConfirmationModal.style.display = 'flex';
-    setTimeout(() => {
-        deleteConfirmationModal.style.opacity = '1';
-    }, 10);
-    
-    // Setup cancel button
-    cancelDeleteBtn.onclick = () => {
-        deleteConfirmationModal.style.opacity = '0';
-        setTimeout(() => {
-            deleteConfirmationModal.style.display = 'none';
-        }, 300);
-    };
-    
-    // Setup confirm button
-    confirmDeleteBtn.onclick = () => {
-        // Get the message key from the modal
-        const keyToDelete = deleteConfirmationModal.dataset.messageKey;
-        
-        // Delete the message
-        if (keyToDelete) {
-            deleteMessage(keyToDelete);
-        }
-        
-        // Hide the modal
-        deleteConfirmationModal.style.opacity = '0';
-        setTimeout(() => {
-            deleteConfirmationModal.style.display = 'none';
-        }, 300);
-    };
-}
+      }
+      insertEmoji(emoji);
+    });
+  }
 
-// Update the closePopups function to include all popups
-function closePopups(e) {
-    const messageOptions = document.getElementById('message-options');
-    const emojiPicker = document.getElementById('emoji-picker');
-    const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
-    const deleteForMeModal = document.getElementById('delete-for-me-confirmation-modal');
-    
-    // Skip if the click is on or within these elements
-    if (e.target.closest('#message-options') || 
-        e.target.closest('#emoji-picker') || 
-        e.target.closest('#delete-confirmation-modal') ||
-        e.target.closest('#delete-for-me-confirmation-modal')) {
-        return;
-    }
-    
-    // Close message options if open
-    if (messageOptions && messageOptions.classList.contains('active')) {
-        messageOptions.classList.remove('active');
-    }
-    
-    // Close emoji picker if open and not in message input mode
-    if (emojiPicker && emojiPicker.classList.contains('active') && 
-        !e.target.closest('#message-input') && !e.target.closest('#emoji-button')) {
-        emojiPicker.classList.remove('active');
-        emojiPicker.classList.remove('reaction-mode');
-    }
-}
+  function insertEmoji(emoji) {
+    if (!els.messageInput) return;
+    var input = els.messageInput;
+    var start = typeof input.selectionStart === 'number' ? input.selectionStart : input.value.length;
+    var end = typeof input.selectionEnd === 'number' ? input.selectionEnd : start;
+    input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
+    var caret = start + emoji.length;
+    input.focus();
+    input.setSelectionRange(caret, caret);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }
 
-// Format timestamp to a readable time string
-function formatTime(timestamp) {
-    if (!timestamp) return '';
-    
-    const date = new Date(timestamp);
-    const now = new Date();
-    const isToday = date.toDateString() === now.toDateString();
-    
-    // Format: HH:MM for today, MM/DD HH:MM for other days
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    
-    if (isToday) {
-        return `${hours}:${minutes}`;
-    } else {
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        return `${month}/${day} ${hours}:${minutes}`;
+  /* ---------- Edit ---------- */
+
+  function openEditModal(key) {
+    var message = normalizeMessage(state.messages.get(key));
+    if (!state.user || message.uid !== state.user.uid || !els.editModal) return;
+    state.editKey = key;
+    if (els.editInput) els.editInput.value = message.text;
+    openModal(els.editModal);
+    if (els.editInput) {
+      window.setTimeout(function () {
+        els.editInput.focus();
+        els.editInput.setSelectionRange(els.editInput.value.length, els.editInput.value.length);
+      }, 30);
     }
-}
+  }
+
+  function closeEditModal() {
+    state.editKey = null;
+    closeModal(els.editModal);
+  }
+
+  function saveEdit() {
+    if (!rtdb || !state.user || !state.editKey || !els.editInput) return;
+    var key = state.editKey;
+    var value = els.editInput.value.trim();
+    var original = normalizeMessage(state.messages.get(key)).text;
+    if (!value) {
+      showNotification('Message cannot be empty.', 'error');
+      return;
+    }
+    if (value === original) {
+      closeEditModal();
+      return;
+    }
+    var path = state.messagesPath + '/' + key;
+    rtdb.ref(path).update({ text: value, message: value, edited: true })
+      .then(function () {
+        closeEditModal();
+        showNotification('Message updated.');
+      })
+      .catch(function (error) {
+        console.error('Edit failed', error);
+        showNotification('Could not edit the message.', 'error');
+      });
+  }
+
+  /* ---------- Auth ---------- */
+
+  function handleUser(user) {
+    if (state.authErrored) return;
+    if (!user) {
+      if (state.redirecting) return;
+      state.redirecting = true;
+      window.location.replace('login.html');
+      return;
+    }
+    if (state.started) {
+      if (state.startedUid !== user.uid) window.location.reload();
+      return;
+    }
+    state.started = true;
+    state.startedUid = user.uid;
+    state.user = user;
+
+    paintUser();
+    setupPresence();
+
+    setupRoom().then(function (ready) {
+      if (!ready) return;
+      startMessages();
+      startTypingIndicator();
+      setComposerEnabled(true);
+    });
+  }
+
+  function handleAuthError(error) {
+    if (state.authErrored) return;
+    state.authErrored = true;
+    console.error('Auth listener failed', error);
+    showAuthNotice(error);
+  }
+
+  /* ---------- Boot ---------- */
+
+  function cacheElements() {
+    els = {
+      messages: $('messages-container'),
+      messageInput: $('message-input'),
+      sendBtn: $('send-btn'),
+      emojiBtn: $('emoji-btn'),
+      typingIndicator: $('typing-indicator'),
+      typingUsername: $('typing-username'),
+      onlineDisplay: $('online-users-display'),
+      chatName: document.querySelector('.chat-name'),
+      chatAvatar: $('chat-avatar'),
+      menuButton: $('menu-button'),
+      openMenuBtn: $('open-menu-btn'),
+      sideMenu: $('side-menu'),
+      menuOverlay: $('menu-overlay'),
+      menuClose: $('menu-close'),
+      username: $('username'),
+      userEmail: $('user-email'),
+      profilePic: $('profile-pic'),
+      profileSettingsBtn: $('profile-settings'),
+      aboutBtn: $('about-funchat'),
+      returnDashboardBtn: $('return-dashboard'),
+      themeToggle: $('theme-toggle'),
+      leaveRoomBtn: $('leave-room-btn'),
+      logoutBtn: $('logout-btn'),
+      roomIdRow: $('room-id-row'),
+      roomIdDivider: $('room-id-divider'),
+      roomIdValue: $('room-id-value'),
+      copyRoomIdBtn: $('copy-room-id'),
+      messageOptions: $('message-options'),
+      reactOption: document.querySelector('.react-option'),
+      replyOption: document.querySelector('.reply-option'),
+      editOption: document.querySelector('.edit-option'),
+      deleteOption: document.querySelector('.delete-option'),
+      deleteLabel: document.querySelector('.delete-option .delete-label'),
+      emojiPicker: $('emoji-picker'),
+      replyPreview: $('reply-preview'),
+      replyName: $('reply-preview-name'),
+      replyText: $('reply-preview-text'),
+      cancelReplyBtn: $('cancel-reply-btn'),
+      editModal: $('edit-message-modal'),
+      editInput: $('edit-message-input'),
+      saveEditBtn: $('save-edit-btn'),
+      cancelEditBtn: $('cancel-edit-btn'),
+      deleteModal: $('delete-confirmation-modal'),
+      cancelDeleteBtn: $('cancel-delete'),
+      confirmDeleteBtn: $('confirm-delete'),
+      deleteForMeModal: $('delete-for-me-confirmation-modal'),
+      cancelDeleteForMeBtn: $('cancel-delete-for-me'),
+      confirmDeleteForMeBtn: $('confirm-delete-for-me'),
+      profileModal: $('profileSettingsModal'),
+      closeProfileBtn: $('closeProfileBtn'),
+      displayUsername: $('displayUsername'),
+      displayEmail: $('displayEmail'),
+      editUsernameBtn: $('editUsernameBtn'),
+      logoutProfileBtn: $('logoutProfileBtn'),
+      picContainer: $('profilePicContainer'),
+      changePicBtn: $('changeProfilePicBtn'),
+      picInput: $('profilePicInput'),
+      aboutModal: $('aboutAIChatModal'),
+      closeAboutBtn: $('closeAboutBtn'),
+      toasts: $('notification-container')
+    };
+  }
+
+  function boot() {
+    cacheElements();
+    initTheme();
+    loadHidden();
+    bindChrome();
+    bindComposer();
+    bindEmojiPicker();
+    setComposerEnabled(false);
+
+    if (configMissing) {
+      showConfigNotice();
+      return;
+    }
+
+    firebase.initializeApp(cfg);
+    auth = firebase.auth();
+    rtdb = firebase.database();
+    firestore = firebase.firestore();
+    storage = firebase.storage();
+
+    auth.onAuthStateChanged(handleUser, handleAuthError);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
+  }
+})();

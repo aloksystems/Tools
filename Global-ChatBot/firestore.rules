@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin(room) {
+      return signedIn() && room.admins is list && room.admins.hasAny([request.auth.uid]);
+    }
+
+    match /users/{uid} {
+      allow read, write: if isSelf(uid);
+
+      match /rooms/{roomId} {
+        allow read, write: if isSelf(uid);
+      }
+    }
+
+    match /rooms/{roomId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 3
+        && request.resource.data.name.size() <= 60
+        && request.resource.data.icon is string
+        && request.resource.data.icon.size() <= 40
+        && request.resource.data.members is list
+        && request.resource.data.members.hasOnly([request.auth.uid])
+        && request.resource.data.admins is list
+        && request.resource.data.admins.hasOnly([request.auth.uid]);
+
+      allow update: if signedIn() && (
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members'])
+          && request.resource.data.members is list
+          && request.resource.data.members.toSet().difference(resource.data.members.toSet()).hasOnly([request.auth.uid])
+        )
+        || (
+          isAdmin(resource.data)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'icon', 'members', 'admins'])
+            && request.resource.data.name is string
+            && request.resource.data.name.size() >= 3
+            && request.resource.data.name.size() <= 60
+            && request.resource.data.icon is string
+            && request.resource.data.icon.size() <= 40
+        )
+      );
+    }
+  }
+}

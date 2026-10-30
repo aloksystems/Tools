@@ -1,306 +1,385 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID Photo Studio — Alok Systems Tools</title>
-    <meta name="description" content="Create properly sized passport photos and printable photo sheets — privately in your browser.">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Passport-Size-Image-Maker/">
-    <meta property="og:title" content="ID Photo Studio — Alok Systems Tools">
-    <meta property="og:description" content="Create properly sized passport photos and printable photo sheets — privately in your browser.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Passport-Size-Image-Maker/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="ID Photo Studio — Alok Systems Tools">
-    <meta name="twitter:description" content="Create properly sized passport photos and printable photo sheets — privately in your browser.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "ID Photo Studio — Alok Systems Tools",
-    "description":  "Create properly sized passport photos and printable photo sheets — privately in your browser.",
-    "url":  "https://aloksystems.freedev.app/Passport-Size-Image-Maker/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EPS%3C/text%3E%3C/svg%3E">
+  <title>Passport Photo Maker | Exact ID Sizes &amp; A4 Sheets</title>
+  <meta name="description" content="Make passport, visa, PAN, and ID photos at exact millimetre sizes. Crop, choose DPI, build a printable A4 sheet, and download JPG or PNG — privately in your browser.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Passport-Size-Image-Maker/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Passport Photo Maker - Alok Systems Tools">
+  <meta property="og:description" content="Create exact-size ID photos and print-ready A4 sheets locally in your browser. No uploads, no sign-up.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Passport-Size-Image-Maker/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Passport Photo Maker - Alok Systems Tools">
+  <meta name="twitter:description" content="Create exact-size ID photos and print-ready A4 sheets locally in your browser. No uploads, no sign-up.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Passport Photo Maker",
+    "description":"Crop a photo to official ID sizes, generate a printable A4 photo sheet, and download JPG or PNG images locally in your browser.",
+    "url":"https://aloksystems.freedev.app/Passport-Size-Image-Maker/",
+    "applicationCategory":"UtilityApplication",
+    "operatingSystem":"Any",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Is my photo uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The photo is read, cropped, and rendered entirely in your browser with the canvas element. Nothing is uploaded or stored online."}},
+      {"@type":"Question","name":"Which photo sizes are included?","acceptedAnswer":{"@type":"Answer","text":"Presets include India passport 35 × 45 mm, US 2 × 2 inch, Schengen visa 35 × 45 mm, PAN card 25 × 35 mm, and a 35 × 35 mm square. A custom size is available too."}},
+      {"@type":"Question","name":"How does the white background option work?","acceptedAnswer":{"@type":"Answer","text":"It samples the edges of your photo and replaces similar connected colours with white. It is not AI cut-out, so it works best on plain, evenly lit backgrounds. Always check the preview before printing."}},
+      {"@type":"Question","name":"How should I print the A4 sheet?","acceptedAnswer":{"@type":"Answer","text":"Print on A4 paper at 100% or actual size, not fit-to-page, with the printer's own margins at zero or none. The sheet is laid out in millimetres at your chosen DPI."}}
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
 <body>
-    <!-- Header -->
-    <header class="site-header">
-        <div class="header-container">
-            <div class="header-brand">
-                <span class="brand-icon" aria-hidden="true">📸</span>
-                <span class="brand-name">Alok Systems Tools</span>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">PASSPORT &amp; ID PHOTO STUDIO</p>
+      <h1 id="page-title">Passport Photo Maker</h1>
+      <p>Crop a photo to an official ID size and lay it out ready to print on A4.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        Your photo is processed locally and never uploaded.
+      </div>
+    </section>
+
+    <p id="statusMessage" class="status-banner" role="status" aria-live="polite" hidden></p>
+
+    <section class="workspace" aria-label="Passport photo maker">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="upload-title">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div><h2 id="upload-title">Add a photo</h2><p>Use a clear, front-facing photo with an even background.</p></div>
+          </div>
+          <div class="upload-area" id="dropZone" role="button" tabindex="0" aria-label="Add a photo. Click to browse, drag and drop, or paste an image.">
+            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
+            <svg class="upload-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <p class="upload-main-text">Drag &amp; drop your photo here</p>
+            <p class="upload-divider">— or click anywhere in this box —</p>
+            <p class="upload-hint">JPG, PNG, or WebP · up to 30 MB · paste with <kbd>Ctrl</kbd> + <kbd>V</kbd></p>
+          </div>
+          <div class="upload-actions">
+            <button id="chooseBtn" class="btn btn-outline" type="button">Choose a photo</button>
+            <span class="helper">Your original file is never modified.</span>
+          </div>
+          <div id="upload-error" class="error-message" role="alert" hidden></div>
+          <div id="file-info" class="file-info" hidden>
+            <dl class="file-meta">
+              <div><dt>File</dt><dd id="info-filename">—</dd></div>
+              <div><dt>Format</dt><dd id="info-format">—</dd></div>
+              <div><dt>Dimensions</dt><dd id="info-dimensions">—</dd></div>
+              <div><dt>Size</dt><dd id="info-filesize">—</dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="size-title">
+          <div class="panel-heading">
+            <span class="step-number">02</span>
+            <div><h2 id="size-title">Choose size &amp; resolution</h2><p>Pick an official preset or enter your own millimetre dimensions.</p></div>
+          </div>
+          <div class="preset-grid" id="presetGrid" role="radiogroup" aria-label="Photo size presets">
+            <button type="button" class="preset-btn active" data-preset="india" role="radio" aria-checked="true">
+              <span class="preset-name">India Passport</span>
+              <span class="preset-size">35 × 45 mm</span>
+            </button>
+            <button type="button" class="preset-btn" data-preset="us2x2" role="radio" aria-checked="false">
+              <span class="preset-name">US 2 × 2 in</span>
+              <span class="preset-size">50.8 × 50.8 mm</span>
+            </button>
+            <button type="button" class="preset-btn" data-preset="schengen" role="radio" aria-checked="false">
+              <span class="preset-name">Schengen Visa</span>
+              <span class="preset-size">35 × 45 mm</span>
+            </button>
+            <button type="button" class="preset-btn" data-preset="pan" role="radio" aria-checked="false">
+              <span class="preset-name">PAN Card</span>
+              <span class="preset-size">25 × 35 mm</span>
+            </button>
+            <button type="button" class="preset-btn" data-preset="square" role="radio" aria-checked="false">
+              <span class="preset-name">Square</span>
+              <span class="preset-size">35 × 35 mm</span>
+            </button>
+            <button type="button" class="preset-btn" data-preset="custom" role="radio" aria-checked="false">
+              <span class="preset-name">Custom</span>
+              <span class="preset-size">Set your own</span>
+            </button>
+          </div>
+
+          <div id="custom-size-fields" class="custom-size-fields" hidden>
+            <div class="field-group">
+              <label for="customWidth">Width (mm)</label>
+              <input type="number" id="customWidth" min="5" max="200" value="35" step="0.5" inputmode="decimal">
             </div>
-            <h1 class="header-title">ID Photo Studio</h1>
-            <p class="header-subtitle">Create properly sized passport photos and printable photo sheets — privately in your browser.</p>
+            <span class="dimension-separator" aria-hidden="true">×</span>
+            <div class="field-group">
+              <label for="customHeight">Height (mm)</label>
+              <input type="number" id="customHeight" min="5" max="200" value="45" step="0.5" inputmode="decimal">
+            </div>
+          </div>
+
+          <div class="dpi-block">
+            <div class="setting-head">
+              <span class="field-label">Resolution</span>
+              <span class="helper">Output: <strong id="pixelDisplay">413 × 531 px</strong></span>
+            </div>
+            <div class="dpi-row">
+              <div class="chip-row" role="radiogroup" aria-label="Resolution presets">
+                <button type="button" class="chip active" data-dpi="300" role="radio" aria-checked="true">300 DPI</button>
+                <button type="button" class="chip" data-dpi="600" role="radio" aria-checked="false">600 DPI</button>
+              </div>
+              <label class="dpi-custom" for="dpiInput">
+                <span>Custom</span>
+                <input type="number" id="dpiInput" min="72" max="600" value="300" step="1" inputmode="numeric">
+                <span>DPI</span>
+              </label>
+            </div>
+            <p class="helper dpi-hint">300 DPI is the usual print standard. 600 DPI gives extra detail but creates larger files.</p>
+          </div>
+
+          <div class="size-summary" id="dimensionSummary">
+            <div><span>Physical size</span><strong id="physicalSizeDisplay">35 × 45 mm</strong></div>
+            <div><span>Photo pixels</span><strong id="pixelSizeDisplay">413 × 531 px</strong></div>
+            <div><span>Resolution</span><strong id="dpiDisplay">300 DPI</strong></div>
+          </div>
+          <div id="size-error" class="error-message" role="alert" hidden></div>
+        </section>
+
+        <section class="panel" aria-labelledby="crop-title">
+          <div class="panel-heading">
+            <span class="step-number">03</span>
+            <div><h2 id="crop-title">Crop &amp; adjust</h2><p>Position the face inside the frame, then zoom to fill the photo.</p></div>
+          </div>
+          <div class="crop-layout">
+            <div class="crop-area-container">
+              <div class="crop-viewport is-empty" id="cropViewport" tabindex="0" role="group" aria-label="Crop area. Drag the photo or use the arrow keys to reposition. Use the zoom slider to zoom.">
+                <canvas id="cropCanvas" aria-label="Crop preview"></canvas>
+                <div class="crop-empty" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <span>Add a photo to start cropping</span>
+                </div>
+                <div class="crop-grid-overlay" aria-hidden="true"></div>
+                <div class="crop-corner tl" aria-hidden="true"></div>
+                <div class="crop-corner tr" aria-hidden="true"></div>
+                <div class="crop-corner bl" aria-hidden="true"></div>
+                <div class="crop-corner br" aria-hidden="true"></div>
+              </div>
+              <p class="crop-hint">Drag to reposition · arrow keys nudge · slider zooms</p>
+            </div>
+            <div class="crop-controls">
+              <div class="zoom-control">
+                <div class="setting-head">
+                  <label class="field-label" for="zoomSlider">Zoom</label>
+                  <output id="zoomValue" class="quality-value" for="zoomSlider">1.00×</output>
+                </div>
+                <input type="range" id="zoomSlider" min="1" max="5" value="1" step="0.01">
+              </div>
+              <button type="button" class="btn btn-outline btn-sm" id="resetCropBtn">Reset crop</button>
+              <div class="background-option">
+                <span class="field-label">Background</span>
+                <div class="bg-toggle-group" id="bgToggleGroup" role="radiogroup" aria-label="Background option" aria-describedby="bgHint">
+                  <button type="button" class="bg-btn active" data-bg="original" role="radio" aria-checked="true">Original</button>
+                  <button type="button" class="bg-btn" data-bg="white" role="radio" aria-checked="false">White</button>
+                </div>
+                <p class="helper" id="bgHint">Keeps the background from your photo.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="sheet-title">
+          <div class="panel-heading">
+            <span class="step-number">04</span>
+            <div><h2 id="sheet-title">Build an A4 sheet</h2><p>Arrange multiple copies for printing, then choose the export format.</p></div>
+          </div>
+          <div class="sheet-settings">
+            <div>
+              <span class="field-label" id="copies-label">Photos per sheet</span>
+              <div class="chip-row copies-buttons" role="radiogroup" aria-labelledby="copies-label">
+                <button type="button" class="chip copy-btn" data-copies="4" role="radio" aria-checked="false">4</button>
+                <button type="button" class="chip copy-btn" data-copies="6" role="radio" aria-checked="false">6</button>
+                <button type="button" class="chip copy-btn active" data-copies="8" role="radio" aria-checked="true">8</button>
+                <button type="button" class="chip copy-btn" data-copies="12" role="radio" aria-checked="false">12</button>
+                <button type="button" class="chip copy-btn" data-copies="custom" role="radio" aria-checked="false">Custom</button>
+              </div>
+              <div id="custom-copies-field" class="custom-copies-field" hidden>
+                <label class="helper" for="customCopies">Custom copies</label>
+                <input type="number" id="customCopies" min="1" max="64" value="8" step="1" inputmode="numeric">
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label for="gridCols">Columns</label>
+                <input type="number" id="gridCols" min="1" max="8" value="4" step="1" inputmode="numeric">
+              </div>
+              <div class="field-group">
+                <label for="gridRows">Rows</label>
+                <input type="number" id="gridRows" min="1" max="8" value="2" step="1" inputmode="numeric">
+              </div>
+            </div>
+            <p class="helper" id="gridTotalHint">4 × 2 = 8 photos</p>
+
+            <div>
+              <span class="field-label">Page margins (mm)</span>
+              <div class="form-grid-4 margins-fields">
+                <div class="field-group">
+                  <label for="marginTop">Top</label>
+                  <input type="number" id="marginTop" min="0" max="40" value="10" step="1" inputmode="numeric">
+                </div>
+                <div class="field-group">
+                  <label for="marginBottom">Bottom</label>
+                  <input type="number" id="marginBottom" min="0" max="40" value="10" step="1" inputmode="numeric">
+                </div>
+                <div class="field-group">
+                  <label for="marginLeft">Left</label>
+                  <input type="number" id="marginLeft" min="0" max="40" value="10" step="1" inputmode="numeric">
+                </div>
+                <div class="field-group">
+                  <label for="marginRight">Right</label>
+                  <input type="number" id="marginRight" min="0" max="40" value="10" step="1" inputmode="numeric">
+                </div>
+              </div>
+              <p class="helper">Photos are spaced 5 mm apart and centred horizontally.</p>
+            </div>
+
+            <div class="export-settings">
+              <div>
+                <span class="field-label" id="format-label">Output format</span>
+                <div class="format-buttons" role="radiogroup" aria-labelledby="format-label">
+                  <button type="button" class="format-btn active" data-format="jpg" role="radio" aria-checked="true">JPG</button>
+                  <button type="button" class="format-btn" data-format="png" role="radio" aria-checked="false">PNG</button>
+                </div>
+              </div>
+              <div id="quality-control">
+                <div class="setting-head">
+                  <label class="field-label" for="qualitySlider">JPG quality</label>
+                  <output id="qualityValue" class="quality-value" for="qualitySlider">90%</output>
+                </div>
+                <input type="range" id="qualitySlider" min="10" max="100" value="90" step="1">
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="summary-panel" aria-labelledby="preview-title">
+        <div class="summary-heading">
+          <p class="eyebrow">LIVE PREVIEW</p>
+          <h2 id="preview-title">Your photo set</h2>
+          <p class="summary-period" id="summaryNote">Add a photo to preview it here.</p>
         </div>
-    </header>
 
-    <!-- Privacy Notice -->
-    <div class="privacy-banner" role="note">
-        <svg class="privacy-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
-        <span>Your photo is processed locally in your browser. Nothing is uploaded to a server.</span>
-    </div>
-
-    <main class="main-container">
-        <!-- Step 1: Upload -->
-        <section class="card" id="upload-section" aria-labelledby="upload-heading">
-            <div class="card-header">
-                <span class="step-badge">1</span>
-                <h2 class="card-title" id="upload-heading">Upload Photo</h2>
-            </div>
-            <div class="card-body">
-                <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Upload photo by clicking or dragging">
-                    <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
-                    <div class="drop-zone-content">
-                        <svg class="upload-icon" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        <p class="drop-zone-text"><strong>Drag &amp; drop your photo here</strong></p>
-                        <p class="drop-zone-hint">or click to browse &nbsp;·&nbsp; JPG, JPEG, PNG, WebP</p>
-                        <button type="button" class="btn btn-primary btn-choose" id="chooseBtn">Choose Image</button>
-                    </div>
-                </div>
-                <div id="upload-error" class="error-message" role="alert" hidden></div>
-                <div id="file-info" class="file-info" hidden>
-                    <div class="file-info-grid">
-                        <div class="file-info-item"><span class="label">File:</span><span id="info-filename">—</span></div>
-                        <div class="file-info-item"><span class="label">Format:</span><span id="info-format">—</span></div>
-                        <div class="file-info-item"><span class="label">Dimensions:</span><span id="info-dimensions">—</span></div>
-                        <div class="file-info-item"><span class="label">Size:</span><span id="info-filesize">—</span></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Step 2: Size Selection -->
-        <section class="card" id="size-section" aria-labelledby="size-heading">
-            <div class="card-header">
-                <span class="step-badge">2</span>
-                <h2 class="card-title" id="size-heading">Select Photo Size</h2>
-            </div>
-            <div class="card-body">
-                <div class="preset-grid" id="presetGrid" role="radiogroup" aria-label="Photo size presets">
-                    <button type="button" class="preset-btn active" data-preset="india" role="radio" aria-checked="true">
-                        <span class="preset-name">India Passport</span>
-                        <span class="preset-size">35 × 45 mm</span>
-                    </button>
-                    <button type="button" class="preset-btn" data-preset="35x35" role="radio" aria-checked="false">
-                        <span class="preset-name">Square</span>
-                        <span class="preset-size">35 × 35 mm</span>
-                    </button>
-                    <button type="button" class="preset-btn" data-preset="2x2" role="radio" aria-checked="false">
-                        <span class="preset-name">US Visa</span>
-                        <span class="preset-size">2 × 2 inch</span>
-                    </button>
-                    <button type="button" class="preset-btn" data-preset="custom" role="radio" aria-checked="false">
-                        <span class="preset-name">Custom</span>
-                        <span class="preset-size">Set your own</span>
-                    </button>
-                </div>
-                <div id="custom-size-fields" class="custom-size-fields" hidden>
-                    <div class="field-group">
-                        <label for="customWidth">Width (mm)</label>
-                        <input type="number" id="customWidth" min="5" max="200" value="35" step="0.5">
-                    </div>
-                    <span class="dimension-separator">×</span>
-                    <div class="field-group">
-                        <label for="customHeight">Height (mm)</label>
-                        <input type="number" id="customHeight" min="5" max="200" value="45" step="0.5">
-                    </div>
-                </div>
-                <div class="dpi-row">
-                    <div class="field-group dpi-field">
-                        <label for="dpiInput">DPI (Dots Per Inch)</label>
-                        <input type="number" id="dpiInput" min="72" max="1200" value="300" step="1">
-                    </div>
-                    <div class="calc-display" id="calcDisplay">
-                        <span class="calc-label">Output pixels:</span>
-                        <span class="calc-value" id="pixelDisplay">413 × 531 px</span>
-                    </div>
-                </div>
-                <div class="dimension-summary" id="dimensionSummary">
-                    <span>Physical size: <strong id="physicalSizeDisplay">35 × 45 mm</strong></span>
-                    <span class="sep">·</span>
-                    <span>Pixels: <strong id="pixelSizeDisplay">413 × 531 px</strong></span>
-                    <span class="sep">·</span>
-                    <span>DPI: <strong id="dpiDisplay">300</strong></span>
-                </div>
-                <div id="size-error" class="error-message" role="alert" hidden></div>
-            </div>
-        </section>
-
-        <!-- Step 3: Crop & Adjust -->
-        <section class="card" id="crop-section" aria-labelledby="crop-heading">
-            <div class="card-header">
-                <span class="step-badge">3</span>
-                <h2 class="card-title" id="crop-heading">Crop &amp; Adjust</h2>
-            </div>
-            <div class="card-body">
-                <div class="crop-layout">
-                    <div class="crop-area-container">
-                        <div class="crop-viewport" id="cropViewport">
-                            <canvas id="cropCanvas" aria-label="Crop area"></canvas>
-                            <div class="crop-grid-overlay" aria-hidden="true"></div>
-                            <div class="crop-corner tl" aria-hidden="true"></div>
-                            <div class="crop-corner tr" aria-hidden="true"></div>
-                            <div class="crop-corner bl" aria-hidden="true"></div>
-                            <div class="crop-corner br" aria-hidden="true"></div>
-                        </div>
-                        <p class="crop-hint"><span class="drag-icon">✥</span> Drag to reposition &nbsp;·&nbsp; Use slider to zoom</p>
-                    </div>
-                    <div class="crop-controls">
-                        <div class="zoom-control">
-                            <label for="zoomSlider">Zoom</label>
-                            <input type="range" id="zoomSlider" min="1" max="5" value="1" step="0.01">
-                            <span class="zoom-value" id="zoomValue">1.00×</span>
-                        </div>
-                        <button type="button" class="btn btn-secondary btn-sm" id="resetCropBtn">↺ Reset Crop</button>
-                        <div class="background-option">
-                            <span class="control-label">Background</span>
-                            <div class="bg-toggle-group" role="radiogroup" aria-label="Background option">
-                                <button type="button" class="bg-btn active" data-bg="original" role="radio" aria-checked="true">Original</button>
-                                <button type="button" class="bg-btn" data-bg="white" role="radio" aria-checked="false">White</button>
-                            </div>
-                            <p class="bg-hint" id="bgHint">White background uses simple edge-based color detection. Works best with solid-colored backgrounds.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Step 4: Photo Sheet -->
-        <section class="card" id="sheet-section" aria-labelledby="sheet-heading">
-            <div class="card-header">
-                <span class="step-badge">4</span>
-                <h2 class="card-title" id="sheet-heading">Configure Photo Sheet</h2>
-            </div>
-            <div class="card-body">
-                <div class="sheet-options">
-                    <div class="copies-group">
-                        <span class="control-label">Copies on A4 sheet</span>
-                        <div class="copies-buttons" role="radiogroup" aria-label="Number of photos on sheet">
-                            <button type="button" class="copy-btn" data-copies="4" role="radio" aria-checked="false">4</button>
-                            <button type="button" class="copy-btn" data-copies="6" role="radio" aria-checked="false">6</button>
-                            <button type="button" class="copy-btn active" data-copies="8" role="radio" aria-checked="true">8</button>
-                            <button type="button" class="copy-btn" data-copies="12" role="radio" aria-checked="false">12</button>
-                            <button type="button" class="copy-btn" data-copies="custom" role="radio" aria-checked="false">Custom</button>
-                        </div>
-                        <div id="custom-copies-field" class="custom-copies-field" hidden>
-                            <input type="number" id="customCopies" min="1" max="50" value="8" step="1">
-                            <span class="hint-text">photos</span>
-                        </div>
-                    </div>
-                    <div class="grid-layout-group">
-                        <span class="control-label">Grid Layout</span>
-                        <div class="grid-layout-fields">
-                            <div class="field-group">
-                                <label for="gridCols">Columns</label>
-                                <input type="number" id="gridCols" min="1" max="10" value="4" step="1">
-                            </div>
-                            <span class="dimension-separator">×</span>
-                            <div class="field-group">
-                                <label for="gridRows">Rows</label>
-                                <input type="number" id="gridRows" min="1" max="10" value="2" step="1">
-                            </div>
-                        </div>
-                        <span class="hint-text" id="gridTotalHint">4 × 2 = 8 photos</span>
-                    </div>
-                    <div class="margins-group">
-                        <span class="control-label">Page Margins (mm)</span>
-                        <div class="margins-fields">
-                            <div class="field-group">
-                                <label for="marginTop">Top</label>
-                                <input type="number" id="marginTop" min="0" max="100" value="10" step="1">
-                            </div>
-                            <div class="field-group">
-                                <label for="marginBottom">Bottom</label>
-                                <input type="number" id="marginBottom" min="0" max="100" value="10" step="1">
-                            </div>
-                            <div class="field-group">
-                                <label for="marginLeft">Left</label>
-                                <input type="number" id="marginLeft" min="0" max="100" value="10" step="1">
-                            </div>
-                            <div class="field-group">
-                                <label for="marginRight">Right</label>
-                                <input type="number" id="marginRight" min="0" max="100" value="10" step="1">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="output-format-group">
-                        <span class="control-label">Output Format</span>
-                        <div class="format-buttons" role="radiogroup" aria-label="Output format">
-                            <button type="button" class="format-btn active" data-format="jpg" role="radio" aria-checked="true">JPG</button>
-                            <button type="button" class="format-btn" data-format="png" role="radio" aria-checked="false">PNG</button>
-                        </div>
-                        <div id="quality-control" class="quality-control">
-                            <label for="qualitySlider">JPG Quality: <span id="qualityValue">90</span>%</label>
-                            <input type="range" id="qualitySlider" min="10" max="100" value="90" step="1">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Step 5: Preview & Download -->
-        <section class="card" id="preview-section" aria-labelledby="preview-heading">
-            <div class="card-header">
-                <span class="step-badge">5</span>
-                <h2 class="card-title" id="preview-heading">Preview &amp; Download</h2>
-            </div>
-            <div class="card-body">
-                <div class="preview-layout">
-                    <div class="preview-photo">
-                        <h3 class="preview-label">Photo Preview</h3>
-                        <div class="preview-image-wrapper">
-                            <canvas id="photoPreviewCanvas" aria-label="Final photo preview"></canvas>
-                        </div>
-                        <button type="button" class="btn btn-primary" id="downloadPhotoBtn">⬇ Download Photo</button>
-                    </div>
-                    <div class="preview-sheet">
-                        <h3 class="preview-label">A4 Sheet Preview</h3>
-                        <div class="sheet-preview-wrapper">
-                            <canvas id="sheetPreviewCanvas" aria-label="A4 photo sheet preview"></canvas>
-                        </div>
-                        <div class="sheet-actions">
-                            <button type="button" class="btn btn-primary" id="downloadSheetBtn">⬇ Download A4 Photo Sheet</button>
-                            <button type="button" class="btn btn-secondary" id="printSheetBtn">🖨 Print Photo Sheet</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Reset -->
-        <div class="reset-row">
-            <button type="button" class="btn btn-danger" id="resetBtn">↺ Reset Everything</button>
+        <div class="preview-tabs" role="tablist" aria-label="Preview type">
+          <button type="button" class="preview-tab active" id="photoTab" role="tab" aria-selected="true" aria-controls="photoPanel">Photo</button>
+          <button type="button" class="preview-tab" id="sheetTab" role="tab" aria-selected="false" aria-controls="sheetPanel" tabindex="-1">A4 sheet</button>
         </div>
-    </main>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-        <p>All processing happens locally in your browser. Your photos never leave your device.</p>
-        <p class="disclaimer">This tool is for photo sizing and printing purposes. Requirements may vary by country and institution. Always verify with the relevant authority.</p>
-    </footer>
+        <div id="photoPanel" role="tabpanel" aria-labelledby="photoTab">
+          <div class="preview-stage">
+            <canvas id="photoPreviewCanvas" role="img" aria-label="Passport photo preview" hidden></canvas>
+            <div id="photoPlaceholder" class="preview-placeholder">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+              <span>Your finished photo will appear here.</span>
+            </div>
+          </div>
+          <p class="stage-note">The downloaded photo uses the exact pixel dimensions shown above.</p>
+        </div>
 
-    <!-- Hidden print container -->
-    <div id="printContainer" class="print-container" hidden>
-        <img id="printImage" src="" alt="Print sheet">
-    </div>
+        <div id="sheetPanel" role="tabpanel" aria-labelledby="sheetTab" hidden>
+          <div class="preview-stage">
+            <canvas id="sheetPreviewCanvas" role="img" aria-label="A4 photo sheet preview" hidden></canvas>
+            <div id="sheetPlaceholder" class="preview-placeholder">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"></path><path d="M14 2v6h6"></path><path d="M9 13h6M9 17h6"></path></svg>
+              <span>Your A4 sheet preview will appear here.</span>
+            </div>
+          </div>
+          <p class="stage-note" id="sheetMeta">A4 · 210 × 297 mm</p>
+        </div>
 
-    <script src="script.js"></script>
+        <dl class="meta-grid">
+          <div><dt>Photo size</dt><dd id="metaSize">35 × 45 mm</dd></div>
+          <div><dt>Pixels</dt><dd id="metaPixels">413 × 531 px</dd></div>
+          <div><dt>Resolution</dt><dd id="metaDpi">300 DPI</dd></div>
+          <div><dt>Format</dt><dd id="metaFormat">JPG · 90%</dd></div>
+        </dl>
+
+        <div class="export-actions">
+          <button id="downloadPhotoBtn" class="btn btn-primary" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download photo
+          </button>
+          <button id="downloadSheetBtn" class="btn btn-outline" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download sheet
+          </button>
+        </div>
+        <button id="printSheetBtn" class="btn btn-outline print-btn" type="button" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print A4 sheet
+        </button>
+
+        <button id="resetBtn" class="btn btn-outline reset-btn" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          Reset everything
+        </button>
+        <p class="export-note">Nothing is uploaded — every crop and sheet is built on this device.</p>
+      </aside>
+    </section>
+
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">Three steps to a print-ready photo</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Add your photo</h3><p>Drop a JPG, PNG, or WebP file, browse your device, or paste an image.</p></div></li>
+        <li><span>02</span><div><h3>Size and crop</h3><p>Pick a preset, set the DPI, and frame the face with the crop tools.</p></div></li>
+        <li><span>03</span><div><h3>Download or print</h3><p>Save the photo or A4 sheet as JPG or PNG, or print the sheet at 100%.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRINTING</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Is my photo uploaded to a server?</summary><p>No. The photo is read, cropped, and rendered entirely in your browser with the canvas element. Nothing is uploaded or stored online.</p></details>
+      <details><summary>Which photo sizes are included?</summary><p>Presets include India passport 35 × 45 mm, US 2 × 2 inch (50.8 × 50.8 mm), Schengen visa 35 × 45 mm, PAN card 25 × 35 mm, and a 35 × 35 mm square. Choose Custom to enter any size from 5 to 200 mm.</p></details>
+      <details><summary>How does the white background option work?</summary><p>It samples the edges of your photo and replaces similar connected colours with white. It is not an AI cut-out, so it works best on plain, evenly lit backgrounds. Always check the preview before printing.</p></details>
+      <details><summary>How should I print the A4 sheet?</summary><p>Print on A4 paper at 100% or actual size — not fit-to-page — with the printer's own margins at zero or none. The sheet is laid out in millimetres at your chosen DPI, so those settings keep the photo dimensions accurate.</p></details>
+      <details><summary>Does changing the DPI change the photo size in millimetres?</summary><p>No. The physical size stays the same while the pixel dimensions change: pixels = millimetres ÷ 25.4 × DPI. A 35 × 45 mm photo is 413 × 531 px at 300 DPI and 827 × 1063 px at 600 DPI.</p></details>
+    </section>
+  </main>
+
+  <div id="printContainer" class="print-container" hidden>
+    <img id="printImage" alt="A4 passport photo sheet ready to print">
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

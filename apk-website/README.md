@@ -4,7 +4,7 @@ A lightweight, standalone Android app catalogue built with plain HTML, CSS, Java
 
 ## Run locally
 
-The catalogue is loaded with `fetch`, so serve the folder over HTTP (do not open `index.html` as a `file://` URL):
+There is no build step. You can open `index.html` directly (`file://`) — the catalogue is loaded from `data/apps.js`, so the pages render without a server. For the exact production behaviour (download progress, the feedback POST) preview over HTTP:
 
 ```powershell
 python -m http.server 8000
@@ -16,7 +16,7 @@ Then visit http://localhost:8000. This is only for preview; production is static
 
 - `index.html`, `apps.html`, `about.html`, `contact.html`, `privacy.html` — the five main pages
 - `apps/*.html` — individually refreshable app detail pages
-- `data/apps.json` — central app catalogue (single source of truth)
+- `data/apps.js` — central app catalogue (single source of truth)
 - `downloads/*.apk` — the APK files served to visitors
 - `assets/css/site.css`, `assets/js/site.js`, `assets/icons/` — styling, behaviour and app marks
 - `.htaccess` — optional Apache tuning (gzip, caching, security headers); harmless elsewhere
@@ -47,6 +47,6 @@ The form uses these Google Form entry IDs (fixed in `assets/js/site.js`):
 
 ## Adding or updating an app
 
-Edit `data/apps.json`. Keep all fields consistent: `id`/`slug` are stable lowercase identifiers, and `slug` must match an existing `apps/<slug>.html` page. Only enable a download after confirming the APK URL serves the file publicly without sign-in.
+Edit `data/apps.js`. Keep all fields consistent: `id`/`slug` are stable lowercase identifiers, and `slug` must match an existing `apps/<slug>.html` page. Only enable a download after confirming the APK URL serves the file publicly without sign-in.
 
 See `DEPLOY-CHECKLIST.md` for the full finalization list.

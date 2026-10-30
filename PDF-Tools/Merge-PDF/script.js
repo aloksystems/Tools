@@ -61,13 +61,19 @@
             mergeBtn.disabled = true;
         }
 
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, (character) => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[character]));
+        }
+
         function updateFileList() {
             fileList.innerHTML = '';
             selectedFiles.forEach((item, index) => {
                 const div = document.createElement('div');
                 div.className = 'file-item';
                 div.innerHTML = `
-                    <span class="file-name">${item.file.name}</span>
+                    <span class="file-name">${escapeHtml(item.file.name)}</span>
                     <button class="remove-btn" onclick="removeFile(${index})">Remove</button>
                 `;
                 fileList.appendChild(div);
@@ -111,7 +117,7 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                info.innerHTML = `<i class="fas fa-check-circle"></i> Success! Merged ${selectedFiles.length} PDFs. Downloaded 'merged.pdf'!`;
+                info.innerHTML = `<i class="fas fa-check-circle"></i> Success! Merged ${selectedFiles.length} PDFs. Download started.`;
                 info.className = 'success';
             } catch (e) {
                 info.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Merge failed: ${e.message}`;

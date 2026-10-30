@@ -23,8 +23,11 @@
   background: rgba(255, 255, 255, .92);
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+  align-self: stretch;
+  flex: none;
   position: relative;
   z-index: 9998;
+  width: 100%;
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
 }
@@ -40,8 +43,11 @@
 
 .global-shell-inner {
   gap: 1.5rem;
-  min-height: 68px;
+  min-height: 72px;
+  max-width: 1120px;
 }
+.global-tool-actions { align-items: center; display: flex; gap: .45rem; }
+.global-tool-actions > button { flex: none; }
 
 .global-brand {
   align-items: center;
@@ -100,6 +106,7 @@
   justify-content: center;
   width: 40px;
 }
+.global-theme-toggle { width: 42px; height: 42px; border-radius: 12px; }
 
 .global-theme-toggle:hover,
 .global-menu-toggle:hover { border-color: var(--brand-strong, #0d9488); color: var(--brand-strong, #0d9488); }
@@ -133,7 +140,7 @@ html[data-theme="dark"] .global-menu-toggle {
 @media (max-width: 600px) {
   .global-shell-inner,
   .global-breadcrumb { width: min(100% - 2rem, 1180px); }
-  .global-shell-inner { min-height: 62px; }
+  .global-shell-inner { min-height: 64px; }
   .global-nav { display: none; }
   .global-menu-toggle { display: inline-flex; }
   .global-shell.is-menu-open .global-nav {
@@ -145,7 +152,7 @@ html[data-theme="dark"] .global-menu-toggle {
     padding: .75rem 1rem;
     position: absolute;
     right: 0;
-    top: 62px;
+    top: 64px;
   }
   html[data-theme="dark"] .global-shell.is-menu-open .global-nav {
     background: #101a2e;

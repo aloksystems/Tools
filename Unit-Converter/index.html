@@ -1,122 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit Converter - Free Online Conversion Tool</title>
-    <meta name="description" content="Convert between units of length, mass, temperature, and volume instantly. Free online unit converter.">
-    <meta name="keywords" content="unit converter, length converter, temperature converter, weight converter, metric conversion">
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem('tools-theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-theme', savedTheme === 'dark' || (!savedTheme && prefersDark) ? 'dark' : 'light');
-        })();
-    </script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EUC%3C/text%3E%3C/svg%3E">
+  <title>Unit Converter | Length, Mass, Temperature and More</title>
+  <meta name="description" content="Convert length, mass, temperature, volume, area, speed, time, and data units instantly. Live results, swap, and copy — all calculated privately in your browser.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="author" content="Alok Systems">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Unit-Converter/">
 
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Unit-Converter/">
-    <meta property="og:title" content="Unit Converter - Free Online Conversion Tool">
-    <meta property="og:description" content="Convert between units of length, mass, temperature, and volume instantly. Free online unit converter.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Unit-Converter/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Unit Converter - Free Online Conversion Tool">
-    <meta name="twitter:description" content="Convert between units of length, mass, temperature, and volume instantly. Free online unit converter.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Unit Converter - Free Online Conversion Tool",
-    "description":  "Convert between units of length, mass, temperature, and volume instantly. Free online unit converter.",
-    "url":  "https://aloksystems.freedev.app/Unit-Converter/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Unit Converter - Fast and Private">
+  <meta property="og:description" content="Convert length, mass, temperature, volume, area, speed, time, and data units in your browser.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Unit-Converter/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Unit Converter - Alok Systems Tools">
+  <meta name="twitter:description" content="Convert common units instantly. No uploads, no sign-up, all local.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Unit Converter",
+    "description": "Convert length, mass, temperature, volume, area, speed, time, and data units privately in your browser.",
+    "url": "https://aloksystems.freedev.app/Unit-Converter/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"Are the conversions accurate?","acceptedAnswer":{"@type":"Answer","text":"The tool uses standard international conversion factors and exact temperature formulas. Results are rounded for display, so very long decimals may be shortened."}},
+      {"@type":"Question","name":"What is the difference between kB and KiB?","acceptedAnswer":{"@type":"Answer","text":"kB, MB, and GB use powers of 1,000 (decimal). KiB, MiB, and GiB use powers of 1,024 (binary). Both sets are available in the Data category."}},
+      {"@type":"Question","name":"Is my input sent to a server?","acceptedAnswer":{"@type":"Answer","text":"No. Every conversion runs in your browser and nothing you type is uploaded or stored."}},
+      {"@type":"Question","name":"Can I convert negative or decimal values?","acceptedAnswer":{"@type":"Answer","text":"Yes. Enter decimals, negative numbers, or scientific notation such as 1.5e3. Updates happen as you type."}}
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
 <body>
-    <header class="site-header">
-        <div class="site-header-inner">
-            <a class="site-brand" href="/" aria-label="Alok Systems Tools home">
-                <span class="site-brand-mark">A</span>
-                <span><strong>Alok Systems</strong><small>Tools</small></span>
-            </a>
-            <nav class="site-nav" aria-label="Primary navigation">
-                <a href="/">Home</a>
-                <a href="/#tools">Tools</a>
-                <a href="/#about">About</a>
-            </nav>
-            <button class="theme-toggle site-theme-toggle" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-        </div>
-        <div class="breadcrumb" aria-label="Breadcrumb">
-            <a href="/">Home</a><span aria-hidden="true">›</span><a href="/#tools">Tools</a>
-            <span aria-hidden="true">›</span><strong>Unit Converter</strong>
-        </div>
-    </header>
-    <div class="container">
-        <header class="header tool-intro">
-            <h1>Unit Converter</h1>
-            <p>Fast, accurate unit conversions for length, mass, temperature, and volume. All calculations happen in your browser.</p>
-        </header>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">ONE SMALL NUMBER, EVERY UNIT</p>
+      <h1 id="page-title">Unit Converter</h1>
+      <p>Convert length, weight, temperature, volume, area, speed, time, and data units as you type.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        Your values stay in this browser. Nothing is uploaded.
+      </div>
+    </section>
 
-        <main class="main-content">
-            <div class="card">
-                <div class="category-tabs">
-                    <button class="tab-btn active" data-category="length">Length</button>
-                    <button class="tab-btn" data-category="mass">Mass</button>
-                    <button class="tab-btn" data-category="temperature">Temperature</button>
-                    <button class="tab-btn" data-category="volume">Volume</button>
-                </div>
+    <section class="workspace" aria-label="Unit converter">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="convert-title">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div>
+              <h2 id="convert-title">What are you converting?</h2>
+              <p>Pick a category, then choose the units on each side.</p>
+            </div>
+          </div>
 
-                <div class="converter-body">
-                    <div class="input-group">
-                        <label id="from-label">From</label>
-                        <div class="converter-row">
-                            <input type="number" id="from-value" value="1" step="any">
-                            <select id="from-unit"></select>
-                        </div>
-                    </div>
-                    <div class="swap-btn" id="swap-btn"><i class="fas fa-arrow-right-arrow-left"></i></div>
-                    <div class="input-group">
-                        <label id="to-label">To</label>
-                        <div class="converter-row">
-                            <input type="text" id="to-value" readonly>
-                            <select id="to-unit"></select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+          <div class="category-tabs" role="group" aria-label="Conversion category">
+            <button type="button" class="tab-btn" data-category="length" aria-pressed="true">Length</button>
+            <button type="button" class="tab-btn" data-category="mass" aria-pressed="false">Mass</button>
+            <button type="button" class="tab-btn" data-category="temperature" aria-pressed="false">Temperature</button>
+            <button type="button" class="tab-btn" data-category="volume" aria-pressed="false">Volume</button>
+            <button type="button" class="tab-btn" data-category="area" aria-pressed="false">Area</button>
+            <button type="button" class="tab-btn" data-category="speed" aria-pressed="false">Speed</button>
+            <button type="button" class="tab-btn" data-category="time" aria-pressed="false">Time</button>
+            <button type="button" class="tab-btn" data-category="data" aria-pressed="false">Data</button>
+          </div>
 
-        <section class="tool-details" aria-labelledby="converter-details-title">
-            <div class="details-heading">
-                <span class="section-kicker">Fast and accurate</span>
-                <h2 id="converter-details-title">Convert common units with confidence</h2>
-                <p>Select a category, enter a value, and switch units to see the result instantly.</p>
+          <div class="conversion-fields">
+            <div class="unit-block">
+              <label class="field-label" for="from-value">Amount</label>
+              <div class="unit-line">
+                <input type="text" id="from-value" value="1" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="amountHelp">
+                <select id="from-unit" aria-label="Convert from unit"></select>
+              </div>
+              <p class="field-help" id="amountHelp">Decimals, negatives, and scientific notation are welcome.</p>
             </div>
-            <div class="details-grid">
-                <article><span class="detail-number">01</span><h3>Choose a category</h3><p>Switch between length, mass, temperature, and volume conversions from the category tabs.</p></article>
-                <article><span class="detail-number">02</span><h3>Enter a value</h3><p>Type any number and select the source and destination units that you need.</p></article>
-                <article><span class="detail-number">03</span><h3>Use the result</h3><p>The converted value updates locally and can be copied or used immediately in your work.</p></article>
+
+            <div class="swap-row">
+              <button type="button" id="swap-btn" class="swap-btn">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v13"/><path d="m4 14 3 3 3-3"/><path d="M17 20V7"/><path d="m14 10 3-3 3 3"/></svg>
+                <span>Swap units</span>
+              </button>
             </div>
+
+            <div class="unit-block">
+              <label class="field-label" for="to-unit">Convert to</label>
+              <select id="to-unit" class="to-unit"></select>
+              <p class="field-help">The result appears in the panel beside this one.</p>
+            </div>
+          </div>
+
+          <p class="input-error" id="inputError" role="alert" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            <span id="inputErrorText"></span>
+          </p>
+
+          <div class="privacy-strip">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+            <span>Conversions are computed instantly on this device.</span>
+          </div>
         </section>
+      </div>
 
-        <section class="faq-section">
-            <h2>Frequently Asked Questions</h2>
-            <div class="faq-item"><strong>How accurate are the conversions?</strong><p>All conversions use standard international (SI) conversion factors with high-precision arithmetic.</p></div>
-            <div class="faq-item"><strong>Does this tool send data to a server?</strong><p>No. All conversions happen locally in your browser. Nothing is uploaded.</p></div>
-            <div class="faq-item"><strong>What unit categories are supported?</strong><p>Length (meters, feet, inches, etc.), Mass (kg, lbs, oz, etc.), Temperature (C, F, K), and Volume (liters, gallons, cups, etc.).</p></div>
-        </section>
-    </div>
-    <footer class="footer">
-        <p>Alok Systems Tools &copy; 2026. Fully client-side unit conversions.</p>
-    </footer>
-    <script src="script.js"></script>
+      <section class="summary-panel" aria-labelledby="result-title">
+        <div class="summary-heading">
+          <p class="eyebrow">LIVE RESULT</p>
+          <h2 id="result-title">Converted value</h2>
+          <p class="summary-period" id="resultContext">Length conversion · Meters to Feet</p>
+        </div>
+
+        <div class="result-card">
+          <p class="result-value">
+            <output id="to-value" aria-live="polite" aria-atomic="true">3.280839895</output>
+            <span class="result-unit" id="resultUnit">Feet</span>
+          </p>
+          <p class="result-equation" id="equation">1 Meters = 3.280839895 Feet</p>
+        </div>
+
+        <button type="button" id="copyBtn" class="btn btn-primary copy-btn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy result
+        </button>
+        <p class="copy-status" id="copyStatus" role="status" aria-live="polite"></p>
+
+        <div class="reference" id="reference">
+          <h3>Also equals</h3>
+          <ul class="reference-list" id="referenceList"></ul>
+        </div>
+
+        <p class="summary-note">Standard conversion factors. Results are rounded for display.</p>
+      </section>
+    </section>
+
+    <p class="sr-only" id="liveStatus" role="status" aria-live="polite"></p>
+
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to convert a unit</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Choose a category</h3><p>Pick length, mass, temperature, volume, area, speed, time, or data.</p></div></li>
+        <li><span>02</span><div><h3>Enter the amount</h3><p>Type a value and select your starting and target units.</p></div></li>
+        <li><span>03</span><div><h3>Use the answer</h3><p>Read the live result, check related units, or copy the conversion.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Are the conversions accurate?</summary><p>The tool uses standard international conversion factors and exact temperature formulas. Results are rounded for display, so very long decimals may be shortened.</p></details>
+      <details><summary>What is the difference between kB and KiB?</summary><p>kB, MB, and GB use powers of 1,000 (decimal). KiB, MiB, and GiB use powers of 1,024 (binary). Both sets are available in the Data category.</p></details>
+      <details><summary>Is my input sent to a server?</summary><p>No. Every conversion runs in your browser and nothing you type is uploaded or stored.</p></details>
+      <details><summary>Can I convert negative or decimal values?</summary><p>Yes. Enter decimals, negative numbers, or scientific notation such as 1.5e3. Updates happen as you type.</p></details>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>

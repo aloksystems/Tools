@@ -1,254 +1,959 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230f766e'/%3E%3Cstop offset='100%25' stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-family='Arial,sans-serif' font-size='58' font-weight='bold' fill='white' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E" />
-    <title>BG-Remove - Background Remover | Alok Systems Tools</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <style>
-        :root {
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --card: #ffffff;
-            --border: #e2e8f0;
-            --text: #0f172a;
-            --text-muted: #64748b;
-            --primary: #0d9488;
-            --primary-hover: #0f766e;
-            --accent: #14b8a6;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            max-width: 800px;
-            width: 100%;
-            padding: 40px 24px;
-        }
-        header {
-            text-align: center;
-            padding: 40px 0 30px;
-        }
-        header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 12px;
-        }
-        header p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        .badge {
-            display: inline-block;
-            background: rgba(14, 165, 233, 0.15);
-            color: var(--primary);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            border: 1px solid rgba(14, 165, 233, 0.25);
-        }
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 20px;
-        }
-        .card h2 {
-            font-size: 1.3rem;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card h2 i { color: var(--primary); }
-        .card p, .card li {
-            color: var(--text-muted);
-            line-height: 1.7;
-            font-size: 0.95rem;
-        }
-        .card ul {
-            list-style: none;
-            padding: 0;
-        }
-        .card li {
-            padding: 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card li i {
-            width: 20px;
-            color: var(--accent);
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        .btn-outline:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        .actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .code-block {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 20px;
-            font-family: 'Cascadia Code', 'Fira Code', monospace;
-            font-size: 0.85rem;
-            overflow-x: auto;
-            margin: 12px 0;
-            color: #a8d8ea;
-        }
-        .code-block .comment { color: #6a9955; }
-        footer {
-            text-align: center;
-            padding: 30px 24px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-        footer a { color: var(--primary); text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.8rem; }
-            .card { padding: 20px; }
-            .code-block { font-size: 0.75rem; }
-        }
-    </style>
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="description" content="Use BG-Remove - Background Remover | Alok Systems Tools online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/BG-Remove/">
-    <meta property="og:title" content="BG-Remove - Background Remover | Alok Systems Tools">
-    <meta property="og:description" content="Use BG-Remove - Background Remover | Alok Systems Tools online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/BG-Remove/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="BG-Remove - Background Remover | Alok Systems Tools">
-    <meta name="twitter:description" content="Use BG-Remove - Background Remover | Alok Systems Tools online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "BG-Remove - Background Remover | Alok Systems Tools",
-    "description":  "Use BG-Remove - Background Remover | Alok Systems Tools online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/BG-Remove/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <title>Remove Image Backgrounds - Transparent PNG | BG-Remove</title>
+  <meta name="description" content="Remove an image background in your browser with your own remove.bg API key, compare before and after, then download a transparent PNG. Or run the provided offline desktop app.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/BG-Remove/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="BG-Remove - Transparent PNG Background Remover">
+  <meta property="og:description" content="Remove backgrounds in the browser with remove.bg, or run the offline U²-Net desktop app. Compare previews and save a transparent PNG.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/BG-Remove/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="BG-Remove - Transparent PNG Background Remover">
+  <meta name="twitter:description" content="Remove backgrounds in the browser with remove.bg, or run the offline U²-Net desktop app.">
+  <meta name="author" content="Alok Systems">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230f766e'/%3E%3Cstop offset='100%25' stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-family='Arial,sans-serif' font-size='58' font-weight='bold' fill='white' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "BG-Remove Background Remover",
+    "description": "Remove image backgrounds with the remove.bg API in the browser, compare before and after, and download a transparent PNG, or use the offline U²-Net desktop app.",
+    "url": "https://aloksystems.freedev.app/BG-Remove/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Is my image uploaded anywhere?", "acceptedAnswer": { "@type": "Answer", "text": "In browser mode the image you choose is sent directly from your browser to remove.bg using your own API key. This site has no server and does not receive or store it. The desktop app's Local mode processes images entirely on your computer." } },
+      { "@type": "Question", "name": "Is a remove.bg API key free?", "acceptedAnswer": { "@type": "Answer", "text": "remove.bg offers accounts and API keys, including limited free previews. Your plan controls credits and output resolution. Create or manage a key at remove.bg." } },
+      { "@type": "Question", "name": "Is my API key saved in the browser?", "acceptedAnswer": { "@type": "Answer", "text": "No. The key stays in memory in this tab, is sent only to remove.bg, and is cleared when you close or reload the page. The desktop app can optionally remember the key locally." } },
+      { "@type": "Question", "name": "Which image files are supported?", "acceptedAnswer": { "@type": "Answer", "text": "Browser mode accepts PNG, JPG and WEBP files up to 20 MB. The desktop app additionally accepts BMP and GIF files." } },
+      { "@type": "Question", "name": "Can I remove backgrounds offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Run the included Python desktop app in Local mode to use rembg's U²-Net model. The first run downloads the model; after that, processing stays offline." } }
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f8fafc;
+      --surface: #fff;
+      --surface-soft: #f1f5f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --brand: #14b8a6;
+      --brand-strong: #0d9488;
+      --brand-deep: #0f766e;
+      --brand-soft: rgba(20, 184, 166, .09);
+      --danger-border: #fecaca;
+      --danger-bg: #fef2f2;
+      --danger-text: #b91c1c;
+      --success-dot: #0d9488;
+      --danger-dot: #dc2626;
+      --checker-a: #dbe4ec;
+      --checker-b: #fff;
+      --code-bg: #0f172a;
+      --code-text: #dbeafe;
+      --code-muted: #94a3b8;
+      --shadow: 0 8px 26px rgba(15, 23, 42, .06);
+      --radius: 18px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    }
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --page: #0b1120;
+      --surface: #101a2e;
+      --surface-soft: #16223a;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --line: #26354a;
+      --brand: #2dd4bf;
+      --brand-strong: #14b8a6;
+      --brand-deep: #2dd4bf;
+      --brand-soft: rgba(45, 212, 191, .1);
+      --danger-border: #7f1d1d;
+      --danger-bg: #351c27;
+      --danger-text: #fecaca;
+      --success-dot: #2dd4bf;
+      --danger-dot: #f87171;
+      --checker-a: #1f2d43;
+      --checker-b: #101a2e;
+      --code-bg: #07101f;
+      --code-text: #dbeafe;
+      --code-muted: #94a3b8;
+      --shadow: 0 12px 30px rgba(0, 0, 0, .2);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { min-width: 320px; min-height: 100vh; min-height: 100dvh; margin: 0; display: flex; flex-direction: column; background: var(--page); color: var(--text); font: 16px/1.6 var(--font); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    :focus-visible { outline: 3px solid var(--brand-strong); outline-offset: 3px; }
+    .page-shell { width: min(100% - 48px, 1180px); margin: 0 auto; padding: 44px 0 64px; flex: 1; }
+    .hero { max-width: 820px; margin: 0 auto 26px; text-align: center; }
+    .eyebrow { margin: 0 0 7px; color: var(--brand-deep); font-size: .72rem; font-weight: 800; letter-spacing: .12em; }
+    .hero h1 { margin: 0; font-size: clamp(1.75rem, 3.4vw, 2.4rem); line-height: 1.15; letter-spacing: -.035em; text-wrap: balance; }
+    .hero > p:not(.eyebrow) { max-width: 680px; margin: 10px auto 0; color: var(--muted); font-size: 1rem; text-wrap: balance; }
+    .privacy-note { width: fit-content; max-width: 100%; margin: 18px auto 0; display: flex; align-items: center; gap: 8px; padding: 8px 13px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .82rem; text-align: left; }
+    .privacy-note svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--brand-deep); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .mode-note { display: flex; align-items: flex-start; gap: 12px; margin: 0 0 20px; padding: 13px 15px; border: 1px solid var(--brand); border-radius: 13px; background: var(--brand-soft); color: var(--brand-deep); }
+    .mode-note svg { width: 20px; height: 20px; flex: none; margin-top: 2px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .mode-note strong { display: block; font-size: .88rem; }
+    .mode-note p { margin: 2px 0 0; font-size: .82rem; line-height: 1.55; }
+    .mode-note code, .setup-note code { padding: 1px 4px; border-radius: 4px; background: var(--surface); font-family: var(--mono); font-size: .88em; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.06fr) minmax(340px, .94fr); align-items: start; gap: 20px; }
+    .input-column { display: grid; gap: 16px; min-width: 0; }
+    .panel, .result-panel, .content-section { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .panel { padding: clamp(18px, 2.8vw, 24px); }
+    .panel-heading { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+    .step-number { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border-radius: 11px; background: var(--brand-soft); color: var(--brand-deep); font-size: .75rem; font-weight: 800; }
+    .panel-heading h2, .result-head h2 { margin: 0; font-size: 1.12rem; letter-spacing: -.02em; }
+    .panel-heading p { margin: 2px 0 0; color: var(--muted); font-size: .85rem; }
+    .field-label { display: block; margin-bottom: 7px; font-size: .84rem; font-weight: 700; }
+    .drop-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 188px; padding: 24px 18px; border: 1.5px dashed var(--line); border-radius: 14px; background: var(--page); text-align: center; cursor: pointer; transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease; }
+    .drop-zone:hover, .drop-zone.is-dragover { border-color: var(--brand-strong); background: var(--brand-soft); }
+    .drop-zone.is-dragover { box-shadow: inset 0 0 0 1px var(--brand-strong); }
+    .drop-zone[aria-disabled="true"] { opacity: .6; cursor: wait; }
+    .drop-icon { width: 48px; height: 48px; display: grid; place-items: center; margin-bottom: 8px; border-radius: 14px; background: var(--brand-soft); color: var(--brand-deep); }
+    .drop-icon svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .drop-title { font-size: .92rem; font-weight: 750; }
+    .drop-hint { margin-top: 2px; color: var(--muted); font-size: .76rem; line-height: 1.5; }
+    .visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; border: 0 !important; }
+    .file-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-soft); }
+    .file-thumb { width: 42px; height: 42px; flex: none; object-fit: cover; border: 1px solid var(--line); border-radius: 8px; background: var(--page); }
+    .file-copy { min-width: 0; flex: 1; }
+    .file-name { display: block; overflow: hidden; color: var(--text); font-size: .8rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .file-meta { display: block; overflow: hidden; color: var(--muted); font-size: .71rem; text-overflow: ellipsis; white-space: nowrap; }
+    .text-btn { flex: none; min-height: 32px; padding: 2px 6px; border: 0; border-radius: 7px; background: transparent; color: var(--brand-deep); cursor: pointer; font-size: .76rem; font-weight: 750; }
+    .text-btn:hover { background: var(--brand-soft); }
+    .text-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .field-hint { margin: 8px 0 0; color: var(--muted); font-size: .76rem; line-height: 1.5; }
+    .field-hint a { color: var(--brand-deep); font-weight: 650; }
+    .input-error { margin: 9px 0 0; padding: 9px 11px; border: 1px solid var(--danger-border); border-radius: 9px; background: var(--danger-bg); color: var(--danger-text); font-size: .8rem; }
+    .key-form { display: grid; }
+    .key-group { display: flex; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--page); transition: border-color .16s ease, box-shadow .16s ease; }
+    .key-group:focus-within { border-color: var(--brand-strong); box-shadow: 0 0 0 3px var(--brand-soft); }
+    .key-input { min-width: 0; min-height: 44px; flex: 1; padding: 10px 12px; border: 0; background: transparent; color: var(--text); font-size: .87rem; }
+    .key-input:focus { outline: 0; }
+    .key-input:disabled { opacity: .6; cursor: wait; }
+    .key-toggle { min-height: 44px; flex: none; padding: 0 13px; border: 0; border-left: 1px solid var(--line); background: var(--surface-soft); color: var(--muted); cursor: pointer; font-size: .74rem; font-weight: 750; }
+    .key-toggle:hover { color: var(--brand-deep); }
+    .key-toggle[aria-pressed="true"] { color: var(--brand-deep); }
+    .key-toggle:disabled { opacity: .5; cursor: wait; }
+    .btn { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 7px; padding: 9px 14px; border: 1px solid transparent; border-radius: 11px; cursor: pointer; font-size: .83rem; font-weight: 750; text-decoration: none; transition: transform .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease; }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn svg { flex: none; }
+    .btn-primary { background: linear-gradient(135deg, var(--brand-deep), var(--brand)); color: #fff; }
+    .btn-primary:hover:not(:disabled) { box-shadow: 0 7px 17px rgba(20, 184, 166, .2); }
+    .btn-outline { border-color: var(--line); background: var(--surface); color: var(--text); }
+    .btn-outline:hover:not(:disabled) { border-color: var(--brand); color: var(--brand-deep); }
+    .btn.full { width: 100%; }
+    .remove-btn { width: 100%; margin-top: 13px; }
+    .result-panel { padding: clamp(18px, 2.8vw, 23px); align-self: start; }
+    .result-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 15px; }
+    .result-head .eyebrow { margin-bottom: 3px; }
+    .result-head h2 { font-size: 1.3rem; }
+    .status-pill { display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); color: var(--muted); font-size: .7rem; font-weight: 700; white-space: nowrap; }
+    .status-pill::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--muted); }
+    .status-pill.is-ready { color: var(--brand-deep); border-color: var(--brand); background: var(--brand-soft); }
+    .status-pill.is-ready::before { background: var(--success-dot); }
+    .status-pill.is-busy { color: var(--brand-deep); border-color: var(--brand); background: var(--brand-soft); }
+    .status-pill.is-busy::before { background: var(--brand); animation: pulse 1.2s ease-in-out infinite; }
+    .status-pill.is-success { color: var(--brand-deep); border-color: var(--brand); background: var(--brand-soft); }
+    .status-pill.is-success::before { background: var(--success-dot); }
+    .status-pill.is-error { color: var(--danger-text); border-color: var(--danger-border); background: var(--danger-bg); }
+    .status-pill.is-error::before { background: var(--danger-dot); }
+    .empty-state, .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 350px; padding: 24px 16px; text-align: center; }
+    .empty-icon { width: 58px; height: 58px; display: grid; place-items: center; margin-bottom: 12px; border-radius: 17px; background: var(--brand-soft); color: var(--brand-deep); }
+    .empty-icon svg { width: 27px; height: 27px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .empty-state h3, .loading-state h3 { margin: 0 0 5px; font-size: 1rem; letter-spacing: -.015em; }
+    .empty-state p, .loading-state p { max-width: 300px; margin: 0; color: var(--muted); font-size: .82rem; }
+    .spinner { width: 38px; height: 38px; margin-bottom: 14px; border: 3px solid var(--line); border-top-color: var(--brand-strong); border-radius: 50%; animation: spin .9s linear infinite; }
+    .progress-track { width: min(260px, 84%); height: 7px; overflow: hidden; margin-top: 16px; border-radius: 999px; background: var(--line); }
+    .progress-fill { display: block; width: 42%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--brand-deep), var(--brand)); animation: progress-slide 1.15s ease-in-out infinite; }
+    .result-error { margin-top: 2px; padding: 14px; border: 1px solid var(--danger-border); border-radius: 12px; background: var(--danger-bg); color: var(--danger-text); }
+    .result-error h3 { margin: 0 0 4px; font-size: .92rem; }
+    .result-error p { margin: 0; font-size: .81rem; line-height: 1.55; }
+    .error-detail { margin-top: 5px !important; font-size: .73rem !important; opacity: .85; overflow-wrap: anywhere; }
+    .retry-btn { margin-top: 11px; border-color: var(--danger-border); background: transparent; color: inherit; }
+    .retry-btn:hover:not(:disabled) { border-color: var(--danger-text); color: var(--danger-text); }
+    .comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .preview-card { min-width: 0; margin: 0; }
+    .preview-stage { display: grid; height: 196px; place-items: center; overflow: hidden; padding: 8px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-soft); }
+    .preview-stage img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+    .checkerboard { background-color: var(--checker-b); background-image: linear-gradient(45deg, var(--checker-a) 25%, transparent 25%), linear-gradient(-45deg, var(--checker-a) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--checker-a) 75%), linear-gradient(-45deg, transparent 75%, var(--checker-a) 75%); background-size: 16px 16px; background-position: 0 0, 0 8px, 8px -8px, -8px 0; }
+    .preview-card figcaption { display: flex; justify-content: space-between; gap: 8px; margin-top: 6px; font-size: .69rem; }
+    .preview-card figcaption span:first-child { color: var(--text); font-weight: 700; }
+    .preview-card figcaption span:last-child { min-width: 0; overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; }
+    .result-note { margin: 10px 0 0; color: var(--muted); font-size: .72rem; line-height: 1.5; }
+    .result-actions { display: grid; gap: 8px; margin-top: 13px; }
+    .content-section { margin-top: 24px; padding: clamp(20px, 3vw, 28px); }
+    .section-heading { margin-bottom: 17px; }
+    .section-heading .eyebrow { margin-bottom: 4px; }
+    .section-heading h2 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.6rem); letter-spacing: -.03em; }
+    .desktop-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 22px; }
+    .desktop-copy > p { margin: 0; color: var(--muted); font-size: .87rem; line-height: 1.65; }
+    .feature-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 14px 0; padding: 0; list-style: none; }
+    .feature-list li { display: flex; align-items: flex-start; gap: 7px; color: var(--muted); font-size: .79rem; line-height: 1.45; }
+    .feature-list svg { width: 15px; height: 15px; flex: none; margin-top: 2px; fill: none; stroke: var(--brand-deep); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .desktop-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .setup-card { padding: 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-soft); }
+    .setup-card h3 { margin: 0 0 3px; font-size: .92rem; }
+    .setup-card .field-hint { margin-top: 0; }
+    .code-block { overflow-x: auto; margin: 10px 0 8px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--code-bg); color: var(--code-text); font: .73rem/1.7 var(--mono); white-space: pre; }
+    .code-comment { color: var(--code-muted); }
+    .setup-note { margin: 8px 0 0; color: var(--muted); font-size: .71rem; line-height: 1.5; }
+    .steps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .steps-grid li { display: flex; gap: 11px; padding: 14px; border-radius: 13px; background: var(--page); }
+    .steps-grid li > span { color: var(--brand-deep); font-size: .74rem; font-weight: 800; }
+    .steps-grid h3 { margin: 0 0 4px; font-size: .89rem; }
+    .steps-grid p, .faq-section details p { margin: 0; color: var(--muted); font-size: .83rem; }
+    .faq-section details { border-top: 1px solid var(--line); }
+    .faq-section summary { padding: 13px 2px; cursor: pointer; font-weight: 700; }
+    .faq-section details p { padding: 0 2px 14px; }
+    .faq-section summary::marker { color: var(--brand-deep); }
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 10000; display: flex; max-width: min(410px, calc(100vw - 32px)); align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: var(--text); color: var(--surface); box-shadow: 0 12px 32px rgba(15, 23, 42, .22); font-size: .83rem; font-weight: 600; animation: toast-in .2s ease; }
+    .toast.is-error { background: var(--danger-text); color: var(--surface); }
+    .toast-close { width: 26px; height: 26px; display: grid; flex: none; place-items: center; padding: 0; border: 0; border-radius: 7px; background: transparent; color: inherit; cursor: pointer; opacity: .7; }
+    .toast-close:hover { background: rgba(148, 163, 184, .2); opacity: 1; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 50% { opacity: .35; } }
+    @keyframes progress-slide { 0% { transform: translateX(-110%); } 100% { transform: translateX(260%); } }
+    @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    [data-theme="dark"] .btn-primary { color: #04211e; }
+    @media (min-width: 901px) {
+      .result-panel { position: sticky; top: 18px; max-height: calc(100vh - 36px); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+    }
+    @media (max-width: 900px) {
+      .workspace { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+      .result-panel { position: static; max-height: none; overflow: visible; }
+      .desktop-grid { grid-template-columns: minmax(0, 1fr); }
+      .steps-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .page-shell { width: min(100% - 32px, 620px); padding-top: 32px; }
+      .key-input { font-size: 16px; }
+    }
+    @media (max-width: 440px) {
+      .page-shell { width: min(100% - 24px, 400px); padding-top: 25px; }
+      .hero { margin-bottom: 20px; }
+      .hero > p:not(.eyebrow) { font-size: .96rem; }
+      .privacy-note { align-items: flex-start; border-radius: 12px; font-size: .76rem; }
+      .mode-note { padding: 11px 12px; }
+      .panel, .result-panel { padding: 17px; }
+      .comparison { grid-template-columns: minmax(0, 1fr); }
+      .preview-stage { height: 216px; }
+      .drop-zone { min-height: 172px; padding: 20px 14px; }
+      .feature-list { grid-template-columns: minmax(0, 1fr); }
+      .file-name, .file-meta { white-space: normal; overflow-wrap: anywhere; }
+      .result-head { align-items: center; }
+      .toast { right: 12px; bottom: 12px; left: 12px; max-width: none; }
+      .desktop-actions .btn { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="badge"><i class="fas fa-cube"></i> Desktop App &bull; Python</div>
-            <h1>BG-Remove</h1>
-            <p>Remove image backgrounds in seconds using AI — completely locally on your computer. No internet required after initial setup. No images uploaded anywhere.</p>
-            <div class="actions">
-                <a href="https://github.com/aloksystems/Tools/tree/main/BG-Remove" target="_blank" class="btn btn-primary">
-                    <i class="fab fa-github"></i> View Source
-                </a>
-                <a href="https://github.com/aloksystems/Tools/archive/refs/heads/main.zip" target="_blank" class="btn btn-outline">
-                    <i class="fas fa-download"></i> Download ZIP
-                </a>
-            </div>
-        </header>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">CLEAN CUTOUTS, TWO WAYS</p>
+      <h1 id="page-title">Remove image backgrounds</h1>
+      <p>Remove a photo's background and download a transparent PNG — with your own remove.bg key or the local desktop app.</p>
+      <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>Browser mode sends your image straight to remove.bg. This site never receives it.</div>
+    </section>
 
-        <div class="card">
-            <h2><i class="fas fa-info-circle"></i> About</h2>
-            <p>BG-Remove is a modern, user-friendly desktop application that uses AI (U&sup2;-Net neural network) to remove backgrounds from images. Built with Python, CustomTkinter for a sleek dark UI, and Pillow for image handling.</p>
-        </div>
-
-        <div class="card">
-            <h2><i class="fas fa-check-circle"></i> Features</h2>
-            <ul>
-                <li><i class="fas fa-palette"></i> Clean dark UI using CustomTkinter</li>
-                <li><i class="fas fa-eye"></i> Live before/after preview side-by-side</li>
-                <li><i class="fas fa-bolt"></i> One-click background removal with progress feedback</li>
-                <li><i class="fas fa-cloud"></i> Local AI (offline) or remove.bg API mode</li>
-                <li><i class="fas fa-key"></i> API key persistence across sessions</li>
-                <li><i class="fas fa-download"></i> Export as transparent PNG</li>
-                <li><i class="fas fa-lock"></i> 100% private — all processing stays on your machine</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2><i class="fas fa-terminal"></i> Quick Setup</h2>
-            <p>Requires Python 3.10&ndash;3.12. Run these commands in PowerShell:</p>
-            <div class="code-block">
-                <span class="comment"># Navigate to BG-Remove folder</span><br>
-                cd BG-Remove<br><br>
-                <span class="comment"># Create virtual environment &amp; install</span><br>
-                python -m venv .venv<br>
-                .\.venv\Scripts\Activate.ps1<br>
-                pip install -r requirements.txt<br><br>
-                <span class="comment"># Launch the app</span><br>
-                python app.py
-            </div>
-        </div>
-
-        <div class="card">
-            <h2><i class="fas fa-image"></i> Usage</h2>
-            <ul>
-                <li><i class="fas fa-1"></i> Click <strong>"Select Image"</strong> &rarr; Choose PNG, JPG, BMP, or GIF</li>
-                <li><i class="fas fa-2"></i> Choose <strong>Local</strong> (offline AI) or <strong>API</strong> (remove.bg) mode</li>
-                <li><i class="fas fa-3"></i> Click <strong>"Remove Background"</strong> &rarr; Wait a few seconds</li>
-                <li><i class="fas fa-4"></i> Click <strong>"Save Image"</strong> &rarr; Export as transparent PNG</li>
-            </ul>
-        </div>
-
-        <footer>
-            <p><a href="https://aloksystems.freedev.app/">&#8592; Back to Tools</a></p>
-            <p style="margin-top:8px">&copy; 2026 Alok Systems Tools</p>
-        </footer>
+    <div class="mode-note" role="note">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+      <div>
+        <strong>Browser mode needs a remove.bg API key.</strong>
+        <p>The request uses the same endpoint, <code>image_file</code> field and <code>X-Api-Key</code> header as the desktop app's API mode. For fully offline processing, use Local mode in the desktop app.</p>
+      </div>
     </div>
+
+    <section class="workspace" aria-label="Background remover">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="upload-title">
+          <div class="panel-heading"><span class="step-number">01</span><div><h2 id="upload-title">Add your image</h2><p>Drag a file in or browse from your device.</p></div></div>
+          <div id="dropZone" class="drop-zone" role="button" tabindex="0" aria-label="Choose an image or drop one here" aria-describedby="dropHint" aria-controls="fileInput">
+            <span class="drop-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></span>
+            <strong class="drop-title">Drop an image here</strong>
+            <span class="drop-hint" id="dropHint">or click to browse · PNG, JPG or WEBP · up to 20 MB</span>
+            <input id="fileInput" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" tabindex="-1" aria-hidden="true">
+          </div>
+          <p id="fileError" class="input-error" role="alert" hidden></p>
+          <div id="fileRow" class="file-row" hidden>
+            <img id="fileThumb" class="file-thumb" alt="">
+            <div class="file-copy"><strong id="fileName" class="file-name"></strong><span id="fileMeta" class="file-meta"></span></div>
+            <button id="changeFile" class="text-btn" type="button">Change</button>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="key-title">
+          <div class="panel-heading"><span class="step-number">02</span><div><h2 id="key-title">Connect remove.bg</h2><p>Your key is used once and never saved here.</p></div></div>
+          <form id="keyForm" class="key-form" novalidate>
+            <label class="field-label" for="apiKey">remove.bg API key</label>
+            <div class="key-group">
+              <input id="apiKey" class="key-input" type="password" name="apiKey" placeholder="Paste your API key" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="keyHint">
+              <button id="toggleKey" class="key-toggle" type="button" aria-pressed="false" aria-label="Show API key" aria-controls="apiKey">Show</button>
+            </div>
+            <p class="field-hint" id="keyHint">Kept in this tab only, never saved to your device. Get a key at <a href="https://www.remove.bg/api" target="_blank" rel="noopener noreferrer">remove.bg/api</a>.</p>
+            <p id="keyError" class="input-error" role="alert" hidden></p>
+            <button id="removeBtn" class="btn btn-primary remove-btn" type="submit" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 19 9-9M14 5l1.2 2.8L18 9l-2.8 1.2L14 13l-1.2-2.8L10 9l2.8-1.2L14 5ZM5 5l.7 1.6L7.3 7.3 5.7 8 5 9.6 4.3 8 2.7 7.3 4.3 6.6 5 5Z"/></svg>
+              <span id="removeBtnText">Remove background</span>
+            </button>
+          </form>
+        </section>
+      </div>
+
+      <aside id="resultPanel" class="result-panel" aria-labelledby="preview-title" aria-busy="false">
+        <div class="result-head">
+          <div><p class="eyebrow">LIVE PREVIEW</p><h2 id="preview-title">Before &amp; after</h2></div>
+          <span id="resultStatus" class="status-pill is-idle" role="status" aria-live="polite">Waiting</span>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <span class="empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/><circle cx="16.5" cy="8.5" r="1.5"/></svg></span>
+          <h3>Your cutout will appear here</h3>
+          <p>Add an image and your remove.bg key. The result downloads as a transparent PNG.</p>
+        </div>
+
+        <div id="loadingState" class="loading-state" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <h3>Removing the background</h3>
+          <p>Uploading to remove.bg and cutting out the subject. This usually takes a few seconds.</p>
+          <div class="progress-track" role="progressbar" aria-label="Background removal in progress" aria-valuetext="Processing with remove.bg"><span class="progress-fill"></span></div>
+        </div>
+
+        <div id="resultError" class="result-error" role="alert" hidden>
+          <h3>Background removal failed</h3>
+          <p id="resultErrorMessage"></p>
+          <p id="errorDetail" class="error-detail" hidden></p>
+          <button id="retryBtn" class="btn retry-btn" type="button">Try again</button>
+        </div>
+
+        <div id="comparison" class="comparison" hidden>
+          <figure class="preview-card">
+            <div class="preview-stage"><img id="originalImage" alt="Original image before background removal"></div>
+            <figcaption><span>Original</span><span id="originalMeta"></span></figcaption>
+          </figure>
+          <figure class="preview-card">
+            <div class="preview-stage checkerboard"><img id="resultImage" alt="Image with the background removed, shown over a transparency checkerboard"></div>
+            <figcaption><span>Background removed</span><span id="resultMeta"></span></figcaption>
+          </figure>
+        </div>
+        <p id="resultNote" class="result-note" hidden>Transparent areas appear as a checkerboard. remove.bg's plan controls credits and output resolution.</p>
+
+        <div id="resultActions" class="result-actions" hidden>
+          <a id="downloadBtn" class="btn btn-primary full" href="#" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg>
+            Download PNG
+          </a>
+          <button id="startOver" class="btn btn-outline full" type="button">Start over</button>
+        </div>
+      </aside>
+    </section>
+
+    <section class="content-section" aria-labelledby="offline-title">
+      <div class="section-heading"><p class="eyebrow">WANT NO UPLOADS?</p><h2 id="offline-title">Run the desktop app for fully local AI</h2></div>
+      <div class="desktop-grid">
+        <div class="desktop-copy">
+          <p>The included Python app runs rembg's U²-Net model on your computer. In Local mode, images are never uploaded. It also has a remove.bg API mode, a side-by-side preview, and can remember your API key between sessions on your machine.</p>
+          <ul class="feature-list">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Offline U²-Net processing</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Live before/after preview</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Transparent PNG export</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>PNG, JPG, BMP and GIF input</li>
+          </ul>
+          <div class="desktop-actions">
+            <a class="btn btn-primary" href="https://github.com/aloksystems/Tools/tree/main/BG-Remove" target="_blank" rel="noopener noreferrer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              View source
+            </a>
+            <a class="btn btn-outline" href="https://github.com/aloksystems/Tools/archive/refs/heads/main.zip" target="_blank" rel="noopener noreferrer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg>
+              Download ZIP
+            </a>
+          </div>
+        </div>
+        <div class="setup-card">
+          <h3>Windows quick setup</h3>
+          <p class="field-hint">Requires Python 3.10–3.12. The first Local-mode run downloads the AI model.</p>
+          <pre class="code-block"><code id="setupCode"><span class="code-comment"># navigate to the project folder</span>
+cd BG-Remove
+
+<span class="code-comment"># create a virtual environment and install</span>
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+<span class="code-comment"># launch the desktop app</span>
+python app.py</code></pre>
+          <button id="copySetup" class="btn btn-outline full" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="copySetupText">Copy setup commands</span>
+          </button>
+          <p class="setup-note">PowerShell may ask you to allow local scripts with <code>Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How browser mode works</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Add an image</h3><p>Drop a PNG, JPG or WEBP up to 20 MB. Nothing is uploaded until you press Remove background.</p></div></li>
+        <li><span>02</span><div><h3>Remove the background</h3><p>Your key authorizes a request from this tab to remove.bg. Images are not routed through this website.</p></div></li>
+        <li><span>03</span><div><h3>Check and download</h3><p>Compare both versions over the checkerboard, then save the transparent result as a PNG.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Is my image uploaded anywhere?</summary><p>In browser mode the image you choose goes directly from your browser to remove.bg using your key. This site has no server and does not receive or store it. remove.bg handles it under its own terms. The desktop app's Local mode processes images entirely on your computer.</p></details>
+      <details><summary>Do I need a paid remove.bg account?</summary><p>You need a remove.bg account and API key. Limited free previews are available, and your plan determines credits and output resolution. Create or manage a key at remove.bg.</p></details>
+      <details><summary>Is my API key saved?</summary><p>No. In browser mode the key stays in this tab's memory, is sent only to remove.bg, and disappears when you reload or close the page. The desktop app can optionally remember it locally.</p></details>
+      <details><summary>Which files can I use?</summary><p>Browser mode accepts PNG, JPG and WEBP files up to 20 MB. The desktop app additionally accepts BMP and GIF files and has no browser upload step.</p></details>
+      <details><summary>Can I remove backgrounds completely offline?</summary><p>Yes. Install the desktop app and choose Local mode. rembg's U²-Net model runs on your machine. The first run downloads the model; later runs can work without an internet connection.</p></details>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden>
+    <span id="toastMessage"></span>
+    <button id="toastClose" class="toast-close" type="button" aria-label="Dismiss notification">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const MAX_BYTES = 20 * 1024 * 1024;
+      const ACCEPTED_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+      const SETUP_COMMANDS = 'cd BG-Remove\npython -m venv .venv\n.\\.venv\\Scripts\\Activate.ps1\npip install -r requirements.txt\npython app.py';
+
+      const els = {
+        fileInput: document.getElementById('fileInput'),
+        dropZone: document.getElementById('dropZone'),
+        fileError: document.getElementById('fileError'),
+        fileRow: document.getElementById('fileRow'),
+        fileThumb: document.getElementById('fileThumb'),
+        fileName: document.getElementById('fileName'),
+        fileMeta: document.getElementById('fileMeta'),
+        changeFile: document.getElementById('changeFile'),
+        keyForm: document.getElementById('keyForm'),
+        apiKey: document.getElementById('apiKey'),
+        toggleKey: document.getElementById('toggleKey'),
+        keyError: document.getElementById('keyError'),
+        removeBtn: document.getElementById('removeBtn'),
+        removeBtnText: document.getElementById('removeBtnText'),
+        resultPanel: document.getElementById('resultPanel'),
+        resultStatus: document.getElementById('resultStatus'),
+        emptyState: document.getElementById('emptyState'),
+        loadingState: document.getElementById('loadingState'),
+        resultError: document.getElementById('resultError'),
+        resultErrorMessage: document.getElementById('resultErrorMessage'),
+        errorDetail: document.getElementById('errorDetail'),
+        retryBtn: document.getElementById('retryBtn'),
+        comparison: document.getElementById('comparison'),
+        originalImage: document.getElementById('originalImage'),
+        originalMeta: document.getElementById('originalMeta'),
+        resultImage: document.getElementById('resultImage'),
+        resultMeta: document.getElementById('resultMeta'),
+        resultNote: document.getElementById('resultNote'),
+        resultActions: document.getElementById('resultActions'),
+        downloadBtn: document.getElementById('downloadBtn'),
+        startOver: document.getElementById('startOver'),
+        copySetup: document.getElementById('copySetup'),
+        copySetupText: document.getElementById('copySetupText'),
+        toast: document.getElementById('toast'),
+        toastMessage: document.getElementById('toastMessage'),
+        toastClose: document.getElementById('toastClose')
+      };
+
+      const state = {
+        file: null,
+        originalUrl: null,
+        resultUrl: null,
+        processing: false,
+        fileToken: 0,
+        requestToken: 0
+      };
+
+      let dragDepth = 0;
+      let toastTimer = null;
+      let buttonTimer = null;
+
+      function formatBytes(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(bytes < 10240 ? 1 : 0) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+      }
+
+      function isAcceptedFile(file) {
+        if (ACCEPTED_TYPES.indexOf(file.type) !== -1) return true;
+        return /\.(png|jpe?g|webp)$/i.test(file.name) && (!file.type || file.type === 'application/octet-stream');
+      }
+
+      function setStatus(text, status) {
+        els.resultStatus.textContent = text;
+        els.resultStatus.className = 'status-pill is-' + status;
+      }
+
+      function showFileError(message) {
+        els.fileError.textContent = message;
+        els.fileError.hidden = false;
+      }
+
+      function showKeyError(message) {
+        els.keyError.textContent = message;
+        els.keyError.hidden = false;
+        els.apiKey.setAttribute('aria-invalid', 'true');
+        els.apiKey.focus();
+      }
+
+      function clearErrors() {
+        els.fileError.hidden = true;
+        els.keyError.hidden = true;
+        els.apiKey.removeAttribute('aria-invalid');
+      }
+
+      function showToast(message, type) {
+        els.toastMessage.textContent = message;
+        els.toast.classList.toggle('is-error', type === 'error');
+        els.toast.hidden = false;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { els.toast.hidden = true; }, 5200);
+      }
+
+      function hideToast() {
+        clearTimeout(toastTimer);
+        els.toast.hidden = true;
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text).then(function () { return true; }).catch(function () { return fallbackCopy(text); });
+        }
+        return Promise.resolve(fallbackCopy(text));
+      }
+
+      function fallbackCopy(text) {
+        const area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.left = '-9999px';
+        document.body.appendChild(area);
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (error) { ok = false; }
+        area.remove();
+        return ok;
+      }
+
+      function getDimensions(url) {
+        return new Promise(function (resolve, reject) {
+          const image = new Image();
+          image.onload = function () {
+            resolve({ width: image.naturalWidth, height: image.naturalHeight });
+          };
+          image.onerror = reject;
+          image.src = url;
+        });
+      }
+
+      function clearResult() {
+        if (state.resultUrl) {
+          URL.revokeObjectURL(state.resultUrl);
+          state.resultUrl = null;
+        }
+        els.loadingState.hidden = true;
+        els.resultError.hidden = true;
+        els.comparison.hidden = true;
+        els.resultNote.hidden = true;
+        els.resultActions.hidden = true;
+        els.emptyState.hidden = false;
+        els.resultImage.removeAttribute('src');
+        els.downloadBtn.removeAttribute('href');
+        els.downloadBtn.removeAttribute('download');
+        els.resultMeta.textContent = '';
+        els.originalMeta.textContent = '';
+      }
+
+      async function handleFile(file) {
+        if (!file || state.processing) return;
+        clearErrors();
+        if (!isAcceptedFile(file)) {
+          showFileError('Choose a PNG, JPG or WEBP image. The desktop app also accepts BMP and GIF files.');
+          return;
+        }
+        if (file.size === 0) {
+          showFileError('That file appears to be empty. Choose another image.');
+          return;
+        }
+        if (file.size > MAX_BYTES) {
+          showFileError('That image is ' + formatBytes(file.size) + '. Browser mode accepts up to 20 MB, so try a smaller file.');
+          return;
+        }
+
+        const token = ++state.fileToken;
+        clearResult();
+        if (state.originalUrl) URL.revokeObjectURL(state.originalUrl);
+        state.file = file;
+        state.originalUrl = URL.createObjectURL(file);
+
+        els.originalImage.src = state.originalUrl;
+        els.fileThumb.src = state.originalUrl;
+        els.fileThumb.alt = 'Preview of ' + file.name;
+        els.fileName.textContent = file.name;
+        els.fileMeta.textContent = formatBytes(file.size);
+        els.fileRow.hidden = false;
+        els.removeBtn.disabled = false;
+        setStatus('Ready', 'ready');
+
+        try {
+          const dimensions = await getDimensions(state.originalUrl);
+          if (token !== state.fileToken || state.file !== file) return;
+          els.fileMeta.textContent = formatBytes(file.size) + ' · ' + dimensions.width + ' × ' + dimensions.height + ' px';
+          els.originalMeta.textContent = dimensions.width + ' × ' + dimensions.height;
+        } catch (error) {
+          if (token === state.fileToken) {
+            els.fileMeta.textContent = formatBytes(file.size) + ' · dimensions unavailable';
+          }
+        }
+      }
+
+      function resetAll() {
+        if (state.processing) return;
+        state.fileToken += 1;
+        clearResult();
+        if (state.originalUrl) {
+          URL.revokeObjectURL(state.originalUrl);
+          state.originalUrl = null;
+        }
+        state.file = null;
+        els.fileInput.value = '';
+        els.fileRow.hidden = true;
+        els.fileName.textContent = '';
+        els.fileMeta.textContent = '';
+        els.fileThumb.removeAttribute('src');
+        els.originalImage.removeAttribute('src');
+        els.removeBtn.disabled = true;
+        clearErrors();
+        setStatus('Waiting', 'idle');
+        els.dropZone.focus();
+      }
+
+      function setProcessingUi(isProcessing) {
+        els.fileInput.disabled = isProcessing;
+        els.apiKey.disabled = isProcessing;
+        els.toggleKey.disabled = isProcessing;
+        els.changeFile.disabled = isProcessing;
+        els.removeBtn.disabled = isProcessing || !state.file;
+        els.removeBtnText.textContent = isProcessing ? 'Removing background…' : 'Remove background';
+        els.dropZone.setAttribute('aria-disabled', String(isProcessing));
+        els.resultPanel.setAttribute('aria-busy', String(isProcessing));
+        if (isProcessing) {
+          els.dropZone.classList.remove('is-dragover');
+          els.emptyState.hidden = true;
+          els.resultError.hidden = true;
+          els.comparison.hidden = true;
+          els.resultNote.hidden = true;
+          els.resultActions.hidden = true;
+          els.loadingState.hidden = false;
+          setStatus('Processing', 'busy');
+        } else {
+          els.loadingState.hidden = true;
+        }
+      }
+
+      function describeResponseError(response) {
+        let detail = '';
+        return response.clone().json().then(function (data) {
+          if (data && Array.isArray(data.errors) && data.errors.length) {
+            detail = [data.errors[0].title, data.errors[0].detail].filter(Boolean).join(': ');
+          } else if (data && data.message) {
+            detail = String(data.message);
+          }
+        }).catch(function () {}).then(function () {
+          if (detail.length > 220) detail = detail.slice(0, 217) + '…';
+          let message;
+          switch (response.status) {
+            case 400:
+            case 422:
+              message = 'remove.bg could not process this image. Try another PNG, JPG or WEBP under 20 MB.';
+              break;
+            case 401:
+            case 403:
+              message = 'remove.bg rejected this API key. Check the key and your account, then try again.';
+              break;
+            case 402:
+              message = 'This remove.bg key is out of credits. Free keys include limited previews; add credits or use the desktop app’s Local mode.';
+              break;
+            case 429:
+              message = 'remove.bg is rate-limiting this key. Wait a minute, then try again.';
+              break;
+            default:
+              message = response.status >= 500
+                ? 'remove.bg had a server error. Try again in a moment.'
+                : 'remove.bg could not remove the background (HTTP ' + response.status + ').';
+          }
+          return { message: message, detail: detail };
+        });
+      }
+
+      function showResultError(message, detail) {
+        els.loadingState.hidden = true;
+        els.emptyState.hidden = true;
+        els.comparison.hidden = true;
+        els.resultNote.hidden = true;
+        els.resultActions.hidden = true;
+        els.resultError.hidden = false;
+        els.resultErrorMessage.textContent = message;
+        els.errorDetail.textContent = detail || '';
+        els.errorDetail.hidden = !detail;
+        setStatus('Failed', 'error');
+      }
+
+      function makeDownloadName(name) {
+        const base = String(name || 'image')
+          .replace(/\.[^.]+$/, '')
+          .replace(/[\\/:*?"<>|]+/g, '-')
+          .trim();
+        return (base || 'image') + '-no-bg.png';
+      }
+
+      function scrollToResult() {
+        if (!window.matchMedia('(max-width: 900px)').matches) return;
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        els.resultPanel.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      }
+
+      async function removeBackground() {
+        if (state.processing) return;
+        clearErrors();
+        const apiKey = els.apiKey.value.trim();
+        if (!state.file) {
+          showFileError('Choose an image before removing the background.');
+          els.dropZone.focus();
+          return;
+        }
+        if (!apiKey) {
+          showKeyError('Enter your remove.bg API key to use browser mode.');
+          return;
+        }
+
+        state.processing = true;
+        const token = ++state.requestToken;
+        const controller = new AbortController();
+        let timedOut = false;
+        const timer = setTimeout(function () {
+          timedOut = true;
+          controller.abort();
+        }, 60000);
+
+        setProcessingUi(true);
+        scrollToResult();
+
+        try {
+          const formData = new FormData();
+          formData.append('image_file', state.file);
+
+          const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+            method: 'POST',
+            headers: { 'X-Api-Key': apiKey },
+            body: formData,
+            signal: controller.signal
+          });
+
+          if (!response.ok) {
+            const info = await describeResponseError(response);
+            const apiError = new Error(info.message);
+            apiError.detail = info.detail;
+            throw apiError;
+          }
+
+          const contentType = (response.headers.get('content-type') || '').toLowerCase();
+          if (contentType.indexOf('image/') !== 0) {
+            throw new Error('remove.bg returned an unexpected response. Please try again.');
+          }
+
+          const blob = await response.blob();
+          if (!blob.size) {
+            throw new Error('remove.bg returned an empty image. Please try again.');
+          }
+          if (token !== state.requestToken) return;
+
+          if (state.resultUrl) URL.revokeObjectURL(state.resultUrl);
+          state.resultUrl = URL.createObjectURL(blob);
+          els.resultImage.src = state.resultUrl;
+          els.downloadBtn.href = state.resultUrl;
+          els.downloadBtn.download = makeDownloadName(state.file.name);
+
+          let dimensions = null;
+          try {
+            await els.resultImage.decode();
+            dimensions = { width: els.resultImage.naturalWidth, height: els.resultImage.naturalHeight };
+          } catch (error) {}
+
+          els.resultMeta.textContent = 'PNG · ' + formatBytes(blob.size) + (dimensions ? ' · ' + dimensions.width + ' × ' + dimensions.height : '');
+          els.loadingState.hidden = true;
+          els.resultError.hidden = true;
+          els.emptyState.hidden = true;
+          els.comparison.hidden = false;
+          els.resultNote.hidden = false;
+          els.resultActions.hidden = false;
+          setStatus('Complete', 'success');
+          showToast('Background removed. Your transparent PNG is ready.');
+        } catch (error) {
+          if (token !== state.requestToken) return;
+          let message;
+          if (error.name === 'AbortError') {
+            message = timedOut
+              ? 'remove.bg took longer than 60 seconds. Try a smaller image or retry.'
+              : 'The background removal request was cancelled.';
+          } else if (error instanceof TypeError && !error.detail) {
+            message = 'Could not reach remove.bg. Check your internet connection and try again.';
+          } else {
+            message = error.message || 'Something went wrong while removing the background.';
+          }
+          showResultError(message, error.detail);
+        } finally {
+          clearTimeout(timer);
+          if (token === state.requestToken) {
+            state.processing = false;
+            setProcessingUi(false);
+          }
+        }
+      }
+
+      async function copySetupCommands() {
+        const ok = await copyText(SETUP_COMMANDS);
+        if (!ok) {
+          showToast('Copy failed. Select the commands manually.', 'error');
+          return;
+        }
+        els.copySetupText.textContent = 'Copied';
+        clearTimeout(buttonTimer);
+        buttonTimer = setTimeout(function () {
+          els.copySetupText.textContent = 'Copy setup commands';
+        }, 1800);
+        showToast('Setup commands copied.');
+      }
+
+      function toggleKeyVisibility() {
+        const showing = els.apiKey.type === 'text';
+        els.apiKey.type = showing ? 'password' : 'text';
+        els.toggleKey.textContent = showing ? 'Show' : 'Hide';
+        els.toggleKey.setAttribute('aria-pressed', String(!showing));
+        els.toggleKey.setAttribute('aria-label', (showing ? 'Show' : 'Hide') + ' API key');
+        els.apiKey.focus();
+      }
+
+      els.dropZone.addEventListener('click', function () {
+        if (!state.processing) els.fileInput.click();
+      });
+
+      els.dropZone.addEventListener('keydown', function (event) {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        if (!state.processing) els.fileInput.click();
+      });
+
+      ['dragenter', 'dragover'].forEach(function (type) {
+        els.dropZone.addEventListener(type, function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (state.processing) return;
+          if (type === 'dragenter') dragDepth += 1;
+          els.dropZone.classList.add('is-dragover');
+        });
+      });
+
+      els.dropZone.addEventListener('dragleave', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        dragDepth = Math.max(0, dragDepth - 1);
+        if (dragDepth === 0) els.dropZone.classList.remove('is-dragover');
+      });
+
+      els.dropZone.addEventListener('drop', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        dragDepth = 0;
+        els.dropZone.classList.remove('is-dragover');
+        if (state.processing) return;
+        const file = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files[0] : null;
+        if (!file) {
+          showFileError('No image was found in that drop. Try again or click to browse.');
+          return;
+        }
+        handleFile(file);
+      });
+
+      els.fileInput.addEventListener('change', function (event) {
+        const file = event.target.files && event.target.files[0];
+        event.target.value = '';
+        if (file) handleFile(file);
+      });
+
+      els.changeFile.addEventListener('click', function () {
+        if (!state.processing) els.fileInput.click();
+      });
+
+      els.apiKey.addEventListener('input', function () {
+        els.keyError.hidden = true;
+        els.apiKey.removeAttribute('aria-invalid');
+      });
+
+      els.toggleKey.addEventListener('click', toggleKeyVisibility);
+      els.keyForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        removeBackground();
+      });
+      els.retryBtn.addEventListener('click', removeBackground);
+      els.startOver.addEventListener('click', resetAll);
+      els.copySetup.addEventListener('click', copySetupCommands);
+      els.toastClose.addEventListener('click', hideToast);
+      els.downloadBtn.addEventListener('click', function () {
+        showToast('Transparent PNG downloaded.');
+      });
+
+      window.addEventListener('beforeunload', function () {
+        if (state.originalUrl) URL.revokeObjectURL(state.originalUrl);
+        if (state.resultUrl) URL.revokeObjectURL(state.resultUrl);
+      });
+    })();
+  </script>
 </body>
 </html>

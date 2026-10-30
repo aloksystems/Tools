@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <base href="/apk-website/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
@@ -14,14 +13,17 @@
       content="Browse the Alok Systems Android app catalogue."
     />
     <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0d1118" />
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
-    <link rel="canonical" href="https://aloksystems.freedev.app/apps.html" />
-    <meta property="og:url" content="https://aloksystems.freedev.app/apps.html" />
-    <link rel="stylesheet" href="assets/css/site.css" />
+    <link rel="canonical" href="https://aloksystems.freedev.app/apk-website/apps.html" />
+    <meta property="og:url" content="https://aloksystems.freedev.app/apk-website/apps.html" />
+    <script>try{var t=localStorage.getItem('alok-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');</script>
+    <link rel="stylesheet" href="assets/css/site.css?v=20261030" />
     <title>Apps — Alok Systems</title>
-    <script defer src="assets/js/site.js"></script>
+    <script defer src="assets/js/site.js?v=20261030"></script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <header class="topbar">
       <div class="wrap navrow">
         <a class="brand" href="index.html"
@@ -53,13 +55,13 @@
           </button>
         </div>
       </div>
-      <nav class="mobile-panel" data-mobile-panel>
-        <a href="index.html">Home</a><a href="apps.html">Apps</a
+      <nav class="mobile-panel" data-mobile-panel aria-label="Mobile navigation">
+        <a href="index.html">Home</a><a href="apps.html" aria-current="page">Apps</a
         ><a href="about.html">About</a><a href="contact.html">Contact</a
         ><a href="https://github.com/aloksystems">GitHub ↗</a>
       </nav>
     </header>
-    <main class="wrap catalogue">
+    <main id="main" class="wrap catalogue" tabindex="-1">
       <div class="page-intro" data-reveal>
         <span class="eyebrow">Application catalogue</span>
         <h1>Find your next useful app.</h1>

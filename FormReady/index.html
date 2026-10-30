@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
   <title>FormReady — Bulk Document Converter &amp; Resizer</title>
   <meta name="description" content="Prepare photos, signatures, certificates and PDFs for online applications. Convert, resize and compress multiple documents in one place.">
-  <meta name="theme-color" content="#4f46e5" />
+  <meta name="theme-color" content="#0f766e" />
+  <script>(function(){try{var s=localStorage.getItem('tools-theme');document.documentElement.dataset.theme=s==='dark'||(!s&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}catch(e){}})();</script>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 
   <!-- Open Graph -->
@@ -46,33 +48,26 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- ===== Header ===== -->
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
-      <a class="brand" href="#" aria-label="FormReady home">
-        <span class="brand-mark" aria-hidden="true">FR</span>
-        <span class="brand-text">
-          <strong>FORMREADY</strong>
-          <small>Bulk Document Converter</small>
-        </span>
-      </a>
-
-      <nav class="site-nav" aria-label="Primary">
-        <button class="nav-link" data-scroll="#workspace" type="button">Workspace</button>
-        <button class="nav-link" data-open-ops type="button">Operations</button>
-        <button class="nav-link" data-open-about type="button">About</button>
-        <button class="nav-link" data-open-privacy type="button">Privacy</button>
-      </nav>
-    </div>
-  </header>
-
   <main id="main" role="main">
     <!-- ===== Hero ===== -->
     <section class="hero" id="hero">
       <div class="container hero-inner">
-        <h1>Build Your Application Document Pack</h1>
+        <p class="hero-eyebrow">Free · Private · Browser based</p>
+        <h1>Get every document application-ready.</h1>
+        <p class="hero-copy">Resize, convert, compress and organize your photos and PDFs in one simple workspace.</p>
+        <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>Your files stay in this browser — nothing is uploaded.</div>
       </div>
     </section>
+
+    <div class="container">
+      <div class="protocol-notice" id="protocolNotice" hidden>
+        <strong>FormReady needs a web server.</strong>
+        Opening this page directly (<code>file://</code>) blocks JavaScript modules, so the tool cannot start.
+        In the Tools folder run <code>python -m http.server 8000</code>, then open
+        <code>http://localhost:8000/FormReady/</code>.
+      </div>
+    </div>
+    <script>if (location.protocol === "file:") document.getElementById("protocolNotice").hidden = false;</script>
 
     <!-- ===== Stepper ===== -->
     <div class="container">
@@ -97,21 +92,26 @@
 
       <!-- Stage: Upload -->
       <div class="stage" id="stage-upload">
-        <div class="dropzone" id="dropzone" role="region"
-             aria-label="Upload documents. Drag and drop files here or activate to browse.">
-          <div class="dropzone-inner">
-            <div class="dropzone-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="28" height="28"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0 4 4m-4-4-4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        <section class="panel upload-panel" aria-labelledby="uploadHeading">
+          <div class="panel-heading">
+            <span class="step-number" aria-hidden="true">01</span>
+            <div>
+              <h2 id="uploadHeading">Upload documents</h2>
+              <p>Add photos, signatures, marksheets, certificates and PDFs.</p>
             </div>
-            <h2>Upload your documents</h2>
-            <p class="dropzone-hint">Drag &amp; drop files here</p>
-            <p class="dropzone-or">or</p>
-            <button class="btn btn-primary" data-select-docs type="button">Select Documents</button>
-            <p class="dropzone-types">JPG • PNG • WEBP • GIF • PDF</p>
-            <p class="dropzone-privacy">🔒 Private &amp; Browser-Based</p>
           </div>
-          <input id="fileInput" type="file" multiple accept="image/*,application/pdf,.jpg,.jpeg,.png,.webp,.gif,.pdf" hidden />
-        </div>
+          <div class="dropzone" id="dropzone" role="region" tabindex="0"
+               aria-label="Upload documents. Drag and drop files here or press Enter to browse.">
+            <div class="dropzone-inner">
+              <svg class="dropzone-icon" viewBox="0 0 24 24" width="42" height="42" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+              <p class="dropzone-main">Drag &amp; drop your documents here</p>
+              <p class="dropzone-or">— or —</p>
+              <button class="btn btn-secondary" data-select-docs type="button">Choose documents</button>
+              <p class="dropzone-types">JPG · PNG · WEBP · GIF · PDF — multiple files supported</p>
+            </div>
+            <input id="fileInput" type="file" multiple accept="image/*,application/pdf,.jpg,.jpeg,.png,.webp,.gif,.pdf" hidden />
+          </div>
+        </section>
       </div>
 
       <!-- Stage: Configure -->
@@ -119,14 +119,15 @@
         <div class="configure-grid">
           <!-- LEFT: Documents -->
           <section class="panel panel-docs" aria-labelledby="docsHeading">
-            <div class="panel-head">
+            <div class="panel-heading">
+              <span class="step-number" aria-hidden="true">02</span>
               <div>
-                <h2 id="docsHeading">YOUR APPLICATION PACK</h2>
-                <p class="panel-sub" id="docsSummary">0 documents</p>
+                <h2 id="docsHeading">Your application pack</h2>
+                <p id="docsSummary">0 documents</p>
               </div>
               <div class="panel-actions">
-                <button class="btn btn-soft" data-select-docs type="button">+ Add Documents</button>
-                <button class="btn btn-danger-soft" id="clearAllBtn" type="button">Clear All</button>
+                <button class="btn btn-secondary" data-select-docs type="button">+ Add documents</button>
+                <button class="btn btn-danger-soft" id="clearAllBtn" type="button">Clear all</button>
               </div>
             </div>
 
@@ -135,7 +136,7 @@
                 <input type="checkbox" id="packToggle" />
                 <span><strong>Application Pack</strong> — combine selected images into one ordered PDF / batch</span>
               </label>
-              <button class="btn btn-soft btn-sm" id="combineBtn" type="button" hidden>Combine into one PDF…</button>
+              <button class="btn btn-secondary btn-sm" id="combineBtn" type="button" hidden>Combine into one PDF…</button>
             </div>
 
             <div id="fileList" class="file-list" role="list"></div>
@@ -145,10 +146,10 @@
 
           <!-- RIGHT: Bulk settings -->
           <aside class="panel panel-bulk" aria-labelledby="bulkHeading">
-            <div class="panel-head">
+            <div class="panel-heading">
               <div>
-                <h2 id="bulkHeading">BULK PROCESSING SETTINGS</h2>
-                <p class="panel-sub">Defaults applied to all files. Each file can override.</p>
+                <h2 id="bulkHeading">Bulk settings</h2>
+                <p>Defaults applied to all files. Each file can override.</p>
               </div>
             </div>
 
@@ -207,7 +208,7 @@
               </fieldset>
 
               <div class="field field-actions">
-                <button class="btn btn-soft" id="applyAllBtn" type="button">Apply to All</button>
+                <button class="btn btn-secondary" id="applyAllBtn" type="button">Apply to All</button>
                 <button class="btn btn-ghost" id="resetBulkBtn" type="button">Reset</button>
               </div>
             </form>
@@ -244,19 +245,20 @@
       <div class="stage" id="stage-result" hidden>
         <div class="result-head">
           <div>
-            <h2 id="resultHeading">Your Documents Are Ready</h2>
-            <p class="panel-sub" id="resultSummary">0 documents</p>
+            <p class="eyebrow">Results</p>
+            <h2 id="resultHeading">Your documents are ready</h2>
+            <p id="resultSummary">0 documents</p>
           </div>
           <div class="panel-actions">
-            <button class="btn btn-ghost" id="backToConfigure" type="button">← Back to Configure</button>
-            <button class="btn btn-soft" id="addMoreFromResult" type="button">+ Add Documents</button>
+            <button class="btn btn-ghost" id="backToConfigure" type="button">← Back to configure</button>
+            <button class="btn btn-secondary" id="addMoreFromResult" type="button">+ Add documents</button>
           </div>
         </div>
 
         <div id="resultList" class="result-list" role="list"></div>
 
         <div class="result-actions">
-          <button class="btn btn-soft btn-lg" id="downloadSeparateBtn" type="button">Download All</button>
+          <button class="btn btn-secondary btn-lg" id="downloadSeparateBtn" type="button">Download All</button>
           <button class="btn btn-primary btn-lg" id="downloadZipBtn" type="button">Download ZIP</button>
         </div>
       </div>
@@ -276,28 +278,54 @@
       </div>
     </div>
 
-    <section class="container info-strip" aria-label="How it works">
-      <article class="info-card">
-        <h3>1 · Upload</h3>
-        <p>Add photos, signatures, marksheets, certificates and PDFs all at once.</p>
-      </article>
-      <article class="info-card">
-        <h3>2 · Configure</h3>
-        <p>Set a target size, output format and dimensions per file — or apply bulk defaults.</p>
-      </article>
-      <article class="info-card">
-        <h3>3 · Process &amp; Download</h3>
-        <p>Every result is verified against its requirement, then downloaded separately or as a ZIP.</p>
-      </article>
+    <section class="container content-section" id="how-to" aria-labelledby="howHeading">
+      <div class="section-heading">
+        <p class="eyebrow">A simple workflow</p>
+        <h2 id="howHeading">How to use FormReady</h2>
+      </div>
+      <ol class="steps-grid">
+        <li>
+          <span aria-hidden="true">01</span>
+          <div>
+            <h3>Upload</h3>
+            <p>Add photos, signatures, marksheets, certificates and PDFs all at once.</p>
+          </div>
+        </li>
+        <li>
+          <span aria-hidden="true">02</span>
+          <div>
+            <h3>Configure</h3>
+            <p>Set a target size, output format and dimensions per file — or apply bulk defaults.</p>
+          </div>
+        </li>
+        <li>
+          <span aria-hidden="true">03</span>
+          <div>
+            <h3>Process &amp; download</h3>
+            <p>Every result is verified against its requirement, then downloaded separately or as a ZIP.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="container content-section faq-section" id="faq" aria-labelledby="faqHeading">
+      <div class="section-heading">
+        <p class="eyebrow">Quick answers</p>
+        <h2 id="faqHeading">Frequently asked questions</h2>
+      </div>
+      <details><summary>Are my documents uploaded to a server?</summary><p>No. FormReady processes your files in your browser. Files remain in the current page session and are cleared when you clear the workspace or reload.</p></details>
+      <details><summary>Which file types can I use?</summary><p>You can add JPG, JPEG, PNG, WEBP, GIF and PDF files. You can add several files at once or drag them into the upload area.</p></details>
+      <details><summary>What does “maximum size” mean?</summary><p>It is an upper limit for the output file. FormReady tries to meet it by adjusting image quality and, when configured, dimensions. Each result reports whether the limit was met.</p></details>
+      <details><summary>Can I set different requirements for each document?</summary><p>Yes. Set defaults for the whole batch, then open an individual file’s settings to override its format, size, quality or dimensions.</p></details>
+      <details><summary>Can I combine documents into one PDF?</summary><p>Yes. Select the application-pack option to combine supported images into an ordered PDF. You can also download processed files separately or together as a ZIP.</p></details>
+      <details><summary>Does it work on a phone?</summary><p>Yes. The workspace adapts to smaller screens. Processing speed depends on your device and the size and number of files.</p></details>
+      <div class="info-links">
+        <button type="button" data-open-ops>Features</button>
+        <button type="button" data-open-privacy>Privacy</button>
+        <button type="button" data-open-about>About</button>
+      </div>
     </section>
   </main>
-
-  <footer class="site-footer" role="contentinfo">
-    <div class="container footer-inner">
-      <p>FormReady — Prepare Every Document. In One Go.</p>
-      <p class="footer-privacy">🔒 Files are processed locally in your browser whenever possible. No account required.</p>
-    </div>
-  </footer>
 
   <!-- ===== Modal: file settings / image editor ===== -->
   <div class="modal-backdrop" id="modalBackdrop" hidden>

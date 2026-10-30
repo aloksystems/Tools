@@ -1,426 +1,301 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EGC%3C/text%3E%3C/svg%3E">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App - Dashboard</title>
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat&family=Nunito&family=Open+Sans&family=Poppins&family=Roboto&display=swap"
-        rel="stylesheet">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" integrity="sha384-v3Z/Xdw1sCeo6M/geW7sn1Lt9obIm7MhAk8laVV+rvYFmzuWDELOiygx7dVte2dX" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" integrity="sha384-p62xBRve8PdqGDGASZtZMuHgPsyPcT5VsFwgmz2p4zaFdEtt5ZzNqxK+CLzQS7xP" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" integrity="sha384-3LctmFHtNDZwkVOSZ0fvJZJD9XR5Og5ol/MVEfNt36gUUnSYBRJN0iFjIMbFecOg" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js" integrity="sha384-fuqdSwJXSvcAuKu5FbSJcHqHK474liv5ji8tuDnHz1rpfrnuXZPdM0oRaSK6c95L" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="../../back.css">
-    <script src="../../back.js" defer></script>
-
-    <meta name="description" content="Use Chat App - Dashboard online for free. Fast, private, and browser-based with no installation required.">
+    <title>Global Chat — Real-time Chat Rooms</title>
+    <meta name="description" content="Chat in real time in a public global room or your own private rooms. Free, browser-based, and powered by Firebase.">
     <meta name="robots" content="noindex,nofollow">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Global-ChatBot/public/dashboard.html">
-    <meta property="og:title" content="Chat App - Dashboard">
-    <meta property="og:description" content="Use Chat App - Dashboard online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Global-ChatBot/public/dashboard">
+    <link rel="canonical" href="https://aloksystems.freedev.app/Global-ChatBot/dashboard.html">
+    <meta property="og:title" content="Global Chat — Real-time Chat Rooms">
+    <meta property="og:description" content="Chat in real time in a public global room or your own private rooms. Free and browser-based.">
+    <meta property="og:url" content="https://aloksystems.freedev.app/Global-ChatBot/dashboard.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alok Systems Tools">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Chat App - Dashboard">
-    <meta name="twitter:description" content="Use Chat App - Dashboard online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Chat App - Dashboard",
-    "description":  "Use Chat App - Dashboard online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/Global-ChatBot/public/dashboard.html",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
+    <meta name="twitter:title" content="Global Chat — Real-time Chat Rooms">
+    <meta name="twitter:description" content="Chat in real time in a public global room or your own private rooms. Free and browser-based.">
+    <meta name="author" content="Alok Systems">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="../back.css">
+    <script src="../back.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Global Chat",
+        "description": "Real-time chat rooms in the browser, powered by Firebase.",
+        "url": "https://aloksystems.freedev.app/Global-ChatBot/dashboard.html",
+        "applicationCategory": "CommunicationApplication",
+        "operatingSystem": "Any"
+    }
     </script>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="menu-button" id="menu-button">
-                <i class="fas fa-bars"></i>
+    <div class="gc-app">
+        <div class="gc-topbar">
+            <div class="gc-topbar-left">
+                <button class="gc-icon-btn" id="menu-button" type="button" aria-label="Open account menu" aria-expanded="false">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+                <a class="gc-brand" href="dashboard.html">
+                    <span class="gc-brand-mark" aria-hidden="true">GC</span>
+                    <span><strong>Global Chat</strong><small>Chat rooms</small></span>
+                </a>
             </div>
-            <h1>Global Chat</h1>
-            <div style="width: 40px;"></div> <!-- Empty div for balance -->
+            <button class="gc-btn gc-btn-primary gc-topbar-new" id="new-chat-header-btn" type="button">
+                <i class="fas fa-plus" aria-hidden="true"></i><span>New chat</span>
+            </button>
         </div>
 
-        <div class="chat-rooms" id="chat-rooms">
-            <!-- Chat rooms will be loaded dynamically -->
-            <div class="chat-room" id="global-chat-room" onclick="window.location.href='chat.html'">
-                <div class="room-avatar">
-                    <i class="fas fa-globe"></i>
-                </div>
-                <div class="room-details">
-                    <div class="room-header">
-                        <div class="room-name">Global Chat</div>
-                        <div class="last-message-time" id="global-last-time">Now</div>
-                    </div>
-                    <div class="last-message">
-                        <div class="message-sender" id="global-last-sender">System:</div>
-                        <div id="global-last-message">Welcome to the global chat room!</div>
-                    </div>
+        <main class="gc-main">
+            <div class="gc-notice" id="config-notice" hidden>
+                <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+                <div>
+                    <strong>Chat is not configured</strong>
+                    Firebase settings are missing from <code>js/firebase-config.js</code>. Add the project configuration to enable sign-in and messaging.
                 </div>
             </div>
-        </div>
 
-        <div class="creator-tag">
-            Developed with <span class="creator-heart">❤</span> using Firebase
-        </div>
-    </div>
+            <section class="gc-hero" aria-labelledby="page-title">
+                <p class="gc-eyebrow">YOUR CONVERSATIONS</p>
+                <h1 id="page-title">Chats</h1>
+                <p class="gc-lead">Say hello in the global room or open a private room with your circle. Everything updates live.</p>
+            </section>
 
-    <!-- Side Menu (replaces the user dropdown) -->
-    <div class="side-menu" id="side-menu">
-        <div class="menu-header">
-            <div class="menu-close" id="menu-close">
-                <i class="fas fa-times"></i>
-            </div>
-        </div>
-
-        <div class="menu-user-section">
-            <div class="menu-user-avatar" id="profile-pic"></div>
-            <div class="menu-user-name" id="username">Loading...</div>
-            <div class="menu-user-email" id="user-email">loading@example.com</div>
-        </div>
-
-        <div class="menu-divider"></div>
-
-        <div class="menu-item" id="profile-settings">
-            <i class="fas fa-user-cog"></i>
-            Profile Settings
-        </div>
-
-        <!-- Settings menu item (now styled like Profile Settings) -->
-        <div class="menu-item" id="settings-toggle">
-            <i class="fas fa-cog"></i>
-            Settings
-        </div>
-
-        <div class="settings-section" id="settings-section">
-            <!-- APPEARANCE section -->
-            <div class="section-header">APPEARANCE</div>
-
-            <div class="theme-toggle-container">
-                <div class="toggle-label">Dark Mode</div>
-                <label class="switch">
-                    <input type="checkbox" id="theme-toggle">
-                    <span class="switch-slider"></span>
-                </label>
-            </div>
-
-            <!-- Accent Theme Selection -->
-            <div class="menu-item" id="accent-theme-toggle">
-                <i class="fas fa-palette"></i>
-                <span>Change Accent Theme</span>
-            </div>
-
-            <div class="accent-theme-options" id="accent-theme-options">
-                <div class="color-option" data-color="#2196F3" style="background-color: #2196F3;"></div>
-                <div class="color-option" data-color="#ffffff"
-                    style="background-color: #ffffff; border: 1px solid #ddd;"></div>
-                <div class="color-option" data-color="#9b9b9b" style="background-color: #9b9b9b;"></div>
-                <div class="color-option" data-color="#1a237e" style="background-color: #1a237e;"></div>
-                <div class="color-option" data-color="#1b5e20" style="background-color: #1b5e20;"></div>
-                <div class="color-option" data-color="#000000" style="background-color: #000000;"></div>
-            </div>
-
-            <!-- Font Settings -->
-            <div class="menu-item" id="font-settings-toggle">
-                <i class="fas fa-font"></i>
-                <span>Font Settings</span>
-            </div>
-
-            <div class="font-settings-options" id="font-settings-options">
-                <div class="font-option" data-font="Poppins">
-                    <div class="font-radio selected">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Poppins', sans-serif;">Poppins</span>
+            <section class="gc-section" aria-labelledby="pinned-title">
+                <div class="gc-section-head">
+                    <h2 id="pinned-title">Pinned</h2>
                 </div>
-                <div class="font-option" data-font="Roboto">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Roboto', sans-serif;">Roboto</span>
-                </div>
-                <div class="font-option" data-font="Lato">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Lato', sans-serif;">Lato</span>
-                </div>
-                <div class="font-option" data-font="Montserrat">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Montserrat', sans-serif;">Montserrat</span>
-                </div>
-                <div class="font-option" data-font="Nunito">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Nunito', sans-serif;">Nunito</span>
-                </div>
-                <div class="font-option" data-font="Open Sans">
-                    <div class="font-radio">
-                        <div class="radio-inner"></div>
-                    </div>
-                    <span style="font-family: 'Open Sans', sans-serif;">Open Sans</span>
-                </div>
-            </div>
-        </div>
+                <a class="gc-global-card" href="chat.html">
+                    <span class="gc-global-icon" aria-hidden="true"><i class="fas fa-globe"></i></span>
+                    <span class="gc-global-body">
+                        <span class="gc-global-top">
+                            <span class="gc-global-name">Global Chat</span>
+                            <span class="gc-global-time" id="global-last-time">—</span>
+                        </span>
+                        <span class="gc-global-preview">
+                            <strong id="global-last-sender">Everyone</strong>
+                            <span id="global-last-message">Start the conversation</span>
+                        </span>
+                    </span>
+                    <span class="gc-global-cta" aria-hidden="true"><i class="fas fa-arrow-right"></i></span>
+                </a>
+            </section>
 
-        <div class="menu-divider"></div>
-
-        <div class="menu-item" id="about-funchat">
-            <i class="fas fa-info-circle"></i>
-            About Global Chat
-        </div>
-
-        <div class="menu-divider"></div>
-
-        <div class="menu-item" id="logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-            Logout
-        </div>
-    </div>
-    <div class="menu-overlay" id="menu-overlay"></div>
-
-    <!-- Add the Profile Settings modal before closing body tag -->
-    <div id="profileSettingsModal"
-        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s; pointer-events:none;">
-        <div
-            style="background-color:var(--bg-color); color:var(--text-color); border-radius:15px; width:90%; max-width:500px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,0.3);">
-            <div
-                style="display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid var(--border-color);">
-                <div style="font-size:22px; font-weight:bold;">Profile Settings</div>
-                <div id="closeProfileBtn" style="font-size:28px; cursor:pointer; color:var(--text-color);">×</div>
-            </div>
-            <div style="padding:25px 20px;">
-                <!-- Profile Picture Section -->
-                <div style="margin-bottom:25px; display:flex; flex-direction:column; align-items:center;">
-                    <div id="profilePicContainer"
-                        style="width:100px; height:100px; border-radius:50%; background-color:#2196F3; color:white; display:flex; justify-content:center; align-items:center; font-size:36px; margin-bottom:10px; position:relative; overflow:hidden;">
-                        <!-- Will be populated with profile pic or initials -->
-                    </div>
-                    <button id="changeProfilePicBtn"
-                        style="background-color:#2196F3; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; display:inline-flex; align-items:center; margin-top:10px;">
-                        <i class="fas fa-camera" style="margin-right:6px;"></i> Change Photo
+            <section class="gc-section" aria-labelledby="rooms-title">
+                <div class="gc-section-head">
+                    <h2 id="rooms-title">Your rooms</h2>
+                    <span class="gc-count" id="rooms-count" hidden>0</span>
+                </div>
+                <div class="gc-room-list" id="chat-rooms"></div>
+                <div class="gc-empty" id="rooms-empty" hidden>
+                    <span class="gc-empty-icon" aria-hidden="true"><i class="fas fa-comments"></i></span>
+                    <h3>No rooms yet</h3>
+                    <p>Create a private room or join one with a Room ID. You can own up to 3 rooms.</p>
+                    <button class="gc-btn gc-btn-primary" id="empty-create-btn" type="button">
+                        <i class="fas fa-plus" aria-hidden="true"></i> Create a room
                     </button>
-                    <input type="file" id="profilePicInput" style="display:none;" accept="image/*">
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <button class="gc-fab" id="create-room-fab" type="button" aria-label="Create or join a room">
+        <i class="fas fa-plus" aria-hidden="true"></i>
+    </button>
+
+    <!-- Account drawer -->
+    <div class="gc-drawer-overlay" id="menu-overlay"></div>
+    <aside class="gc-drawer" id="side-menu" aria-label="Account menu">
+        <div class="gc-drawer-head">
+            <div class="gc-avatar" id="profile-pic">U</div>
+            <div class="gc-drawer-user">
+                <strong id="username">User</strong>
+                <span id="user-email"></span>
+            </div>
+            <button class="gc-icon-btn" id="menu-close" type="button" aria-label="Close menu">
+                <i class="fas fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <nav class="gc-menu" aria-label="Account actions">
+            <button class="gc-menu-item" id="profile-settings" type="button">
+                <i class="fas fa-user" aria-hidden="true"></i> Profile settings
+            </button>
+            <a class="gc-menu-item" href="chat.html">
+                <i class="fas fa-globe" aria-hidden="true"></i> Global chat
+            </a>
+            <button class="gc-menu-item" id="about-funchat" type="button">
+                <i class="fas fa-circle-info" aria-hidden="true"></i> About Global Chat
+            </button>
+            <div class="gc-menu-divider"></div>
+            <label class="gc-menu-item gc-menu-switch">
+                <span><i class="fas fa-moon" aria-hidden="true"></i> Dark mode</span>
+                <span class="gc-switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="gc-switch-track" aria-hidden="true"></span>
+                </span>
+            </label>
+            <div class="gc-menu-divider"></div>
+            <button class="gc-menu-item gc-menu-danger" id="logout-btn" type="button">
+                <i class="fas fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out
+            </button>
+        </nav>
+        <p class="gc-drawer-note">Messages are stored in Firebase and visible only to signed-in members of each room.</p>
+    </aside>
+
+    <!-- Profile settings modal -->
+    <div class="gc-modal" id="profileSettingsModal" role="dialog" aria-modal="true" aria-labelledby="profile-modal-title">
+        <div class="gc-modal-card">
+            <div class="gc-modal-head">
+                <h2 id="profile-modal-title">Profile settings</h2>
+                <button class="gc-icon-btn" id="closeProfileBtn" type="button" aria-label="Close profile settings">
+                    <i class="fas fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="gc-modal-body">
+                <div class="gc-profile-pic-row">
+                    <div class="gc-avatar gc-avatar-lg" id="profilePicContainer">U</div>
+                    <div>
+                        <button class="gc-btn gc-btn-ghost" id="changeProfilePicBtn" type="button">
+                            <i class="fas fa-camera" aria-hidden="true"></i> Change photo
+                        </button>
+                        <p class="gc-hint">JPG, PNG, GIF or WEBP · max 2 MB</p>
+                    </div>
+                    <input type="file" id="profilePicInput" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
                 </div>
 
-                <div style="margin-bottom:30px; display:flex; align-items:center;">
-                    <div style="width:40%; color:var(--text-color-dim); font-size:18px;">Username:</div>
-                    <div id="displayUsername" style="flex:1; font-size:18px;"></div>
-                    <div id="editUsernameBtn" style="color:#2196F3; cursor:pointer; margin-left:10px;">
-                        <i class="fas fa-pencil-alt" style="font-size:20px;"></i>
+                <div class="gc-readonly">
+                    <span>Username</span>
+                    <div class="gc-readonly-value">
+                        <strong id="displayUsername">User</strong>
+                        <button class="gc-icon-btn" id="editUsernameBtn" type="button" aria-label="Edit username">
+                            <i class="fas fa-pen" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </div>
-                <div style="margin-bottom:10px; display:flex; align-items:center;">
-                    <div style="width:40%; color:var(--text-color-dim); font-size:18px;">Email:</div>
-                    <div id="displayEmail" style="flex:1; font-size:18px;"></div>
+
+                <form id="username-form" hidden>
+                    <label class="gc-field">
+                        <span>New username</span>
+                        <input class="gc-input" id="usernameInput" type="text" maxlength="32" autocomplete="nickname" required>
+                    </label>
+                    <div class="gc-inline-actions" style="margin-top:10px;">
+                        <button class="gc-btn gc-btn-ghost" id="cancelUsernameBtn" type="button">Cancel</button>
+                        <button class="gc-btn gc-btn-primary" id="saveUsernameBtn" type="submit">Save</button>
+                    </div>
+                </form>
+
+                <div class="gc-readonly">
+                    <span>Email</span>
+                    <strong id="displayEmail"></strong>
                 </div>
             </div>
-            <div style="padding:20px; text-align:right; border-top:1px solid var(--border-color);">
-                <button id="logoutProfileBtn"
-                    style="background-color:#e74c3c; color:white; border:none; padding:12px 25px; border-radius:30px; font-size:16px; cursor:pointer; display:inline-flex; align-items:center;">
-                    <i class="fas fa-sign-out-alt" style="margin-right:8px;"></i> Logout
+            <div class="gc-modal-foot">
+                <button class="gc-btn gc-btn-danger" id="logoutProfileBtn" type="button">
+                    <i class="fas fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Add the About Global Chat Modal -->
-    <div id="aboutAIChatModal"
-        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s; pointer-events:none;">
-        <div
-            style="background-color:var(--card-bg); color:var(--text-color); border-radius:15px; width:90%; max-width:500px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,0.3);">
-            <div
-                style="display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid var(--border-color);">
-                <div style="font-size:24px; font-weight:bold;">About Global Chat</div>
-                <div id="closeAboutBtn" style="font-size:28px; cursor:pointer; color:var(--text-color);">×</div>
+    <!-- About modal -->
+    <div class="gc-modal" id="aboutAIChatModal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+        <div class="gc-modal-card">
+            <div class="gc-modal-head">
+                <h2 id="about-modal-title">About Global Chat</h2>
+                <button class="gc-icon-btn" id="closeAboutBtn" type="button" aria-label="Close about">
+                    <i class="fas fa-xmark" aria-hidden="true"></i>
+                </button>
             </div>
-            <div style="padding:25px 20px; overflow-y:auto; max-height:70vh;">
-                <div style="margin-bottom:20px;">
-                    <span style="color:#2196F3; font-size:22px; font-weight:bold;">Global Chat</span> is a real-time
-                    chat application built using Firebase.
-                </div>
-
-                <div style="margin-bottom:20px;">
-                    <div style="font-size:20px; margin-bottom:15px;">Features:</div>
-                    <ul style="list-style-type:none; padding-left:10px;">
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Real-time messaging</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Global (Pinned) and Private Rooms (Max 3 created per user)</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>User Authentication</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Presence Tracking</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Typing Indicators</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Message Replies, Reactions (1 per user), Editing</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Customizable Themes & Fonts</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Room Ownership & Admin Roles</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Leave/Kick Functionality</span>
-                        </li>
-                        <li style="margin-bottom:12px; display:flex; align-items:flex-start;">
-                            <i class="fas fa-circle" style="color:#2196F3; font-size:8px; margin:6px 10px 0 0;"></i>
-                            <span>Pin Chats</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div style="text-align:center; margin-top:30px; color:var(--secondary-text);">
-                    Developed by You.
-                </div>
+            <div class="gc-modal-body">
+                <p class="gc-hint" style="font-size:.88rem;line-height:1.6;">
+                    <strong style="color:var(--text);">Global Chat</strong> is a real-time chat app built on Firebase.
+                    Sign in, join the global room, or create a private room and share its Room ID.
+                </p>
+                <ul class="gc-feature-list">
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Live messaging with the global room and private rooms</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Google, Facebook or email sign-in</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Presence and typing indicators</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Message replies, reactions, editing and deleting</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Light and dark themes that match the rest of the tools</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Up to 3 private rooms per account</li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <!-- Add Floating Action Button for creating rooms -->
-    <div class="floating-action-button" id="create-room-fab" title="Create New Chat">
-        <i class="fas fa-pencil-alt"></i>
-    </div>
-
-    <!-- Add Manage Rooms Modal -->
-    <div id="manageRoomsModal"
-        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s; pointer-events:none;">
-        <div
-            style="background-color:var(--card-bg); color:var(--text-color); border-radius:15px; width:90%; max-width:500px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,0.3);">
-            <div
-                style="display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid var(--border-color);">
-                <div style="font-size:24px; font-weight:bold;">Create New Chat Room</div>
-                <div id="closeManageRoomsBtn" style="font-size:28px; cursor:pointer; color:var(--text-color);">×</div>
+    <!-- Create / join room modal -->
+    <div class="gc-modal" id="manageRoomsModal" role="dialog" aria-modal="true" aria-labelledby="rooms-modal-title">
+        <div class="gc-modal-card">
+            <div class="gc-modal-head">
+                <h2 id="rooms-modal-title">New room</h2>
+                <button class="gc-icon-btn" id="closeManageRoomsBtn" type="button" aria-label="Close new room">
+                    <i class="fas fa-xmark" aria-hidden="true"></i>
+                </button>
             </div>
-            <div style="padding:25px 20px; overflow-y:auto; max-height:70vh;">
-                <!-- Create New Room Section -->
-                <div
-                    style="margin-bottom:30px; background-color:rgba(33, 150, 243, 0.1); padding:20px; border-radius:10px; border-left:4px solid #2196F3;">
-                    <div style="font-size:20px; margin-bottom:15px; color:var(--text-color); font-weight:bold;">Create
-                        New Chat Room</div>
-                    <input type="text" id="newRoomName" placeholder="Enter Chat Room Name"
-                        style="width:100%; padding:15px; border-radius:10px; border:none; background-color:var(--bg-color); color:var(--text-color); margin-bottom:20px; font-size:16px;">
-
-                    <div style="font-size:18px; margin-bottom:15px; color:var(--text-color);">Select Room Icon</div>
-                    <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-bottom:20px;">
-                        <div class="room-icon-option" data-icon="fa-comments"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-comments" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option selected" data-icon="fa-users"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer; border:2px solid #2196F3;">
-                            <i class="fas fa-users" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-gamepad"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-gamepad" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-music"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-music" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-film"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-film" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-book"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-book" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-briefcase"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-briefcase" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-code"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-code" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-futbol"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-futbol" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-anchor"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-anchor" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-coffee"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-coffee" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-heart"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-heart" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-star"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-star" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-paw"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-paw" style="font-size:24px; color:var(--secondary-text);"></i>
-                        </div>
-                        <div class="room-icon-option" data-icon="fa-tree"
-                            style="background-color:var(--bg-color); border-radius:10px; aspect-ratio:1; display:flex; justify-content:center; align-items:center; cursor:pointer;">
-                            <i class="fas fa-tree" style="font-size:24px; color:var(--secondary-text);"></i>
+            <div class="gc-modal-body">
+                <section>
+                    <h3>Create a room</h3>
+                    <label class="gc-field">
+                        <span>Room name</span>
+                        <input class="gc-input" id="newRoomName" type="text" maxlength="40" placeholder="e.g. Design team" autocomplete="off">
+                    </label>
+                    <div>
+                        <span class="gc-field-label">Room icon</span>
+                        <div class="gc-icon-grid" role="group" aria-label="Room icon">
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-comments" aria-label="Comments icon"><i class="fas fa-comments" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option selected" type="button" data-icon="fa-users" aria-label="People icon"><i class="fas fa-users" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-gamepad" aria-label="Gamepad icon"><i class="fas fa-gamepad" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-music" aria-label="Music icon"><i class="fas fa-music" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-film" aria-label="Film icon"><i class="fas fa-film" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-book" aria-label="Book icon"><i class="fas fa-book" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-briefcase" aria-label="Briefcase icon"><i class="fas fa-briefcase" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-code" aria-label="Code icon"><i class="fas fa-code" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-futbol" aria-label="Football icon"><i class="fas fa-futbol" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-coffee" aria-label="Coffee icon"><i class="fas fa-coffee" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-heart" aria-label="Heart icon"><i class="fas fa-heart" aria-hidden="true"></i></button>
+                            <button class="gc-icon-option room-icon-option" type="button" data-icon="fa-star" aria-label="Star icon"><i class="fas fa-star" aria-hidden="true"></i></button>
                         </div>
                     </div>
+                    <button class="gc-btn gc-btn-primary gc-btn-block" id="createRoomBtn" type="button">
+                        <i class="fas fa-plus" aria-hidden="true"></i> Create room
+                    </button>
+                </section>
 
-                    <button id="createRoomBtn"
-                        style="width:100%; background-color:#2196F3; color:white; border:none; border-radius:10px; padding:15px; font-size:16px; font-weight:bold; cursor:pointer;">Create
-                        & Join New Chat</button>
-                </div>
+                <div class="gc-divider">or join with an ID</div>
 
-                <div style="height:1px; background-color:var(--border-color); margin:30px 0;"></div>
-
-                <!-- Join Room by ID Section -->
-                <div>
-                    <div style="font-size:18px; margin-bottom:15px; color:var(--text-color);">Join Existing Chat by ID
-                    </div>
-                    <input type="text" id="roomIdInput" placeholder="Paste Chat Room ID here"
-                        style="width:100%; padding:15px; border-radius:10px; border:none; background-color:var(--bg-color); color:var(--text-color); margin-bottom:20px; font-size:16px;">
-                    <button id="joinRoomBtn"
-                        style="width:100%; background-color:#2196F3; color:white; border:none; border-radius:10px; padding:15px; font-size:16px; font-weight:bold; cursor:pointer;">Join
-                        Chat Room</button>
-                </div>
+                <section>
+                    <h3>Join a room</h3>
+                    <label class="gc-field">
+                        <span>Room ID</span>
+                        <input class="gc-input" id="roomIdInput" type="text" placeholder="Paste the room ID" autocomplete="off">
+                    </label>
+                    <button class="gc-btn gc-btn-ghost gc-btn-block" id="joinRoomBtn" type="button">
+                        <i class="fas fa-right-to-bracket" aria-hidden="true"></i> Join room
+                    </button>
+                </section>
             </div>
         </div>
     </div>
 
+    <div id="notification-container" class="gc-toasts" aria-live="polite" aria-atomic="false"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" integrity="sha384-v3Z/Xdw1sCeo6M/geW7sn1Lt9obIm7MhAk8laVV+rvYFmzuWDELOiygx7dVte2dX" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" integrity="sha384-p62xBRve8PdqGDGASZtZMuHgPsyPcT5VsFwgmz2p4zaFdEtt5ZzNqxK+CLzQS7xP" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" integrity="sha384-3LctmFHtNDZwkVOSZ0fvJZJD9XR5Og5ol/MVEfNt36gUUnSYBRJN0iFjIMbFecOg" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js" integrity="sha384-fuqdSwJXSvcAuKu5FbSJcHqHK474liv5ji8tuDnHz1rpfrnuXZPdM0oRaSK6c95L" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js" integrity="sha384-ayVBbw9YX9MPY7GPpwsmhrJWJc4fpI2GuJOcWUlFuvgKLbpT0krR2eJpJ5kC20Mr" crossorigin="anonymous"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/dashboard.js"></script>
-
-
 </body>
-
 </html>

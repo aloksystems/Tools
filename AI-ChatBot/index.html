@@ -2,419 +2,611 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat App</title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="description" content="Use AI Chat App online for free. Fast, private, and browser-based with no installation required.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#0f766e">
+    <title>AI Chat — Multi-Model Chat Workspace</title>
+    <meta name="description" content="Chat with Claude, GPT, Llama, Gemini, DeepSeek, and Grok using your own provider API keys. Conversations stay in this browser and requests go directly to the provider.">
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <link rel="canonical" href="https://aloksystems.freedev.app/AI-ChatBot/">
-    <meta property="og:title" content="AI Chat App">
-    <meta property="og:description" content="Use AI Chat App online for free. Fast, private, and browser-based with no installation required.">
+    <meta property="og:title" content="AI Chat — Multi-Model Chat Workspace">
+    <meta property="og:description" content="One browser workspace for multiple AI providers. Use your own API keys and keep your chat history local.">
     <meta property="og:url" content="https://aloksystems.freedev.app/AI-ChatBot/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alok Systems Tools">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="AI Chat App">
-    <meta name="twitter:description" content="Use AI Chat App online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "AI Chat App",
-    "description":  "Use AI Chat App online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/AI-ChatBot/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
+    <meta name="twitter:title" content="AI Chat — Multi-Model Chat Workspace">
+    <meta name="twitter:description" content="One browser workspace for multiple AI providers. Use your own API keys and keep your chat history local.">
+    <meta name="author" content="Alok Systems">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Cpath d='M9 21V13h7a4 4 0 0 1 0 8H9m7 0 4 4' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "AI Chat",
+      "description": "A browser workspace for chatting with multiple AI models using your own provider API keys, with conversation history saved locally.",
+      "url": "https://aloksystems.freedev.app/AI-ChatBot/",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
+    <link rel="stylesheet" href="../back.css">
+    <script src="../back.js" defer></script>
+    <script>
+        try {
+            var savedTheme = localStorage.getItem('tools-theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+        } catch (e) {}
     </script>
 </head>
 <body>
-    <!-- Loading Overlay (Initially Hidden) -->
-    <div class="app-loader" id="app-loader" style="display: none;">
-        <div class="loader"></div>
-    </div>
-
     <div class="container">
-        <!-- Sidebar Menu -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h2>AI Chat</h2>
-                <button id="close-sidebar"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="sidebar-content">
-                <div class="profile-section">
-                    <div class="profile-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <h3 id="profile-name">User Profile</h3>
-                        <p id="profile-email" class="profile-email">Click to set profile</p>
-                    </div>
+        <div class="app-shell" id="app-shell">
+            <aside class="sidebar" id="sidebar" aria-label="Workspace sidebar">
+                <div class="sidebar-head">
+                    <button class="sidebar-new-btn" id="new-chat-btn" type="button">
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        <span>New chat</span>
+                    </button>
+                    <button class="sidebar-close-btn" id="close-sidebar" type="button" aria-label="Close sidebar">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
                 </div>
-                <div class="menu-section">
-                    <div class="folder-header">
-                        <h3>Conversations</h3>
-                        <button id="new-folder-btn" title="Create new folder">
-                            <i class="fas fa-folder-plus"></i>
+
+                <div class="sidebar-scroll">
+                    <div class="sidebar-search">
+                        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                        <input type="search" id="conversation-filter" placeholder="Filter conversations" aria-label="Filter conversations" autocomplete="off">
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="section-label">
+                            <h2>Conversations</h2>
+                            <button class="mini-icon-btn" id="new-folder-btn" type="button" title="Create folder" aria-label="Create folder">
+                                <i class="fas fa-folder-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="favorites-section" class="favorites-section"></div>
+                        <div id="folder-tree" class="folder-tree">
+                            <p class="sidebar-empty">No conversations yet. Start one from the model picker.</p>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section sidebar-tools">
+                        <div class="section-label"><h2>Workspace</h2></div>
+                        <button class="tool-row" type="button" id="token-usage-btn">
+                            <i class="fas fa-chart-simple" aria-hidden="true"></i><span>Token usage</span>
+                        </button>
+                        <button class="tool-row" type="button" id="search-conversations-btn">
+                            <i class="fas fa-magnifying-glass" aria-hidden="true"></i><span>Search all chats</span>
+                        </button>
+                        <button class="tool-row" type="button" id="export-conversations-btn">
+                            <i class="fas fa-download" aria-hidden="true"></i><span>Export chats</span>
+                        </button>
+                        <button class="tool-row" type="button" id="manage-api-btn">
+                            <i class="fas fa-key" aria-hidden="true"></i><span>API keys</span>
+                            <span class="tool-row-badge" id="api-key-count">0</span>
+                        </button>
+                        <button class="tool-row" type="button" id="shortcuts-help-btn">
+                            <i class="fas fa-keyboard" aria-hidden="true"></i><span>Shortcuts</span>
+                        </button>
+                        <button class="tool-row" type="button" id="about-btn">
+                            <i class="fas fa-circle-info" aria-hidden="true"></i><span>About</span>
+                        </button>
+                        <button class="tool-row tool-row-danger" type="button" id="clear-chats-btn">
+                            <i class="fas fa-trash-can" aria-hidden="true"></i><span>Clear chats</span>
                         </button>
                     </div>
-                    <div id="favorites-section" class="favorites-section">
-                        <!-- Pinned/favorite conversations -->
-                    </div>
-                    <div id="folder-tree">
-                        <!-- Folders and conversations will be generated here -->
-                    </div>
                 </div>
-                <div class="settings-section">
-                    <h3>Settings</h3>
-                    <div class="setting-item">
-                        <i class="fas fa-moon"></i>
-                        <span>Dark Mode</span>
-                        <label class="switch">
-                            <input type="checkbox" id="dark-mode-toggle">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                    <div class="setting-item" id="token-usage-btn">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Token Usage</span>
-                    </div>
-                    <div class="setting-item" id="search-conversations-btn">
-                        <i class="fas fa-search"></i>
-                        <span>Search Chats</span>
-                    </div>
-                    <div class="setting-item" id="export-conversations-btn">
-                        <i class="fas fa-download"></i>
-                        <span>Export Chats</span>
-                    </div>
-                    <div class="setting-item">
-                        <i class="fas fa-trash"></i>
-                        <span>Clear All Chats</span>
-                    </div>
-                    <div class="setting-item" id="manage-api-btn">
-                        <i class="fas fa-key"></i>
-                        <span>Manage API</span>
-                    </div>
-                    <div class="setting-item" id="shortcuts-help-btn">
-                        <i class="fas fa-keyboard"></i>
-                        <span>Keyboard Shortcuts</span>
-                    </div>
-                    <div class="setting-item">
-                        <i class="fas fa-info-circle"></i>
-                        <span>About App</span>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <header>
-                <button id="menu-btn"><i class="fas fa-bars"></i></button>
-                <h1>AI Chat App</h1>
-            </header>
+                <button class="profile-row" type="button" id="profile-btn" aria-label="Edit profile">
+                    <span class="profile-avatar" id="profile-avatar" aria-hidden="true">U</span>
+                    <span class="profile-copy">
+                        <span class="profile-name" id="profile-name">Your profile</span>
+                        <span class="profile-email" id="profile-email">Saved on this device</span>
+                    </span>
+                    <i class="fas fa-pen" aria-hidden="true"></i>
+                </button>
+            </aside>
 
-            <!-- Home Screen / Model Selection -->
-            <div class="home-screen" id="home-screen">
-                <h2>Select an AI Model</h2>
-                <div class="models-grid" id="models-grid">
-                    <!-- AI models will be loaded here dynamically -->
-                </div>
-            </div>
+            <main class="main-content">
+                <div class="sidebar-scrim" id="sidebar-scrim" hidden></div>
 
-            <!-- Chat Screen (Initially Hidden) -->
-            <div class="chat-screen" id="chat-screen" style="display: none;">
-                <div class="chat-header">
-                    <button id="back-btn"><i class="fas fa-arrow-left"></i></button>
-                    <div class="model-info">
-                        <div class="model-avatar">
-                            <i class="fas fa-robot"></i>
+                <header class="app-toolbar">
+                    <button class="icon-btn toolbar-menu" id="menu-btn" type="button" aria-label="Open sidebar" aria-controls="sidebar" aria-expanded="false">
+                        <i class="fas fa-bars" aria-hidden="true"></i>
+                    </button>
+                    <div class="app-title">
+                        <h1>AI Chat</h1>
+                        <span id="app-context">One workspace, every model</span>
+                    </div>
+                    <div class="toolbar-actions">
+                        <button class="toolbar-key-btn" id="toolbar-api-btn" type="button">
+                            <span class="key-dot" id="key-status-dot" aria-hidden="true"></span>
+                            <span id="key-status-text">Add API key</span>
+                        </button>
+                    </div>
+                </header>
+
+                <section class="home-screen" id="home-screen" aria-labelledby="home-heading">
+                    <div class="home-hero">
+                        <p class="eyebrow">YOUR AI WORKSPACE</p>
+                        <h2 id="home-heading">Pick a provider to start</h2>
+                        <p class="home-lead">Choose a provider, then a model. Requests go straight from this page to the provider with your own API key — conversations stay in this browser.</p>
+                        <div class="home-meta">
+                            <span class="meta-pill"><i class="fas fa-key" aria-hidden="true"></i> Keys stored locally</span>
+                            <span class="meta-pill"><i class="fas fa-clock-rotate-left" aria-hidden="true"></i> History on this device</span>
                         </div>
-                        <h2 id="current-model-name">Chatbot</h2>
                     </div>
-                    <button id="system-prompt-btn" title="Set System Prompt"><i class="fas fa-cog"></i></button>
-                    <button id="close-chat"><i class="fas fa-times"></i></button>
+
+                    <div class="home-section-head">
+                        <div>
+                            <h2>Providers</h2>
+                            <p id="provider-hint">All requests are sent directly to the provider you choose.</p>
+                        </div>
+                        <button class="ghost-btn" id="home-back" type="button" hidden>
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i> All providers
+                        </button>
+                    </div>
+
+                    <div class="models-grid" id="models-grid"></div>
+
+                    <section class="recent-section" id="recent-section" hidden aria-labelledby="recent-heading">
+                        <div class="home-section-head">
+                            <div>
+                                <h2 id="recent-heading">Recent chats</h2>
+                                <p>Jump back into a saved conversation.</p>
+                            </div>
+                        </div>
+                        <div class="recent-list" id="recent-list"></div>
+                    </section>
+
+                    <p class="home-footnote">
+                        <i class="fas fa-lock" aria-hidden="true"></i>
+                        No account needed. Open <button type="button" class="link-btn" id="home-manage-api">API keys</button> once to connect a provider.
+                    </p>
+                </section>
+
+                <section class="chat-screen" id="chat-screen" hidden aria-label="Chat">
+                    <header class="chat-header">
+                        <button class="icon-btn" id="back-btn" type="button" aria-label="Back to models" title="Back to models">
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        </button>
+                        <div class="model-info">
+                            <div class="model-avatar" id="chat-model-avatar" aria-hidden="true">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="model-copy">
+                                <h2 id="current-model-name">Model</h2>
+                                <span class="chat-status" id="current-model-meta">Ready</span>
+                            </div>
+                        </div>
+                        <div class="chat-header-actions">
+                            <button class="icon-btn" id="scroll-latest-btn" type="button" title="Scroll to latest" aria-label="Scroll to latest message" hidden>
+                                <i class="fas fa-arrow-down" aria-hidden="true"></i>
+                            </button>
+                            <button class="icon-btn" id="clear-chat-btn" type="button" title="Clear conversation" aria-label="Clear conversation">
+                                <i class="fas fa-eraser" aria-hidden="true"></i>
+                            </button>
+                            <button class="icon-btn" id="system-prompt-btn" type="button" title="System prompt" aria-label="Edit system prompt">
+                                <i class="fas fa-sliders" aria-hidden="true"></i>
+                                <span class="dot-badge" id="prompt-dot" hidden aria-hidden="true"></span>
+                            </button>
+                            <button class="icon-btn" id="close-chat" type="button" title="Close chat" aria-label="Close chat">
+                                <i class="fas fa-xmark" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </header>
+
+                    <div class="key-warning" id="key-warning" hidden>
+                        <i class="fas fa-key" aria-hidden="true"></i>
+                        <p><strong>No API key for this provider.</strong> Add one to send messages. You can still read saved conversations.</p>
+                        <button class="btn btn-primary btn-sm" id="key-warning-btn" type="button">Add key</button>
+                    </div>
+
+                    <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Conversation"></div>
+
+                    <div class="chat-compose">
+                        <div class="quick-actions" id="quick-actions" aria-label="Quick prompts">
+                            <button class="chip" type="button" data-action="summarize"><i class="fas fa-align-left" aria-hidden="true"></i> Summarize</button>
+                            <button class="chip" type="button" data-action="explain"><i class="fas fa-lightbulb" aria-hidden="true"></i> Explain</button>
+                            <button class="chip" type="button" data-action="translate"><i class="fas fa-language" aria-hidden="true"></i> Translate</button>
+                            <button class="chip" type="button" data-action="code"><i class="fas fa-code" aria-hidden="true"></i> Code</button>
+                            <button class="chip" type="button" data-action="templates"><i class="fas fa-bookmark" aria-hidden="true"></i> Templates</button>
+                        </div>
+
+                        <div class="composer">
+                            <div class="emoji-picker" id="emoji-picker" hidden aria-label="Emoji picker">
+                                <button class="emoji-btn" type="button">😊</button>
+                                <button class="emoji-btn" type="button">😂</button>
+                                <button class="emoji-btn" type="button">👍</button>
+                                <button class="emoji-btn" type="button">❤️</button>
+                                <button class="emoji-btn" type="button">🎉</button>
+                                <button class="emoji-btn" type="button">🤔</button>
+                                <button class="emoji-btn" type="button">👀</button>
+                                <button class="emoji-btn" type="button">🙏</button>
+                                <button class="emoji-btn" type="button">🔥</button>
+                                <button class="emoji-btn" type="button">✅</button>
+                            </div>
+
+                            <label class="sr-only" for="message-input">Message</label>
+                            <textarea id="message-input" rows="1" placeholder="Ask anything…" autocomplete="off"></textarea>
+
+                            <div class="composer-bar">
+                                <button class="composer-icon" id="voice-input-btn" type="button" title="Voice input" aria-label="Start voice input">
+                                    <i class="fas fa-microphone" aria-hidden="true"></i>
+                                </button>
+                                <button class="composer-icon" id="emoji-btn" type="button" title="Emoji" aria-label="Insert emoji">
+                                    <i class="fas fa-face-smile" aria-hidden="true"></i>
+                                </button>
+                                <span class="composer-hint" id="composer-hint">Enter to send · Shift + Enter for a new line</span>
+                                <button class="send-btn" id="send-btn" type="button" aria-label="Send message" disabled>
+                                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                                </button>
+                                <button class="send-btn stop-btn" id="stop-btn" type="button" aria-label="Stop generating" hidden>
+                                    <i class="fas fa-stop" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- About -->
+    <div id="about-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="about-title" hidden>
+        <div class="modal-content">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-circle-info"></i></span>
+                <div>
+                    <h2 id="about-title">About AI Chat</h2>
+                    <p class="modal-subtitle">One workspace for multiple providers.</p>
                 </div>
-                <div class="chat-messages" id="chat-messages">
-                    <!-- Messages will be added here dynamically -->
+            </div>
+            <div class="modal-body">
+                <p>Bring your own API key for OpenRouter, Google Gemini, DeepSeek, Hugging Face, or Grok. Requests are sent directly from this page to the provider — there is no intermediate server.</p>
+                <div class="info-grid">
+                    <div class="info-card"><i class="fas fa-lock" aria-hidden="true"></i><strong>Local by default</strong><span>Chats, keys, folders, and templates live in this browser's storage.</span></div>
+                    <div class="info-card"><i class="fas fa-bolt" aria-hidden="true"></i><strong>Streaming replies</strong><span>Answers appear as they are generated, and you can stop at any time.</span></div>
+                    <div class="info-card"><i class="fas fa-code" aria-hidden="true"></i><strong>Readable answers</strong><span>Markdown, code blocks, and one-click copy are built in.</span></div>
+                    <div class="info-card"><i class="fas fa-user-shield" aria-hidden="true"></i><strong>Private</strong><span>Clearing site data removes keys and history. Nothing is uploaded here.</span></div>
                 </div>
-                <!-- Emoji Picker (Initially Hidden) -->
-                <div class="emoji-picker" id="emoji-picker" style="display: none;">
-                    <button class="emoji-btn">😊</button>
-                    <button class="emoji-btn">😂</button>
-                    <button class="emoji-btn">👍</button>
-                    <button class="emoji-btn">❤️</button>
-                    <button class="emoji-btn">🎉</button>
-                    <button class="emoji-btn">🤔</button>
-                    <button class="emoji-btn">👀</button>
-                    <button class="emoji-btn">🙏</button>
-                </div>
-                
-                <!-- Quick Actions -->
-                <div class="quick-actions" id="quick-actions">
-                    <button class="quick-action-btn" data-action="summarize" title="Summarize">
-                        <i class="fas fa-align-left"></i> Summarize
-                    </button>
-                    <button class="quick-action-btn" data-action="explain" title="Explain Simply">
-                        <i class="fas fa-lightbulb"></i> Explain
-                    </button>
-                    <button class="quick-action-btn" data-action="translate" title="Translate">
-                        <i class="fas fa-language"></i> Translate
-                    </button>
-                    <button class="quick-action-btn" data-action="code" title="Format as Code">
-                        <i class="fas fa-code"></i> Code It
-                    </button>
-                    <button class="quick-action-btn" data-action="custom" title="Custom Templates">
-                        <i class="fas fa-save"></i> Templates
-                    </button>
-                </div>
-                
-                <div class="chat-input">
-                    <button class="voice-input-btn" id="voice-input-btn">
-                        <i class="fas fa-microphone"></i>
-                    </button>
-                    <textarea id="message-input" placeholder="Enter a message..."></textarea>
-                    <button id="emoji-btn">
-                        <i class="fas fa-smile"></i>
-                    </button>
-                    <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
-                </div>
+                <p class="about-meta">Version 2.0.0 · © 2026 Alok Systems</p>
             </div>
         </div>
     </div>
 
-    <!-- About Modal (Initially Hidden) -->
-    <div id="about-modal" class="modal" style="display: none;">
+    <!-- Search -->
+    <div id="search-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="search-title" hidden>
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>About AI Chat App</h2>
-            <p>Version 1.0.0</p>
-            <p>A feature-rich chat application that allows you to interact with various AI models through inteligence.</p>
-            <p>Hand crafter and made with ❤️.</p>
-            <div class="modal-footer">
-                <p>© 2023 AI Chat App</p>
+            <button class="modal-close" type="button" data-close-modal aria-label="Close search"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-magnifying-glass"></i></span>
+                <div>
+                    <h2 id="search-title">Search conversations</h2>
+                    <p class="modal-subtitle">Find a message by text, model, or folder.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Search Conversations Modal -->
-    <div id="search-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Search Conversations</h2>
             <div class="search-box">
-                <input type="text" id="search-input" placeholder="Search by text, model, or date...">
+                <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="search-input" placeholder="Type at least 2 characters…" aria-label="Search conversations" autocomplete="off">
             </div>
-            <div id="search-results" class="search-results">
-                <!-- Search results will appear here -->
-            </div>
+            <div id="search-results" class="search-results" aria-live="polite"></div>
         </div>
     </div>
 
-    <!-- Edit Message Modal -->
-    <div id="edit-message-modal" class="modal" style="display: none;">
+    <!-- Edit message -->
+    <div id="edit-message-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-message-title" hidden>
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Edit Message</h2>
-            <div class="edit-message-box">
-                <textarea id="edit-message-input" placeholder="Edit your message..."></textarea>
+            <button class="modal-close" type="button" data-close-modal aria-label="Close edit dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-pen"></i></span>
+                <div>
+                    <h2 id="edit-message-title">Edit message</h2>
+                    <p class="modal-subtitle">Replies after this message are regenerated.</p>
+                </div>
             </div>
+            <label class="sr-only" for="edit-message-input">Message text</label>
+            <textarea id="edit-message-input" class="modal-textarea" rows="5" placeholder="Edit your message…"></textarea>
             <div class="modal-actions">
-                <button id="save-edit-btn" class="btn-primary">Save & Regenerate</button>
-                <button id="cancel-edit-btn" class="btn-secondary">Cancel</button>
+                <button class="btn btn-ghost" type="button" data-close-modal>Cancel</button>
+                <button id="save-edit-btn" class="btn btn-primary" type="button">Save &amp; regenerate</button>
             </div>
         </div>
     </div>
 
-    <!-- New Folder Modal -->
-    <div id="new-folder-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Create New Folder</h2>
-            <div class="form-group">
-                <input type="text" id="folder-name-input" placeholder="Folder name (e.g., Work, Learning, Fun)" class="full-width-input">
+    <!-- New / rename folder (single prompt modal) -->
+    <div id="prompt-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="prompt-title" hidden>
+        <div class="modal-content modal-content-sm">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-folder-plus"></i></span>
+                <div>
+                    <h2 id="prompt-title">Folder</h2>
+                    <p class="modal-subtitle" id="prompt-subtitle">Group related conversations together.</p>
+                </div>
             </div>
+            <label class="modal-label" for="prompt-input" id="prompt-label">Folder name</label>
+            <input type="text" id="prompt-input" class="modal-input" placeholder="e.g. Research, Writing, Work" autocomplete="off">
             <div class="modal-actions">
-                <button id="create-folder-btn" class="btn-primary">Create</button>
-                <button id="cancel-folder-btn" class="btn-secondary">Cancel</button>
+                <button class="btn btn-ghost" type="button" data-close-modal>Cancel</button>
+                <button id="prompt-ok" class="btn btn-primary" type="button">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- Assign Conversation to Folder Modal -->
-    <div id="assign-folder-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Assign to Folder</h2>
-            <div id="folder-options">
-                <!-- Folder options will be generated here -->
+    <!-- Assign folder -->
+    <div id="assign-folder-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="assign-folder-title" hidden>
+        <div class="modal-content modal-content-sm">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-folder-tree"></i></span>
+                <div>
+                    <h2 id="assign-folder-title">Move to folder</h2>
+                    <p class="modal-subtitle" id="assign-folder-subtitle">Choose where this conversation lives.</p>
+                </div>
             </div>
+            <div id="folder-options" class="folder-options"></div>
             <div class="modal-actions">
-                <button id="confirm-assign-btn" class="btn-primary">Assign</button>
-                <button id="cancel-assign-btn" class="btn-secondary">Cancel</button>
+                <button class="btn btn-ghost" type="button" data-close-modal>Cancel</button>
+                <button id="confirm-assign-btn" class="btn btn-primary" type="button">Move</button>
             </div>
         </div>
     </div>
 
-    <!-- System Prompt Modal -->
-    <div id="system-prompt-modal" class="modal" style="display: none;">
+    <!-- System prompt -->
+    <div id="system-prompt-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="system-prompt-title" hidden>
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>System Prompt Settings</h2>
-            <p>Customize how the AI behaves for this model. This prompt is sent with every message.</p>
-            <div class="form-group">
-                <label for="system-prompt-input">System Prompt:</label>
-                <textarea id="system-prompt-input" placeholder="E.g., You are a helpful JavaScript expert. Always provide code examples in ES6+ syntax." rows="6" class="full-width-input"></textarea>
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-sliders"></i></span>
+                <div>
+                    <h2 id="system-prompt-title">System prompt</h2>
+                    <p class="modal-subtitle">Sent with every message to shape how this model replies.</p>
+                </div>
             </div>
-            <div class="prompt-presets">
-                <button class="preset-btn" data-preset="default">Default</button>
-                <button class="preset-btn" data-preset="expert">Code Expert</button>
-                <button class="preset-btn" data-preset="teacher">Patient Teacher</button>
-                <button class="preset-btn" data-preset="creative">Creative Writer</button>
+            <div class="prompt-presets" aria-label="Prompt presets">
+                <button class="preset-btn" type="button" data-preset="default">Default</button>
+                <button class="preset-btn" type="button" data-preset="expert">Code expert</button>
+                <button class="preset-btn" type="button" data-preset="teacher">Patient teacher</button>
+                <button class="preset-btn" type="button" data-preset="creative">Creative writer</button>
             </div>
+            <label class="sr-only" for="system-prompt-input">System prompt</label>
+            <textarea id="system-prompt-input" class="modal-textarea" rows="6" placeholder="e.g. You are a concise assistant. Answer with practical examples."></textarea>
             <div class="modal-actions">
-                <button id="save-prompt-btn" class="btn-primary">Save</button>
-                <button id="clear-prompt-btn" class="btn-secondary">Clear</button>
+                <button id="clear-prompt-btn" class="btn btn-ghost" type="button">Clear</button>
+                <button id="save-prompt-btn" class="btn btn-primary" type="button">Save prompt</button>
             </div>
         </div>
     </div>
 
-    <!-- Token Usage Modal -->
-    <div id="token-usage-modal" class="modal" style="display: none;">
+    <!-- Token usage -->
+    <div id="token-usage-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="token-usage-title" hidden>
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Token Usage Statistics</h2>
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-chart-simple"></i></span>
+                <div>
+                    <h2 id="token-usage-title">Token usage</h2>
+                    <p class="modal-subtitle">Estimated from message length — not provider billing.</p>
+                </div>
+            </div>
             <div class="usage-stats">
-                <div class="stat-card">
-                    <i class="fas fa-comments"></i>
-                    <div class="stat-info">
-                        <div class="stat-value" id="total-messages">0</div>
-                        <div class="stat-label">Total Messages</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-coins"></i>
-                    <div class="stat-info">
-                        <div class="stat-value" id="total-tokens">0</div>
-                        <div class="stat-label">Estimated Tokens</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-calendar"></i>
-                    <div class="stat-info">
-                        <div class="stat-value" id="sessions-count">0</div>
-                        <div class="stat-label">Chat Sessions</div>
-                    </div>
+                <div class="stat-card"><span class="stat-label">Messages</span><strong class="stat-value" id="total-messages">0</strong></div>
+                <div class="stat-card"><span class="stat-label">Estimated tokens</span><strong class="stat-value" id="total-tokens">0</strong></div>
+                <div class="stat-card"><span class="stat-label">Saved chats</span><strong class="stat-value" id="sessions-count">0</strong></div>
+            </div>
+            <h3 class="modal-section-title">By model</h3>
+            <div id="model-usage-list" class="model-usage-list"></div>
+            <div class="modal-actions modal-actions-split">
+                <button id="reset-stats-btn" class="btn btn-danger-ghost" type="button">Reset stats</button>
+                <button class="btn btn-ghost" type="button" data-close-modal>Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates -->
+    <div id="templates-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="templates-title" hidden>
+        <div class="modal-content">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-bookmark"></i></span>
+                <div>
+                    <h2 id="templates-title">Quick templates</h2>
+                    <p class="modal-subtitle">Reusable prompts. Use <code>{input}</code> as the placeholder.</p>
                 </div>
             </div>
-            <h3>Usage by Model</h3>
-            <div id="model-usage-list" class="model-usage-list">
-                <!-- Model usage breakdown will appear here -->
+            <div class="template-form">
+                <label class="modal-label" for="template-name-input">Template name</label>
+                <input type="text" id="template-name-input" class="modal-input" placeholder="e.g. Bug report" autocomplete="off">
+                <label class="modal-label" for="template-content-input">Template content</label>
+                <textarea id="template-content-input" class="modal-textarea" rows="3" placeholder="Explain this code like a reviewer: {input}"></textarea>
+                <button id="save-template-btn" class="btn btn-primary" type="button">Save template</button>
+            </div>
+            <h3 class="modal-section-title">Saved templates</h3>
+            <div id="templates-list" class="templates-list"></div>
+        </div>
+    </div>
+
+    <!-- Shortcuts -->
+    <div id="shortcuts-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title" hidden>
+        <div class="modal-content modal-content-sm">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-keyboard"></i></span>
+                <div>
+                    <h2 id="shortcuts-title">Keyboard shortcuts</h2>
+                    <p class="modal-subtitle">Work faster without leaving the keyboard.</p>
+                </div>
+            </div>
+            <div class="shortcuts-list">
+                <div class="shortcut-item"><div class="shortcut-keys"><kbd>Enter</kbd></div><div class="shortcut-description">Send message</div></div>
+                <div class="shortcut-item"><div class="shortcut-keys"><kbd>Shift</kbd> + <kbd>Enter</kbd></div><div class="shortcut-description">New line</div></div>
+                <div class="shortcut-item"><div class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>K</kbd></div><div class="shortcut-description">Search conversations</div></div>
+                <div class="shortcut-item"><div class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>B</kbd></div><div class="shortcut-description">Toggle sidebar</div></div>
+                <div class="shortcut-item"><div class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>/</kbd></div><div class="shortcut-description">Show shortcuts</div></div>
+                <div class="shortcut-item"><div class="shortcut-keys"><kbd>Esc</kbd></div><div class="shortcut-description">Close dialog or return to models</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export -->
+    <div id="export-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="export-title" hidden>
+        <div class="modal-content modal-content-sm">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-download"></i></span>
+                <div>
+                    <h2 id="export-title">Export chats</h2>
+                    <p class="modal-subtitle">Download a copy of every saved conversation.</p>
+                </div>
+            </div>
+            <div class="export-options">
+                <button class="export-btn" id="export-json-btn" type="button"><i class="fas fa-file-code" aria-hidden="true"></i><span>JSON</span><small>Full data</small></button>
+                <button class="export-btn" id="export-markdown-btn" type="button"><i class="fas fa-file-lines" aria-hidden="true"></i><span>Markdown</span><small>Readable</small></button>
+                <button class="export-btn" id="export-all-txt-btn" type="button"><i class="fas fa-file-lines" aria-hidden="true"></i><span>Text</span><small>Plain</small></button>
+            </div>
+            <div id="export-status" class="export-status" aria-live="polite"></div>
+        </div>
+    </div>
+
+    <!-- Profile -->
+    <div id="profile-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="profile-title" hidden>
+        <div class="modal-content modal-content-sm">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-user"></i></span>
+                <div>
+                    <h2 id="profile-title">Your profile</h2>
+                    <p class="modal-subtitle">Only used to label this workspace.</p>
+                </div>
+            </div>
+            <label class="modal-label" for="profile-name-input">Name</label>
+            <input type="text" id="profile-name-input" class="modal-input" placeholder="Your name" autocomplete="name">
+            <label class="modal-label" for="profile-email-input">Email <span class="label-note">optional</span></label>
+            <input type="email" id="profile-email-input" class="modal-input" placeholder="you@example.com" autocomplete="email">
+            <div class="modal-actions">
+                <button class="btn btn-ghost" type="button" data-close-modal>Cancel</button>
+                <button id="save-profile" class="btn btn-primary" type="button">Save profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage API keys -->
+    <div id="manage-api-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="manage-api-title" hidden>
+        <div class="modal-content">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-key"></i></span>
+                <div>
+                    <h2 id="manage-api-title">API keys</h2>
+                    <p class="modal-subtitle">Stored only in this browser. Requests go directly to the provider.</p>
+                </div>
+            </div>
+            <div class="tabs" role="tablist" aria-label="API key sections">
+                <button class="tab is-active" type="button" role="tab" aria-selected="true" aria-controls="add-key-tab" data-tab="add-key">Add key</button>
+                <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="manage-keys-tab" data-tab="manage-keys">Saved keys <span class="tab-count" id="stored-key-count">0</span></button>
+            </div>
+            <div class="tab-content is-active" id="add-key-tab" role="tabpanel">
+                <label class="modal-label" for="api-provider-select">Provider</label>
+                <select id="api-provider-select" class="modal-input">
+                    <option value="openrouter">OpenRouter</option>
+                    <option value="gemini">Google Gemini</option>
+                    <option value="deepseek">DeepSeek</option>
+                    <option value="huggingface">Hugging Face</option>
+                    <option value="grok">Grok (xAI)</option>
+                </select>
+                <label class="modal-label" for="api-key-name-input">Label</label>
+                <input type="text" id="api-key-name-input" class="modal-input" placeholder="e.g. Personal OpenRouter" autocomplete="off">
+                <label class="modal-label" for="api-key-value">API key</label>
+                <div class="key-input-wrap">
+                    <input type="password" id="api-key-value" class="modal-input" placeholder="Paste the key here" autocomplete="off" spellcheck="false">
+                    <button class="reveal-btn" id="api-key-reveal" type="button" aria-label="Show API key" aria-pressed="false"><i class="fas fa-eye" aria-hidden="true"></i></button>
+                </div>
+                <p class="api-provider-note" id="api-provider-note"><i class="fas fa-circle-info" aria-hidden="true"></i> <span>Create a key in your provider dashboard.</span> <a id="api-provider-link" href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer">Open OpenRouter <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></p>
+                <div class="modal-actions modal-actions-split">
+                    <button class="btn btn-ghost" type="button" data-close-modal>Cancel</button>
+                    <button id="save-store-api-key" class="btn btn-primary" type="button"><i class="fas fa-check" aria-hidden="true"></i> Save key</button>
+                </div>
+            </div>
+            <div class="tab-content" id="manage-keys-tab" role="tabpanel" hidden>
+                <div class="stored-keys-container" id="stored-keys-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply key to models -->
+    <div id="model-key-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="model-key-title" hidden>
+        <div class="modal-content">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+                <div>
+                    <h2 id="model-key-title">Apply key to models</h2>
+                    <p class="modal-subtitle" id="model-key-subtitle">Choose which models should use this key.</p>
+                </div>
+            </div>
+            <div class="select-actions">
+                <button class="ghost-btn" id="select-all-models" type="button">Select all</button>
+                <button class="ghost-btn" id="deselect-all-models" type="button">Clear</button>
+            </div>
+            <div class="models-list-container" id="models-selection-list"></div>
+            <div class="modal-actions modal-actions-split">
+                <button id="apply-to-default" class="btn btn-ghost" type="button">Use as provider default</button>
+                <button id="apply-to-selected-models" class="btn btn-primary" type="button">Apply to selected</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete conversations -->
+    <div id="delete-chats-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-chats-title" hidden>
+        <div class="modal-content">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog"><i class="fas fa-times" aria-hidden="true"></i></button>
+            <div class="modal-head">
+                <span class="modal-icon modal-icon-danger" aria-hidden="true"><i class="fas fa-trash-can"></i></span>
+                <div>
+                    <h2 id="delete-chats-title">Delete conversations</h2>
+                    <p class="modal-subtitle">This cannot be undone.</p>
+                </div>
+            </div>
+            <div class="chat-list-container" id="deletion-chat-list"></div>
+            <div class="modal-actions modal-actions-split">
+                <button id="delete-all-chats" class="btn btn-danger-ghost" type="button">Delete all</button>
+                <button id="delete-selected-chats" class="btn btn-primary" type="button">Delete selected</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generic confirm -->
+    <div id="confirm-modal" class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message" hidden>
+        <div class="modal-content modal-content-sm">
+            <div class="modal-head">
+                <span class="modal-icon" id="confirm-icon" aria-hidden="true"><i class="fas fa-circle-question"></i></span>
+                <div>
+                    <h2 id="confirm-title">Are you sure?</h2>
+                    <p class="modal-subtitle" id="confirm-message">This action cannot be undone.</p>
+                </div>
             </div>
             <div class="modal-actions">
-                <button id="reset-stats-btn" class="btn-secondary">Reset Stats</button>
+                <button class="btn btn-ghost" id="confirm-cancel" type="button">Cancel</button>
+                <button class="btn btn-primary" id="confirm-ok" type="button">Confirm</button>
             </div>
         </div>
     </div>
 
-    <!-- Custom Templates Modal -->
-    <div id="templates-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Quick Templates</h2>
-            <div class="form-group">
-                <label>Create New Template</label>
-                <input type="text" id="template-name-input" placeholder="Template name (e.g., Bug Report)" class="full-width-input">
-                <textarea id="template-content-input" placeholder="Template content with {input} placeholder" rows="4" class="full-width-input" style="margin-top: 10px;"></textarea>
-                <button id="save-template-btn" class="btn-primary" style="margin-top: 10px;">Save Template</button>
-            </div>
-            <h3>Saved Templates</h3>
-            <div id="templates-list">
-                <!-- Saved templates will appear here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Keyboard Shortcuts Help Modal -->
-    <div id="shortcuts-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Keyboard Shortcuts</h2>
-            <div class="shortcuts-list">
-                <div class="shortcut-item">
-                    <div class="shortcut-keys">
-                        <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
-                    </div>
-                    <div class="shortcut-description">Send message</div>
-                </div>
-                <div class="shortcut-item">
-                    <div class="shortcut-keys">
-                        <kbd>Ctrl</kbd> + <kbd>K</kbd>
-                    </div>
-                    <div class="shortcut-description">Clear chat / New conversation</div>
-                </div>
-                <div class="shortcut-item">
-                    <div class="shortcut-keys">
-                        <kbd>Ctrl</kbd> + <kbd>S</kbd>
-                    </div>
-                    <div class="shortcut-description">Search conversations</div>
-                </div>
-                <div class="shortcut-item">
-                    <div class="shortcut-keys">
-                        <kbd>Ctrl</kbd> + <kbd>E</kbd>
-                    </div>
-                    <div class="shortcut-description">Export conversations</div>
-                </div>
-                <div class="shortcut-item">
-                    <div class="shortcut-keys">
-                        <kbd>Ctrl</kbd> + <kbd>B</kbd>
-                    </div>
-                    <div class="shortcut-description">Toggle sidebar</div>
-                </div>
-                <div class="shortcut-item">
-                    <div class="shortcut-keys">
-                        <kbd>Ctrl</kbd> + <kbd>/</kbd>
-                    </div>
-                    <div class="shortcut-description">Show this shortcuts help</div>
-                </div>
-                <div class="shortcut-item">
-                    <div class="shortcut-keys">
-                        <kbd>Esc</kbd>
-                    </div>
-                    <div class="shortcut-description">Close modals / Go back</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Export Conversations Modal -->
-    <div id="export-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Export Conversations</h2>
-            <p>Choose export format:</p>
-            <div class="export-options">
-                <button id="export-json-btn" class="export-btn">
-                    <i class="fas fa-file-code"></i> JSON
-                </button>
-                <button id="export-markdown-btn" class="export-btn">
-                    <i class="fas fa-file-lines"></i> Markdown
-                </button>
-                <button id="export-all-txt-btn" class="export-btn">
-                    <i class="fas fa-file-alt"></i> Text (All)
-                </button>
-            </div>
-            <div id="export-status" style="margin-top: 15px; text-align: center;"></div>
-        </div>
-    </div>
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
 
     <script src="./app.js"></script>
     <script src="./models.js"></script>
     <script src="./chat.js"></script>
 </body>
-</html> 
+</html>

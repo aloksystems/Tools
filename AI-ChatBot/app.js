@@ -1,2366 +1,2323 @@
-// Main app initialization
-document.addEventListener('DOMContentLoaded', () => {
-    // Load persisted provider keys into runtime
-    hydrateProviderKeysFromStorage();
-
-    // Cleanup/migrate legacy predefined key entries
-    importPredefinedAPIKeys();
-
-    // Initialize model selection grid
-    initializeModelsGrid();
-
-    // Initialize sidebar toggle functionality
-    initSidebar();
-
-    // Initialize dark mode toggle
-    initDarkMode();
-
-    // Initialize conversation history
-    updateConversationHistory();
-
-    // Initialize clear conversations button
-    initClearConversations();
-
-    // Initialize search conversations
-    initSearchConversations();
-
-    // Initialize export conversations
-    initExportConversations();
-
-    // Initialize conversation folders
-    initConversationFolders();
-
-    // Initialize system prompt customization
-    initSystemPrompts();
-
-    // Initialize token usage tracking
-    initTokenUsage();
-
-    // Initialize quick actions
-    initQuickActions();
-
-    // Initialize keyboard shortcuts
-    initKeyboardShortcuts();
-
-    // Initialize Manage API button
-    initManageAPI();
-
-    // Initialize user profile
-    initUserProfile();
-
-    // Initialize about modal
-    initAboutModal();
-
-    // Initialize emoji picker
-    initEmojiPicker();
-
-    // Initialize voice input
-    initVoiceInput();
-
-    // Show app loader initially and hide after loading
-    showLoader(false);
-});
-
-// Show or hide the app loader
-function showLoader(show = true) {
-    const loader = document.getElementById('app-loader');
-    loader.style.display = show ? 'flex' : 'none';
-}
-
-// Function to initialize sidebar functionality
-function initSidebar() {
-    const menuBtn = document.getElementById('menu-btn');
-    const closeSidebarBtn = document.getElementById('close-sidebar');
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.querySelector('.main-content');
-
-    menuBtn.addEventListener('click', () => {
-        toggleSidebar();
-    });
-
-    closeSidebarBtn.addEventListener('click', () => {
-        toggleSidebar();
-    });
-
-    // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768 &&
-            sidebar.classList.contains('open') &&
-            !sidebar.contains(e.target) &&
-            e.target !== menuBtn) {
-            toggleSidebar();
-        }
-    });
-
-    // Function to toggle sidebar visibility without automatically closing
-    window.toggleSidebar = function (forceState = null) {
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.querySelector('.main-content');
-
-        if (forceState === true) {
-            // Force open
-            sidebar.classList.add('open');
-            mainContent.classList.add('sidebar-open');
-        } else if (forceState === false) {
-            // Force close
-            sidebar.classList.remove('open');
-            mainContent.classList.remove('sidebar-open');
-        } else {
-            // Toggle
-            sidebar.classList.toggle('open');
-            mainContent.classList.toggle('sidebar-open');
-        }
-    };
-}
-
-// Function to initialize dark mode toggle
-function initDarkMode() {
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
-
-    // Check if dark mode is enabled in localStorage
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
-
-    // Set initial state
-    if (isDarkMode) {
-        document.body.classList.add('dark-mode');
-        darkModeToggle.checked = true;
-    }
-
-    // Toggle dark mode when the switch is clicked
-    darkModeToggle.addEventListener('change', () => {
-        if (darkModeToggle.checked) {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('darkMode', 'true');
-        } else {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('darkMode', 'false');
-        }
-    });
-}
-
-// Function to initialize clear conversations button
-function initClearConversations() {
-    // Use a more specific selector that targets the Clear All Chats text
-    const clearChatsBtn = document.querySelector('.setting-item i.fa-trash').parentElement;
-
-    clearChatsBtn.addEventListener('click', () => {
-        showChatDeletionModal();
-    });
-}
-
-// Function to initialize Manage API button
-function initManageAPI() {
-    const manageAPIBtn = document.getElementById('manage-api-btn');
-
-    manageAPIBtn.addEventListener('click', () => {
-        storeApiKey();
-    });
-}
-
-// Function to initialize user profile section and modal
-function initUserProfile() {
-    const profileSection = document.querySelector('.profile-section');
-    const profileName = document.getElementById('profile-name');
-    const profileEmail = document.getElementById('profile-email');
-
-    const savedProfile = JSON.parse(localStorage.getItem('user_profile') || '{}');
-    const userName = savedProfile.name || 'User Profile';
-    const userEmail = savedProfile.email || 'Click to set profile';
-
-    if (profileName) {
-        profileName.textContent = userName;
-    }
-
-    if (profileEmail) {
-        profileEmail.textContent = userEmail;
-    }
-
-    if (profileSection) {
-        profileSection.addEventListener('click', showProfileModal);
-    }
-}
-
-function showProfileModal() {
-    let profileModal = document.getElementById('profile-modal');
-
-    if (!profileModal) {
-        profileModal = document.createElement('div');
-        profileModal.id = 'profile-modal';
-        profileModal.className = 'modal';
-
-        profileModal.innerHTML = `
-            <div class="modal-content">
-                <span class="close-modal" id="close-profile-modal">&times;</span>
-                <h2><i class="fas fa-user"></i> Update Profile</h2>
-                <div class="modal-divider"></div>
-                <div class="modal-body">
-                    <div class="api-key-input-container">
-                        <p class="modal-instruction">Name</p>
-                        <input type="text" id="profile-name-input" class="full-width-input" placeholder="Your name">
-                    </div>
-                    <div class="api-key-input-container">
-                        <p class="modal-instruction">Email (optional)</p>
-                        <input type="email" id="profile-email-input" class="full-width-input" placeholder="you@example.com">
-                    </div>
-                    <div class="modal-divider"></div>
-                    <div class="store-key-actions">
-                        <button id="cancel-profile" class="secondary-button">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                        <button id="save-profile" class="primary-button">
-                            <i class="fas fa-save"></i> Save Profile
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(profileModal);
-
-        document.getElementById('close-profile-modal').addEventListener('click', () => {
-            profileModal.style.display = 'none';
-        });
-
-        document.getElementById('cancel-profile').addEventListener('click', () => {
-            profileModal.style.display = 'none';
-        });
-
-        document.getElementById('save-profile').addEventListener('click', () => {
-            const nameInput = document.getElementById('profile-name-input').value.trim();
-            const emailInput = document.getElementById('profile-email-input').value.trim();
-
-            if (!nameInput) {
-                showToast('Please enter your name');
-                return;
-            }
-
-            localStorage.setItem('user_profile', JSON.stringify({
-                name: nameInput,
-                email: emailInput
-            }));
-
-            const profileName = document.getElementById('profile-name');
-            const profileEmail = document.getElementById('profile-email');
-
-            if (profileName) {
-                profileName.textContent = nameInput;
-            }
-
-            if (profileEmail) {
-                profileEmail.textContent = emailInput || 'No email added';
-            }
-
-            profileModal.style.display = 'none';
-            showToast('Profile updated');
-        });
-
-        profileModal.addEventListener('click', (e) => {
-            if (e.target === profileModal) {
-                profileModal.style.display = 'none';
-            }
-        });
-    }
-
-    const savedProfile = JSON.parse(localStorage.getItem('user_profile') || '{}');
-    document.getElementById('profile-name-input').value = savedProfile.name || '';
-    document.getElementById('profile-email-input').value = savedProfile.email || '';
-
-    profileModal.style.display = 'flex';
-}
-
-// Function to initialize about modal
-function initAboutModal() {
-    // Use a more specific selector that targets the About App text
-    const aboutBtn = document.querySelector('.setting-item i.fa-info-circle').parentElement;
-    const modal = document.getElementById('about-modal');
-    const closeModal = document.querySelector('.close-modal');
-
-    aboutBtn.addEventListener('click', () => {
-        modal.style.display = 'flex';
-    });
-
-    closeModal.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    // Close modal when clicking outside
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-}
-
-// Function to initialize emoji picker
-function initEmojiPicker() {
-    const emojiBtn = document.getElementById('emoji-btn');
-    const emojiPicker = document.getElementById('emoji-picker');
-    const emojiBtns = document.querySelectorAll('.emoji-btn');
-
-    emojiBtn.addEventListener('click', () => {
-        emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'flex' : 'none';
-    });
-
-    emojiBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const emoji = btn.textContent;
-            const messageInput = document.getElementById('message-input');
-            messageInput.value += emoji;
-            messageInput.focus();
-            emojiPicker.style.display = 'none';
-        });
-    });
-
-    // Close emoji picker when clicking elsewhere
-    document.addEventListener('click', (e) => {
-        if (emojiPicker.style.display !== 'none' &&
-            !emojiPicker.contains(e.target) &&
-            e.target !== emojiBtn) {
-            emojiPicker.style.display = 'none';
-        }
-    });
-}
-
-// Function to initialize voice input
-function initVoiceInput() {
-    const voiceBtn = document.getElementById('voice-input-btn');
-
-    // Check if browser supports speech recognition
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-
-        recognition.continuous = false;
-        recognition.interimResults = true;
-        recognition.lang = 'en-US';
-
-        let isRecording = false;
-
-        voiceBtn.addEventListener('click', () => {
-            if (isRecording) {
-                recognition.stop();
-                voiceBtn.classList.remove('recording');
-                isRecording = false;
-            } else {
-                recognition.start();
-                voiceBtn.classList.add('recording');
-                isRecording = true;
-            }
-        });
-
-        recognition.onresult = (event) => {
-            const transcript = Array.from(event.results)
-                .map(result => result[0])
-                .map(result => result.transcript)
-                .join('');
-
-            document.getElementById('message-input').value = transcript;
-        };
-
-        recognition.onend = () => {
-            voiceBtn.classList.remove('recording');
-            isRecording = false;
-        };
-
-        recognition.onerror = (event) => {
-            console.error('Speech recognition error', event.error);
-            voiceBtn.classList.remove('recording');
-            isRecording = false;
-        };
-    } else {
-        // Hide button if speech recognition is not supported
-        voiceBtn.style.display = 'none';
-    }
-}
-
-// Function to handle API key setup
-function setupApiKey() {
-    storeApiKey();
-    return false;
-}
-
-function getProviderStorageKey(provider) {
-    const normalizedProvider = provider || 'openrouter';
-
-    if (normalizedProvider === 'gemini') {
-        return 'gemini_api_key';
-    }
-
-    if (normalizedProvider === 'huggingface') {
-        return 'huggingface_api_key';
-    }
-
-    if (normalizedProvider === 'deepseek') {
-        return 'deepseek_api_key';
-    }
-
-    if (normalizedProvider === 'grok') {
-        return 'grok_api_key';
-    }
-
-    return 'openrouter_api_key';
-}
-
-function getProviderWindowKey(provider) {
-    const normalizedProvider = provider || 'openrouter';
-
-    if (normalizedProvider === 'gemini') {
-        return 'GEMINI_API_KEY';
-    }
-
-    if (normalizedProvider === 'huggingface') {
-        return 'HUGGINGFACE_API_KEY';
-    }
-
-    if (normalizedProvider === 'deepseek') {
-        return 'DEEPSEEK_API_KEY';
-    }
-
-    if (normalizedProvider === 'grok') {
-        return 'GROK_API_KEY';
-    }
-
-    return 'OPENROUTER_API_KEY';
-}
-
-window.resolveProviderApiKey = function (provider, modelId = null) {
-    if (modelId) {
-        const modelSpecificKey = localStorage.getItem(`model_specific_key_${modelId}`);
-        if (modelSpecificKey) {
-            return modelSpecificKey;
-        }
-    }
-
-    const storageKey = getProviderStorageKey(provider);
-    const windowKey = getProviderWindowKey(provider);
-
-    const directKey = window[windowKey] || localStorage.getItem(storageKey);
-    if (directKey && directKey.trim()) {
-        return directKey;
-    }
-
-    const storedKeys = JSON.parse(localStorage.getItem('stored_api_keys') || '[]');
-    const fallback = storedKeys.find(k => k.provider === (provider || 'openrouter') && k.key && k.key.trim());
-
-    if (fallback) {
-        localStorage.setItem(storageKey, fallback.key);
-        window[windowKey] = fallback.key;
-        return fallback.key;
-    }
-
-    return '';
+// App shell: modals, sidebar workspace, folders, API keys, search, exports, and stats.
+
+const PROVIDER_KEY_STORAGE = {
+    openrouter: 'openrouter_api_key',
+    gemini: 'gemini_api_key',
+    deepseek: 'deepseek_api_key',
+    huggingface: 'huggingface_api_key',
+    grok: 'grok_api_key'
 };
 
-function hydrateProviderKeysFromStorage() {
-    ['openrouter', 'gemini', 'deepseek', 'huggingface', 'grok'].forEach(provider => {
-        const key = window.resolveProviderApiKey(provider);
-        if (key) {
-            const windowKey = getProviderWindowKey(provider);
-            const storageKey = getProviderStorageKey(provider);
-            window[windowKey] = key;
-            localStorage.setItem(storageKey, key);
-        }
-    });
+const DEFAULT_FOLDER_ID = 'uncategorized';
+const MOBILE_QUERY = '(max-width: 860px)';
+
+const SYSTEM_PRESETS = {
+    default: '',
+    expert: 'You are a senior software engineer. Give correct, runnable code, keep explanations short, and call out edge cases.',
+    teacher: 'You are a patient teacher. Explain step by step in simple language and include one small example.',
+    creative: 'You are a creative writer. Write vivid, engaging prose and offer a couple of stylistic options.'
+};
+
+const modalStack = [];
+const modalFocusReturn = new Map();
+
+let pendingConfirmResolver = null;
+let pendingPromptResolver = null;
+let pendingPromptValidator = null;
+let pendingAssign = null;
+let pendingModelKeyId = null;
+let filterTimer = null;
+let searchTimer = null;
+
+/* ---------- Helpers ---------- */
+
+function byId(id) {
+    return document.getElementById(id);
 }
 
-// Function to store and manage API keys
-function storeApiKey() {
-    // Create a modal for storing API key
-    let storeKeyModal = document.getElementById('store-key-modal');
-
-    if (!storeKeyModal) {
-        storeKeyModal = document.createElement('div');
-        storeKeyModal.id = 'store-key-modal';
-        storeKeyModal.className = 'modal';
-
-        storeKeyModal.innerHTML = `
-            <div class="modal-content store-key-content">
-                <span class="close-modal" id="close-store-modal">&times;</span>
-                <h2><i class="fas fa-key"></i> Manage API Keys</h2>
-                <div class="modal-divider"></div>
-                
-                <div class="tabs">
-                    <div class="tab active" data-tab="add-key">Add New Key</div>
-                    <div class="tab" data-tab="manage-keys">Manage Keys</div>
-                </div>
-                
-                <div class="tab-content active" id="add-key-tab">
-                    <div class="modal-body">
-                        <div class="api-provider-selector">
-                            <p class="modal-instruction">Select API Provider:</p>
-                            <select class="provider-dropdown" id="api-provider-select">
-                                <option value="openrouter">OpenRouter</option>
-                                <option value="gemini">Google Gemini</option>
-                                <option value="deepseek">DeepSeek</option>
-                                <option value="huggingface">Hugging Face</option>
-                                <option value="anthropic">Anthropic</option>
-                                <option value="openai">OpenAI</option>
-                                <option value="grok">Grok</option>
-                                <option value="other">Other Provider</option>
-                            </select>
-                        </div>
-                        
-                        <div class="api-key-input-container">
-                            <p class="modal-instruction">Enter a name for this API key:</p>
-                            <input type="text" id="api-key-name-input" placeholder="e.g. OpenRouter, DeepSeek" class="full-width-input">
-                        </div>
-                        
-                        <div class="api-key-input-container">
-                            <p class="modal-instruction">Paste your API key below:</p>
-                            <input type="text" id="store-api-key-input" placeholder="Paste your API key here" class="full-width-input">
-                            <div class="input-hint">Your API key will be stored in your browser's local storage</div>
-                        </div>
-                        
-                        <div class="modal-divider"></div>
-                        
-                        <div class="store-key-actions">
-                            <button id="cancel-store-api-key" class="secondary-button">
-                                <i class="fas fa-times"></i> Cancel
-                            </button>
-                            <button id="save-store-api-key" class="primary-button">
-                                <i class="fas fa-save"></i> Save Key
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="manage-keys-tab">
-                    <div class="modal-body">
-                        <div class="stored-keys-container" id="stored-keys-list">
-                            <!-- Stored keys will be displayed here -->
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <p class="api-key-note"><i class="fas fa-info-circle"></i> You can get an API key from <a href="https://openrouter.ai" target="_blank">OpenRouter.ai</a></p>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(storeKeyModal);
-
-        // Add event listeners for the new modal
-        document.getElementById('close-store-modal').addEventListener('click', () => {
-            storeKeyModal.style.display = 'none';
-        });
-
-        // Update API provider link when dropdown changes
-        document.getElementById('api-provider-select').addEventListener('change', (e) => {
-            const provider = e.target.value;
-            const noteElement = document.querySelector('.api-key-note');
-
-            // Change the provider link and text based on selection
-            switch (provider) {
-                case 'openrouter':
-                    noteElement.innerHTML = '<i class="fas fa-info-circle"></i> You can get an API key from <a href="https://openrouter.ai" target="_blank">OpenRouter.ai</a>';
-                    break;
-                case 'gemini':
-                    noteElement.innerHTML = '<i class="fas fa-info-circle"></i> You can get an API key from <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>';
-                    break;
-                case 'deepseek':
-                    noteElement.innerHTML = '<i class="fas fa-info-circle"></i> You can get an API key from <a href="https://platform.deepseek.com" target="_blank">DeepSeek Platform</a>';
-                    break;
-                case 'huggingface':
-                    noteElement.innerHTML = '<i class="fas fa-info-circle"></i> You can get an API key from <a href="https://huggingface.co/settings/tokens" target="_blank">Hugging Face</a>';
-                    break;
-                case 'anthropic':
-                    noteElement.innerHTML = '<i class="fas fa-info-circle"></i> You can get an API key from <a href="https://console.anthropic.com" target="_blank">Anthropic Console</a>';
-                    break;
-                case 'openai':
-                    noteElement.innerHTML = '<i class="fas fa-info-circle"></i> You can get an API key from <a href="https://platform.openai.com" target="_blank">OpenAI Platform</a>';
-                    break;
-                case 'grok':
-                    noteElement.innerHTML = '<i class="fas fa-info-circle"></i> You can get an API key from <a href="https://grok.x.ai" target="_blank">Grok AI</a>';
-                    break;
-                default:
-                    noteElement.innerHTML = '<i class="fas fa-info-circle"></i> Enter your API key from your provider';
-            }
-
-            // Auto-fill the name field if empty
-            const nameField = document.getElementById('api-key-name-input');
-            if (!nameField.value.trim()) {
-                const providerName = e.target.options[e.target.selectedIndex].text;
-                nameField.value = providerName;
-            }
-        });
-
-        document.getElementById('save-store-api-key').addEventListener('click', () => {
-            const newApiKey = document.getElementById('store-api-key-input').value.trim();
-            const keyName = document.getElementById('api-key-name-input').value.trim() || 'Unnamed Key';
-            const provider = document.getElementById('api-provider-select').value;
-
-            if (newApiKey) {
-                // Get existing keys
-                let storedKeys = JSON.parse(localStorage.getItem('stored_api_keys') || '[]');
-
-                // Add new key
-                storedKeys.push({
-                    name: keyName,
-                    key: newApiKey,
-                    provider: provider,
-                    date: new Date().toISOString()
-                });
-
-                // Save back to localStorage
-                localStorage.setItem('stored_api_keys', JSON.stringify(storedKeys));
-
-                // Set as default key for its provider
-                if (provider === 'huggingface') {
-                    localStorage.setItem('huggingface_api_key', newApiKey);
-                    window.HUGGINGFACE_API_KEY = newApiKey;
-                } else if (provider === 'gemini') {
-                    localStorage.setItem('gemini_api_key', newApiKey);
-                    window.GEMINI_API_KEY = newApiKey;
-                } else if (provider === 'deepseek') {
-                    localStorage.setItem('deepseek_api_key', newApiKey);
-                    window.DEEPSEEK_API_KEY = newApiKey;
-                } else if (provider === 'grok') {
-                    localStorage.setItem('grok_api_key', newApiKey);
-                    window.GROK_API_KEY = newApiKey;
-                } else {
-                    // Default to OpenRouter
-                    localStorage.setItem('openrouter_api_key', newApiKey);
-                    window.OPENROUTER_API_KEY = newApiKey;
-                }
-
-                // Close modal and show success message
-                storeKeyModal.style.display = 'none';
-                showToast(`API key "${keyName}" stored successfully`);
-
-                // Update manager tab if open
-                updateStoredKeysDisplay();
-            } else {
-                // Highlight the input field with an error state
-                const inputField = document.getElementById('store-api-key-input');
-                inputField.classList.add('input-error');
-                inputField.addEventListener('input', () => {
-                    inputField.classList.remove('input-error');
-                }, { once: true });
-
-                showToast('Please enter a valid API key');
-            }
-        });
-
-        document.getElementById('cancel-store-api-key').addEventListener('click', () => {
-            storeKeyModal.style.display = 'none';
-        });
-
-        // Close modal when clicking outside
-        storeKeyModal.addEventListener('click', (e) => {
-            if (e.target === storeKeyModal) {
-                storeKeyModal.style.display = 'none';
-            }
-        });
-
-        // Set up tab switching
-        const tabs = storeKeyModal.querySelectorAll('.tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs and contents
-                storeKeyModal.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                storeKeyModal.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-                // Add active class to clicked tab and corresponding content
-                tab.classList.add('active');
-                const tabId = tab.getAttribute('data-tab');
-                storeKeyModal.querySelector(`#${tabId}-tab`).classList.add('active');
-
-                // If switching to manage keys tab, update the display
-                if (tabId === 'manage-keys') {
-                    updateStoredKeysDisplay();
-                }
-            });
-        });
-
-        // Function to update the stored keys display
-        window.updateStoredKeysDisplay = function () {
-            const keysList = document.getElementById('stored-keys-list');
-            const storedKeys = JSON.parse(localStorage.getItem('stored_api_keys') || '[]');
-
-            if (storedKeys.length === 0) {
-                keysList.innerHTML = `<div class="empty-keys-msg">No API keys stored yet.</div>`;
-                return;
-            }
-
-            let keysHTML = '';
-            storedKeys.forEach((keyObj, index) => {
-                // Mask the API key for display
-                const safeKey = keyObj.key || '';
-                const maskedKey = safeKey.length > 10
-                    ? safeKey.substring(0, 5) + '...' + safeKey.substring(safeKey.length - 5)
-                    : '••••••••••';
-
-                // Check if this key is currently active based on its provider
-                const providerStorageKey = getProviderStorageKey(keyObj.provider || 'openrouter');
-                const activeProviderKey = localStorage.getItem(providerStorageKey);
-                const isActive = Boolean(activeProviderKey && keyObj.key === activeProviderKey);
-
-                // Get provider icon
-                const providerIcon = getProviderIcon(keyObj.provider || 'other');
-
-                // Format date if available
-                const dateString = keyObj.date ? new Date(keyObj.date).toLocaleDateString() : 'N/A';
-
-                keysHTML += `
-                    <div class="stored-key-item ${isActive ? 'active-key' : ''}">
-                        <div class="key-info">
-                            <span class="key-name">${providerIcon} ${keyObj.name}</span>
-                            <span class="key-value">${maskedKey}</span>
-                        </div>
-                        <div class="stored-key-actions">
-                            <button class="key-action-btn apply-key-btn" data-index="${index}">
-                                Apply To Models
-                            </button>
-                            <button class="key-action-btn delete-key-btn" data-index="${index}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            keysList.innerHTML = keysHTML;
-
-            // Add event listeners for Apply buttons
-            document.querySelectorAll('.apply-key-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.currentTarget.dataset.index);
-                    showModelSelectionForKey(index);
-                });
-            });
-
-            // Add event listeners for Delete buttons
-            document.querySelectorAll('.delete-key-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.currentTarget.dataset.index);
-                    deleteStoredKey(index);
-                });
-            });
-        };
-
-        // Function to delete a stored API key
-        window.deleteStoredKey = function (keyIndex) {
-            const storedKeys = JSON.parse(localStorage.getItem('stored_api_keys') || '[]');
-            if (keyIndex < 0 || keyIndex >= storedKeys.length) return;
-
-            const keyToDelete = storedKeys[keyIndex];
-
-            // Confirm deletion
-            if (confirm(`Are you sure you want to delete the key "${keyToDelete.name}"?`)) {
-                const providerStorageKey = getProviderStorageKey(keyToDelete.provider || 'openrouter');
-                const providerWindowKey = getProviderWindowKey(keyToDelete.provider || 'openrouter');
-                const wasDefault = localStorage.getItem(providerStorageKey) === keyToDelete.key;
-
-                // Remove key from storage
-                storedKeys.splice(keyIndex, 1);
-                localStorage.setItem('stored_api_keys', JSON.stringify(storedKeys));
-
-                // Remove any model-specific assignments of this key
-                Object.keys(localStorage).forEach(key => {
-                    if (key.startsWith('model_specific_key_') &&
-                        localStorage.getItem(key) === keyToDelete.key) {
-                        localStorage.removeItem(key);
-                    }
-                });
-
-                if (wasDefault) {
-                    localStorage.removeItem(providerStorageKey);
-                    window[providerWindowKey] = '';
-
-                    const replacementKey = window.resolveProviderApiKey(keyToDelete.provider || 'openrouter');
-                    if (replacementKey) {
-                        localStorage.setItem(providerStorageKey, replacementKey);
-                        window[providerWindowKey] = replacementKey;
-                    }
-                }
-
-                // Update the display
-                updateStoredKeysDisplay();
-
-                // Show toast message
-                if (wasDefault) {
-                    showToast(`Deleted default API key "${keyToDelete.name}"`);
-                } else {
-                    showToast(`Deleted API key "${keyToDelete.name}"`);
-                }
-            }
-        };
-
-        // Function to show model selection modal for applying key
-        window.showModelSelectionForKey = function (keyIndex) {
-            const storedKeys = JSON.parse(localStorage.getItem('stored_api_keys') || '[]');
-            if (keyIndex < 0 || keyIndex >= storedKeys.length) return;
-
-            const keyToApply = storedKeys[keyIndex];
-
-            // Create modal for model selection
-            let modelSelectionModal = document.getElementById('model-selection-modal');
-
-            if (!modelSelectionModal) {
-                modelSelectionModal = document.createElement('div');
-                modelSelectionModal.id = 'model-selection-modal';
-                modelSelectionModal.className = 'modal';
-
-                modelSelectionModal.innerHTML = `
-                    <div class="modal-content">
-                        <span class="close-modal" id="close-model-selection-modal">&times;</span>
-                        <h2><i class="fas fa-key"></i> Apply API Key to Models</h2>
-                        <div class="modal-divider"></div>
-                        
-                        <div class="modal-body">
-                            <p class="modal-instruction">
-                                Select which models should use <span class="highlighted-key-name"></span>:
-                            </p>
-                            <div class="select-actions">
-                                <button id="select-all-models" class="secondary-button">
-                                    <i class="fas fa-check-double"></i> Select All
-                                </button>
-                                <button id="deselect-all-models" class="secondary-button">
-                                    <i class="fas fa-times-circle"></i> Deselect All
-                                </button>
-                            </div>
-                            <div class="models-list-container two-column-grid" id="models-selection-list">
-                                <!-- Models will be added here -->
-                            </div>
-                            
-                            <div class="modal-divider"></div>
-                            
-                            <div class="model-selection-actions">
-                                <button id="apply-to-selected-models" class="primary-button">
-                                    <i class="fas fa-check"></i> Apply to Selected
-                                </button>
-                                <button id="apply-to-all-models" class="secondary-button">
-                                    <i class="fas fa-globe"></i> Apply as Default
-                                </button>
-                                <button id="cancel-model-selection" class="secondary-button">
-                                    <i class="fas fa-times"></i> Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                document.body.appendChild(modelSelectionModal);
-
-                // Add event listeners
-                document.getElementById('close-model-selection-modal').addEventListener('click', () => {
-                    modelSelectionModal.style.display = 'none';
-                });
-
-                document.getElementById('cancel-model-selection').addEventListener('click', () => {
-                    modelSelectionModal.style.display = 'none';
-                });
-
-                // Select all models
-                document.getElementById('select-all-models').addEventListener('click', () => {
-                    document.querySelectorAll('.model-checkbox').forEach(checkbox => {
-                        checkbox.checked = true;
-                    });
-                });
-
-                // Deselect all models
-                document.getElementById('deselect-all-models').addEventListener('click', () => {
-                    document.querySelectorAll('.model-checkbox').forEach(checkbox => {
-                        checkbox.checked = false;
-                    });
-                });
-
-                // Apply to selected models
-                document.getElementById('apply-to-selected-models').addEventListener('click', () => {
-                    const selectedModels = document.querySelectorAll('.model-checkbox:checked');
-                    const modelIds = Array.from(selectedModels).map(checkbox => checkbox.value);
-
-                    if (modelIds.length === 0) {
-                        showToast('No models selected');
-                        return;
-                    }
-
-                    // Get the key index from the dataset
-                    const keyIndex = parseInt(modelSelectionModal.dataset.keyIndex);
-                    applyKeyToSelectedModels(keyIndex, modelIds);
-                    modelSelectionModal.style.display = 'none';
-                });
-
-                // Apply as default for provider
-                document.getElementById('apply-to-all-models').addEventListener('click', () => {
-                    const keyIndex = parseInt(modelSelectionModal.dataset.keyIndex);
-                    applyStoredKey(keyIndex);
-                    modelSelectionModal.style.display = 'none';
-                });
-
-                // Close when clicking outside
-                modelSelectionModal.addEventListener('click', (e) => {
-                    if (e.target === modelSelectionModal) {
-                        modelSelectionModal.style.display = 'none';
-                    }
-                });
-            }
-
-            // Set active key
-            modelSelectionModal.dataset.keyIndex = keyIndex;
-            document.querySelector('.highlighted-key-name').textContent = keyToApply.name;
-
-            // Populate the models list
-            populateModelSelectionList(keyToApply);
-
-            // Show the modal
-            modelSelectionModal.style.display = 'flex';
-        };
-
-        // Function to populate the model selection list
-        window.populateModelSelectionList = function (keyObj) {
-            const modelsContainer = document.getElementById('models-selection-list');
-            let modelsHTML = '';
-
-            availableModels.forEach(model => {
-                // Check if model already uses this specific key
-                const modelSpecificKey = localStorage.getItem(`model_specific_key_${model.id}`);
-                const isActive = modelSpecificKey === keyObj.key;
-
-                // Only show relevant models for this key type
-                let shouldShow = true;
-                if (keyObj.provider === 'huggingface' && model.provider !== 'huggingface') {
-                    shouldShow = false;
-                } else if (keyObj.provider === 'gemini' && model.provider !== 'gemini') {
-                    shouldShow = false;
-                } else if (keyObj.provider === 'deepseek' && model.provider !== 'deepseek') {
-                    shouldShow = false;
-                } else if (keyObj.provider === 'grok' && model.provider !== 'grok') {
-                    shouldShow = false;
-                }
-
-                if (shouldShow) {
-                    modelsHTML += `
-                        <div class="model-selection-item ${isActive ? 'active-model' : ''}">
-                            <input type="checkbox" id="model-${model.id}" value="${model.id}" 
-                                class="model-checkbox" ${isActive ? 'checked' : ''}>
-                            <label for="model-${model.id}">
-                                <div class="model-info">
-                                    <div class="model-name">
-                                        <i class="fas ${model.avatar}"></i> ${model.name}
-                                    </div>
-                                    <div class="model-provider">${model.provider}</div>
-                                </div>
-                            </label>
-                        </div>
-                    `;
-                }
-            });
-
-            if (modelsHTML === '') {
-                modelsHTML = `<p class="empty-models-msg">No compatible models found for this API key type.</p>`;
-            }
-
-            modelsContainer.innerHTML = modelsHTML;
-        };
-
-        // Function to apply key to specific models
-        window.applyKeyToSelectedModels = function (keyIndex, modelIds) {
-            const storedKeys = JSON.parse(localStorage.getItem('stored_api_keys') || '[]');
-            if (keyIndex < 0 || keyIndex >= storedKeys.length) return;
-
-            const keyToApply = storedKeys[keyIndex];
-
-            // Apply the key to each selected model
-            modelIds.forEach(modelId => {
-                localStorage.setItem(`model_specific_key_${modelId}`, keyToApply.key);
-            });
-
-            showToast(`Applied ${keyToApply.name} to ${modelIds.length} model(s)`);
-        };
-
-        // Function to apply stored key as default for its provider
-        window.applyStoredKey = function (keyIndex) {
-            const storedKeys = JSON.parse(localStorage.getItem('stored_api_keys') || '[]');
-            if (keyIndex < 0 || keyIndex >= storedKeys.length) return;
-
-            const keyToApply = storedKeys[keyIndex];
-
-            // Set as default key for its provider
-            if (keyToApply.provider === 'huggingface') {
-                localStorage.setItem('huggingface_api_key', keyToApply.key);
-                window.HUGGINGFACE_API_KEY = keyToApply.key;
-            } else if (keyToApply.provider === 'gemini') {
-                localStorage.setItem('gemini_api_key', keyToApply.key);
-                window.GEMINI_API_KEY = keyToApply.key;
-            } else if (keyToApply.provider === 'deepseek') {
-                localStorage.setItem('deepseek_api_key', keyToApply.key);
-                window.DEEPSEEK_API_KEY = keyToApply.key;
-            } else if (keyToApply.provider === 'grok') {
-                localStorage.setItem('grok_api_key', keyToApply.key);
-                window.GROK_API_KEY = keyToApply.key;
-            } else {
-                // Default to OpenRouter
-                localStorage.setItem('openrouter_api_key', keyToApply.key);
-                window.OPENROUTER_API_KEY = keyToApply.key;
-            }
-
-            // Update the stored keys display to reflect the change
-            updateStoredKeysDisplay();
-
-            showToast(`Set ${keyToApply.name} as default for ${keyToApply.provider} models`);
-        };
-
-        // Function to get provider icon
-        function getProviderIcon(provider) {
-            const icons = {
-                'openrouter': '<i class="fas fa-network-wired"></i>',
-                'gemini': '<i class="fas fa-star"></i>',
-                'deepseek': '<i class="fas fa-brain"></i>',
-                'huggingface': '<i class="fas fa-image"></i>',
-                'anthropic': '<i class="fas fa-lightbulb"></i>',
-                'openai': '<i class="fas fa-robot"></i>',
-                'grok': '<i class="fas fa-bolt"></i>',
-                'other': '<i class="fas fa-key"></i>'
-            };
-            return icons[provider] || icons.other;
-        }
-    }
-
-    // Show the 'Manage Keys' tab by default
-    const manageTab = storeKeyModal.querySelector('.tab[data-tab="manage-keys"]');
-    manageTab.click();
-
-    // Show the modal
-    storeKeyModal.style.display = 'flex';
+function makeEl(tag, className, text) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
+    return element;
 }
 
-// Function to show toast notification
-function showToast(message) {
-    // Check if toast container exists
-    let toastContainer = document.getElementById('toast-container');
+function readJSON(key, fallback) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return fallback;
+        return JSON.parse(raw);
+    } catch (error) {
+        return fallback;
+    }
+}
 
-    if (!toastContainer) {
-        // Create toast container if it doesn't exist
-        toastContainer = document.createElement('div');
-        toastContainer.id = 'toast-container';
-        document.body.appendChild(toastContainer);
+function writeJSON(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+function emptyState(message) {
+    return makeEl('div', 'empty-state', message);
+}
+
+function isMobileView() {
+    return window.matchMedia(MOBILE_QUERY).matches;
+}
+
+function formatNumber(value) {
+    return Number(value || 0).toLocaleString();
+}
+
+function estimateTokens(text) {
+    return Math.ceil(String(text || '').length / 4);
+}
+
+function conversationText(message) {
+    if (!message || typeof message.content !== 'string') return '';
+    if (message.image || message.content.startsWith('data:image') ||
+        message.content.startsWith('<div class="generated-image">')) {
+        return message.prompt ? `Generated image: ${message.prompt}` : 'Generated image';
+    }
+    return message.content;
+}
+
+/* ---------- Toasts ---------- */
+
+function showToast(message, type = 'info') {
+    const container = byId('toast-container');
+    if (!container) return;
+
+    while (container.children.length >= 4) {
+        container.firstElementChild.remove();
     }
 
-    // Create new toast
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = message;
+    const toast = makeEl('div', 'toast' + (type === 'error' ? ' toast-error' : ''));
+    const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+    const icon = makeEl('i', `fas ${icons[type] || icons.info}`);
+    icon.setAttribute('aria-hidden', 'true');
+    const text = makeEl('span', '', String(message));
+    toast.append(icon, text);
+    container.appendChild(toast);
 
-    // Add toast to container
-    toastContainer.appendChild(toast);
-
-    // Remove toast after animation
-    setTimeout(() => {
+    window.setTimeout(() => {
         toast.classList.add('fade-out');
-        setTimeout(() => {
-            toast.remove();
-        }, 500);
-    }, 3000);
+        window.setTimeout(() => toast.remove(), 260);
+    }, 3400);
 }
 
-// Function to import predefined API keys provided by the user
-function importPredefinedAPIKeys() {
-    const existingKeys = JSON.parse(localStorage.getItem('stored_api_keys') || '[]');
-    if (!Array.isArray(existingKeys) || existingKeys.length === 0) {
+window.showToast = showToast;
+
+/* ---------- Modal system ---------- */
+
+function getFocusable(modal) {
+    if (!modal) return [];
+    return Array.from(modal.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )).filter(element => element.getClientRects().length > 0);
+}
+
+function openModal(id) {
+    const modal = byId(id);
+    if (!modal || !modal.hidden) return;
+
+    const opener = document.activeElement;
+    if (opener && opener !== document.body) modalFocusReturn.set(id, opener);
+
+    modal.hidden = false;
+    modalStack.push(id);
+    document.body.classList.add('modal-open');
+
+    window.setTimeout(() => {
+        if (modalStack[modalStack.length - 1] !== id || modal.hidden) return;
+        if (modal.contains(document.activeElement) && document.activeElement !== document.body) return;
+        const target = modal.querySelector('[data-autofocus]') || getFocusable(modal)[0];
+        if (target) target.focus();
+    }, 40);
+}
+
+function closeModal(id) {
+    const targetId = typeof id === 'string' ? id : modalStack[modalStack.length - 1];
+    if (!targetId) return;
+
+    const modal = byId(targetId);
+    const confirmResolve = targetId === 'confirm-modal' ? pendingConfirmResolver : null;
+    const promptResolve = targetId === 'prompt-modal' ? pendingPromptResolver : null;
+    if (targetId === 'confirm-modal') pendingConfirmResolver = null;
+    if (targetId === 'prompt-modal') {
+        pendingPromptResolver = null;
+        pendingPromptValidator = null;
+    }
+
+    if (modal && !modal.hidden) modal.hidden = true;
+
+    const stackIndex = modalStack.lastIndexOf(targetId);
+    if (stackIndex >= 0) modalStack.splice(stackIndex, 1);
+    if (!modalStack.length) document.body.classList.remove('modal-open');
+
+    const opener = modalFocusReturn.get(targetId);
+    modalFocusReturn.delete(targetId);
+    if (opener && document.contains(opener) && opener.getClientRects().length > 0) {
+        try { opener.focus(); } catch (error) { /* focus is best-effort */ }
+    }
+
+    if (confirmResolve) confirmResolve(false);
+    if (promptResolve) promptResolve(null);
+}
+
+window.openModal = openModal;
+window.closeModal = closeModal;
+
+function resolveConfirm(value) {
+    const resolve = pendingConfirmResolver;
+    pendingConfirmResolver = null;
+    closeModal('confirm-modal');
+    if (resolve) resolve(value);
+}
+
+function confirmAction({ title = 'Are you sure?', message = 'This action cannot be undone.', confirmLabel = 'Confirm', danger = false } = {}) {
+    const titleEl = byId('confirm-title');
+    const messageEl = byId('confirm-message');
+    const okBtn = byId('confirm-ok');
+    const icon = byId('confirm-icon');
+    if (!titleEl || !messageEl || !okBtn) return Promise.resolve(false);
+
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    okBtn.textContent = confirmLabel;
+    okBtn.classList.remove('btn-primary', 'btn-danger');
+    okBtn.classList.add(danger ? 'btn-danger' : 'btn-primary');
+    if (icon) {
+        icon.classList.toggle('modal-icon-danger', danger);
+        icon.innerHTML = `<i class="fas ${danger ? 'fa-triangle-exclamation' : 'fa-circle-question'}" aria-hidden="true"></i>`;
+    }
+
+    if (pendingConfirmResolver) {
+        const previous = pendingConfirmResolver;
+        pendingConfirmResolver = null;
+        previous(false);
+    }
+
+    openModal('confirm-modal');
+    return new Promise(resolve => { pendingConfirmResolver = resolve; });
+}
+
+function promptAction({
+    title = 'Folder',
+    subtitle = 'Group related conversations together.',
+    label = 'Name',
+    value = '',
+    placeholder = '',
+    okLabel = 'Save',
+    icon = 'fa-folder-plus',
+    maxLength = 60,
+    validate = null
+} = {}) {
+    const titleEl = byId('prompt-title');
+    const subtitleEl = byId('prompt-subtitle');
+    const labelEl = byId('prompt-label');
+    const input = byId('prompt-input');
+    const okBtn = byId('prompt-ok');
+    const modalIcon = byId('prompt-modal')?.querySelector('.modal-icon i');
+    if (!titleEl || !subtitleEl || !labelEl || !input || !okBtn) return Promise.resolve(null);
+
+    titleEl.textContent = title;
+    subtitleEl.textContent = subtitle;
+    labelEl.textContent = label;
+    input.value = value;
+    input.placeholder = placeholder;
+    input.maxLength = maxLength;
+    input.classList.remove('input-error');
+    okBtn.textContent = okLabel;
+    if (modalIcon) modalIcon.className = `fas ${icon}`;
+    pendingPromptValidator = validate;
+
+    openModal('prompt-modal');
+    window.setTimeout(() => {
+        input.focus();
+        input.select();
+    }, 45);
+
+    return new Promise(resolve => { pendingPromptResolver = resolve; });
+}
+
+function submitPrompt() {
+    const input = byId('prompt-input');
+    if (!input) return;
+    const value = input.value.trim();
+
+    if (!value) {
+        input.classList.add('input-error');
+        input.focus();
+        showToast('Enter a name first.', 'error');
         return;
     }
 
-    const validKeys = existingKeys.filter(keyObj =>
-        keyObj && typeof keyObj.key === 'string' && keyObj.key.trim()
-    );
-
-    if (validKeys.length !== existingKeys.length) {
-        localStorage.setItem('stored_api_keys', JSON.stringify(validKeys));
-    }
-
-    hydrateProviderKeysFromStorage();
-}
-
-// Function to show chat deletion modal
-function showChatDeletionModal() {
-    // Create modal for deleting specific chats
-    let deletionModal = document.getElementById('chat-deletion-modal');
-
-    if (!deletionModal) {
-        deletionModal = document.createElement('div');
-        deletionModal.id = 'chat-deletion-modal';
-        deletionModal.className = 'modal';
-
-        deletionModal.innerHTML = `
-            <div class="modal-content">
-                <span class="close-modal" id="close-deletion-modal">&times;</span>
-                <h2><i class="fas fa-trash"></i> Delete Conversations</h2>
-                <div class="modal-divider"></div>
-                
-                <div class="modal-body">
-                    <p class="modal-instruction">Select conversations to delete:</p>
-                    <div class="chat-list-container" id="deletion-chat-list">
-                        <!-- Chat list will be added here -->
-                    </div>
-                    
-                    <div class="modal-divider"></div>
-                    
-                    <div class="deletion-actions">
-                        <button id="delete-selected-chats" class="primary-button">
-                            <i class="fas fa-trash"></i> Delete Selected
-                        </button>
-                        <button id="delete-all-chats" class="danger-button">
-                            <i class="fas fa-trash-alt"></i> Delete All
-                        </button>
-                        <button id="cancel-deletion" class="secondary-button">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(deletionModal);
-
-        // Add event listeners
-        document.getElementById('close-deletion-modal').addEventListener('click', () => {
-            deletionModal.style.display = 'none';
-        });
-
-        document.getElementById('cancel-deletion').addEventListener('click', () => {
-            deletionModal.style.display = 'none';
-        });
-
-        document.getElementById('delete-selected-chats').addEventListener('click', () => {
-            const selectedChats = document.querySelectorAll('.chat-deletion-item input:checked');
-            const chatIds = Array.from(selectedChats).map(checkbox => checkbox.value);
-
-            if (chatIds.length === 0) {
-                showToast('No conversations selected');
-                return;
-            }
-
-            deleteSelectedConversations(chatIds);
-            deletionModal.style.display = 'none';
-        });
-
-        document.getElementById('delete-all-chats').addEventListener('click', () => {
-            if (confirm('Are you sure you want to delete ALL conversations? This action cannot be undone.')) {
-                clearAllConversations();
-                deletionModal.style.display = 'none';
-            }
-        });
-
-        // Close when clicking outside
-        deletionModal.addEventListener('click', (e) => {
-            if (e.target === deletionModal) {
-                deletionModal.style.display = 'none';
-            }
-        });
-    }
-
-    // Populate the chat list
-    populateChatDeletionList();
-
-    // Show the modal
-    deletionModal.style.display = 'flex';
-}
-
-// Function to populate the chat deletion list
-function populateChatDeletionList() {
-    const chatListContainer = document.getElementById('deletion-chat-list');
-    const keys = Object.keys(localStorage).filter(key => key.startsWith('chat_'));
-
-    if (keys.length === 0) {
-        chatListContainer.innerHTML = '<p class="empty-chats-msg">No conversations to delete.</p>';
-        return;
-    }
-
-    let chatListHTML = '';
-
-    keys.forEach(key => {
-        const modelId = key.replace('chat_', '');
-        const model = availableModels.find(m => m.id === modelId);
-
-        if (model) {
-            const isCurrentChat = currentModel && currentModel.id === modelId;
-            const messages = JSON.parse(localStorage.getItem(key)) || [];
-            const lastMessage = messages.length > 0 ?
-                messages[messages.length - 1].content : 'Empty conversation';
-
-            // Truncate last message if too long
-            const truncatedMessage = lastMessage.length > 60 ?
-                lastMessage.substring(0, 60) + '...' : lastMessage;
-
-            chatListHTML += `
-                <div class="chat-deletion-item ${isCurrentChat ? 'current-chat' : ''}">
-                    <input type="checkbox" id="chat-${modelId}" value="${key}" class="chat-checkbox">
-                    <label for="chat-${modelId}">
-                        <div class="chat-info">
-                            <span class="chat-model-name">
-                                <i class="fas ${model.avatar}"></i> ${model.name}
-                            </span>
-                            <span class="chat-last-message">${truncatedMessage}</span>
-                        </div>
-                    </label>
-                </div>
-            `;
-        }
-    });
-
-    chatListContainer.innerHTML = chatListHTML;
-}
-
-// Function to delete selected conversations
-function deleteSelectedConversations(chatKeys) {
-    if (!chatKeys || chatKeys.length === 0) return;
-
-    chatKeys.forEach(key => {
-        localStorage.removeItem(key);
-
-        // If this was the current conversation, go back to model selection
-        if (currentModel && `chat_${currentModel.id}` === key) {
-            backToModelSelection();
-        }
-    });
-
-    // Update the conversation history in the sidebar
-    updateConversationHistory();
-
-    // Show success toast
-    showToast(`${chatKeys.length} conversation(s) deleted`);
-}
-
-// Initialize search conversations
-function initSearchConversations() {
-    const searchBtn = document.getElementById('search-conversations-btn');
-    const searchModal = document.getElementById('search-modal');
-    const searchInput = document.getElementById('search-input');
-    const searchResults = document.getElementById('search-results');
-    const closeBtn = searchModal.querySelector('.close-modal');
-
-    searchBtn.addEventListener('click', () => {
-        searchModal.style.display = 'flex';
-        searchInput.value = '';
-        searchResults.innerHTML = '';
-        searchInput.focus();
-    });
-
-    closeBtn.addEventListener('click', () => {
-        searchModal.style.display = 'none';
-    });
-
-    // Real-time search as user types
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        if (query.length === 0) {
-            searchResults.innerHTML = '';
+    if (pendingPromptValidator) {
+        const error = pendingPromptValidator(value);
+        if (error) {
+            input.classList.add('input-error');
+            input.focus();
+            showToast(error, 'error');
             return;
         }
-        performSearch(query);
-    });
+    }
 
-    // Close modal when clicking outside
-    searchModal.addEventListener('click', (e) => {
-        if (e.target === searchModal) {
-            searchModal.style.display = 'none';
-        }
-    });
+    const resolve = pendingPromptResolver;
+    pendingPromptResolver = null;
+    pendingPromptValidator = null;
+    closeModal('prompt-modal');
+    if (resolve) resolve(value);
 }
 
-// Perform search across all conversations
-function performSearch(query) {
-    const searchResults = document.getElementById('search-results');
-    const allConversations = [];
+function initModalSystem() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('mousedown', event => {
+            if (event.target === modal) closeModal(modal.id);
+        });
+    });
 
-    // Get all chat keys from localStorage
-    Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('chat_')) {
-            const modelId = key.replace('chat_', '');
-            const chatData = JSON.parse(localStorage.getItem(key)) || [];
-            
-            // Find the model
-            const model = availableModels.find(m => m.id === modelId);
-            if (model) {
-                allConversations.push({
-                    modelId,
-                    modelName: model.name,
-                    messages: chatData || [],
-                    key
+    document.addEventListener('click', event => {
+        if (!(event.target instanceof Element)) return;
+        const closer = event.target.closest('[data-close-modal]');
+        if (!closer) return;
+        const modal = closer.closest('.modal');
+        if (modal) closeModal(modal.id);
+    });
+
+    const confirmOk = byId('confirm-ok');
+    const confirmCancel = byId('confirm-cancel');
+    if (confirmOk) confirmOk.addEventListener('click', () => resolveConfirm(true));
+    if (confirmCancel) confirmCancel.addEventListener('click', () => resolveConfirm(false));
+
+    const promptOk = byId('prompt-ok');
+    const promptInput = byId('prompt-input');
+    if (promptOk) promptOk.addEventListener('click', submitPrompt);
+    if (promptInput) {
+        promptInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submitPrompt();
+            }
+        });
+        promptInput.addEventListener('input', () => promptInput.classList.remove('input-error'));
+    }
+}
+
+function trapFocus(event, modal) {
+    const focusable = getFocusable(modal);
+    if (!focusable.length) {
+        event.preventDefault();
+        return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (!modal.contains(active)) {
+        event.preventDefault();
+        first.focus();
+        return;
+    }
+
+    if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+    }
+}
+
+/* ---------- Sidebar ---------- */
+
+function openSidebar() {
+    if (!isMobileView()) {
+        byId('app-shell')?.classList.remove('is-sidebar-collapsed');
+        try { localStorage.setItem('sidebar_collapsed', '0'); } catch (error) { /* noop */ }
+        return;
+    }
+
+    byId('sidebar')?.classList.add('is-open');
+    const scrim = byId('sidebar-scrim');
+    if (scrim) scrim.hidden = false;
+    byId('menu-btn')?.setAttribute('aria-expanded', 'true');
+}
+
+function closeSidebar() {
+    byId('sidebar')?.classList.remove('is-open');
+    const scrim = byId('sidebar-scrim');
+    if (scrim) scrim.hidden = true;
+    byId('menu-btn')?.setAttribute('aria-expanded', 'false');
+}
+
+window.closeSidebar = closeSidebar;
+
+function toggleSidebar() {
+    if (isMobileView()) {
+        if (byId('sidebar')?.classList.contains('is-open')) closeSidebar();
+        else openSidebar();
+        return;
+    }
+
+    const shell = byId('app-shell');
+    if (!shell) return;
+    const collapsed = shell.classList.toggle('is-sidebar-collapsed');
+    try { localStorage.setItem('sidebar_collapsed', collapsed ? '1' : '0'); } catch (error) { /* noop */ }
+    byId('menu-btn')?.setAttribute('aria-expanded', String(!collapsed));
+}
+
+function applySidebarPreference() {
+    if (isMobileView()) return;
+    try {
+        if (localStorage.getItem('sidebar_collapsed') === '1') {
+            byId('app-shell')?.classList.add('is-sidebar-collapsed');
+            byId('menu-btn')?.setAttribute('aria-expanded', 'false');
+        }
+    } catch (error) { /* noop */ }
+}
+
+/* ---------- Folders and conversation tree ---------- */
+
+function normalizeFolders(raw) {
+    const folders = [];
+    const seen = new Set();
+
+    (Array.isArray(raw) ? raw : []).forEach((item, index) => {
+        if (!item || typeof item !== 'object') return;
+        let id = typeof item.id === 'string' && item.id ? item.id : `folder_${Date.now()}_${index}`;
+        if (id === DEFAULT_FOLDER_ID && !item.isDefault) id = `folder_${Date.now()}_${index}`;
+        if (seen.has(id)) id = `${id}_${index}`;
+        seen.add(id);
+
+        folders.push({
+            id,
+            name: String(item.name || '').trim() || 'Folder',
+            isDefault: Boolean(item.isDefault) || id === DEFAULT_FOLDER_ID,
+            collapsed: Boolean(item.collapsed),
+            conversations: Array.isArray(item.conversations)
+                ? Array.from(new Set(item.conversations.filter(value => typeof value === 'string')))
+                : []
+        });
+    });
+
+    let defaultFolder = folders.find(folder => folder.isDefault);
+    if (!defaultFolder) {
+        defaultFolder = {
+            id: DEFAULT_FOLDER_ID,
+            name: 'All chats',
+            isDefault: true,
+            collapsed: false,
+            conversations: []
+        };
+        folders.unshift(defaultFolder);
+    } else {
+        defaultFolder.id = DEFAULT_FOLDER_ID;
+        defaultFolder.name = 'All chats';
+        defaultFolder.isDefault = true;
+        defaultFolder.collapsed = false;
+        const index = folders.indexOf(defaultFolder);
+        if (index > 0) {
+            folders.splice(index, 1);
+            folders.unshift(defaultFolder);
+        }
+    }
+
+    return folders;
+}
+
+function loadFolders() {
+    const folders = normalizeFolders(readJSON('conversation_folders', []));
+    window.conversationFolders = folders;
+    writeJSON('conversation_folders', folders);
+}
+
+function saveFolders() {
+    return writeJSON('conversation_folders', window.conversationFolders || []);
+}
+
+function getFolderForConversation(modelId) {
+    return (window.conversationFolders || []).find(folder =>
+        Array.isArray(folder.conversations) && folder.conversations.includes(modelId)
+    ) || null;
+}
+
+function getValidConversationIds() {
+    return Object.keys(localStorage)
+        .filter(key => key.startsWith('chat_'))
+        .map(key => key.slice(5))
+        .filter(modelId => typeof getModelById === 'function' && getModelById(modelId));
+}
+
+function getPinnedIds() {
+    const pinned = readJSON('pinned_conversations', []);
+    if (!Array.isArray(pinned)) return [];
+    return Array.from(new Set(pinned.filter(value => typeof value === 'string')));
+}
+
+function savePinnedIds(ids) {
+    writeJSON('pinned_conversations', Array.from(new Set(ids)));
+}
+
+function conversationMatchesFilter(modelId, term) {
+    if (!term) return true;
+    const title = (typeof getConversationTitle === 'function' ? getConversationTitle(modelId) : '').toLowerCase();
+    if (title.includes(term)) return true;
+
+    const model = typeof getModelById === 'function' ? getModelById(modelId) : null;
+    if (model) {
+        if (model.name.toLowerCase().includes(term)) return true;
+        if (getProviderMeta(model.provider).name.toLowerCase().includes(term)) return true;
+    }
+
+    const folder = getFolderForConversation(modelId);
+    return Boolean(folder && folder.name.toLowerCase().includes(term));
+}
+
+function renderFolderTree() {
+    const tree = byId('folder-tree');
+    if (!tree) return;
+
+    tree.replaceChildren();
+    const valid = new Set(getValidConversationIds());
+    const term = (byId('conversation-filter')?.value || '').trim().toLowerCase();
+    const folders = window.conversationFolders || [];
+
+    if (valid.size === 0) {
+        tree.appendChild(makeEl('p', 'sidebar-empty', 'No conversations yet. Start one from the model picker.'));
+        renderFavorites(term, valid);
+        return;
+    }
+
+    let rendered = 0;
+    folders.forEach(folder => {
+        folder.conversations = (Array.isArray(folder.conversations) ? folder.conversations : [])
+            .filter(id => valid.has(id));
+
+        const ids = folder.conversations
+            .filter(id => conversationMatchesFilter(id, term))
+            .sort((a, b) => getConversationTimestamp(b) - getConversationTimestamp(a));
+
+        if (term && ids.length === 0) return;
+        tree.appendChild(buildFolderGroup(folder, ids));
+        rendered++;
+    });
+
+    if (!rendered) {
+        tree.appendChild(makeEl('p', 'sidebar-empty', 'No conversations match this filter.'));
+    }
+
+    renderFavorites(term, valid);
+}
+
+function buildFolderGroup(folder, ids) {
+    const expanded = !folder.collapsed;
+    const group = makeEl('div', 'folder-group' + (expanded ? ' is-expanded' : ''));
+    group.dataset.folderId = folder.id;
+
+    const head = makeEl('div', 'folder-head');
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'folder-toggle';
+    toggle.setAttribute('aria-expanded', String(expanded));
+    toggle.setAttribute('aria-label', `${folder.name} folder`);
+
+    const chevron = makeEl('i', 'fas fa-chevron-right folder-chevron');
+    chevron.setAttribute('aria-hidden', 'true');
+    const nameWrap = makeEl('span', 'folder-name');
+    const folderIcon = makeEl('i', `fas ${folder.isDefault ? 'fa-inbox' : 'fa-folder'}`);
+    folderIcon.setAttribute('aria-hidden', 'true');
+    nameWrap.append(folderIcon, makeEl('span', '', folder.name));
+    const count = makeEl('span', 'folder-count', String(ids.length));
+    toggle.append(chevron, nameWrap, count);
+    head.appendChild(toggle);
+
+    if (!folder.isDefault) {
+        const actions = makeEl('div', 'folder-actions');
+        const renameBtn = makeEl('button', 'folder-action-btn');
+        renameBtn.type = 'button';
+        renameBtn.title = 'Rename folder';
+        renameBtn.setAttribute('aria-label', `Rename ${folder.name}`);
+        renameBtn.innerHTML = '<i class="fas fa-pen" aria-hidden="true"></i>';
+        renameBtn.addEventListener('click', async () => {
+            const name = await promptAction({
+                title: 'Rename folder',
+                subtitle: 'Only the folder label changes.',
+                label: 'Folder name',
+                value: folder.name,
+                icon: 'fa-pen',
+                maxLength: 40,
+                validate: value => folderNameError(value, folder.id)
+            });
+            if (!name) return;
+            folder.name = name;
+            saveFolders();
+            renderFolderTree();
+            showToast('Folder renamed.', 'success');
+        });
+
+        const deleteBtn = makeEl('button', 'folder-action-btn delete');
+        deleteBtn.type = 'button';
+        deleteBtn.title = 'Delete folder';
+        deleteBtn.setAttribute('aria-label', `Delete ${folder.name}`);
+        deleteBtn.innerHTML = '<i class="fas fa-trash" aria-hidden="true"></i>';
+        deleteBtn.addEventListener('click', async () => {
+            const confirmed = await confirmAction({
+                title: 'Delete this folder?',
+                message: `"${folder.name}" will be removed. Its chats move to All chats.`,
+                confirmLabel: 'Delete folder',
+                danger: true
+            });
+            if (!confirmed) return;
+
+            const folders = window.conversationFolders || [];
+            const defaultFolder = folders.find(item => item.isDefault);
+            if (defaultFolder) {
+                folder.conversations.forEach(id => {
+                    if (!defaultFolder.conversations.includes(id)) defaultFolder.conversations.push(id);
                 });
             }
-        }
-    });
-
-    let results = [];
-
-    // Search through conversations
-    allConversations.forEach(conv => {
-        let matchedMessages = [];
-        
-        conv.messages.forEach((msg, idx) => {
-            if (msg.content && msg.content.toLowerCase().includes(query)) {
-                matchedMessages.push({...msg, index: idx});
-            }
+            window.conversationFolders = folders.filter(item => item.id !== folder.id);
+            saveFolders();
+            renderFolderTree();
+            showToast('Folder deleted.', 'success');
         });
 
-        if (matchedMessages.length > 0 || conv.modelName.toLowerCase().includes(query)) {
-            results.push({
-                ...conv,
-                matchedMessages
-            });
-        }
+        actions.append(renameBtn, deleteBtn);
+        head.appendChild(actions);
+    }
+
+    const list = makeEl('div', 'conversation-list');
+    list.hidden = !expanded;
+
+    toggle.addEventListener('click', () => {
+        folder.collapsed = !folder.collapsed;
+        group.classList.toggle('is-expanded', !folder.collapsed);
+        list.hidden = folder.collapsed;
+        toggle.setAttribute('aria-expanded', String(!folder.collapsed));
+        saveFolders();
     });
 
-    // Display results
-    searchResults.innerHTML = '';
-    if (results.length === 0) {
-        searchResults.innerHTML = '<div class="no-search-results">No conversations found with that search term.</div>';
+    ids.forEach(modelId => list.appendChild(buildConversationItem(modelId)));
+
+    group.append(head, list);
+    return group;
+}
+
+function buildConversationItem(modelId) {
+    const model = getModelById(modelId);
+    const title = getConversationTitle(modelId);
+    const pinned = getPinnedIds().includes(modelId);
+    const item = makeEl('div', 'conversation-item');
+    item.dataset.conversationId = modelId;
+    if (typeof currentModel !== 'undefined' && currentModel && currentModel.id === modelId) {
+        item.classList.add('active-conversation');
+    }
+
+    const openBtn = document.createElement('button');
+    openBtn.type = 'button';
+    openBtn.className = 'conv-open';
+    openBtn.setAttribute('aria-label', `Open chat: ${title}`);
+    const copy = makeEl('span', 'conv-copy');
+    copy.append(
+        makeEl('span', 'conv-title', title),
+        makeEl('span', 'conv-meta', `${model ? model.name : 'Model'} · ${formatWhen(getConversationTimestamp(modelId))}`)
+    );
+    openBtn.appendChild(copy);
+    openBtn.addEventListener('click', () => openConversation(modelId));
+
+    const actions = makeEl('div', 'conv-actions');
+
+    const renameBtn = makeEl('button', 'conv-action-btn');
+    renameBtn.type = 'button';
+    renameBtn.title = 'Rename conversation';
+    renameBtn.setAttribute('aria-label', `Rename ${title}`);
+    renameBtn.innerHTML = '<i class="fas fa-pen" aria-hidden="true"></i>';
+    renameBtn.addEventListener('click', () => renameConversation(modelId));
+
+    const pinBtn = makeEl('button', 'conv-action-btn' + (pinned ? ' is-pinned' : ''));
+    pinBtn.type = 'button';
+    pinBtn.title = pinned ? 'Unpin conversation' : 'Pin conversation';
+    pinBtn.setAttribute('aria-label', `${pinned ? 'Unpin' : 'Pin'} ${title}`);
+    pinBtn.innerHTML = `<i class="fas ${pinned ? 'fa-thumbtack' : 'fa-thumbtack'}" aria-hidden="true"></i>`;
+    pinBtn.addEventListener('click', () => {
+        const ids = getPinnedIds();
+        const index = ids.indexOf(modelId);
+        if (index >= 0) ids.splice(index, 1);
+        else ids.push(modelId);
+        savePinnedIds(ids);
+        renderFolderTree();
+    });
+
+    const moveBtn = makeEl('button', 'conv-action-btn');
+    moveBtn.type = 'button';
+    moveBtn.title = 'Move to folder';
+    moveBtn.setAttribute('aria-label', `Move ${title} to a folder`);
+    moveBtn.innerHTML = '<i class="fas fa-folder-tree" aria-hidden="true"></i>';
+    moveBtn.addEventListener('click', () => openAssignFolderModal(modelId));
+
+    const deleteBtn = makeEl('button', 'conv-action-btn delete');
+    deleteBtn.type = 'button';
+    deleteBtn.title = 'Delete conversation';
+    deleteBtn.setAttribute('aria-label', `Delete ${title}`);
+    deleteBtn.innerHTML = '<i class="fas fa-trash" aria-hidden="true"></i>';
+    deleteBtn.addEventListener('click', () => deleteConversationWithConfirm(modelId));
+
+    actions.append(renameBtn, pinBtn, moveBtn, deleteBtn);
+    item.append(openBtn, actions);
+    return item;
+}
+
+function renderFavorites(term, valid) {
+    const section = byId('favorites-section');
+    if (!section) return;
+    section.replaceChildren();
+
+    const ids = getPinnedIds()
+        .filter(id => valid.has(id) && conversationMatchesFilter(id, term))
+        .sort((a, b) => getConversationTimestamp(b) - getConversationTimestamp(a));
+
+    if (!ids.length) return;
+
+    const header = makeEl('div', 'favorites-header');
+    const star = makeEl('i', 'fas fa-star');
+    star.setAttribute('aria-hidden', 'true');
+    header.append(star, makeEl('span', '', 'Pinned'));
+    section.appendChild(header);
+
+    ids.forEach(modelId => {
+        const title = getConversationTitle(modelId);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'favorite-item';
+        button.dataset.conversationId = modelId;
+        button.setAttribute('aria-label', `Open pinned chat: ${title}`);
+        if (typeof currentModel !== 'undefined' && currentModel && currentModel.id === modelId) {
+            button.classList.add('active-conversation');
+        }
+        const icon = makeEl('i', 'fas fa-star favorite-star');
+        icon.setAttribute('aria-hidden', 'true');
+        button.append(icon, makeEl('span', 'favorite-title', title));
+        button.addEventListener('click', () => openConversation(modelId));
+        section.appendChild(button);
+    });
+}
+
+function openConversation(modelId) {
+    const model = typeof getModelById === 'function' ? getModelById(modelId) : null;
+    if (!model) {
+        showToast('This conversation is not available.', 'error');
         return;
     }
-
-    results.forEach(result => {
-        const resultDiv = document.createElement('div');
-        resultDiv.className = 'search-result-item';
-        
-        const title = document.createElement('div');
-        title.className = 'search-result-title';
-        title.textContent = result.modelName;
-
-        const meta = document.createElement('div');
-        meta.className = 'search-result-meta';
-        meta.innerHTML = `
-            <span><i class="fas fa-comments"></i> ${result.messages.length} messages</span>
-            <span><i class="fas fa-check"></i> ${result.matchedMessages.length} matches</span>
-        `;
-
-        const preview = document.createElement('div');
-        preview.className = 'search-result-preview';
-        const firstMatch = result.matchedMessages[0];
-        if (firstMatch) {
-            preview.textContent = `"${firstMatch.content.substring(0, 70)}..."`;
-        }
-
-        resultDiv.appendChild(title);
-        resultDiv.appendChild(meta);
-        resultDiv.appendChild(preview);
-
-        resultDiv.addEventListener('click', () => {
-            // Load this conversation
-            currentModel = result;
-            document.getElementById('search-modal').style.display = 'none';
-            loadChatWithModel(result);
-        });
-
-        searchResults.appendChild(resultDiv);
-    });
-}
-
-// Initialize export conversations
-function initExportConversations() {
-    const exportBtn = document.getElementById('export-conversations-btn');
-    const exportModal = document.getElementById('export-modal');
-    const closeBtn = exportModal.querySelector('.close-modal');
-    const exportJsonBtn = document.getElementById('export-json-btn');
-    const exportMarkdownBtn = document.getElementById('export-markdown-btn');
-    const exportAllTxtBtn = document.getElementById('export-all-txt-btn');
-
-    exportBtn.addEventListener('click', () => {
-        exportModal.style.display = 'flex';
-        document.getElementById('export-status').innerHTML = '';
-    });
-
-    closeBtn.addEventListener('click', () => {
-        exportModal.style.display = 'none';
-    });
-
-    exportJsonBtn.addEventListener('click', () => exportConversations('json'));
-    exportMarkdownBtn.addEventListener('click', () => exportConversations('markdown'));
-    exportAllTxtBtn.addEventListener('click', () => exportConversations('text'));
-
-    // Close modal when clicking outside
-    exportModal.addEventListener('click', (e) => {
-        if (e.target === exportModal) {
-            exportModal.style.display = 'none';
-        }
-    });
-}
-
-// Export conversations in specified format
-function exportConversations(format) {
-    const statusDiv = document.getElementById('export-status');
-    statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing export...';
-
-    setTimeout(() => {
-        let content = '';
-        let filename = `conversations_${new Date().getTime()}`;
-        let mimeType = 'text/plain';
-
-        const allConversations = [];
-        Object.keys(localStorage).forEach(key => {
-            if (key.startsWith('chat_')) {
-                const modelId = key.replace('chat_', '');
-                const chatData = JSON.parse(localStorage.getItem(key)) || [];
-                const model = availableModels.find(m => m.id === modelId);
-                if (model && chatData.length > 0) {
-                    allConversations.push({
-                        modelId,
-                        modelName: model.name,
-                        provider: model.provider,
-                        messages: chatData
-                    });
-                }
-            }
-        });
-
-        if (format === 'json') {
-            content = JSON.stringify(allConversations, null, 2);
-            filename += '.json';
-            mimeType = 'application/json';
-        } else if (format === 'markdown') {
-            content = generateMarkdownExport(allConversations);
-            filename += '.md';
-            mimeType = 'text/markdown';
-        } else if (format === 'text') {
-            content = generateTextExport(allConversations);
-            filename += '.txt';
-            mimeType = 'text/plain';
-        }
-
-        // Create and download file
-        const blob = new Blob([content], { type: mimeType });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-
-        statusDiv.innerHTML = `<i class="fas fa-check"></i> Downloaded as ${filename}`;
-        setTimeout(() => {
-            document.getElementById('export-modal').style.display = 'none';
-        }, 2000);
-    }, 500);
-}
-
-// Generate markdown format
-function generateMarkdownExport(conversations) {
-    let markdown = `# AI Chat Conversations Export\n\n`;
-    markdown += `**Exported on:** ${new Date().toLocaleString()}\n\n`;
-
-    conversations.forEach((conv, index) => {
-        markdown += `## ${index + 1}. ${conv.modelName} (${conv.provider})\n\n`;
-        
-        conv.messages.forEach(msg => {
-            const role = msg.role === 'user' ? '👤 You' : '🤖 AI';
-            markdown += `**${role}:**\n${msg.content}\n\n`;
-        });
-        
-        markdown += `---\n\n`;
-    });
-
-    return markdown;
-}
-
-// Generate text format
-function generateTextExport(conversations) {
-    let text = `AI CHAT CONVERSATIONS EXPORT\n`;
-    text += `${'='.repeat(60)}\n`;
-    text += `Exported on: ${new Date().toLocaleString()}\n`;
-    text += `${'='.repeat(60)}\n\n`;
-
-    conversations.forEach((conv, index) => {
-        text += `${index + 1}. ${conv.modelName} (${conv.provider})\n`;
-        text += `${'-'.repeat(40)}\n`;
-        
-        conv.messages.forEach(msg => {
-            const role = msg.role === 'user' ? 'You' : 'AI';
-            text += `[${role}]: ${msg.content}\n\n`;
-        });
-        
-        text += `\n`;
-    });
-
-    return text;
-}
-
-// Initialize conversation folders system
-function initConversationFolders() {
-    // Load folders from localStorage or create default ones
-    loadOrCreateFolders();
-    
-    // Render folder tree
-    renderFolderTree();
-    
-    // Setup folder management modals
-    setupFolderModals();
-}
-
-// Load or create default folders
-function loadOrCreateFolders() {
-    let folders = JSON.parse(localStorage.getItem('conversation_folders')) || [];
-    
-    if (folders.length === 0) {
-        folders = [
-            { id: 'uncategorized', name: 'Uncategorized', conversations: [], isDefault: true },
-            { id: 'work', name: 'Work', conversations: [] },
-            { id: 'learning', name: 'Learning', conversations: [] },
-            { id: 'fun', name: 'Fun', conversations: [] }
-        ];
-        localStorage.setItem('conversation_folders', JSON.stringify(folders));
+    if (typeof loadChatWithSelectedModel === 'function') {
+        loadChatWithSelectedModel(model);
+        closeSidebar();
     }
-    
-    window.conversationFolders = folders;
 }
 
-// Save folders to localStorage
-function saveFolders() {
-    localStorage.setItem('conversation_folders', JSON.stringify(window.conversationFolders || []));
+async function renameConversation(modelId) {
+    const value = await promptAction({
+        title: 'Rename conversation',
+        subtitle: 'Only the label changes — messages stay the same.',
+        label: 'Conversation name',
+        value: getConversationTitle(modelId),
+        icon: 'fa-pen',
+        maxLength: 60
+    });
+    if (!value) return;
+
+    const titles = readJSON('conversation_titles', {});
+    const safeTitles = titles && typeof titles === 'object' && !Array.isArray(titles) ? titles : {};
+    safeTitles[modelId] = value;
+    writeJSON('conversation_titles', safeTitles);
+    if (typeof updateConversationHistory === 'function') updateConversationHistory();
+    showToast('Conversation renamed.', 'success');
 }
 
-// Render folder tree in sidebar
-function renderFolderTree() {
-    const folderTree = document.getElementById('folder-tree');
-    if (!folderTree) return;
-    
-    // Render favorites section first
-    renderFavorites();
-    
-    folderTree.innerHTML = '';
+function openAssignFolderModal(modelId) {
     const folders = window.conversationFolders || [];
-    
+    pendingAssign = { conversationId: modelId };
+    const title = getConversationTitle(modelId);
+    const subtitle = byId('assign-folder-subtitle');
+    if (subtitle) subtitle.textContent = `Choose where "${title}" lives.`;
+
+    const currentFolder = getFolderForConversation(modelId);
+    const options = byId('folder-options');
+    if (!options) return;
+    options.replaceChildren();
+
     folders.forEach(folder => {
-        // Create folder item
-        const folderDiv = document.createElement('div');
-        folderDiv.className = 'folder-item' + (folder.expanded ? ' expanded' : '');
-        folderDiv.dataset.folderId = folder.id;
-        
-        const toggle = document.createElement('div');
-        toggle.className = 'folder-toggle';
-        toggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
-        toggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            folder.expanded = !folder.expanded;
-            saveFolders();
-            renderFolderTree();
-        });
-        
-        const nameDiv = document.createElement('div');
-        nameDiv.className = 'folder-name';
-        nameDiv.innerHTML = `<i class="fas ${folder.isDefault ? 'fa-folder-open' : 'fa-folder'}"></i> ${folder.name}`;
-        
-        const countDiv = document.createElement('div');
-        countDiv.className = 'folder-count';
-        countDiv.textContent = folder.conversations ? folder.conversations.length : 0;
-        
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'folder-actions';
-        
-        if (!folder.isDefault) {
-            const renameBtn = document.createElement('button');
-            renameBtn.className = 'folder-action-btn';
-            renameBtn.innerHTML = '<i class="fas fa-edit"></i>';
-            renameBtn.title = 'Rename folder';
-            renameBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                renameFolder(folder.id);
-            });
-            
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'folder-action-btn delete';
-            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-            deleteBtn.title = 'Delete folder';
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                deleteFolder(folder.id);
-            });
-            
-            actionsDiv.appendChild(renameBtn);
-            actionsDiv.appendChild(deleteBtn);
-        }
-        
-        folderDiv.appendChild(toggle);
-        folderDiv.appendChild(nameDiv);
-        folderDiv.appendChild(countDiv);
-        folderDiv.appendChild(actionsDiv);
-        
-        folderTree.appendChild(folderDiv);
-        
-        // Add conversations if folder is expanded
-        if (folder.expanded && folder.conversations && folder.conversations.length > 0) {
-            folder.conversations.forEach(convId => {
-                const model = availableModels.find(m => m.id === convId);
-                if (model) {
-                    const convDiv = document.createElement('div');
-                    convDiv.className = 'conversation-item';
-                    if (currentModel && currentModel.id === convId) {
-                        convDiv.classList.add('active-conversation');
-                    }
-                    convDiv.textContent = model.name;
-                    
-                    const convActionsDiv = document.createElement('div');
-                    convActionsDiv.className = 'conversation-item-actions';
-                    
-                    const pinBtn = document.createElement('button');
-                    pinBtn.className = 'pin-btn' + (isPinned(convId) ? ' pinned' : '');
-                    pinBtn.innerHTML = '<i class="fas fa-star"></i>';
-                    pinBtn.title = isPinned(convId) ? 'Unpin' : 'Pin to favorites';
-                    pinBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        togglePin(convId);
-                    });
-                    
-                    const moveBtn = document.createElement('button');
-                    moveBtn.className = 'conv-action-btn';
-                    moveBtn.innerHTML = '<i class="fas fa-arrow-right"></i>';
-                    moveBtn.title = 'Move to folder';
-                    moveBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showAssignFolderModal(convId);
-                    });
-                    
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'conv-action-btn delete';
-                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                    deleteBtn.title = 'Delete conversation';
-                    deleteBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        deleteConversation(folder.id, convId);
-                    });
-                    
-                    convActionsDiv.appendChild(pinBtn);
-                    convActionsDiv.appendChild(moveBtn);
-                    convActionsDiv.appendChild(deleteBtn);
-                    convDiv.appendChild(convActionsDiv);
-                    
-                    convDiv.addEventListener('click', () => {
-                        const model = availableModels.find(m => m.id === convId);
-                        if (model) loadChatWithModel(model);
-                    });
-                    
-                    folderTree.appendChild(convDiv);
-                }
-            });
-        }
-    });
-}
-
-// Setup folder management modals
-function setupFolderModals() {
-    const newFolderBtn = document.getElementById('new-folder-btn');
-    const newFolderModal = document.getElementById('new-folder-modal');
-    const createFolderBtn = document.getElementById('create-folder-btn');
-    const cancelFolderBtn = document.getElementById('cancel-folder-btn');
-    const folderNameInput = document.getElementById('folder-name-input');
-    
-    // New folder modal
-    newFolderBtn.addEventListener('click', () => {
-        folderNameInput.value = '';
-        newFolderModal.style.display = 'flex';
-        folderNameInput.focus();
-    });
-    
-    createFolderBtn.addEventListener('click', () => {
-        const name = folderNameInput.value.trim();
-        if (!name) {
-            showToast('Please enter a folder name');
-            return;
-        }
-        createFolder(name);
-        newFolderModal.style.display = 'none';
-    });
-    
-    cancelFolderBtn.addEventListener('click', () => {
-        newFolderModal.style.display = 'none';
-    });
-    
-    // Close modal when clicking outside
-    newFolderModal.addEventListener('click', (e) => {
-        if (e.target === newFolderModal) {
-            newFolderModal.style.display = 'none';
-        }
-    });
-    
-    // Close modals on X click
-    document.querySelectorAll('.close-modal').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.target.closest('.modal').style.display = 'none';
-        });
-    });
-}
-
-// Create a new folder
-function createFolder(name) {
-    const newFolder = {
-        id: 'folder_' + Date.now(),
-        name: name,
-        conversations: [],
-        expanded: true
-    };
-    
-    window.conversationFolders.push(newFolder);
-    saveFolders();
-    renderFolderTree();
-    showToast(`Folder "${name}" created`);
-}
-
-// Rename folder
-function renameFolder(folderId) {
-    const folder = window.conversationFolders.find(f => f.id === folderId);
-    if (!folder) return;
-    
-    const newName = prompt('Enter new folder name:', folder.name);
-    if (newName && newName.trim()) {
-        folder.name = newName.trim();
-        saveFolders();
-        renderFolderTree();
-    }
-}
-
-// Delete folder
-function deleteFolder(folderId) {
-    if (confirm('Delete this folder? Conversations will be moved to Uncategorized.')) {
-        const folder = window.conversationFolders.find(f => f.id === folderId);
-        const uncategorized = window.conversationFolders.find(f => f.isDefault);
-        
-        if (folder && uncategorized) {
-            uncategorized.conversations = uncategorized.conversations.concat(folder.conversations || []);
-            window.conversationFolders = window.conversationFolders.filter(f => f.id !== folderId);
-            saveFolders();
-            renderFolderTree();
-            showToast('Folder deleted');
-        }
-    }
-}
-
-// Show assign folder modal
-function showAssignFolderModal(conversationId) {
-    const modal = document.getElementById('assign-folder-modal');
-    const folderOptions = document.getElementById('folder-options');
-    
-    folderOptions.innerHTML = '';
-    const currentFolderId = window.conversationFolders.find(f => 
-        f.conversations && f.conversations.includes(conversationId)
-    )?.id;
-    
-    window.conversationFolders.forEach(folder => {
         const label = document.createElement('label');
         label.className = 'folder-option';
-        
         const radio = document.createElement('input');
         radio.type = 'radio';
-        radio.name = 'target-folder';
+        radio.name = 'assign-folder';
         radio.value = folder.id;
-        radio.checked = folder.id === currentFolderId;
-        
-        const text = document.createElement('span');
-        text.textContent = folder.name;
-        
-        label.appendChild(radio);
-        label.appendChild(text);
-        folderOptions.appendChild(label);
+        radio.checked = folder.id === (currentFolder ? currentFolder.id : DEFAULT_FOLDER_ID);
+        const icon = makeEl('i', `fas ${folder.isDefault ? 'fa-inbox' : 'fa-folder'}`);
+        icon.setAttribute('aria-hidden', 'true');
+        label.append(radio, icon, makeEl('span', '', folder.name));
+        options.appendChild(label);
     });
-    
-    const confirmBtn = document.getElementById('confirm-assign-btn');
-    const cancelBtn = document.getElementById('cancel-assign-btn');
-    
-    const handleConfirm = () => {
-        const selectedFolderId = document.querySelector('input[name="target-folder"]:checked').value;
-        moveConversationToFolder(conversationId, selectedFolderId);
-        modal.style.display = 'none';
-        confirmBtn.removeEventListener('click', handleConfirm);
-        cancelBtn.removeEventListener('click', handleCancel);
-    };
-    
-    const handleCancel = () => {
-        modal.style.display = 'none';
-        confirmBtn.removeEventListener('click', handleConfirm);
-        cancelBtn.removeEventListener('click', handleCancel);
-    };
-    
-    confirmBtn.addEventListener('click', handleConfirm);
-    cancelBtn.addEventListener('click', handleCancel);
-    
-    modal.style.display = 'flex';
+
+    openModal('assign-folder-modal');
 }
 
-// Move conversation to folder
-function moveConversationToFolder(conversationId, targetFolderId) {
-    // Remove from all folders
-    window.conversationFolders.forEach(folder => {
-        if (folder.conversations) {
-            folder.conversations = folder.conversations.filter(id => id !== conversationId);
+function confirmAssignFolder() {
+    if (!pendingAssign) return;
+    const selected = document.querySelector('#folder-options input[name="assign-folder"]:checked');
+    if (!selected) {
+        showToast('Choose a folder first.', 'error');
+        return;
+    }
+
+    const folders = window.conversationFolders || [];
+    const conversationId = pendingAssign.conversationId;
+    folders.forEach(folder => {
+        folder.conversations = folder.conversations.filter(id => id !== conversationId);
+    });
+
+    const target = folders.find(folder => folder.id === selected.value);
+    if (!target) return;
+    target.conversations.push(conversationId);
+    target.collapsed = false;
+    pendingAssign = null;
+    saveFolders();
+    closeModal('assign-folder-modal');
+    renderFolderTree();
+    showToast(`Moved to ${target.name}.`, 'success');
+}
+
+async function deleteConversationWithConfirm(modelId) {
+    const confirmed = await confirmAction({
+        title: 'Delete this conversation?',
+        message: `"${getConversationTitle(modelId)}" will be permanently removed from this browser.`,
+        confirmLabel: 'Delete',
+        danger: true
+    });
+    if (!confirmed) return;
+    deleteConversations([modelId]);
+    showToast('Conversation deleted.', 'success');
+}
+
+function deleteConversations(ids) {
+    const targets = Array.from(new Set(ids.filter(id => typeof id === 'string')));
+    if (!targets.length) return;
+
+    const targetSet = new Set(targets);
+    const deletingCurrent = typeof currentModel !== 'undefined' && currentModel && targetSet.has(currentModel.id);
+
+    targets.forEach(id => {
+        try {
+            localStorage.removeItem(`chat_${id}`);
+            localStorage.removeItem(`draft_${id}`);
+        } catch (error) { /* storage may be unavailable */ }
+    });
+
+    const titles = readJSON('conversation_titles', {});
+    if (titles && typeof titles === 'object' && !Array.isArray(titles)) {
+        targets.forEach(id => { delete titles[id]; });
+        writeJSON('conversation_titles', titles);
+    }
+
+    savePinnedIds(getPinnedIds().filter(id => !targetSet.has(id)));
+
+    (window.conversationFolders || []).forEach(folder => {
+        folder.conversations = (folder.conversations || []).filter(id => !targetSet.has(id));
+    });
+    saveFolders();
+
+    if (deletingCurrent && typeof backToModelSelection === 'function') {
+        backToModelSelection();
+    }
+    if (typeof updateConversationHistory === 'function') updateConversationHistory();
+    updateKeyStatus();
+}
+
+async function createFolder() {
+    const name = await promptAction({
+        title: 'New folder',
+        subtitle: 'Group related conversations together.',
+        label: 'Folder name',
+        placeholder: 'e.g. Research, Writing, Work',
+        icon: 'fa-folder-plus',
+        maxLength: 40,
+        validate: value => folderNameError(value, null)
+    });
+    if (!name) return;
+
+    window.conversationFolders = window.conversationFolders || [];
+    window.conversationFolders.push({
+        id: `folder_${Date.now().toString(36)}`,
+        name,
+        isDefault: false,
+        collapsed: false,
+        conversations: []
+    });
+    saveFolders();
+    renderFolderTree();
+    showToast('Folder created.', 'success');
+}
+
+function folderNameError(name, excludeId) {
+    if (name.length > 40) return 'Keep folder names under 40 characters.';
+    const lower = name.toLowerCase();
+    const duplicate = (window.conversationFolders || []).some(folder =>
+        folder.id !== excludeId && folder.name.toLowerCase() === lower
+    );
+    return duplicate ? 'A folder with this name already exists.' : '';
+}
+
+/* ---------- API keys ---------- */
+
+function generateKeyId() {
+    return `key_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function inferProviderFromKey(key) {
+    if (/^AIza/.test(key)) return 'gemini';
+    if (/^hf_/i.test(key)) return 'huggingface';
+    if (/^xai-/i.test(key)) return 'grok';
+    return 'openrouter';
+}
+
+function getProviderLabel(provider) {
+    try {
+        return getProviderMeta(provider).name;
+    } catch (error) {
+        return provider;
+    }
+}
+
+function loadStoredKeys() {
+    const stored = readJSON('stored_api_keys', []);
+    let changed = false;
+    const seen = new Set();
+
+    const keys = (Array.isArray(stored) ? stored : [])
+        .filter(item => item && typeof item.key === 'string' && item.key.trim())
+        .map(item => {
+            const key = { ...item, key: item.key.trim() };
+            if (!key.provider || !PROVIDER_KEY_STORAGE[key.provider]) {
+                key.provider = inferProviderFromKey(key.key);
+                changed = true;
+            }
+            if (!key.id || seen.has(key.id)) {
+                key.id = generateKeyId();
+                changed = true;
+            }
+            seen.add(key.id);
+            if (!key.name) {
+                key.name = `${getProviderLabel(key.provider)} key`;
+                changed = true;
+            }
+            if (!key.date) {
+                key.date = Date.now();
+                changed = true;
+            }
+            return key;
+        });
+
+    if (changed) writeJSON('stored_api_keys', keys);
+    return keys;
+}
+
+function maskKey(key) {
+    const value = String(key || '');
+    if (value.length <= 8) return '••••••••';
+    return `${value.slice(0, 4)}…${value.slice(-4)}`;
+}
+
+function getProviderDefaultKeyId(provider) {
+    const keys = loadStoredKeys();
+    let storedId = '';
+    try { storedId = localStorage.getItem(`provider_default_key_${provider}`) || ''; } catch (error) { storedId = ''; }
+    if (storedId && keys.some(key => key.id === storedId)) return storedId;
+
+    let legacy = '';
+    try { legacy = localStorage.getItem(PROVIDER_KEY_STORAGE[provider] || '') || ''; } catch (error) { legacy = ''; }
+    if (legacy.trim()) {
+        const match = keys.find(key => key.provider === provider && key.key === legacy.trim());
+        if (match) return match.id;
+    }
+    return '';
+}
+
+function resolveProviderApiKey(provider, modelId = null) {
+    try {
+        const keys = loadStoredKeys();
+
+        if (modelId) {
+            const map = readJSON('model_key_map', {});
+            if (map && typeof map === 'object' && typeof map[modelId] === 'string') {
+                const assigned = keys.find(key => key.id === map[modelId]);
+                if (assigned) return assigned.key;
+            }
+            const legacyModelKey = localStorage.getItem(`model_specific_key_${modelId}`);
+            if (legacyModelKey && legacyModelKey.trim()) return legacyModelKey.trim();
         }
-    });
-    
-    // Add to target folder
-    const targetFolder = window.conversationFolders.find(f => f.id === targetFolderId);
-    if (targetFolder) {
-        if (!targetFolder.conversations) targetFolder.conversations = [];
-        targetFolder.conversations.push(conversationId);
-        saveFolders();
-        renderFolderTree();
-        showToast('Conversation moved');
-    }
-}
 
-// Delete conversation from folder
-function deleteConversation(folderId, conversationId) {
-    if (confirm('Delete this conversation?')) {
-        const folder = window.conversationFolders.find(f => f.id === folderId);
-        if (folder && folder.conversations) {
-            folder.conversations = folder.conversations.filter(id => id !== conversationId);
-            localStorage.removeItem(`chat_${conversationId}`);
-            saveFolders();
-            renderFolderTree();
-            updateConversationHistory();
-            showToast('Conversation deleted');
+        const defaultId = getProviderDefaultKeyId(provider);
+        if (defaultId) {
+            const key = keys.find(item => item.id === defaultId);
+            if (key) return key.key;
         }
+
+        const legacyProviderKey = localStorage.getItem(PROVIDER_KEY_STORAGE[provider] || '');
+        if (legacyProviderKey && legacyProviderKey.trim()) return legacyProviderKey.trim();
+
+        const fallback = keys.find(key => key.provider === provider);
+        return fallback ? fallback.key : '';
+    } catch (error) {
+        return '';
     }
 }
 
-// Initialize system prompt customization
-function initSystemPrompts() {
-    const systemPromptBtn = document.getElementById('system-prompt-btn');
-    const modal = document.getElementById('system-prompt-modal');
-    const textarea = document.getElementById('system-prompt-input');
-    const saveBtn = document.getElementById('save-prompt-btn');
-    const clearBtn = document.getElementById('clear-prompt-btn');
-    const closeBtn = modal.querySelector('.close-modal');
-    
-    // Preset prompts
-    const presets = {
-        default: '',
-        expert: 'You are an expert software developer with deep knowledge of programming languages, frameworks, and best practices. Always provide detailed explanations with code examples.',
-        teacher: 'You are a patient and encouraging teacher. Break down complex topics into simple, easy-to-understand explanations. Use analogies and examples to help clarify concepts.',
-        creative: 'You are a creative writer with a vivid imagination. Craft engaging, descriptive narratives and help users develop their storytelling skills.'
-    };
-    
-    // Open modal when button clicked
-    if (systemPromptBtn) {
-        systemPromptBtn.addEventListener('click', () => {
-            if (!currentModel) return;
-            
-            const savedPrompt = getSystemPrompt(currentModel.id);
-            textarea.value = savedPrompt || '';
-            modal.style.display = 'flex';
-            textarea.focus();
-        });
+window.resolveProviderApiKey = resolveProviderApiKey;
+
+function setProviderDefaultKey(key) {
+    try {
+        localStorage.setItem(`provider_default_key_${key.provider}`, key.id);
+        localStorage.setItem(PROVIDER_KEY_STORAGE[key.provider], key.key);
+    } catch (error) {
+        showToast('Could not save the default key in this browser.', 'error');
     }
-    
-    // Close modal
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
+}
+
+function updateKeyStatus() {
+    const dot = byId('key-status-dot');
+    const text = byId('key-status-text');
+    const button = byId('toolbar-api-btn');
+    if (!dot || !text) return;
+
+    const keys = loadStoredKeys();
+    let ready = keys.length > 0;
+    let label = keys.length
+        ? `${keys.length} key${keys.length === 1 ? '' : 's'} saved`
+        : 'Add API key';
+
+    if (typeof currentModel !== 'undefined' && currentModel) {
+        const provider = getProviderMeta(currentModel.provider);
+        ready = typeof modelHasKey === 'function' ? modelHasKey(currentModel) : false;
+        label = ready ? `${provider.name} key ready` : `${provider.name} key needed`;
     }
-    
-    // Save system prompt
-    if (saveBtn) {
-        saveBtn.addEventListener('click', () => {
-            if (!currentModel) return;
-            
-            const prompt = textarea.value.trim();
-            setSystemPrompt(currentModel.id, prompt);
-            modal.style.display = 'none';
-            showToast('System prompt saved');
-        });
+
+    dot.classList.toggle('is-ready', ready);
+    text.textContent = label;
+    if (button) button.setAttribute('aria-label', `${label}. Open API key settings.`);
+}
+
+window.updateKeyStatus = updateKeyStatus;
+
+function refreshKeyState() {
+    renderStoredKeys();
+    updateKeyStatus();
+    if (typeof refreshHomeView === 'function') refreshHomeView();
+    if (typeof currentModel !== 'undefined' && currentModel) {
+        if (typeof updateKeyWarning === 'function') updateKeyWarning(currentModel);
+        if (typeof updateComposerState === 'function') updateComposerState();
     }
-    
-    // Clear system prompt
-    if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
-            if (!currentModel) return;
-            
-            textarea.value = '';
-            setSystemPrompt(currentModel.id, '');
-            modal.style.display = 'none';
-            showToast('System prompt cleared');
-        });
+}
+
+function renderStoredKeys() {
+    const list = byId('stored-keys-list');
+    if (!list) return;
+
+    const keys = loadStoredKeys();
+    const defaultIds = new Set(
+        Object.keys(PROVIDER_KEY_STORAGE).map(provider => getProviderDefaultKeyId(provider)).filter(Boolean)
+    );
+    const modelKeyMap = readJSON('model_key_map', {});
+    const assignments = modelKeyMap && typeof modelKeyMap === 'object' ? Object.values(modelKeyMap) : [];
+
+    const countEl = byId('stored-key-count');
+    if (countEl) countEl.textContent = String(keys.length);
+    const sidebarCount = byId('api-key-count');
+    if (sidebarCount) sidebarCount.textContent = String(keys.length);
+
+    list.replaceChildren();
+
+    if (!keys.length) {
+        list.appendChild(emptyState('No API keys saved yet. Add one in the first tab.'));
+        return;
     }
-    
-    // Preset buttons
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const preset = btn.dataset.preset;
-            textarea.value = presets[preset] || '';
+
+    keys
+        .slice()
+        .sort((a, b) => (b.date || 0) - (a.date || 0))
+        .forEach(key => {
+            const provider = getProviderMeta(key.provider);
+            const active = defaultIds.has(key.id);
+            const assignedCount = assignments.filter(id => id === key.id).length;
+
+            const item = makeEl('div', 'stored-key-item' + (active ? ' active-key' : ''));
+            const info = makeEl('div', 'key-info');
+            const name = makeEl('div', 'key-name');
+            const icon = makeEl('i', `fas ${provider.avatar}`);
+            icon.setAttribute('aria-hidden', 'true');
+            name.append(icon, makeEl('span', '', key.name));
+            if (active) name.appendChild(makeEl('span', 'active-key-tag', 'Default'));
+
+            const value = makeEl('div', 'key-value',
+                `${maskKey(key.key)} · ${provider.name}${assignedCount ? ` · ${assignedCount} model${assignedCount === 1 ? '' : 's'}` : ''}`
+            );
+            info.append(name, value);
+
+            const actions = makeEl('div', 'stored-key-actions');
+            const applyBtn = makeEl('button', 'key-action-btn', 'Apply');
+            applyBtn.type = 'button';
+            applyBtn.dataset.keyAction = 'apply';
+            applyBtn.dataset.keyId = key.id;
+            applyBtn.title = `Apply ${key.name} to specific models`;
+            const deleteBtn = makeEl('button', 'key-action-btn delete-key-btn');
+            deleteBtn.type = 'button';
+            deleteBtn.dataset.keyAction = 'delete';
+            deleteBtn.dataset.keyId = key.id;
+            deleteBtn.title = 'Delete key';
+            deleteBtn.setAttribute('aria-label', `Delete ${key.name}`);
+            deleteBtn.innerHTML = '<i class="fas fa-trash" aria-hidden="true"></i>';
+
+            actions.append(applyBtn, deleteBtn);
+            item.append(info, actions);
+            list.appendChild(item);
         });
+}
+
+function switchApiTab(name) {
+    document.querySelectorAll('#manage-api-modal .tab[data-tab]').forEach(tab => {
+        const active = tab.dataset.tab === name;
+        tab.classList.toggle('is-active', active);
+        tab.setAttribute('aria-selected', String(active));
     });
-    
-    // Close modal when clicking outside
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
+
+    const addTab = byId('add-key-tab');
+    const manageTab = byId('manage-keys-tab');
+    if (addTab) {
+        addTab.classList.toggle('is-active', name === 'add-key');
+        addTab.hidden = name !== 'add-key';
+    }
+    if (manageTab) {
+        manageTab.classList.toggle('is-active', name === 'manage-keys');
+        manageTab.hidden = name !== 'manage-keys';
+    }
+    if (name === 'manage-keys') renderStoredKeys();
 }
 
-// Get system prompt for a model
-function getSystemPrompt(modelId) {
-    const key = `system_prompt_${modelId}`;
-    return localStorage.getItem(key) || '';
+function updateProviderNote() {
+    const select = byId('api-provider-select');
+    if (!select) return;
+    const provider = select.value;
+    const meta = getProviderMeta(provider);
+    const note = byId('api-provider-note');
+    const noteText = note ? note.querySelector('span') : null;
+    if (noteText) noteText.textContent = `Create a key in ${meta.name}.`;
+
+    const link = byId('api-provider-link');
+    if (link) {
+        link.href = meta.keyUrl;
+        const external = makeEl('i', 'fas fa-arrow-up-right-from-square');
+        external.setAttribute('aria-hidden', 'true');
+        link.replaceChildren(document.createTextNode(`${meta.keyLinkLabel} `), external);
+    }
+
+    const nameInput = byId('api-key-name-input');
+    if (nameInput) nameInput.placeholder = `e.g. Personal ${meta.name}`;
 }
 
-// Set system prompt for a model
-function setSystemPrompt(modelId, prompt) {
-    const key = `system_prompt_${modelId}`;
-    if (prompt) {
-        localStorage.setItem(key, prompt);
+function openApiKeyModal(provider) {
+    const select = byId('api-provider-select');
+    if (provider && select && Array.from(select.options).some(option => option.value === provider)) {
+        select.value = provider;
+    }
+    updateProviderNote();
+    switchApiTab('add-key');
+    renderStoredKeys();
+
+    const keyInput = byId('api-key-value');
+    if (keyInput) {
+        keyInput.value = '';
+        keyInput.type = 'password';
+        keyInput.classList.remove('input-error');
+    }
+    const reveal = byId('api-key-reveal');
+    if (reveal) {
+        reveal.setAttribute('aria-pressed', 'false');
+        reveal.setAttribute('aria-label', 'Show API key');
+        reveal.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i>';
+    }
+
+    openModal('manage-api-modal');
+    window.setTimeout(() => byId('api-key-name-input')?.focus(), 60);
+}
+
+window.openApiKeyModal = openApiKeyModal;
+
+function saveStoreApiKey() {
+    const select = byId('api-provider-select');
+    const keyInput = byId('api-key-value');
+    const labelInput = byId('api-key-name-input');
+    if (!select || !keyInput) return;
+
+    const provider = select.value;
+    const rawKey = keyInput.value.trim();
+
+    if (!PROVIDER_KEY_STORAGE[provider]) {
+        showToast('Choose a provider first.', 'error');
+        return;
+    }
+    if (!rawKey) {
+        keyInput.classList.add('input-error');
+        keyInput.focus();
+        showToast('Paste an API key first.', 'error');
+        return;
+    }
+    if (rawKey.length < 8) {
+        keyInput.classList.add('input-error');
+        keyInput.focus();
+        showToast('That key looks too short. Check it and try again.', 'error');
+        return;
+    }
+
+    keyInput.classList.remove('input-error');
+    const name = (labelInput?.value || '').trim() || `${getProviderMeta(provider).name} key`;
+    const keys = loadStoredKeys();
+    const existing = keys.find(key => key.provider === provider && key.key === rawKey);
+
+    let saved;
+    if (existing) {
+        existing.name = name;
+        existing.date = Date.now();
+        saved = existing;
     } else {
-        localStorage.removeItem(key);
+        saved = { id: generateKeyId(), name, key: rawKey, provider, date: Date.now() };
+        keys.push(saved);
     }
-}
 
-// Export function to be used by chat.js
-window.getSystemPrompt = getSystemPrompt;
-
-// Initialize token usage tracking
-function initTokenUsage() {
-    const tokenUsageBtn = document.getElementById('token-usage-btn');
-    const modal = document.getElementById('token-usage-modal');
-    const closeBtn = modal.querySelector('.close-modal');
-    const resetBtn = document.getElementById('reset-stats-btn');
-    
-    if (tokenUsageBtn) {
-        tokenUsageBtn.addEventListener('click', () => {
-            updateTokenStats();
-            modal.style.display = 'flex';
-        });
-    }
-    
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-    }
-    
-    if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-            if (confirm('Reset all token usage statistics? This cannot be undone.')) {
-                localStorage.removeItem('token_usage_stats');
-                updateTokenStats();
-                showToast('Token stats reset');
-            }
-        });
-    }
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-}
-
-// Estimate tokens from text (rough approximation: ~4 chars per token)
-function estimateTokens(text) {
-    if (!text) return 0;
-    return Math.ceil(text.length / 4);
-}
-
-// Track token usage for a message exchange
-function trackTokenUsage(modelId, userMessage, aiResponse) {
-    const stats = JSON.parse(localStorage.getItem('token_usage_stats')) || {
-        totalMessages: 0,
-        totalTokens: 0,
-        models: {}
-    };
-    
-    const userTokens = estimateTokens(userMessage);
-    const aiTokens = estimateTokens(aiResponse);
-    const totalTokens = userTokens + aiTokens;
-    
-    stats.totalMessages += 2; // User + AI message
-    stats.totalTokens += totalTokens;
-    
-    if (!stats.models[modelId]) {
-        stats.models[modelId] = {
-            messages: 0,
-            tokens: 0
-        };
-    }
-    
-    stats.models[modelId].messages += 2;
-    stats.models[modelId].tokens += totalTokens;
-    
-    localStorage.setItem('token_usage_stats', JSON.stringify(stats));
-}
-
-// Update token stats display
-function updateTokenStats() {
-    const stats = JSON.parse(localStorage.getItem('token_usage_stats')) || {
-        totalMessages: 0,
-        totalTokens: 0,
-        models: {}
-    };
-    
-    // Count active chat sessions
-    const chatKeys = Object.keys(localStorage).filter(key => key.startsWith('chat_'));
-    
-    // Update summary stats
-    document.getElementById('total-messages').textContent = stats.totalMessages.toLocaleString();
-    document.getElementById('total-tokens').textContent = stats.totalTokens.toLocaleString();
-    document.getElementById('sessions-count').textContent = chatKeys.length;
-    
-    // Update model breakdown
-    const modelUsageList = document.getElementById('model-usage-list');
-    modelUsageList.innerHTML = '';
-    
-    if (Object.keys(stats.models).length === 0) {
-        modelUsageList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">No usage data yet. Start chatting to track tokens!</p>';
+    if (!writeJSON('stored_api_keys', keys)) {
+        showToast('Could not save the key — browser storage is full.', 'error');
         return;
     }
-    
-    Object.entries(stats.models).forEach(([modelId, data]) => {
-        const model = availableModels.find(m => m.id === modelId);
-        const modelName = model ? model.name : modelId;
-        
-        const item = document.createElement('div');
-        item.className = 'model-usage-item';
-        
-        item.innerHTML = `
-            <div class="model-usage-name">${modelName}</div>
-            <div class="model-usage-stats">
-                <span><i class="fas fa-comments"></i> ${data.messages}</span>
-                <span><i class="fas fa-coins"></i> ${data.tokens.toLocaleString()} tokens</span>
-            </div>
-        `;
-        
-        modelUsageList.appendChild(item);
+
+    setProviderDefaultKey(saved);
+    keyInput.value = '';
+    if (labelInput) labelInput.value = '';
+    keyInput.type = 'password';
+
+    renderStoredKeys();
+    switchApiTab('manage-keys');
+    refreshKeyState();
+    showToast(existing ? 'API key updated.' : 'API key saved.', 'success');
+}
+
+async function deleteStoredKey(keyId) {
+    const key = loadStoredKeys().find(item => item.id === keyId);
+    if (!key) return;
+
+    const confirmed = await confirmAction({
+        title: 'Delete this API key?',
+        message: `"${key.name}" will be removed from this browser. Chats are not affected.`,
+        confirmLabel: 'Delete key',
+        danger: true
+    });
+    if (!confirmed) return;
+
+    const keys = loadStoredKeys().filter(item => item.id !== keyId);
+    writeJSON('stored_api_keys', keys);
+
+    try {
+        if (localStorage.getItem(`provider_default_key_${key.provider}`) === keyId) {
+            localStorage.removeItem(`provider_default_key_${key.provider}`);
+            if (localStorage.getItem(PROVIDER_KEY_STORAGE[key.provider]) === key.key) {
+                localStorage.removeItem(PROVIDER_KEY_STORAGE[key.provider]);
+            }
+        }
+    } catch (error) { /* storage may be unavailable */ }
+
+    const map = readJSON('model_key_map', {});
+    if (map && typeof map === 'object') {
+        Object.keys(map).forEach(modelId => {
+            if (map[modelId] === keyId) delete map[modelId];
+        });
+        writeJSON('model_key_map', map);
+    }
+
+    Object.keys(localStorage)
+        .filter(storageKey => storageKey.startsWith('model_specific_key_'))
+        .forEach(storageKey => {
+            try {
+                if (localStorage.getItem(storageKey) === key.key) localStorage.removeItem(storageKey);
+            } catch (error) { /* noop */ }
+        });
+
+    renderStoredKeys();
+    refreshKeyState();
+    showToast('API key deleted.', 'success');
+}
+
+function openModelKeyModal(keyId) {
+    const key = loadStoredKeys().find(item => item.id === keyId);
+    if (!key) {
+        showToast('That key is no longer saved.', 'error');
+        return;
+    }
+
+    const models = availableModels.filter(model => model.provider === key.provider);
+    if (!models.length) {
+        showToast('No models are available for this provider.', 'error');
+        return;
+    }
+
+    pendingModelKeyId = keyId;
+    const subtitle = byId('model-key-subtitle');
+    if (subtitle) subtitle.textContent = `${key.name} · ${getProviderMeta(key.provider).name}`;
+
+    const map = readJSON('model_key_map', {});
+    const list = byId('models-selection-list');
+    if (!list) return;
+    list.replaceChildren();
+
+    models.forEach((model, index) => {
+        const item = makeEl('div', 'model-selection-item' + (map && map[model.id] === keyId ? ' active-model' : ''));
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'model-checkbox';
+        checkbox.value = model.id;
+        checkbox.id = `apply-model-${index}`;
+        checkbox.checked = Boolean(map && map[model.id] === keyId);
+
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        const copy = makeEl('span', 'model-selection-copy');
+        copy.append(
+            makeEl('strong', '', model.name),
+            makeEl('span', '', model.context || getProviderMeta(model.provider).name)
+        );
+        label.appendChild(copy);
+        item.append(checkbox, label);
+        list.appendChild(item);
+    });
+
+    openModal('model-key-modal');
+}
+
+function applyKeyToSelectedModels() {
+    const key = loadStoredKeys().find(item => item.id === pendingModelKeyId);
+    if (!key) {
+        showToast('That key is no longer saved.', 'error');
+        return;
+    }
+
+    const selected = Array.from(document.querySelectorAll('#models-selection-list .model-checkbox:checked'))
+        .map(input => input.value);
+
+    if (!selected.length) {
+        showToast('Select at least one model.', 'error');
+        return;
+    }
+
+    const map = readJSON('model_key_map', {});
+    const safeMap = map && typeof map === 'object' && !Array.isArray(map) ? map : {};
+
+    availableModels
+        .filter(model => model.provider === key.provider)
+        .forEach(model => {
+            if (safeMap[model.id] === key.id) delete safeMap[model.id];
+        });
+
+    selected.forEach(modelId => { safeMap[modelId] = key.id; });
+
+    if (!writeJSON('model_key_map', safeMap)) {
+        showToast('Could not save the model assignments.', 'error');
+        return;
+    }
+
+    pendingModelKeyId = null;
+    closeModal('model-key-modal');
+    refreshKeyState();
+    showToast(`Key applied to ${selected.length} model${selected.length === 1 ? '' : 's'}.`, 'success');
+}
+
+function applyKeyAsDefault() {
+    const key = loadStoredKeys().find(item => item.id === pendingModelKeyId);
+    if (!key) {
+        showToast('That key is no longer saved.', 'error');
+        return;
+    }
+
+    setProviderDefaultKey(key);
+    pendingModelKeyId = null;
+    closeModal('model-key-modal');
+    refreshKeyState();
+    showToast('Provider default updated.', 'success');
+}
+
+/* ---------- Search ---------- */
+
+function openSearch() {
+    const input = byId('search-input');
+    const results = byId('search-results');
+    if (input) input.value = '';
+    if (results) {
+        results.replaceChildren(makeEl('p', 'search-hint', 'Type at least 2 characters to search titles, models, folders, and messages.'));
+    }
+    openModal('search-modal');
+    input?.focus();
+}
+
+function makeSnippet(text, term) {
+    const clean = String(text || '')
+        .replace(/```[\s\S]*?```/g, ' [code] ')
+        .replace(/[#>`*_~]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    if (!clean) return '';
+    const index = clean.toLowerCase().indexOf(term.toLowerCase());
+    if (index === -1) return clean.length > 140 ? `${clean.slice(0, 140).trimEnd()}…` : clean;
+
+    const start = Math.max(0, index - 48);
+    const end = Math.min(clean.length, index + term.length + 96);
+    return `${start > 0 ? '…' : ''}${clean.slice(start, end).trim()}${end < clean.length ? '…' : ''}`;
+}
+
+function appendHighlighted(parent, text, term) {
+    const source = String(text || '');
+    const needle = String(term || '').toLowerCase();
+    if (!needle) {
+        parent.textContent = source;
+        return;
+    }
+
+    const lower = source.toLowerCase();
+    let index = 0;
+    while (index < source.length) {
+        const found = lower.indexOf(needle, index);
+        if (found === -1) break;
+        if (found > index) parent.appendChild(document.createTextNode(source.slice(index, found)));
+        parent.appendChild(makeEl('span', 'search-highlight', source.slice(found, found + needle.length)));
+        index = found + needle.length;
+    }
+    if (index < source.length) parent.appendChild(document.createTextNode(source.slice(index)));
+}
+
+function runSearch() {
+    const input = byId('search-input');
+    const results = byId('search-results');
+    if (!input || !results) return;
+
+    const term = input.value.trim();
+    results.replaceChildren();
+
+    if (term.length < 2) {
+        results.appendChild(makeEl('p', 'search-hint', 'Type at least 2 characters to search titles, models, folders, and messages.'));
+        return;
+    }
+
+    const folderNames = new Map();
+    (window.conversationFolders || []).forEach(folder => {
+        (folder.conversations || []).forEach(id => folderNames.set(id, folder.name));
+    });
+
+    const matches = [];
+    getValidConversationIds().forEach(modelId => {
+        const model = getModelById(modelId);
+        const title = getConversationTitle(modelId);
+        const folderName = folderNames.get(modelId) || '';
+        const messages = getConversationMessages(modelId);
+        let score = 0;
+        let preview = '';
+
+        if (title.toLowerCase().includes(term.toLowerCase())) score += 4;
+        if (model.name.toLowerCase().includes(term.toLowerCase()) ||
+            getProviderMeta(model.provider).name.toLowerCase().includes(term.toLowerCase())) score += 2;
+        if (folderName.toLowerCase().includes(term.toLowerCase())) score += 1;
+
+        for (const message of messages) {
+            const text = conversationText(message);
+            if (text && text.toLowerCase().includes(term.toLowerCase())) {
+                score += 3;
+                if (!preview) preview = makeSnippet(text, term);
+                break;
+            }
+        }
+
+        if (score === 0) return;
+        if (!preview) {
+            const lastText = messages.length ? conversationText(messages[messages.length - 1]) : '';
+            preview = makeSnippet(lastText, term) || 'No text preview available.';
+        }
+
+        matches.push({
+            modelId,
+            title,
+            modelName: model.name,
+            folderName,
+            preview,
+            score,
+            timestamp: getConversationTimestamp(modelId)
+        });
+    });
+
+    matches.sort((a, b) => (b.score - a.score) || (b.timestamp - a.timestamp));
+
+    if (!matches.length) {
+        results.appendChild(makeEl('p', 'no-search-results', `No conversations found for "${term}".`));
+        return;
+    }
+
+    matches.slice(0, 25).forEach(match => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'search-result-item';
+
+        const title = makeEl('span', 'search-result-title');
+        appendHighlighted(title, match.title, term);
+
+        const meta = makeEl('span', 'search-result-meta');
+        [match.modelName, match.folderName, formatWhen(match.timestamp)]
+            .filter(Boolean)
+            .forEach(text => meta.appendChild(makeEl('span', '', text)));
+
+        const preview = makeEl('span', 'search-result-preview');
+        appendHighlighted(preview, match.preview, term);
+
+        button.append(title, meta, preview);
+        button.addEventListener('click', () => {
+            closeModal('search-modal');
+            openConversation(match.modelId);
+        });
+        results.appendChild(button);
     });
 }
 
-// Export function to be used by chat.js
-window.trackTokenUsage = trackTokenUsage;
+/* ---------- Export ---------- */
 
-// Initialize quick actions
-function initQuickActions() {
-    const quickActionButtons = document.querySelectorAll('.quick-action-btn');
-    const messageInput = document.getElementById('message-input');
-    const templatesModal = document.getElementById('templates-modal');
-    
-    quickActionButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const action = btn.dataset.action;
-            handleQuickAction(action, messageInput);
+function openExportModal() {
+    setExportStatus('');
+    openModal('export-modal');
+}
+
+function getExportConversations() {
+    return getValidConversationIds()
+        .map(modelId => {
+            const model = getModelById(modelId);
+            const folder = getFolderForConversation(modelId);
+            const messages = getConversationMessages(modelId).map(message => ({
+                role: message.role === 'user' ? 'user' : 'assistant',
+                content: conversationText(message),
+                ts: message.ts || null
+            }));
+            return {
+                modelId,
+                title: getConversationTitle(modelId),
+                model: model ? model.name : modelId,
+                provider: model ? getProviderMeta(model.provider).name : '',
+                folder: folder ? folder.name : '',
+                messages
+            };
+        })
+        .filter(conversation => conversation.messages.length > 0)
+        .sort((a, b) => {
+            const last = conversation => {
+                const message = conversation.messages[conversation.messages.length - 1];
+                return message && message.ts ? Number(message.ts) : 0;
+            };
+            return last(b) - last(a);
         });
-    });
-    
-    // Setup templates modal
-    if (templatesModal) {
-        const closeBtn = templatesModal.querySelector('.close-modal');
-        const saveTemplateBtn = document.getElementById('save-template-btn');
-        
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                templatesModal.style.display = 'none';
+}
+
+function downloadFile(filename, content, type) {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+function setExportStatus(message, isError = false) {
+    const status = byId('export-status');
+    if (!status) return;
+    status.replaceChildren();
+    status.classList.toggle('is-error', Boolean(isError));
+    if (!message) return;
+    const icon = makeEl('i', `fas ${isError ? 'fa-circle-exclamation' : 'fa-circle-check'}`);
+    icon.setAttribute('aria-hidden', 'true');
+    status.append(icon, document.createTextNode(` ${message}`));
+}
+
+function exportChats(format) {
+    const conversations = getExportConversations();
+    if (!conversations.length) {
+        setExportStatus('No saved conversations to export.', true);
+        return;
+    }
+
+    const stamp = new Date().toISOString().slice(0, 10);
+    const buttons = ['export-json-btn', 'export-markdown-btn', 'export-all-txt-btn']
+        .map(id => byId(id))
+        .filter(Boolean);
+    buttons.forEach(button => { button.disabled = true; });
+
+    let filename;
+    let content;
+    let type = 'text/plain;charset=utf-8';
+    let label;
+
+    if (format === 'json') {
+        filename = `ai-chat-export-${stamp}.json`;
+        content = JSON.stringify({
+            app: 'Alok Systems AI Chat',
+            exportedAt: new Date().toISOString(),
+            version: 2,
+            conversations
+        }, null, 2);
+        type = 'application/json;charset=utf-8';
+        label = 'JSON';
+    } else if (format === 'markdown') {
+        filename = `ai-chat-export-${stamp}.md`;
+        content = conversations.map(conversation => {
+            const lines = [
+                `# ${conversation.title}`,
+                '',
+                `_${[conversation.model, conversation.provider, conversation.folder].filter(Boolean).join(' · ')}_`,
+                ''
+            ];
+            conversation.messages.forEach(message => {
+                lines.push(`## ${message.role === 'user' ? 'You' : conversation.model}`, '', message.content, '');
             });
-        }
-        
-        if (saveTemplateBtn) {
-            saveTemplateBtn.addEventListener('click', saveCustomTemplate);
-        }
-        
-        templatesModal.addEventListener('click', (e) => {
-            if (e.target === templatesModal) {
-                templatesModal.style.display = 'none';
-            }
-        });
+            return lines.join('\n').trim();
+        }).join('\n\n---\n\n');
+        type = 'text/markdown;charset=utf-8';
+        label = 'Markdown';
+    } else {
+        filename = `ai-chat-export-${stamp}.txt`;
+        content = conversations.map(conversation => {
+            const lines = [
+                `=== ${conversation.title} ===`,
+                [conversation.model, conversation.provider, conversation.folder].filter(Boolean).join(' · '),
+                ''
+            ];
+            conversation.messages.forEach(message => {
+                lines.push(`${message.role === 'user' ? 'You' : conversation.model}: ${message.content}`, '');
+            });
+            return lines.join('\n').trim();
+        }).join('\n\n');
+        label = 'text';
+    }
+
+    try {
+        downloadFile(filename, content, type);
+        setExportStatus(`Downloaded ${conversations.length} conversation${conversations.length === 1 ? '' : 's'} as ${label}.`);
+    } catch (error) {
+        setExportStatus('Could not create the export file in this browser.', true);
+    } finally {
+        buttons.forEach(button => { button.disabled = false; });
     }
 }
 
-// Handle quick action
-function handleQuickAction(action, messageInput) {
-    const currentText = messageInput.value.trim();
-    
-    const actions = {
-        summarize: `Summarize the following in 3-5 bullet points:\n\n${currentText || '[Last conversation]'}`,
-        explain: `Explain the following in simple terms that a beginner can understand:\n\n${currentText || '[Last conversation]'}`,
-        translate: `Translate the following text to ${currentText ? 'Hindi' : 'English'}:\n\n${currentText || '[Last message]'}`,
-        code: `Convert the following into working code with proper formatting:\n\n${currentText || '[Description]'}`,
-        custom: null // Opens templates modal
-    };
-    
-    if (action === 'custom') {
-        document.getElementById('templates-modal').style.display = 'flex';
-        loadCustomTemplates();
+/* ---------- Templates ---------- */
+
+function loadTemplates() {
+    const stored = readJSON('quick_templates', []);
+    if (!Array.isArray(stored)) return [];
+    return stored
+        .filter(template => template && typeof template.content === 'string' && template.content.trim())
+        .map((template, index) => ({
+            id: typeof template.id === 'string' && template.id ? template.id : `tpl_${index}`,
+            name: String(template.name || 'Template').trim() || 'Template',
+            content: template.content.trim()
+        }));
+}
+
+function renderTemplateList() {
+    const list = byId('templates-list');
+    if (!list) return;
+    const templates = loadTemplates();
+    list.replaceChildren();
+
+    if (!templates.length) {
+        list.appendChild(emptyState('No templates yet. Save a reusable prompt above.'));
         return;
     }
-    
-    if (actions[action]) {
-        messageInput.value = actions[action];
-        messageInput.style.height = 'auto';
-        messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
-        messageInput.focus();
-        
-        // Move cursor to placeholder area
-        const placeholderStart = messageInput.value.indexOf('[');
-        if (placeholderStart > -1) {
-            messageInput.setSelectionRange(placeholderStart, messageInput.value.indexOf(']') + 1);
-        }
-    }
+
+    templates.forEach(template => {
+        const item = makeEl('div', 'template-item');
+        const copy = makeEl('div', 'template-copy');
+        copy.append(
+            makeEl('span', 'template-name', template.name),
+            makeEl('span', 'template-preview', template.content.replace(/\s+/g, ' '))
+        );
+
+        const actions = makeEl('div', 'template-actions');
+        const useBtn = makeEl('button', 'template-action-btn', 'Use');
+        useBtn.type = 'button';
+        useBtn.dataset.templateAction = 'use';
+        useBtn.dataset.templateId = template.id;
+        const deleteBtn = makeEl('button', 'template-action-btn delete', 'Delete');
+        deleteBtn.type = 'button';
+        deleteBtn.dataset.templateAction = 'delete';
+        deleteBtn.dataset.templateId = template.id;
+
+        actions.append(useBtn, deleteBtn);
+        item.append(copy, actions);
+        list.appendChild(item);
+    });
 }
 
-// Save custom template
-function saveCustomTemplate() {
-    const nameInput = document.getElementById('template-name-input');
-    const contentInput = document.getElementById('template-content-input');
-    
+function openTemplatesModal() {
+    renderTemplateList();
+    openModal('templates-modal');
+}
+
+window.openTemplatesModal = openTemplatesModal;
+
+function insertTemplate(template) {
+    const input = byId('message-input');
+    const current = input ? input.value.trim() : '';
+    const hasSlot = template.content.includes('{input}');
+    const text = hasSlot
+        ? template.content.replace(/\{input\}/g, current || '[your text here]')
+        : template.content;
+
+    if (hasSlot && input) {
+        input.value = '';
+        if (typeof window.insertComposerText === 'function') {
+            window.insertComposerText(text);
+        } else {
+            input.value = text;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    } else if (typeof window.insertComposerText === 'function') {
+        window.insertComposerText(text);
+    } else if (input) {
+        input.value += (input.value ? ' ' : '') + text;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    closeModal('templates-modal');
+    input?.focus();
+    showToast('Template inserted.', 'success');
+}
+
+function saveTemplate() {
+    const nameInput = byId('template-name-input');
+    const contentInput = byId('template-content-input');
+    if (!nameInput || !contentInput) return;
+
     const name = nameInput.value.trim();
     const content = contentInput.value.trim();
-    
     if (!name || !content) {
-        showToast('Please enter both template name and content');
+        showToast('Add a name and content for the template.', 'error');
+        (name ? contentInput : nameInput).focus();
         return;
     }
-    
-    const templates = JSON.parse(localStorage.getItem('quick_templates')) || [];
-    templates.push({
-        id: Date.now(),
-        name,
-        content
-    });
-    
-    localStorage.setItem('quick_templates', JSON.stringify(templates));
-    
+
+    const templates = loadTemplates();
+    templates.push({ id: `tpl_${Date.now().toString(36)}`, name, content });
+    if (!writeJSON('quick_templates', templates)) {
+        showToast('Could not save the template — browser storage is full.', 'error');
+        return;
+    }
+
     nameInput.value = '';
     contentInput.value = '';
-    
-    loadCustomTemplates();
-    showToast('Template saved');
+    renderTemplateList();
+    showToast('Template saved.', 'success');
 }
 
-// Load custom templates
-function loadCustomTemplates() {
-    const templatesList = document.getElementById('templates-list');
-    const templates = JSON.parse(localStorage.getItem('quick_templates')) || [];
-    
-    templatesList.innerHTML = '';
-    
-    if (templates.length === 0) {
-        templatesList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">No templates saved yet. Create one above!</p>';
+async function deleteTemplate(templateId) {
+    const templates = loadTemplates();
+    const template = templates.find(item => item.id === templateId);
+    if (!template) return;
+
+    const confirmed = await confirmAction({
+        title: 'Delete this template?',
+        message: `"${template.name}" will be removed from this browser.`,
+        confirmLabel: 'Delete',
+        danger: true
+    });
+    if (!confirmed) return;
+
+    writeJSON('quick_templates', templates.filter(item => item.id !== templateId));
+    renderTemplateList();
+    showToast('Template deleted.', 'success');
+}
+
+/* ---------- System prompt ---------- */
+
+function getSystemPrompt(modelId) {
+    if (!modelId) return '';
+    try {
+        return localStorage.getItem(`system_prompt_${modelId}`) || '';
+    } catch (error) {
+        return '';
+    }
+}
+
+window.getSystemPrompt = getSystemPrompt;
+
+function updatePromptIndicator() {
+    const dot = byId('prompt-dot');
+    if (!dot) return;
+    const active = typeof currentModel !== 'undefined' && currentModel && Boolean(getSystemPrompt(currentModel.id));
+    dot.hidden = !active;
+}
+
+function openSystemPromptModal() {
+    if (typeof currentModel === 'undefined' || !currentModel) {
+        showToast('Open a chat first.', 'info');
         return;
     }
-    
-    templates.forEach(template => {
-        const item = document.createElement('div');
-        item.className = 'template-item';
-        
-        const info = document.createElement('div');
-        info.innerHTML = `
-            <div class="template-name">${template.name}</div>
-            <div class="template-preview">${template.content.substring(0, 50)}...</div>
-        `;
-        
-        const actions = document.createElement('div');
-        actions.className = 'template-actions';
-        
-        const useBtn = document.createElement('button');
-        useBtn.className = 'template-action-btn';
-        useBtn.textContent = 'Use';
-        useBtn.addEventListener('click', () => {
-            const messageInput = document.getElementById('message-input');
-            const userInput = prompt('Enter value for {input} placeholder:', '');
-            if (userInput !== null) {
-                messageInput.value = template.content.replace('{input}', userInput);
-                document.getElementById('templates-modal').style.display = 'none';
-                messageInput.focus();
-            }
+
+    const textarea = byId('system-prompt-input');
+    if (!textarea) return;
+    textarea.value = getSystemPrompt(currentModel.id);
+    openModal('system-prompt-modal');
+    window.setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+    }, 60);
+}
+
+function saveSystemPrompt() {
+    if (typeof currentModel === 'undefined' || !currentModel) return;
+    const textarea = byId('system-prompt-input');
+    if (!textarea) return;
+    const value = textarea.value.trim();
+
+    try {
+        if (value) localStorage.setItem(`system_prompt_${currentModel.id}`, value);
+        else localStorage.removeItem(`system_prompt_${currentModel.id}`);
+    } catch (error) {
+        showToast('Could not save the prompt in this browser.', 'error');
+        return;
+    }
+
+    updatePromptIndicator();
+    closeModal('system-prompt-modal');
+    showToast(value ? 'System prompt saved.' : 'System prompt cleared.', 'success');
+}
+
+function clearSystemPrompt() {
+    if (typeof currentModel === 'undefined' || !currentModel) return;
+    const textarea = byId('system-prompt-input');
+    if (textarea) textarea.value = '';
+    try { localStorage.removeItem(`system_prompt_${currentModel.id}`); } catch (error) { /* noop */ }
+    updatePromptIndicator();
+    showToast('System prompt cleared.', 'success');
+    textarea?.focus();
+}
+
+/* ---------- Token usage ---------- */
+
+function normalizeUsageStats(raw) {
+    const stats = raw && typeof raw === 'object' ? raw : {};
+    const perModel = stats.perModel && typeof stats.perModel === 'object' && !Array.isArray(stats.perModel)
+        ? stats.perModel
+        : {};
+    const result = { totalMessages: Number(stats.totalMessages) || 0, totalTokens: Number(stats.totalTokens) || 0, perModel: {} };
+
+    Object.keys(perModel).forEach(modelId => {
+        const usage = perModel[modelId];
+        if (!usage || typeof usage !== 'object') return;
+        result.perModel[modelId] = {
+            messages: Number(usage.messages) || 0,
+            tokens: Number(usage.tokens) || 0
+        };
+    });
+
+    return result;
+}
+
+function computeUsageFromChats() {
+    const stats = { totalMessages: 0, totalTokens: 0, perModel: {} };
+
+    getValidConversationIds().forEach(modelId => {
+        getConversationMessages(modelId).forEach(message => {
+            const tokens = estimateTokens(conversationText(message));
+            stats.totalMessages += 1;
+            stats.totalTokens += tokens;
+            if (!stats.perModel[modelId]) stats.perModel[modelId] = { messages: 0, tokens: 0 };
+            stats.perModel[modelId].messages += 1;
+            stats.perModel[modelId].tokens += tokens;
         });
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'template-action-btn delete';
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.addEventListener('click', () => {
-            deleteCustomTemplate(template.id);
-        });
-        
-        actions.appendChild(useBtn);
-        actions.appendChild(deleteBtn);
-        
-        item.appendChild(info);
-        item.appendChild(actions);
-        
-        templatesList.appendChild(item);
+    });
+
+    return stats;
+}
+
+function ensureUsageStats() {
+    try {
+        if (localStorage.getItem('token_usage_stats')) return;
+    } catch (error) {
+        return;
+    }
+    writeJSON('token_usage_stats', computeUsageFromChats());
+}
+
+function loadUsageStats() {
+    return normalizeUsageStats(readJSON('token_usage_stats', {}));
+}
+
+function trackTokenUsage(modelId, prompt, response) {
+    if (!modelId) return;
+    const stats = loadUsageStats();
+    const tokens = estimateTokens(prompt) + estimateTokens(response);
+
+    stats.totalMessages += 2;
+    stats.totalTokens += tokens;
+    if (!stats.perModel[modelId]) stats.perModel[modelId] = { messages: 0, tokens: 0 };
+    stats.perModel[modelId].messages += 2;
+    stats.perModel[modelId].tokens += tokens;
+
+    writeJSON('token_usage_stats', stats);
+}
+
+window.trackTokenUsage = trackTokenUsage;
+
+function renderUsageStats() {
+    const stats = loadUsageStats();
+    const messagesEl = byId('total-messages');
+    const tokensEl = byId('total-tokens');
+    const sessionsEl = byId('sessions-count');
+    if (messagesEl) messagesEl.textContent = formatNumber(stats.totalMessages);
+    if (tokensEl) tokensEl.textContent = formatNumber(stats.totalTokens);
+    if (sessionsEl) sessionsEl.textContent = formatNumber(getValidConversationIds().length);
+
+    const list = byId('model-usage-list');
+    if (!list) return;
+    list.replaceChildren();
+
+    const entries = Object.entries(stats.perModel)
+        .filter(([, usage]) => usage && usage.messages > 0)
+        .sort((a, b) => b[1].tokens - a[1].tokens);
+
+    if (!entries.length) {
+        list.appendChild(emptyState('No usage recorded yet. Send a message to start tracking.'));
+        return;
+    }
+
+    entries.forEach(([modelId, usage]) => {
+        const model = typeof getModelById === 'function' ? getModelById(modelId) : null;
+        const item = makeEl('div', 'model-usage-item');
+        const name = makeEl('span', 'model-usage-name', model ? model.name : modelId);
+        const numbers = makeEl('span', 'model-usage-stats');
+        numbers.append(
+            makeEl('span', '', `${formatNumber(usage.messages)} msgs`),
+            makeEl('span', '', `~${formatNumber(usage.tokens)} tokens`)
+        );
+        item.append(name, numbers);
+        list.appendChild(item);
     });
 }
 
-// Delete custom template
-function deleteCustomTemplate(templateId) {
-    if (confirm('Delete this template?')) {
-        let templates = JSON.parse(localStorage.getItem('quick_templates')) || [];
-        templates = templates.filter(t => t.id !== templateId);
-        localStorage.setItem('quick_templates', JSON.stringify(templates));
-        loadCustomTemplates();
-        showToast('Template deleted');
+function openTokenUsageModal() {
+    renderUsageStats();
+    openModal('token-usage-modal');
+}
+
+async function resetUsageStats() {
+    const confirmed = await confirmAction({
+        title: 'Reset usage stats?',
+        message: 'The token estimate will start again from zero. Conversations are not affected.',
+        confirmLabel: 'Reset stats',
+        danger: true
+    });
+    if (!confirmed) return;
+
+    writeJSON('token_usage_stats', { totalMessages: 0, totalTokens: 0, perModel: {} });
+    renderUsageStats();
+    showToast('Usage stats reset.', 'success');
+}
+
+/* ---------- Delete chats ---------- */
+
+function openDeleteChatsModal() {
+    renderDeletionList();
+    openModal('delete-chats-modal');
+}
+
+function renderDeletionList() {
+    const list = byId('deletion-chat-list');
+    if (!list) return;
+    list.replaceChildren();
+
+    const ids = getValidConversationIds()
+        .sort((a, b) => getConversationTimestamp(b) - getConversationTimestamp(a));
+    const deleteAllBtn = byId('delete-all-chats');
+
+    if (!ids.length) {
+        list.appendChild(emptyState('No saved conversations to delete.'));
+        if (deleteAllBtn) deleteAllBtn.disabled = true;
+        updateDeleteSelectionState();
+        return;
+    }
+    if (deleteAllBtn) deleteAllBtn.disabled = false;
+
+    ids.forEach((modelId, index) => {
+        const model = getModelById(modelId);
+        const row = makeEl('div', 'chat-deletion-item' +
+            (typeof currentModel !== 'undefined' && currentModel && currentModel.id === modelId ? ' current-chat' : ''));
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'chat-checkbox';
+        checkbox.value = modelId;
+        checkbox.id = `delete-chat-${index}`;
+        checkbox.addEventListener('change', updateDeleteSelectionState);
+
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        const name = makeEl('span', 'chat-model-name');
+        const icon = makeEl('i', `fas ${model ? model.avatar : 'fa-robot'}`);
+        icon.setAttribute('aria-hidden', 'true');
+        name.append(icon, makeEl('span', '', getConversationTitle(modelId)));
+        label.append(
+            name,
+            makeEl('span', 'chat-last-message',
+                `${model ? model.name : 'Model'} · ${getConversationMessageCount(modelId)} messages · ${formatWhen(getConversationTimestamp(modelId))}`)
+        );
+
+        row.append(checkbox, label);
+        list.appendChild(row);
+    });
+
+    updateDeleteSelectionState();
+}
+
+function updateDeleteSelectionState() {
+    const selected = document.querySelectorAll('#deletion-chat-list .chat-checkbox:checked').length;
+    const button = byId('delete-selected-chats');
+    if (!button) return;
+    button.disabled = selected === 0;
+    button.textContent = selected ? `Delete selected (${selected})` : 'Delete selected';
+}
+
+async function deleteSelectedChats() {
+    const selected = Array.from(document.querySelectorAll('#deletion-chat-list .chat-checkbox:checked'))
+        .map(input => input.value);
+    if (!selected.length) {
+        showToast('Select at least one conversation.', 'error');
+        return;
+    }
+
+    const confirmed = await confirmAction({
+        title: `Delete ${selected.length} conversation${selected.length === 1 ? '' : 's'}?`,
+        message: 'The selected chats will be permanently removed from this browser.',
+        confirmLabel: 'Delete',
+        danger: true
+    });
+    if (!confirmed) return;
+
+    closeModal('delete-chats-modal');
+    deleteConversations(selected);
+    showToast('Conversations deleted.', 'success');
+}
+
+async function deleteAllChats() {
+    const ids = getValidConversationIds();
+    if (!ids.length) return;
+
+    const confirmed = await confirmAction({
+        title: 'Delete every conversation?',
+        message: `${ids.length} saved chat${ids.length === 1 ? '' : 's'} will be permanently removed. API keys, folders, and templates stay.`,
+        confirmLabel: 'Delete all',
+        danger: true
+    });
+    if (!confirmed) return;
+
+    closeModal('delete-chats-modal');
+    deleteConversations(ids);
+    showToast('All conversations deleted.', 'success');
+}
+
+/* ---------- Profile ---------- */
+
+function loadProfile() {
+    const profile = readJSON('user_profile', {});
+    return {
+        name: profile && typeof profile.name === 'string' ? profile.name.trim() : '',
+        email: profile && typeof profile.email === 'string' ? profile.email.trim() : ''
+    };
+}
+
+function updateProfileRow() {
+    const profile = loadProfile();
+    const nameEl = byId('profile-name');
+    const emailEl = byId('profile-email');
+    const avatar = byId('profile-avatar');
+
+    if (nameEl) nameEl.textContent = profile.name || 'Your profile';
+    if (emailEl) emailEl.textContent = profile.email || 'Saved on this device';
+    if (avatar) {
+        const initial = (profile.name || 'U').trim().charAt(0).toUpperCase() || 'U';
+        avatar.textContent = initial;
     }
 }
 
-// Initialize keyboard shortcuts
-function initKeyboardShortcuts() {
-    const shortcutsHelpBtn = document.getElementById('shortcuts-help-btn');
-    const shortcutsModal = document.getElementById('shortcuts-modal');
-    const closeBtn = shortcutsModal.querySelector('.close-modal');
-    
-    // Open shortcuts help
-    if (shortcutsHelpBtn) {
-        shortcutsHelpBtn.addEventListener('click', () => {
-            shortcutsModal.style.display = 'flex';
-        });
+function openProfileModal() {
+    const profile = loadProfile();
+    const nameInput = byId('profile-name-input');
+    const emailInput = byId('profile-email-input');
+    if (nameInput) nameInput.value = profile.name;
+    if (emailInput) emailInput.value = profile.email;
+    openModal('profile-modal');
+    window.setTimeout(() => nameInput?.focus(), 60);
+}
+
+function saveProfile() {
+    const nameInput = byId('profile-name-input');
+    const emailInput = byId('profile-email-input');
+    if (!nameInput || !emailInput) return;
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('Enter a valid email address or leave it empty.', 'error');
+        emailInput.focus();
+        return;
     }
-    
-    // Close modal
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            shortcutsModal.style.display = 'none';
-        });
-    }
-    
-    shortcutsModal.addEventListener('click', (e) => {
-        if (e.target === shortcutsModal) {
-            shortcutsModal.style.display = 'none';
-        }
-    });
-    
-    // Global keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-        // Ctrl+Enter: Send message (handled in chat.js already, but ensure it works)
-        if (e.ctrlKey && e.key === 'Enter') {
-            const sendBtn = document.getElementById('send-btn');
-            const chatScreen = document.getElementById('chat-screen');
-            if (chatScreen.style.display !== 'none' && sendBtn) {
-                e.preventDefault();
-                sendBtn.click();
+
+    writeJSON('user_profile', { name, email });
+    updateProfileRow();
+    closeModal('profile-modal');
+    showToast('Profile saved.', 'success');
+}
+
+/* ---------- Keyboard shortcuts ---------- */
+
+function initGlobalKeyboard() {
+    document.addEventListener('keydown', event => {
+        const topId = modalStack[modalStack.length - 1];
+
+        if (topId) {
+            const modal = byId(topId);
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeModal(topId);
+                return;
             }
+            if (event.key === 'Tab' && modal) trapFocus(event, modal);
+            return;
         }
-        
-        // Ctrl+K: Clear chat / New conversation
-        if (e.ctrlKey && e.key === 'k') {
-            e.preventDefault();
-            const chatScreen = document.getElementById('chat-screen');
-            if (chatScreen.style.display !== 'none') {
-                if (confirm('Start a new conversation? Current chat will be saved.')) {
-                    const backBtn = document.getElementById('back-btn');
-                    if (backBtn) backBtn.click();
+
+        const modifier = event.ctrlKey || event.metaKey;
+        if (modifier && !event.altKey && event.key.toLowerCase() === 'k') {
+            event.preventDefault();
+            openSearch();
+            return;
+        }
+        if (modifier && !event.altKey && event.key.toLowerCase() === 'b') {
+            event.preventDefault();
+            toggleSidebar();
+            return;
+        }
+        if (modifier && !event.altKey && event.key === '/') {
+            event.preventDefault();
+            openModal('shortcuts-modal');
+            return;
+        }
+        if (event.key === 'Escape') {
+            const emojiPicker = byId('emoji-picker');
+            if (emojiPicker && !emojiPicker.hidden) return;
+
+            const chatScreen = byId('chat-screen');
+            if (chatScreen && !chatScreen.hidden) {
+                const active = document.activeElement;
+                if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')) {
+                    active.blur();
+                    return;
                 }
+                if (typeof backToModelSelection === 'function') backToModelSelection();
+                renderFolderTree();
+                return;
             }
-        }
-        
-        // Ctrl+S: Search conversations
-        if (e.ctrlKey && e.key === 's') {
-            e.preventDefault();
-            const searchBtn = document.getElementById('search-conversations-btn');
-            if (searchBtn) searchBtn.click();
-        }
-        
-        // Ctrl+E: Export conversations
-        if (e.ctrlKey && e.key === 'e') {
-            e.preventDefault();
-            const exportBtn = document.getElementById('export-conversations-btn');
-            if (exportBtn) exportBtn.click();
-        }
-        
-        // Ctrl+B: Toggle sidebar
-        if (e.ctrlKey && e.key === 'b') {
-            e.preventDefault();
-            if (typeof toggleSidebar === 'function') {
-                toggleSidebar();
-            }
-        }
-        
-        // Ctrl+/: Show shortcuts help
-        if (e.ctrlKey && e.key === '/') {
-            e.preventDefault();
-            shortcutsModal.style.display = 'flex';
-        }
-        
-        // Esc: Close modals / Go back
-        if (e.key === 'Escape') {
-            const openModal = document.querySelector('.modal[style*="display: flex"]');
-            if (openModal) {
-                openModal.style.display = 'none';
-            } else {
-                const chatScreen = document.getElementById('chat-screen');
-                if (chatScreen.style.display !== 'none') {
-                    const backBtn = document.getElementById('back-btn');
-                    if (backBtn) backBtn.click();
-                }
-            }
+            closeSidebar();
         }
     });
 }
 
-// Check if conversation is pinned
-function isPinned(conversationId) {
-    const pinnedConvs = JSON.parse(localStorage.getItem('pinned_conversations')) || [];
-    return pinnedConvs.includes(conversationId);
+/* ---------- Wiring ---------- */
+
+function initSidebarControls() {
+    byId('menu-btn')?.addEventListener('click', toggleSidebar);
+    byId('close-sidebar')?.addEventListener('click', closeSidebar);
+    byId('sidebar-scrim')?.addEventListener('click', closeSidebar);
+
+    byId('new-chat-btn')?.addEventListener('click', () => {
+        if (typeof backToModelSelection === 'function') backToModelSelection();
+        else closeSidebar();
+        renderFolderTree();
+    });
+
+    byId('new-folder-btn')?.addEventListener('click', createFolder);
+    byId('conversation-filter')?.addEventListener('input', () => {
+        window.clearTimeout(filterTimer);
+        filterTimer = window.setTimeout(renderFolderTree, 120);
+    });
+
+    byId('confirm-assign-btn')?.addEventListener('click', confirmAssignFolder);
 }
 
-// Toggle pin status
-function togglePin(conversationId) {
-    let pinnedConvs = JSON.parse(localStorage.getItem('pinned_conversations')) || [];
-    
-    if (pinnedConvs.includes(conversationId)) {
-        pinnedConvs = pinnedConvs.filter(id => id !== conversationId);
-        showToast('Unpinned from favorites');
-    } else {
-        pinnedConvs.push(conversationId);
-        showToast('Pinned to favorites');
-    }
-    
-    localStorage.setItem('pinned_conversations', JSON.stringify(pinnedConvs));
-    renderFolderTree();
+function initWorkspaceButtons() {
+    byId('home-manage-api')?.addEventListener('click', () => openApiKeyModal());
+    byId('toolbar-api-btn')?.addEventListener('click', () => openApiKeyModal());
+    byId('manage-api-btn')?.addEventListener('click', () => openApiKeyModal());
+    byId('token-usage-btn')?.addEventListener('click', openTokenUsageModal);
+    byId('search-conversations-btn')?.addEventListener('click', openSearch);
+    byId('export-conversations-btn')?.addEventListener('click', openExportModal);
+    byId('shortcuts-help-btn')?.addEventListener('click', () => openModal('shortcuts-modal'));
+    byId('about-btn')?.addEventListener('click', () => openModal('about-modal'));
+    byId('clear-chats-btn')?.addEventListener('click', openDeleteChatsModal);
+    byId('profile-btn')?.addEventListener('click', openProfileModal);
+    byId('save-profile')?.addEventListener('click', saveProfile);
+    byId('system-prompt-btn')?.addEventListener('click', openSystemPromptModal);
 }
 
-// Render favorites section
-function renderFavorites() {
-    const favoritesSection = document.getElementById('favorites-section');
-    if (!favoritesSection) return;
-    
-    const pinnedConvs = JSON.parse(localStorage.getItem('pinned_conversations')) || [];
-    
-    favoritesSection.innerHTML = '';
-    
-    if (pinnedConvs.length === 0) {
-        return; // Don't show anything if no favorites
-    }
-    
-    // Add header
-    const header = document.createElement('div');
-    header.className = 'favorites-header';
-    header.innerHTML = '<i class="fas fa-star"></i> FAVORITES';
-    favoritesSection.appendChild(header);
-    
-    // Add pinned conversations
-    pinnedConvs.forEach(convId => {
-        const model = availableModels.find(m => m.id === convId);
-        if (model) {
-            const favDiv = document.createElement('div');
-            favDiv.className = 'favorite-item';
-            if (currentModel && currentModel.id === convId) {
-                favDiv.classList.add('active-conversation');
-            }
-            
-            const starIcon = document.createElement('span');
-            starIcon.className = 'favorite-star';
-            starIcon.innerHTML = '<i class="fas fa-star"></i>';
-            
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = model.name;
-            nameSpan.style.flex = '1';
-            
-            const pinBtn = document.createElement('button');
-            pinBtn.className = 'pin-btn pinned';
-            pinBtn.innerHTML = '<i class="fas fa-star"></i>';
-            pinBtn.title = 'Unpin';
-            pinBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                togglePin(convId);
-            });
-            
-            favDiv.appendChild(starIcon);
-            favDiv.appendChild(nameSpan);
-            favDiv.appendChild(pinBtn);
-            
-            favDiv.addEventListener('click', () => {
-                const model = availableModels.find(m => m.id === convId);
-                if (model) loadChatWithModel(model);
-            });
-            
-            favoritesSection.appendChild(favDiv);
+function initApiManager() {
+    document.querySelectorAll('#manage-api-modal .tab[data-tab]').forEach(tab => {
+        tab.addEventListener('click', () => switchApiTab(tab.dataset.tab));
+    });
+
+    byId('api-provider-select')?.addEventListener('change', updateProviderNote);
+    byId('save-store-api-key')?.addEventListener('click', saveStoreApiKey);
+
+    const keyInput = byId('api-key-value');
+    keyInput?.addEventListener('input', () => keyInput.classList.remove('input-error'));
+    keyInput?.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            saveStoreApiKey();
         }
     });
-} 
+    byId('api-key-name-input')?.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            keyInput?.focus();
+        }
+    });
+
+    byId('api-key-reveal')?.addEventListener('click', () => {
+        if (!keyInput) return;
+        const reveal = byId('api-key-reveal');
+        const show = keyInput.type === 'password';
+        keyInput.type = show ? 'text' : 'password';
+        if (reveal) {
+            reveal.setAttribute('aria-pressed', String(show));
+            reveal.setAttribute('aria-label', show ? 'Hide API key' : 'Show API key');
+            reveal.innerHTML = `<i class="fas ${show ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>`;
+        }
+        keyInput.focus();
+    });
+
+    byId('stored-keys-list')?.addEventListener('click', event => {
+        if (!(event.target instanceof Element)) return;
+        const button = event.target.closest('button[data-key-action]');
+        if (!button) return;
+        if (button.dataset.keyAction === 'apply') openModelKeyModal(button.dataset.keyId);
+        else if (button.dataset.keyAction === 'delete') deleteStoredKey(button.dataset.keyId);
+    });
+
+    byId('select-all-models')?.addEventListener('click', () => {
+        document.querySelectorAll('#models-selection-list .model-checkbox').forEach(input => { input.checked = true; });
+    });
+    byId('deselect-all-models')?.addEventListener('click', () => {
+        document.querySelectorAll('#models-selection-list .model-checkbox').forEach(input => { input.checked = false; });
+    });
+    byId('apply-to-selected-models')?.addEventListener('click', applyKeyToSelectedModels);
+    byId('apply-to-default')?.addEventListener('click', applyKeyAsDefault);
+}
+
+function initSearchUi() {
+    const input = byId('search-input');
+    input?.addEventListener('input', () => {
+        window.clearTimeout(searchTimer);
+        searchTimer = window.setTimeout(runSearch, 140);
+    });
+    input?.addEventListener('keydown', event => {
+        if (event.key !== 'Enter') return;
+        const first = document.querySelector('#search-results .search-result-item');
+        if (first) {
+            event.preventDefault();
+            first.click();
+        }
+    });
+}
+
+function initTemplatesUi() {
+    byId('save-template-btn')?.addEventListener('click', saveTemplate);
+    byId('templates-list')?.addEventListener('click', event => {
+        if (!(event.target instanceof Element)) return;
+        const button = event.target.closest('button[data-template-action]');
+        if (!button) return;
+        const template = loadTemplates().find(item => item.id === button.dataset.templateId);
+        if (!template) return;
+        if (button.dataset.templateAction === 'use') insertTemplate(template);
+        else if (button.dataset.templateAction === 'delete') deleteTemplate(template.id);
+    });
+}
+
+function initSystemPromptUi() {
+    byId('save-prompt-btn')?.addEventListener('click', saveSystemPrompt);
+    byId('clear-prompt-btn')?.addEventListener('click', clearSystemPrompt);
+    document.querySelectorAll('#system-prompt-modal .preset-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const textarea = byId('system-prompt-input');
+            if (!textarea) return;
+            textarea.value = SYSTEM_PRESETS[button.dataset.preset] || '';
+            textarea.focus();
+        });
+    });
+}
+
+function initTokenUsageUi() {
+    byId('reset-stats-btn')?.addEventListener('click', resetUsageStats);
+}
+
+function initExportUi() {
+    byId('export-json-btn')?.addEventListener('click', () => exportChats('json'));
+    byId('export-markdown-btn')?.addEventListener('click', () => exportChats('markdown'));
+    byId('export-all-txt-btn')?.addEventListener('click', () => exportChats('text'));
+}
+
+function initDeleteChatsUi() {
+    byId('delete-selected-chats')?.addEventListener('click', deleteSelectedChats);
+    byId('delete-all-chats')?.addEventListener('click', deleteAllChats);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadFolders();
+    initModalSystem();
+    initSidebarControls();
+    initWorkspaceButtons();
+    initApiManager();
+    initSearchUi();
+    initTemplatesUi();
+    initSystemPromptUi();
+    initTokenUsageUi();
+    initExportUi();
+    initDeleteChatsUi();
+    initGlobalKeyboard();
+
+    ensureUsageStats();
+    updateProfileRow();
+    renderStoredKeys();
+    updateKeyStatus();
+
+    if (typeof updateConversationHistory === 'function') updateConversationHistory();
+    if (typeof initializeModelsGrid === 'function') initializeModelsGrid();
+    if (typeof initModelNavigation === 'function') initModelNavigation();
+    if (typeof renderRecentConversations === 'function') renderRecentConversations();
+    if (typeof updatePromptIndicator === 'function') updatePromptIndicator();
+
+    applySidebarPreference();
+});

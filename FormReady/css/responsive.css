@@ -5,34 +5,39 @@
     grid-template-columns: 1fr;
   }
 
-  .info-strip {
+  .steps-grid {
     grid-template-columns: 1fr;
   }
+}
 
-  .header-inner {
-    justify-content: center;
-    text-align: center;
+@media (max-width: 700px) {
+  .container {
+    width: min(100% - 32px, 560px);
   }
 
-  .site-nav {
-    order: 3;
-    width: 100%;
-    justify-content: center;
+  main {
+    padding-top: 32px;
+  }
+
+  .hero {
+    margin-bottom: 14px;
   }
 }
 
 @media (max-width: 640px) {
-  .hero {
-    padding: 20px 0 6px;
+  input,
+  select,
+  textarea {
+    font-size: 16px;
   }
 
   .stepper {
-    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .step {
     padding: 7px 12px;
-    font-size: 12px;
+    font-size: 0.76rem;
   }
 
   .dropzone {
@@ -40,7 +45,7 @@
   }
 
   .panel {
-    padding: 15px;
+    padding: 17px;
   }
 
   .card-main {
@@ -65,12 +70,35 @@
     grid-template-columns: 1fr;
   }
 
-  .panel-actions {
+  .result-card .card-preview-image {
+    aspect-ratio: auto;
+    max-height: none;
+  }
+
+  .result-card .card-preview-image img {
+    position: static;
     width: 100%;
+    height: auto;
+    max-height: 60vh;
+  }
+
+  .panel-actions {
+    flex: 1 1 100%;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .panel-heading {
+    flex-wrap: wrap;
+  }
+
+  .panel-heading:has(.step-number) > div:not(.panel-actions) {
+    flex: 1 1 calc(100% - 48px);
   }
 
   .panel-actions .btn {
     flex: 1;
+    white-space: nowrap;
   }
 
   .btn-block,
@@ -80,6 +108,30 @@
 
   .modal {
     max-height: 92vh;
+  }
+}
+
+@media (max-width: 440px) {
+  .container {
+    width: calc(100% - 24px);
+  }
+
+  main {
+    padding-top: 25px;
+  }
+
+  .hero {
+    margin-bottom: 22px;
+  }
+
+  .hero-copy {
+    font-size: 0.96rem;
+  }
+
+  .privacy-note {
+    align-items: flex-start;
+    border-radius: 12px;
+    font-size: 0.76rem;
   }
 }
 

@@ -1,255 +1,232 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Pixel Resizer - Alok Systems Tools</title>
-    <meta name="description" content="Resize images to exact pixel dimensions locally in your browser. No uploads, no server, fully private.">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Image-Pixel-Resizer/">
-    <meta property="og:title" content="Image Pixel Resizer - Alok Systems Tools">
-    <meta property="og:description" content="Resize images to exact pixel dimensions locally in your browser. No uploads, no server, fully private.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Image-Pixel-Resizer/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Image Pixel Resizer - Alok Systems Tools">
-    <meta name="twitter:description" content="Resize images to exact pixel dimensions locally in your browser. No uploads, no server, fully private.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Image Pixel Resizer - Alok Systems Tools",
-    "description":  "Resize images to exact pixel dimensions locally in your browser. No uploads, no server, fully private.",
-    "url":  "https://aloksystems.freedev.app/Image-Pixel-Resizer/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EIP%3C/text%3E%3C/svg%3E">
+  <title>Image Pixel Resizer | Exact Pixel Sizes, No Uploads</title>
+  <meta name="description" content="Resize JPG, PNG, and WebP images to exact pixel dimensions in your browser. Lock the aspect ratio, preview the result, and download privately.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Image-Pixel-Resizer/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Image Pixel Resizer - Alok Systems Tools">
+  <meta property="og:description" content="Resize images to exact pixel dimensions locally in your browser. No uploads, no server, fully private.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Image-Pixel-Resizer/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Image Pixel Resizer - Alok Systems Tools">
+  <meta name="twitter:description" content="Resize images to exact pixel dimensions locally in your browser. No uploads, no server, fully private.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Image Pixel Resizer",
+    "description":"Resize images to exact pixel dimensions locally in your browser. No uploads, no server, fully private.",
+    "url":"https://aloksystems.freedev.app/Image-Pixel-Resizer/",
+    "applicationCategory":"UtilityApplication",
+    "operatingSystem":"Any",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Are my images uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Resizing happens in your browser using the canvas element. Your image never leaves this device and no copy is stored on a server."}},
+      {"@type":"Question","name":"Which formats are supported?","acceptedAnswer":{"@type":"Answer","text":"You can upload JPG, PNG, and WebP images. The resized file can be saved as JPG, PNG, or WebP."}},
+      {"@type":"Question","name":"How does lock aspect ratio work?","acceptedAnswer":{"@type":"Answer","text":"When enabled, changing the width automatically updates the height to keep the original proportions, and the other way around. Turn it off to set both values independently."}},
+      {"@type":"Question","name":"Is there a size limit?","acceptedAnswer":{"@type":"Answer","text":"Each side can be up to 8,000 pixels and the output is limited to 50 megapixels so the browser stays responsive."}}
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
 <body>
-    <header class="site-header">
-        <div class="container">
-            <div class="header-brand">
-                <span class="brand-icon" aria-hidden="true">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
-                        <line x1="2" y1="10" x2="22" y2="10"></line>
-                        <line x1="10" y1="2" x2="10" y2="22"></line>
-                    </svg>
-                </span>
-                <div class="header-text">
-                    <span class="tool-label">Alok Systems Tools</span>
-                    <h1>Image Pixel Resizer</h1>
-                </div>
-            </div>
-            <p class="header-subtitle">Resize images to exact pixel dimensions — quickly, privately, and entirely in your browser.</p>
-        </div>
-    </header>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">IMAGE RESIZING, MADE SIMPLE</p>
+      <h1 id="page-title">Image Pixel Resizer</h1>
+      <p>Resize a photo to exact pixel dimensions while keeping the aspect ratio.</p>
+      <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>Your image is processed on this device and never uploaded.</div>
+    </section>
 
-    <main class="container main-content">
-        <!-- Error Banner -->
-        <div id="errorBanner" class="error-banner" role="alert" aria-live="polite" hidden>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    <div id="errorBanner" class="error-banner" role="alert" aria-live="polite" hidden>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span id="errorMessage"></span>
+      <button id="errorCloseBtn" class="error-close" type="button" aria-label="Dismiss error">&times;</button>
+    </div>
+
+    <section class="workspace" aria-label="Image resizer">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="upload-title">
+          <div class="panel-heading"><span class="step-number">01</span><div><h2 id="upload-title">Upload image</h2><p>Drag and drop or browse for a JPG, PNG, or WebP file.</p></div></div>
+          <div id="uploadArea" class="upload-area" tabindex="0" role="button" aria-label="Upload image. Click or drag and drop.">
+            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
+            <svg class="upload-icon" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
-            <span id="errorMessage"></span>
-            <button id="errorCloseBtn" class="error-close" aria-label="Dismiss error">&times;</button>
-        </div>
+            <p class="upload-main-text">Drag &amp; drop your image here</p>
+            <p class="upload-divider">— or —</p>
+            <button id="chooseBtn" class="btn btn-secondary" type="button">Choose image</button>
+            <p class="upload-hint">JPG, PNG, and WebP · up to 8,000 px per side</p>
+            <div id="uploadDragOverlay" class="upload-overlay" hidden>
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <p>Drop your image here</p>
+            </div>
+          </div>
+          <div id="originalInfoContainer" class="original-info" hidden>
+            <div class="original-info-header">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <h3>Original image</h3>
+            </div>
+            <div class="info-grid" id="originalInfoGrid">
+              <div class="info-item"><span class="info-label">Filename</span><span class="info-value" id="origFileName">—</span></div>
+              <div class="info-item"><span class="info-label">Format</span><span class="info-value" id="origFormat">—</span></div>
+              <div class="info-item"><span class="info-label">Dimensions</span><span class="info-value" id="origDimensions">—</span></div>
+              <div class="info-item"><span class="info-label">File size</span><span class="info-value" id="origFileSize">—</span></div>
+            </div>
+          </div>
+        </section>
 
-        <!-- Step 1: Upload -->
-        <section class="card upload-card" aria-label="Image upload">
-            <div class="step-badge">Step 1</div>
-            <h2 class="card-title">Upload Your Image</h2>
-            <div id="uploadArea" class="upload-area" tabindex="0" role="button" aria-label="Upload image. Click or drag and drop.">
-                <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
-                <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
+        <section class="panel" aria-labelledby="settings-title">
+          <div class="panel-heading"><span class="step-number">02</span><div><h2 id="settings-title">Resize settings</h2><p>Set the exact output size, format, and quality.</p></div></div>
+          <div class="settings-body" id="settingsBody">
+            <div class="field-grid">
+              <div><label for="widthInput">Width</label><div class="input-suffix"><input type="number" id="widthInput" min="1" max="8000" value="1920" inputmode="numeric" disabled><span>px</span></div></div>
+              <div><label for="heightInput">Height</label><div class="input-suffix"><input type="number" id="heightInput" min="1" max="8000" value="1080" inputmode="numeric" disabled><span>px</span></div></div>
+            </div>
+            <div class="aspect-ratio-row">
+              <label class="toggle-wrapper" for="lockAspectToggle">
+                <input type="checkbox" id="lockAspectToggle" checked disabled>
+                <span class="toggle-slider" aria-hidden="true"></span>
+                <span class="toggle-label">Lock aspect ratio</span>
+              </label>
+            </div>
+            <div class="presets-row">
+              <span class="field-label">Preset sizes</span>
+              <div class="preset-buttons" id="presetButtons">
+                <button type="button" class="preset-btn" data-width="100" data-height="100" disabled>100&times;100</button>
+                <button type="button" class="preset-btn" data-width="200" data-height="200" disabled>200&times;200</button>
+                <button type="button" class="preset-btn" data-width="300" data-height="300" disabled>300&times;300</button>
+                <button type="button" class="preset-btn" data-width="500" data-height="500" disabled>500&times;500</button>
+                <button type="button" class="preset-btn" data-width="1280" data-height="720" disabled>1280&times;720</button>
+                <button type="button" class="preset-btn" data-width="1920" data-height="1080" disabled>1920&times;1080</button>
+              </div>
+            </div>
+            <div class="field-grid">
+              <div><label for="formatSelect">Output format</label><select id="formatSelect" disabled>
+                <option value="image/jpeg">JPG</option>
+                <option value="image/png">PNG</option>
+                <option value="image/webp">WebP</option>
+              </select></div>
+              <div class="quality-group" id="qualityGroup"><label for="qualitySlider">Quality: <span id="qualityValue">90</span>%</label><input type="range" id="qualitySlider" min="10" max="100" value="90" disabled></div>
+            </div>
+            <p class="field-help settings-note" id="settingsNote">Upload an image to enable resize settings.</p>
+          </div>
+        </section>
+      </div>
+
+      <section class="summary-panel" aria-labelledby="summary-title">
+        <div class="summary-heading"><p class="eyebrow">LIVE PREVIEW</p><h2 id="summary-title">Resized image</h2><p class="summary-period">The preview updates as you adjust the settings.</p></div>
+        <div class="preview-stack">
+          <div class="preview-panel">
+            <div class="preview-top"><h3 class="preview-label">Original</h3><span class="preview-stats" id="originalPreviewStats">—</span></div>
+            <div class="preview-image-container" id="originalPreviewContainer">
+              <div class="preview-placeholder" id="originalPlaceholder">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
-                <p class="upload-main-text">Drag &amp; drop your image here</p>
-                <p class="upload-divider">— or —</p>
-                <button id="chooseBtn" class="btn btn-secondary" type="button">Choose Image</button>
-                <p class="upload-hint">Supports JPG, JPEG, PNG, and WebP</p>
+                <span>No image uploaded</span>
+              </div>
+              <img id="originalPreviewImg" class="preview-img" alt="Original image preview" hidden>
             </div>
-                <div id="uploadDragOverlay" class="upload-overlay" hidden>
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M21 15v4a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                    <p>Drop your image here</p>
-                </div>
-            </div>
-            <div id="originalInfoContainer" class="original-info" hidden>
-                <div class="original-info-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                        <polyline points="21 15 16 10 5 21"></polyline>
-                    </svg>
-                    <h3>Original Image Details</h3>
-                </div>
-                <div class="info-grid" id="originalInfoGrid">
-                    <div class="info-item">
-                        <span class="info-label">Filename</span>
-                        <span class="info-value" id="origFileName">—</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Format</span>
-                        <span class="info-value" id="origFormat">—</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Dimensions</span>
-                        <span class="info-value" id="origDimensions">—</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">File Size</span>
-                        <span class="info-value" id="origFileSize">—</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Step 2: Resize Settings -->
-        <section class="card settings-card" aria-label="Resize settings">
-            <div class="step-badge">Step 2</div>
-            <h2 class="card-title">Resize Settings</h2>
-            <div class="settings-body" id="settingsBody">
-                <div class="dimensions-row">
-                    <div class="input-group">
-                        <label for="widthInput">Width (px)</label>
-                        <input type="number" id="widthInput" min="1" max="8000" value="1920" inputmode="numeric" disabled>
-                    </div>
-                    <span class="dimension-separator" aria-hidden="true">&times;</span>
-                    <div class="input-group">
-                        <label for="heightInput">Height (px)</label>
-                        <input type="number" id="heightInput" min="1" max="8000" value="1080" inputmode="numeric" disabled>
-                    </div>
-                </div>
-                <div class="aspect-ratio-row">
-                    <label class="toggle-wrapper" for="lockAspectToggle">
-                        <input type="checkbox" id="lockAspectToggle" checked disabled>
-                        <span class="toggle-slider" aria-hidden="true"></span>
-                        <span class="toggle-label">Lock aspect ratio</span>
-                    </label>
-                </div>
-                <div class="presets-row">
-                    <label class="field-label">Preset Sizes</label>
-                    <div class="preset-buttons" id="presetButtons">
-                        <button type="button" class="preset-btn" data-width="100" data-height="100" disabled>100&times;100</button>
-                        <button type="button" class="preset-btn" data-width="200" data-height="200" disabled>200&times;200</button>
-                        <button type="button" class="preset-btn" data-width="300" data-height="300" disabled>300&times;300</button>
-                        <button type="button" class="preset-btn" data-width="500" data-height="500" disabled>500&times;500</button>
-                        <button type="button" class="preset-btn" data-width="1280" data-height="720" disabled>1280&times;720</button>
-                        <button type="button" class="preset-btn" data-width="1920" data-height="1080" disabled>1920&times;1080</button>
-                    </div>
-                </div>
-                <div class="format-row">
-                    <div class="input-group">
-                        <label for="formatSelect">Output Format</label>
-                        <select id="formatSelect" disabled>
-                            <option value="image/jpeg">JPG</option>
-                            <option value="image/png">PNG</option>
-                            <option value="image/webp">WebP</option>
-                        </select>
-                    </div>
-                    <div class="input-group quality-group" id="qualityGroup">
-                        <label for="qualitySlider">Quality: <span id="qualityValue">90</span>%</label>
-                        <input type="range" id="qualitySlider" min="10" max="100" value="90" disabled>
-                    </div>
-                </div>
-                <div class="settings-note" id="settingsNote">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="11" x2="12" y2="17"></line>
-                        <line x1="12" y1="7" x2="12.01" y2="7"></line>
-                    </svg>
-                    <span>Upload an image to enable resize settings.</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Step 3: Preview -->
-        <section class="card preview-card" aria-label="Preview">
-            <div class="step-badge">Step 3</div>
-            <h2 class="card-title">Preview</h2>
-            <div class="preview-grid" id="previewGrid">
-                <div class="preview-panel">
-                    <h3 class="preview-label">Original</h3>
-                    <div class="preview-image-container" id="originalPreviewContainer">
-                        <div class="preview-placeholder" id="originalPlaceholder">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
-                            <span>No image uploaded</span>
-                        </div>
-                        <img id="originalPreviewImg" class="preview-img" alt="Original image preview" hidden>
-                    </div>
-                    <div class="preview-stats" id="originalPreviewStats">—</div>
-                </div>
-                <div class="preview-panel">
-                    <h3 class="preview-label">Resized</h3>
-                    <div class="preview-image-container" id="resizedPreviewContainer">
-                        <div class="preview-placeholder" id="resizedPlaceholder">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="2" y1="10" x2="22" y2="10"></line>
-                                <line x1="10" y1="2" x2="10" y2="22"></line>
-                            </svg>
-                            <span>Resized preview will appear here</span>
-                        </div>
-                        <img id="resizedPreviewImg" class="preview-img" alt="Resized image preview" hidden>
-                    </div>
-                    <div class="preview-stats" id="resizedPreviewStats">—</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Step 4: Actions -->
-        <section class="card actions-card" aria-label="Actions">
-            <div class="actions-row">
-                <button id="downloadBtn" class="btn btn-primary" type="button" disabled>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Download Resized Image
-                </button>
-                <button id="resetBtn" class="btn btn-outline" type="button">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <polyline points="1 4 1 10 7 10"></polyline>
-                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-                    </svg>
-                    Reset
-                </button>
-            </div>
-            <p class="privacy-inline" aria-label="Privacy notice">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </div>
+          <div class="preview-panel">
+            <div class="preview-top"><h3 class="preview-label">Resized</h3><span class="preview-stats" id="resizedPreviewStats">—</span></div>
+            <div class="preview-image-container" id="resizedPreviewContainer">
+              <div class="preview-placeholder" id="resizedPlaceholder">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="2" y1="10" x2="22" y2="10"></line>
+                  <line x1="10" y1="2" x2="10" y2="22"></line>
                 </svg>
-                Your image is processed locally in your browser. Nothing is uploaded to a server.
-            </p>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>All processing happens locally in your browser. Your images never leave your device.</p>
-            <p class="footer-meta">&copy; <span id="currentYear"></span> Alok Systems Tools. Built for privacy and performance.</p>
+                <span>Resized preview will appear here</span>
+              </div>
+              <img id="resizedPreviewImg" class="preview-img" alt="Resized image preview" hidden>
+            </div>
+          </div>
         </div>
-    </footer>
+        <div class="export-actions">
+          <button id="downloadBtn" class="btn btn-primary" type="button" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download image
+          </button>
+          <button id="resetBtn" class="btn btn-outline" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            Reset
+          </button>
+        </div>
+        <p class="export-note">Nothing is uploaded — the resized file is created locally.</p>
+      </section>
+    </section>
 
-    <script src="script.js"></script>
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to resize an image</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Upload your image</h3><p>Drag and drop a JPG, PNG, or WebP file, or browse from your device.</p></div></li>
+        <li><span>02</span><div><h3>Set exact dimensions</h3><p>Type a width and height, lock the aspect ratio, or pick a preset size.</p></div></li>
+        <li><span>03</span><div><h3>Download the result</h3><p>Compare the preview, choose a format and quality, then save the resized copy.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Are my images uploaded anywhere?</summary><p>No. Resizing happens in your browser using the canvas element. Your image never leaves this device and no copy is stored on a server.</p></details>
+      <details><summary>Which formats are supported?</summary><p>You can upload JPG, PNG, and WebP images. The resized file can be saved as JPG, PNG, or WebP.</p></details>
+      <details><summary>How does lock aspect ratio work?</summary><p>When enabled, changing the width automatically updates the height to keep the original proportions, and the other way around. Turn it off to set both values independently.</p></details>
+      <details><summary>Is there a size limit?</summary><p>Each side can be up to 8,000 pixels and the output is limited to 50 megapixels so the browser stays responsive.</p></details>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>

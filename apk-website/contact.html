@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <base href="/apk-website/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="description" content="Contact Alok Systems." />
@@ -11,20 +10,23 @@
       content="Contact Alok Systems about its Android applications and public releases."
     />
     <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0d1118" />
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
-    <link rel="canonical" href="https://aloksystems.freedev.app/contact.html" />
-    <meta property="og:url" content="https://aloksystems.freedev.app/contact.html" />
-    <link rel="stylesheet" href="assets/css/site.css" />
+    <link rel="canonical" href="https://aloksystems.freedev.app/apk-website/contact.html" />
+    <meta property="og:url" content="https://aloksystems.freedev.app/apk-website/contact.html" />
+    <script>try{var t=localStorage.getItem('alok-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');</script>
+    <link rel="stylesheet" href="assets/css/site.css?v=20261030" />
     <title>Contact — Alok Systems</title>
-    <script defer src="assets/js/site.js"></script>
+    <script defer src="assets/js/site.js?v=20261030"></script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <header class="topbar">
       <div class="wrap navrow">
         <a class="brand" href="index.html"
           ><span class="brand-mark">A.</span><span>Alok Systems</span></a
         >
-        <nav class="navlinks">
+        <nav class="navlinks" aria-label="Main navigation">
           <a href="index.html">Home</a><a href="apps.html">Apps</a
           ><a href="about.html">About</a
           ><a href="contact.html" aria-current="page">Contact</a>
@@ -51,24 +53,24 @@
           </button>
         </div>
       </div>
-      <nav class="mobile-panel" data-mobile-panel>
+      <nav class="mobile-panel" data-mobile-panel aria-label="Mobile navigation">
         <a href="index.html">Home</a><a href="apps.html">Apps</a
-        ><a href="about.html">About</a><a href="contact.html">Contact</a
-        ><a href="https://github.com/aloksystems">GitHub ↗</a>
+        ><a href="about.html">About</a><a href="contact.html" aria-current="page">Contact</a
+        ><a href="https://github.com/aloksystems" rel="noopener">GitHub ↗</a>
       </nav>
     </header>
-    <main class="wrap">
+    <main id="main" class="wrap" tabindex="-1">
       <section class="page-intro" data-reveal>
         <span class="eyebrow">Get in touch</span>
         <h1>We’d like to hear from you.</h1>
         <p>
-          For questions about an app or its releases, reach out through the Alok
-          Systems GitHub profile.
+          Have a question about an app, a release, or something that is not
+          working as expected? Email the Alok Systems team directly.
         </p>
       </section>
       <section class="content-section" data-reveal>
         <p>
-          For questions about an app or its releases, email the team at
+          We read every message and usually reply within a few days. Write to
           <a
             class="text-link"
             href="https://mail.google.com/mail/?view=cm&fs=1&to=helloalokmail@gmail.com"
@@ -95,19 +97,21 @@
         </p>
       </section>
 
-      <section class="page-intro" data-reveal style="margin-top: 56px">
-        <span class="eyebrow">Send feedback</span>
-        <h2>Report an issue or share a suggestion.</h2>
+      <section class="section-head feedback-heading" data-reveal>
+        <div>
+          <span class="eyebrow">Send feedback</span>
+          <h2>Report an issue or request an app.</h2>
+        </div>
         <p>
-          Found a bug, missing a tool, or just want to tell us what you think?
-          Send it straight to our inbox.
+          Found a bug, missing an app, or have a suggestion? Send it straight to
+          our inbox — every field below is required.
         </p>
       </section>
 
       <section class="content-section feedback-section" data-reveal>
         <form class="feedback-form" data-feedback-form novalidate>
           <div class="feedback-field">
-            <label for="feedback-name">Your Name</label>
+            <label for="feedback-name">Your Name <span class="req" aria-hidden="true">*</span></label>
             <input
               id="feedback-name"
               name="name"
@@ -115,12 +119,13 @@
               autocomplete="name"
               placeholder="e.g. Alex"
               maxlength="120"
+              required
             />
           </div>
 
           <div class="feedback-field">
-            <label for="feedback-rating">Your Rating</label>
-            <select id="feedback-rating" name="rating">
+            <label for="feedback-rating">Your Rating <span class="req" aria-hidden="true">*</span></label>
+            <select id="feedback-rating" name="rating" required>
               <option value="">Rate 1–5</option>
               <option value="1 — Very poor">1 — Very poor</option>
               <option value="2 — Poor">2 — Poor</option>
@@ -131,21 +136,22 @@
           </div>
 
           <div class="feedback-field">
-            <label for="feedback-topic">What is this about?</label>
-            <select id="feedback-topic" name="topic">
+            <label for="feedback-topic">What is this about? <span class="req" aria-hidden="true">*</span></label>
+            <select id="feedback-topic" name="topic" required>
               <option value="General Feedback">General Feedback</option>
-              <option value="Didn't Find a Tool">Didn't Find a Tool</option>
+              <option value="Request an App">Request an App</option>
               <option value="Report a Bug">Report a Bug</option>
+              <option value="Suggest a Feature">Suggest a Feature</option>
             </select>
           </div>
 
           <div class="feedback-field">
-            <label for="feedback-message">Your message</label>
+            <label for="feedback-message">Your message <span class="req" aria-hidden="true">*</span></label>
             <textarea
               id="feedback-message"
               name="message"
               rows="6"
-              placeholder="Tell us what you think... or which tool you were looking for..."
+              placeholder="Tell us what you think, which app you were looking for, or what went wrong..."
               required
             ></textarea>
           </div>

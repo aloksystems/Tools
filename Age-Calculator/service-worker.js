@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'age-calculator-v2';
+const CACHE_NAME = 'age-calculator-v4';
 const APP_ROOT = '/Age-Calculator/';
 const ASSETS = [
   APP_ROOT,
@@ -46,13 +46,19 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (request.method !== 'GET' || url.origin !== self.location.origin || !url.pathname.startsWith(APP_ROOT)) return;
 
-  event.respondWith(
-    caches.match(request, { ignoreSearch: true }).then(cached => {
+  event.respondWith((async () => {
+    try {
+      const response = await fetch(request);
+      if (response && response.status === 200) {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(request, response.clone()).catch(() => {});
+      }
+      return response;
+    } catch (error) {
+      const cached = await caches.match(request, { ignoreSearch: true });
       if (cached) return cached;
-      return fetch(request).catch(() => {
-        if (request.mode === 'navigate') return caches.match(`${APP_ROOT}index.html`);
-        return new Response('', { status: 503, statusText: 'Offline' });
-      });
-    })
-  );
+      if (request.mode === 'navigate') return caches.match(`${APP_ROOT}index.html`);
+      return new Response('', { status: 503, statusText: 'Offline' });
+    }
+  })());
 });

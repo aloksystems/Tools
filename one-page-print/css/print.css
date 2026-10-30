@@ -3,39 +3,52 @@
 }
 
 @media print {
-  /* Kill everything from the layout */
+  html,
+  body {
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  /* Hide the app, shared chrome, and everything else from the flow. */
   body > * {
     display: none !important;
   }
 
-  /* Show only the print container */
+  /* Only the generated N-up sheets are printed. */
   #printContainer {
     display: block !important;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
   }
 
   .print-sheet {
+    position: relative;
+    display: block;
+    margin: 0;
+    overflow: hidden;
     page-break-after: always;
     page-break-inside: avoid;
+    break-after: page;
     break-inside: avoid;
-    overflow: hidden;
-    position: relative;
   }
 
   .print-sheet:last-child {
     page-break-after: auto;
+    break-after: auto;
   }
 
   .print-cell {
     position: absolute;
-    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
 
   .print-cell img,
@@ -47,5 +60,10 @@
 
   .print-cell.border-on {
     border: 1px solid #000;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

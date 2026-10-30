@@ -1,5 +1,19 @@
 const root = document.documentElement;
-const siteUrl = path => new URL(String(path).replace(/^\/+/, ''), document.baseURI).href;
+const siteScript = document.currentScript || document.querySelector('script[src*="assets/js/site.js"]');
+const siteRoot = siteScript ? new URL('../../', siteScript.src) : new URL('./', document.baseURI);
+const siteUrl = path => new URL(String(path).replace(/^\/+/, ''), siteRoot).href;
+const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+const themeButton = document.querySelector('[data-theme-toggle]');
+
+function syncThemeUI() {
+  const theme = root.dataset.theme === 'light' ? 'light' : 'dark';
+  if (themeColorMeta) themeColorMeta.setAttribute('content', theme === 'dark' ? '#0d1118' : '#f5f7fc');
+  if (!themeButton) return;
+  const next = theme === 'dark' ? 'light' : 'dark';
+  themeButton.setAttribute('aria-pressed', String(theme === 'dark'));
+  themeButton.setAttribute('aria-label', `Switch to ${next} theme`);
+  themeButton.setAttribute('title', `Switch to ${next} theme`);
+}
 function readTheme() {
   try { return localStorage.getItem('alok-theme'); } catch { return null; }
 }
@@ -37,14 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.querySelector('[data-catalogue]')) renderCards('[data-catalogue]', {catalogue:true});
   const detail = document.querySelector('[data-app-detail]');
   if (detail) renderCards('[data-app-detail]', {detail:detail.dataset.slug});
-  const themeButton = document.querySelector('[data-theme-toggle]');
-  themeButton?.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
+  syncThemeUI();
   themeButton?.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     root.dataset.theme = next;
     saveTheme(next);
-    themeButton.setAttribute('aria-label', `Switch to ${next === 'dark' ? 'light' : 'dark'} theme`);
-    themeButton.setAttribute('aria-pressed', String(next === 'dark'));
+    syncThemeUI();
   });
   const menu = document.querySelector('[data-menu-toggle]');
   const panel = document.querySelector('[data-mobile-panel]');
@@ -71,30 +83,45 @@ document.addEventListener('DOMContentLoaded', () => {
   observeReveal();
 });
 
+let cataloguePromise = null;
+function loadCatalogue() {
+  if (Array.isArray(window.ALOK_APPS)) return Promise.resolve(window.ALOK_APPS);
+  if (!cataloguePromise) {
+    cataloguePromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = siteUrl('data/apps.js');
+      script.onload = () => Array.isArray(window.ALOK_APPS) ? resolve(window.ALOK_APPS) : reject(new Error('Catalogue missing'));
+      script.onerror = () => reject(new Error('Catalogue unavailable'));
+      document.head.appendChild(script);
+    });
+  }
+  return cataloguePromise;
+}
 async function getApps() {
-  const response = await fetch(siteUrl('data/apps.json'));
-  if (!response.ok) throw new Error('Catalogue unavailable');
-  const data = await response.json();
-  if (!Array.isArray(data)) throw new Error('Catalogue must be a JSON array');
-  return data.filter(app => app && typeof app.name === 'string' && typeof app.slug === 'string' && /^[a-z0-9-]+$/.test(app.slug)).map(app => ({
-    ...app,
-    category: typeof app.category === 'string' ? app.category : 'Details pending',
-    shortDescription: typeof app.shortDescription === 'string' ? app.shortDescription : 'App details are being prepared.',
-    description: typeof app.description === 'string' ? app.description : 'More information will be published when verified details are available.',
-    icon: siteUrl(typeof app.icon === 'string' && app.icon ? app.icon : 'assets/icons/favicon.svg'),
-    iconIsPlaceholder: Boolean(app.iconIsPlaceholder),
-    screenshots: Array.isArray(app.screenshots) ? app.screenshots.filter(s => s && typeof s.src === 'string' && s.src) : [],
-    features: Array.isArray(app.features) ? app.features.filter(x => typeof x === 'string') : [],
-    changelog: Array.isArray(app.changelog) ? app.changelog.filter(x => typeof x === 'string') : [],
-    permissions: Array.isArray(app.permissions) ? app.permissions.filter(x => typeof x === 'string') : [],
-    featured: Boolean(app.featured),
-    downloadUrl: typeof app.downloadUrl === 'string' ? siteUrl(app.downloadUrl) : null
-  }));
+  const data = await loadCatalogue();
+  if (!Array.isArray(data)) throw new Error('Catalogue must be a list');
+  return data.filter(app => app && typeof app.name === 'string' && typeof app.slug === 'string' && /^[a-z0-9-]+$/.test(app.slug)).map(app => {
+    const rawDownload = typeof app.downloadUrl === 'string' ? app.downloadUrl : '';
+    return {
+      ...app,
+      category: typeof app.category === 'string' ? app.category : 'Details pending',
+      shortDescription: typeof app.shortDescription === 'string' ? app.shortDescription : 'App details are being prepared.',
+      description: typeof app.description === 'string' ? app.description : 'More information will be published when verified details are available.',
+      icon: siteUrl(typeof app.icon === 'string' && app.icon ? app.icon : 'assets/icons/favicon.svg'),
+      iconIsPlaceholder: Boolean(app.iconIsPlaceholder),
+      screenshots: Array.isArray(app.screenshots) ? app.screenshots.filter(s => s && typeof s.src === 'string' && s.src) : [],
+      features: Array.isArray(app.features) ? app.features.filter(x => typeof x === 'string') : [],
+      changelog: Array.isArray(app.changelog) ? app.changelog.filter(x => typeof x === 'string') : [],
+      permissions: Array.isArray(app.permissions) ? app.permissions.filter(x => typeof x === 'string') : [],
+      featured: Boolean(app.featured),
+      downloadUrl: isUsableDownloadUrl(rawDownload) ? siteUrl(rawDownload) : null
+    };
+  });
 }
 function isUsableDownloadUrl(value) {
   if (typeof value !== 'string' || !value) return false;
-  // Relative path on the same site (e.g. /downloads/app.apk) — works on any host.
-  if (value.startsWith('/')) return value.toLowerCase().endsWith('.apk');
+  // Same-site paths such as downloads/app.apk work over http for local preview as well as production.
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(value)) return value.split('?')[0].toLowerCase().endsWith('.apk');
   try {
     const url = new URL(value);
     return url.protocol === 'https:' && Boolean(url.hostname) && !url.username && !url.password && url.pathname.toLowerCase().endsWith('.apk');
@@ -110,10 +137,10 @@ function bindImageFallback(host) {
 }
 function card(app) {
   const featureTags = (app.features || []).slice(0, 3).map(x => `<span class="tag">${escapeHtml(x)}</span>`).join('');
-  const validDownload = app.status === 'available' && isUsableDownloadUrl(app.downloadUrl);
-  const download = validDownload ? `<a class="button button-primary" href="${siteUrl(`apps/${encodeURIComponent(app.slug)}.html`)}">Download<span class="sr-only"> ${escapeHtml(app.name)}</span></a>` : `<span class="status">Download unavailable</span>`;
+  const available = app.status === 'available' && Boolean(app.downloadUrl);
+  const href = siteUrl(`apps/${encodeURIComponent(app.slug)}.html`);
   const iconAlt = app.iconIsPlaceholder ? `${app.name} placeholder mark` : `${app.name} app icon`;
-  return `<article class="app-card"><div class="card-top"><img class="app-icon" src="${escapeAttr(app.icon)}" alt="${escapeAttr(iconAlt)}" loading="lazy"><span class="badge">${escapeHtml(app.category)}</span></div><h3>${escapeHtml(app.name)}</h3><p>${escapeHtml(app.shortDescription)}</p>${featureTags ? `<div class="tag-row">${featureTags}</div>` : ''}<div class="card-bottom"><a class="text-link" href="${siteUrl(`apps/${encodeURIComponent(app.slug)}.html`)}">View details<span class="sr-only"> ${escapeHtml(app.name)}</span> →</a>${download}</div></article>`;
+  return `<article class="app-card"><div class="card-top"><img class="app-icon" src="${escapeAttr(app.icon)}" alt="${escapeAttr(iconAlt)}" loading="lazy"><span class="badge">${escapeHtml(app.category)}</span></div><h3>${escapeHtml(app.name)}</h3><p>${escapeHtml(app.shortDescription)}</p>${featureTags ? `<div class="tag-row">${featureTags}</div>` : ''}<div class="card-bottom"><span class="status">${available ? 'APK available' : 'Download unavailable'}</span><a class="button button-primary" href="${href}">View app<span class="sr-only"> ${escapeHtml(app.name)}</span> →</a></div></article>`;
 }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function escapeAttr(value) { return escapeHtml(value); }
@@ -132,9 +159,15 @@ async function renderCards(target, opts = {}) {
       const features = app.features.length ? `<ul>${app.features.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>` : '<div class="screenshot-empty">Verified feature information will appear here when available.</div>';
       const shots = app.screenshots?.length ? `<div class="app-grid">${app.screenshots.map(s => `<img src="${escapeAttr(s.src)}" alt="${escapeAttr(s.alt || app.name + ' screenshot')}" loading="lazy">`).join('')}</div>` : '<div class="screenshot-empty">Screenshots will be added when authentic app captures are available.</div>';
       const changes = app.changelog.length ? `<ul>${app.changelog.map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>` : '<p>No release notes have been published yet.</p>';
-      const available = app.status === 'available' && isUsableDownloadUrl(app.downloadUrl);
+      const available = app.status === 'available' && Boolean(app.downloadUrl);
+      const filePreview = location.protocol === 'file:';
+      const downloadControl = !available
+        ? '<span class="button button-quiet" aria-disabled="true">Coming soon</span>'
+        : filePreview
+          ? `<a class="button button-primary" href="${escapeAttr(app.downloadUrl)}" download>Download APK ↓</a>`
+          : `<button type="button" class="button button-primary" data-download="${escapeAttr(app.downloadUrl)}">Download APK ↓</button><div class="download-progress" hidden><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-label" role="status"></div></div>`;
       const iconAlt = app.iconIsPlaceholder ? `${app.name} placeholder mark` : `${app.name} app icon`;
-      host.innerHTML = `<div class="detail-page" data-reveal><div class="detail-hero"><img class="detail-icon" src="${escapeAttr(app.icon)}" alt="${escapeAttr(iconAlt)}"><div><span class="eyebrow">${escapeHtml(app.category || 'Android app')}</span><h1>${escapeHtml(app.name)}</h1><p>${escapeHtml(app.description)}</p><div class="meta-row"><span class="meta-pill">${app.version ? 'Version ' + escapeHtml(app.version) : 'Release details pending'}</span><span class="meta-pill">${app.status === 'available' && available ? 'Available' : 'Coming soon'}</span></div></div></div><div class="detail-layout"><div class="detail-main"><h2>About</h2><p>${escapeHtml(app.description)}</p><h2>Screenshots</h2>${shots}<h2>Features</h2>${features}<h2>Release notes</h2>${changes}<h2>Privacy & permissions</h2><p>${app.permissions.length ? 'Permissions: ' + app.permissions.map(escapeHtml).join(', ') : 'Privacy and permission details have not been published yet.'}</p></div><aside class="download-panel"><h3>${available ? 'Get ' + escapeHtml(app.name) : 'Download unavailable'}</h3><p>${available ? 'Download the Android APK from the configured public source.' : 'A public APK has not been configured for this app yet.'}</p>${available ? `<button type="button" class="button button-primary" data-download="${escapeAttr(app.downloadUrl)}">Download APK ↓</button><div class="download-progress" hidden><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-label" role="status"></div></div>` : '<span class="button button-quiet" aria-disabled="true">Coming soon</span>'}<div class="data-list">${[['Version',app.version],['Released',app.releaseDate],['File size',app.fileSize],['Minimum Android',app.androidMinVersion],['Package name',app.packageName],['SHA-256',app.sha256]].map(([k,v]) => `<div class="data-row"><span>${k}</span><span>${v ? escapeHtml(v) : 'Not provided'}</span></div>`).join('')}</div></aside></div></div>`;
+      host.innerHTML = `<div class="detail-page" data-reveal><a class="detail-back" href="${siteUrl('apps.html')}">← All apps</a><div class="detail-hero"><img class="detail-icon" src="${escapeAttr(app.icon)}" alt="${escapeAttr(iconAlt)}"><div><span class="eyebrow">${escapeHtml(app.category || 'Android app')}</span><h1>${escapeHtml(app.name)}</h1><p>${escapeHtml(app.shortDescription)}</p><div class="meta-row"><span class="meta-pill">${app.version ? 'Version ' + escapeHtml(app.version) : 'Release details pending'}</span><span class="meta-pill">${app.status === 'available' && available ? 'Available' : 'Coming soon'}</span></div></div></div><div class="detail-layout"><div class="detail-main"><h2>About</h2><p>${escapeHtml(app.description)}</p><h2>Screenshots</h2>${shots}<h2>Features</h2>${features}<h2>Release notes</h2>${changes}<h2>Privacy &amp; permissions</h2><p>${app.permissions.length ? 'Permissions: ' + app.permissions.map(escapeHtml).join(', ') : 'Privacy and permission details have not been published yet.'}</p></div><aside class="download-panel"><h3>${available ? 'Get ' + escapeHtml(app.name) : 'Download unavailable'}</h3><p>${available ? 'Download the signed Android APK directly from this site.' : 'A public APK has not been configured for this app yet.'}</p>${downloadControl}<div class="data-list">${[['Version',app.version],['Released',app.releaseDate],['File size',app.fileSize],['Minimum Android',app.androidMinVersion],['Package name',app.packageName],['SHA-256',app.sha256]].map(([k,v]) => `<div class="data-row"><span>${k}</span><span>${v ? escapeHtml(v) : 'Not provided'}</span></div>`).join('')}</div></aside></div></div>`;
       bindImageFallback(host);
       observeReveal();
       host.setAttribute('aria-busy', 'false');
@@ -153,7 +186,7 @@ async function renderCards(target, opts = {}) {
         if (sort.value === 'featured') list.sort((a,b)=>Number(Boolean(b.featured))-Number(Boolean(a.featured)) || a.name.localeCompare(b.name));
         else if (sort.value === 'az') list.sort((a,b)=>a.name.localeCompare(b.name));
         else if (sort.value === 'za') list.sort((a,b)=>b.name.localeCompare(a.name));
-        else if (sort.value === 'available') list.sort((a,b)=>Number(Boolean(b.status === 'available' && isUsableDownloadUrl(b.downloadUrl)))-Number(Boolean(a.status === 'available' && isUsableDownloadUrl(a.downloadUrl))) || a.name.localeCompare(b.name));
+        else if (sort.value === 'available') list.sort((a,b)=>Number(Boolean(b.status === 'available' && b.downloadUrl))-Number(Boolean(a.status === 'available' && a.downloadUrl)) || a.name.localeCompare(b.name));
         host.innerHTML = list.length ? list.map(card).join('') : '<div class="empty-state">No apps match that search. Try another name or filter.</div>';
         bindImageFallback(host);
         document.querySelector('[data-result-count]').textContent = `${list.length} ${list.length === 1 ? 'app' : 'apps'}`;
@@ -165,18 +198,25 @@ async function renderCards(target, opts = {}) {
     host.innerHTML = shown.length ? shown.map(card).join('') : '<div class="empty-state">App information will appear here when it is ready.</div>';
     bindImageFallback(host);
     host.setAttribute('aria-busy', 'false');
-  } catch { host.innerHTML = '<div class="empty-state">App information could not be loaded. Please refresh the page.</div>'; host.setAttribute('aria-busy', 'false'); }
+  } catch {
+    host.innerHTML = '<div class="empty-state">App information could not be loaded. Please refresh the page.</div>';
+    host.setAttribute('aria-busy', 'false');
+  }
 }
 
 async function startDownload(url, panel) {
   const track = panel.querySelector('.progress-fill');
   const label = panel.querySelector('.progress-label');
+  const button = panel.querySelector('[data-download]');
   panel.hidden = false;
   label.textContent = 'Connecting…';
+  label.classList.remove('download-failed');
   if (track) track.style.width = '0%';
+  if (button) { button.disabled = true; button.setAttribute('aria-busy', 'true'); }
   try {
     const response = await fetch(url);
     if (!response.ok) throw new Error('HTTP ' + response.status);
+    if (!response.body) throw new Error('Streaming not supported');
     const total = Number(response.headers.get('content-length')) || 0;
     const reader = response.body.getReader();
     const chunks = [];
@@ -204,6 +244,8 @@ async function startDownload(url, panel) {
     label.textContent = 'Download failed — check connection and try again.';
     label.classList.add('download-failed');
     if (track) track.style.width = '0%';
+  } finally {
+    if (button) { button.disabled = false; button.removeAttribute('aria-busy'); }
   }
 }
 

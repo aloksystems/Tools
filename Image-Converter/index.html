@@ -1,202 +1,245 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Format Converter</title>
-  <meta name="description" content="Fast and simple image format converter - convert images between PNG, JPG, WebP, AVIF, BMP, and HEIC formats">
-  <!-- Google Fonts for better typography -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <!-- External Libraries -->
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Image-Converter/">
-    <meta property="og:title" content="Image Format Converter">
-    <meta property="og:description" content="Fast and simple image format converter - convert images between PNG, JPG, WebP, AVIF, BMP, and HEIC formats">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Image-Converter/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Image Format Converter">
-    <meta name="twitter:description" content="Fast and simple image format converter - convert images between PNG, JPG, WebP, AVIF, BMP, and HEIC formats">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Image Format Converter",
-    "description":  "Fast and simple image format converter - convert images between PNG, JPG, WebP, AVIF, BMP, and HEIC formats",
-    "url":  "https://aloksystems.freedev.app/Image-Converter/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3ECV%3C/text%3E%3C/svg%3E">
+  <title>Image Converter | PNG, JPG, WebP &amp; AVIF, Privately</title>
+  <meta name="description" content="Convert images between PNG, JPG, WebP, AVIF, and BMP in your browser. Keep transparency, set quality, and download privately — no uploads.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Image-Converter/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Image Converter - Alok Systems Tools">
+  <meta property="og:description" content="Convert PNG, JPG, WebP, AVIF, BMP, and HEIC images locally. Control quality, keep transparency, and download in batches.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Image-Converter/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Image Converter - Alok Systems Tools">
+  <meta name="twitter:description" content="Convert PNG, JPG, WebP, AVIF, BMP, and HEIC images locally in your browser.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Image Converter",
+    "description":"Convert PNG, JPG, WebP, AVIF, BMP, and HEIC images locally in your browser with quality and background controls.",
+    "url":"https://aloksystems.freedev.app/Image-Converter/",
+    "applicationCategory":"UtilityApplication",
+    "operatingSystem":"Any",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Are my images uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Conversion happens on your device with JavaScript and the canvas element. Files are never sent to a server."}},
+      {"@type":"Question","name":"Which formats are supported?","acceptedAnswer":{"@type":"Answer","text":"You can add PNG, JPG, WebP, AVIF, BMP, GIF, TIFF, and HEIC files that the browser can open. Output is available as PNG, JPG, WebP, BMP, and AVIF where the browser supports encoding."}},
+      {"@type":"Question","name":"What happens to transparency when converting to JPG?","acceptedAnswer":{"@type":"Answer","text":"JPG has no transparency, so transparent pixels are filled with the background colour you choose. White is used by default. Keep PNG, WebP, or AVIF to preserve transparency."}},
+      {"@type":"Question","name":"Can I convert several images at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Add multiple images, convert them together, and download each result or all of them in a ZIP file."}}
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
-
-<body data-theme="light">
-  <header class="site-header">
-    <div class="site-header-inner">
-      <a class="site-brand" href="/" aria-label="Alok Systems Tools home">
-        <span class="site-brand-mark">A</span>
-        <span><strong>Alok Systems</strong><small>Tools</small></span>
-      </a>
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="/">Home</a>
-        <a href="/#tools">Tools</a>
-        <a href="/#about">About</a>
-      </nav>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line></svg>
-        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-      </button>
-    </div>
-  </header>
-
-  <div class="container">
-    <section class="header tool-intro">
-      <h1 class="title">Image Format Converter</h1>
-      <p class="subtitle">Convert JPG, PNG, WebP, AVIF, BMP, GIF, TIFF, and HEIC images privately in your browser.</p>
-    </section>
-
-    <!-- Drag & Drop Area -->
-    <div id="drop-area" class="drop-area" role="button" tabindex="0" aria-label="Upload images">
-      <div class="upload-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="17 8 12 3 7 8"></polyline>
-          <line x1="12" y1="3" x2="12" y2="15"></line>
-        </svg>
-      </div>
-      <p>
-        Drag & Drop Images Here or <span class="upload-text">Click to Upload</span>
-      </p>
-      <p class="supported-formats">Supports: JPG, PNG, WebP, AVIF, GIF, BMP, TIFF, HEIC</p>
-      <input type="file" id="file-input" multiple accept="image/*,.heic,.heif" aria-label="File input" />
-      <span id="file-count-badge" class="file-count-badge" hidden>0</span>
-    </div>
-
-    <!-- Uploaded Files List -->
-    <div id="files-list" class="files-list" role="list"></div>
-    <div id="empty-state" class="empty-state">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
-      </svg>
-      <p>No images uploaded yet</p>
-      <span>Drop your images here to get started</span>
-    </div>
-
-    <!-- Conversion Settings -->
-    <div class="settings-container">
-      <div class="settings-row">
-        <div class="setting-group">
-          <label for="format-select">Output Format:</label>
-          <select id="format-select" class="format-select" aria-label="Select output format">
-            <option value="png">PNG (Lossless)</option>
-            <option value="jpg">JPG/JPEG</option>
-            <option value="webp">WebP</option>
-            <option value="avif">AVIF</option>
-            <option value="bmp">BMP (Lossless)</option>
-          </select>
-        </div>
-
-        <div class="setting-group" id="quality-group">
-          <label for="quality-slider">Quality: <span id="quality-value" class="value-display">85</span>%</label>
-          <input type="range" id="quality-slider" min="1" max="100" value="85" class="quality-slider"
-            aria-label="Quality slider">
-          <small class="hint">Higher quality = larger file size</small>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="action-buttons">
-        <button id="convert-btn" class="convert-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-          Convert Images
-        </button>
-        <button id="clear-btn" class="clear-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-          </svg>
-          Clear All
-        </button>
-      </div>
-    </div>
-
-    <!-- Progress Bar -->
-    <div class="progress-container" id="progress-container">
-      <div class="progress-info">
-        <span id="progress-text">Processing...</span>
-        <span id="progress-percentage">0%</span>
-      </div>
-      <div class="progress-bar-container">
-        <div id="progress-bar" class="progress-bar"></div>
-      </div>
-    </div>
-
-    <!-- Conversion Results -->
-    <div id="conversion-results" class="conversion-results">
-      <div class="results-header">
-        <h2>Converted Images</h2>
-        <div class="results-stats">
-          <span id="total-files">0 files</span>
-          <span id="total-saved">0 KB saved</span>
-        </div>
-      </div>
-
-      <button id="download-all-btn" class="download-all-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        Download All as ZIP
-      </button>
-    </div>
-
-    <!-- Image Previews & Individual Downloads -->
-    <div id="preview-container" class="preview-container" role="list"></div>
-
-    <section class="tool-details" aria-labelledby="converter-details-title">
-      <div class="details-heading">
-        <span class="section-kicker">Flexible image conversion</span>
-        <h2 id="converter-details-title">Change formats without uploading your images</h2>
-        <p>Choose an output format and quality, then convert and download your images directly on your device.</p>
-      </div>
-      <div class="details-grid">
-        <article><span class="detail-number">01</span><h3>Add images</h3><p>Drop one or more supported image files into the upload area or browse from your device.</p></article>
-        <article><span class="detail-number">02</span><h3>Choose output</h3><p>Select the format and quality that match your use case before starting conversion.</p></article>
-        <article><span class="detail-number">03</span><h3>Download files</h3><p>Review the converted previews and download individual files or a ZIP archive.</p></article>
+<body>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">ONE IMAGE, ANY FORMAT</p>
+      <h1 id="page-title">Image Converter</h1>
+      <p>Convert PNG, JPG, WebP, AVIF, and BMP in seconds, with full control over quality.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        Your images are converted on this device and never uploaded.
       </div>
     </section>
 
-    <section class="faq-section" aria-labelledby="converter-faq-title">
-      <h2 id="converter-faq-title">Frequently Asked Questions</h2>
-      <div class="faq-grid">
-        <article><strong>Are my images uploaded?</strong><p>No. Image conversion runs locally in your browser and your files stay on your device.</p></article>
-        <article><strong>Which formats are supported?</strong><p>JPG, PNG, WebP, AVIF, BMP, GIF, TIFF, HEIC, and HEIF files are supported where the browser allows it.</p></article>
-        <article><strong>Can I convert multiple images?</strong><p>Yes. Add multiple images, convert them together, and download all results as a ZIP file.</p></article>
+    <p id="statusMessage" class="status-banner" role="status" aria-live="polite" hidden></p>
+
+    <section class="workspace" aria-label="Image converter">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="upload-title">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div><h2 id="upload-title">Add images</h2><p>JPG, PNG, WebP, AVIF, BMP, GIF, TIFF, HEIC, or HEIF.</p></div>
+            <span id="file-count-badge" class="count-badge" hidden>0</span>
+          </div>
+          <div class="upload-area" id="drop-area" role="button" tabindex="0" aria-label="Add images. Click, drag and drop, or paste from the clipboard.">
+            <input type="file" id="file-input" accept="image/*,.heic,.heif" multiple hidden>
+            <svg class="upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <p class="upload-main-text">Drag &amp; drop your images here</p>
+            <p class="upload-divider">— or —</p>
+            <button id="chooseBtn" class="btn btn-secondary" type="button">Choose images</button>
+            <p class="upload-hint">Batch upload supported · or press <kbd>Ctrl</kbd> + <kbd>V</kbd> to paste</p>
+          </div>
+          <p id="empty-state" class="empty-state">No images added yet. Drop files above or choose them from your device.</p>
+          <ul id="files-list" class="file-list" role="list" aria-label="Images to convert"></ul>
+        </section>
+
+        <section class="panel" aria-labelledby="settings-title">
+          <div class="panel-heading">
+            <span class="step-number">02</span>
+            <div><h2 id="settings-title">Conversion settings</h2><p>Pick an output format and fine-tune the result.</p></div>
+          </div>
+
+          <fieldset class="format-fieldset">
+            <legend class="field-label">Output format</legend>
+            <div class="format-cards" id="format-options">
+              <label class="format-card">
+                <input type="radio" name="output-format" value="png" checked>
+                <span class="format-card-body"><span class="format-title">PNG</span><span class="format-desc">Lossless, keeps transparency</span></span>
+              </label>
+              <label class="format-card">
+                <input type="radio" name="output-format" value="jpg">
+                <span class="format-card-body"><span class="format-title">JPG</span><span class="format-desc">Best for photos, smallest</span></span>
+              </label>
+              <label class="format-card">
+                <input type="radio" name="output-format" value="webp">
+                <span class="format-card-body"><span class="format-title">WebP</span><span class="format-desc">Modern, small and sharp</span></span>
+              </label>
+              <label class="format-card">
+                <input type="radio" name="output-format" value="avif">
+                <span class="format-card-body"><span class="format-title">AVIF</span><span class="format-desc">High compression, modern</span></span>
+              </label>
+              <label class="format-card">
+                <input type="radio" name="output-format" value="bmp">
+                <span class="format-card-body"><span class="format-title">BMP</span><span class="format-desc">Uncompressed 24-bit bitmap</span></span>
+              </label>
+            </div>
+            <p id="format-support-note" class="field-help format-support-note" hidden></p>
+          </fieldset>
+
+          <div class="settings-row">
+            <div id="quality-group" class="quality-field">
+              <div class="quality-head">
+                <label class="field-label" for="quality-slider">Quality</label>
+                <output id="quality-value" class="quality-value" for="quality-slider">85%</output>
+              </div>
+              <input type="range" id="quality-slider" min="1" max="100" value="85">
+              <div class="range-labels"><span>Smaller file</span><span>Better detail</span></div>
+              <p id="quality-help" class="field-help">Affects JPG, WebP, and AVIF output.</p>
+            </div>
+          </div>
+
+          <div id="backgroundOptions" class="background-options" hidden>
+            <p id="transparency-note" class="notice">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              <span id="transparency-text">JPG has no transparency. Transparent pixels will be filled with the background colour.</span>
+            </p>
+            <div class="background-row">
+              <label for="bg-color">Background colour</label>
+              <input type="color" id="bg-color" value="#ffffff">
+              <button id="bg-reset" class="btn btn-outline btn-small" type="button">Use white</button>
+            </div>
+          </div>
+
+          <div class="export-actions">
+            <button id="convert-btn" class="btn btn-primary" type="button" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Convert images
+            </button>
+            <button id="clear-btn" class="btn btn-outline" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear all
+            </button>
+          </div>
+        </section>
       </div>
+
+      <aside class="summary-panel" aria-labelledby="result-title">
+        <div class="summary-heading">
+          <p class="eyebrow">CONVERTED FILES</p>
+          <h2 id="result-title">Your downloads</h2>
+          <p class="summary-period" id="summary-note">Add images, choose a format, and convert to see the result.</p>
+        </div>
+
+        <div class="preview-stage">
+          <img id="result-preview" class="preview-image" alt="Converted image preview" hidden>
+          <div id="result-placeholder" class="preview-placeholder">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Converted preview will appear here</span>
+          </div>
+          <span id="result-badge" class="preview-badge" hidden></span>
+        </div>
+
+        <div id="progress-container" class="progress-wrap" role="progressbar" aria-label="Conversion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+          <div class="progress-head"><span id="progress-text">Converting…</span><span id="progress-percentage">0%</span></div>
+          <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+        </div>
+
+        <div id="conversion-results" hidden>
+          <div class="size-compare" aria-label="Selected file size comparison">
+            <div class="size-cell"><span class="size-label">Original</span><strong id="original-size">—</strong></div>
+            <svg class="compare-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            <div class="size-cell"><span class="size-label">Converted</span><strong id="converted-size">—</strong></div>
+            <span id="savings-badge" class="savings-badge" hidden>—</span>
+          </div>
+
+          <dl class="meta-grid">
+            <div><dt>Dimensions</dt><dd id="result-dimensions">—</dd></div>
+            <div><dt>Format</dt><dd id="result-format">—</dd></div>
+            <div><dt>File name</dt><dd id="result-name" title="">—</dd></div>
+            <div><dt>Batch</dt><dd><span id="total-files">0 files</span></dd></div>
+          </dl>
+          <p class="batch-summary"><strong id="total-saved">0 KB saved</strong> across all converted images.</p>
+
+          <div class="export-actions">
+            <button id="download-current" class="btn btn-primary" type="button" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download image
+            </button>
+            <button id="download-all-btn" class="btn btn-outline" type="button" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download all (.zip)
+            </button>
+          </div>
+
+          <div id="preview-container" class="result-list" role="list" aria-label="Converted files"></div>
+        </div>
+
+        <p class="export-note">Nothing is uploaded — files are converted on this device.</p>
+      </aside>
     </section>
 
-    <footer class="footer">
-      <p>Alok Systems Tools © 2026 · Image conversion happens locally in your browser.</p>
-    </footer>
-  </div>
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to convert an image</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Add your images</h3><p>Drop files, browse your device, or paste an image from the clipboard.</p></div></li>
+        <li><span>02</span><div><h3>Pick a format</h3><p>Choose PNG, JPG, WebP, AVIF, or BMP, then set quality if needed.</p></div></li>
+        <li><span>03</span><div><h3>Download the result</h3><p>Save the selected file with its correct extension, or grab all as a ZIP.</p></div></li>
+      </ol>
+    </section>
 
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Are my images uploaded?</summary><p>No. Conversion happens on your device with JavaScript and the canvas element. Files are never sent to a server.</p></details>
+      <details><summary>Which formats are supported?</summary><p>You can add PNG, JPG, WebP, AVIF, BMP, GIF, TIFF, and HEIC files that the browser can open. Output is available as PNG, JPG, WebP, BMP, and AVIF where the browser supports encoding.</p></details>
+      <details><summary>What happens to transparency when converting to JPG?</summary><p>JPG has no transparency, so transparent pixels are filled with the background colour you choose. White is used by default. Keep PNG, WebP, or AVIF to preserve transparency.</p></details>
+      <details><summary>Can I convert several images at once?</summary><p>Yes. Add multiple images, convert them together, and download each result or all of them in a ZIP file.</p></details>
+    </section>
+  </main>
+
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js" integrity="sha384-OTofQ0MEeiSgh62havBcemCIK0gqj809wX6UA0uPISNMRnR6NZyCdGzX3SbLrgwL" crossorigin="anonymous"></script>
   <script src="script.js"></script>
 </body>
-
 </html>

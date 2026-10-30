@@ -1,10 +1,12 @@
-// Array of available AI models through OpenRouter.ai
+// Providers, models, and navigation between the picker and the chat screen.
+
 const availableModels = [
     {
         id: 'anthropic/claude-3-haiku',
         name: 'Claude 3 Haiku',
         avatar: 'fa-robot',
-        description: 'Fast and affordable model for tasks like chat, text processing, and reasoning',
+        description: 'Fast, low-cost chat and text processing.',
+        context: '200K context',
         maxTokens: 200000,
         provider: 'openrouter'
     },
@@ -12,7 +14,8 @@ const availableModels = [
         id: 'anthropic/claude-3-sonnet',
         name: 'Claude 3 Sonnet',
         avatar: 'fa-robot',
-        description: 'High-performance model balancing intelligence and speed',
+        description: 'Balanced intelligence and speed for daily work.',
+        context: '200K context',
         maxTokens: 200000,
         provider: 'openrouter'
     },
@@ -20,26 +23,26 @@ const availableModels = [
         id: 'anthropic/claude-3-opus',
         name: 'Claude 3 Opus',
         avatar: 'fa-robot',
-        description: 'Most intelligent Claude model for complex tasks',
+        description: 'Deep reasoning for complex, long-form tasks.',
+        context: '100K context',
         maxTokens: 100000,
-        requiresApiKey: true,
-        contextLimit: 2000,
-        specialHandling: true,
         provider: 'openrouter'
     },
     {
-        id: 'google/gemini-pro',
-        name: 'Gemini Pro',
-        avatar: 'fa-comment-dots',
-        description: 'Google\'s advanced model for diverse text tasks',
-        maxTokens: 30000,
-        provider: 'gemini'
+        id: 'openai/gpt-4o',
+        name: 'GPT-4o',
+        avatar: 'fa-brain',
+        description: 'OpenAI\'s general-purpose multimodal model.',
+        context: '128K context',
+        maxTokens: 128000,
+        provider: 'openrouter'
     },
     {
         id: 'meta-llama/llama-3-70b-instruct',
         name: 'Llama 3 70B',
         avatar: 'fa-comment-alt',
-        description: 'Meta\'s powerful open model for high-quality responses',
+        description: 'Meta\'s open model with strong general answers.',
+        context: '8K context',
         maxTokens: 8000,
         provider: 'openrouter'
     },
@@ -47,7 +50,8 @@ const availableModels = [
         id: 'meta-llama/llama-3-8b-instruct',
         name: 'Llama 3 8B',
         avatar: 'fa-comment-alt',
-        description: 'Compact, efficient version of Llama 3 for everyday tasks',
+        description: 'Compact and efficient for everyday prompts.',
+        context: '8K context',
         maxTokens: 8000,
         provider: 'openrouter'
     },
@@ -55,342 +59,439 @@ const availableModels = [
         id: 'mistralai/mistral-large',
         name: 'Mistral Large',
         avatar: 'fa-wind',
-        description: 'Powerful general-purpose model with strong reasoning capabilities',
+        description: 'Strong reasoning with a general-purpose focus.',
+        context: '32K context',
         maxTokens: 32000,
         provider: 'openrouter'
     },
     {
-        id: 'openai/gpt-4o',
-        name: 'GPT-4o',
-        avatar: 'fa-brain',
-        description: 'OpenAI\'s most advanced model with broad capabilities',
-        maxTokens: 128000,
-        provider: 'openrouter'
+        id: 'google/gemini-pro',
+        name: 'Gemini Pro',
+        avatar: 'fa-comment-dots',
+        description: 'Google Gemini through an AI Studio key.',
+        context: 'Auto-detected model',
+        maxTokens: 30000,
+        provider: 'gemini'
     },
     {
         id: 'deepseek-coder',
-        name: 'DeepSeek Coder',
+        name: 'DeepSeek Chat',
         avatar: 'fa-code',
-        description: 'Specialized model for coding tasks and programming assistance',
+        description: 'Coding-focused model for programming help.',
+        context: 'DeepSeek API',
         maxTokens: 8000,
-        provider: 'deepseek'
+        provider: 'deepseek',
+        apiModel: 'deepseek-chat'
     },
     {
         id: 'huggingface-image',
-        name: 'Image Generation',
+        name: 'Image generation',
         avatar: 'fa-image',
-        description: 'Create images from text descriptions using Hugging Face models',
+        description: 'Create images from a text description.',
+        context: 'Stable Diffusion XL',
         maxTokens: 1000,
         provider: 'huggingface',
-        isImageGenerator: true,
-        defaultProvider: true
+        isImageGenerator: true
     },
     {
         id: 'grok-ai',
-        name: 'Grok AI',
+        name: 'Grok',
         avatar: 'fa-bolt',
-        description: 'Experimental AI with advanced reasoning capabilities',
+        description: 'xAI Grok for fast reason-first answers.',
+        context: 'xAI API',
         maxTokens: 4000,
-        provider: 'grok'
+        provider: 'grok',
+        apiModel: 'grok-4'
     }
 ];
-
-// Get OpenRouter API key from localStorage
-const apiKey = localStorage.getItem('openrouter_api_key') || '';
-window.OPENROUTER_API_KEY = apiKey; // Make sure it's available globally
 
 const providerDetails = {
     openrouter: {
         name: 'OpenRouter',
         avatar: 'fa-network-wired',
-        description: 'Claude, GPT, Llama, Mistral and more via one provider'
+        description: 'Claude, GPT, Llama, Mistral and more with one key.',
+        keyStorage: 'openrouter_api_key',
+        keyUrl: 'https://openrouter.ai/keys',
+        keyLinkLabel: 'OpenRouter keys'
     },
     gemini: {
         name: 'Google Gemini',
         avatar: 'fa-star',
-        description: 'Native Gemini models via Google AI Studio key'
+        description: 'Native Gemini models through Google AI Studio.',
+        keyStorage: 'gemini_api_key',
+        keyUrl: 'https://aistudio.google.com/app/apikey',
+        keyLinkLabel: 'Google AI Studio'
     },
     deepseek: {
         name: 'DeepSeek',
         avatar: 'fa-brain',
-        description: 'Coding-focused DeepSeek model family'
+        description: 'DeepSeek chat and coding models.',
+        keyStorage: 'deepseek_api_key',
+        keyUrl: 'https://platform.deepseek.com/api_keys',
+        keyLinkLabel: 'DeepSeek keys'
     },
     huggingface: {
         name: 'Hugging Face',
         avatar: 'fa-image',
-        description: 'Image generation and open models'
+        description: 'Image generation with open models.',
+        keyStorage: 'huggingface_api_key',
+        keyUrl: 'https://huggingface.co/settings/tokens',
+        keyLinkLabel: 'Hugging Face tokens'
     },
     grok: {
         name: 'Grok',
         avatar: 'fa-bolt',
-        description: 'xAI Grok model access'
+        description: 'xAI Grok models with an xAI key.',
+        keyStorage: 'grok_api_key',
+        keyUrl: 'https://console.x.ai',
+        keyLinkLabel: 'xAI console'
     }
 };
 
-// Currently selected model/provider
 let currentModel = null;
 let currentProviderFilter = null;
 
-// Function to initialize the models grid
+function getProviderMeta(providerId) {
+    return providerDetails[providerId] || {
+        name: providerId,
+        avatar: 'fa-robot',
+        description: 'Available models',
+        keyStorage: 'openrouter_api_key',
+        keyUrl: 'https://openrouter.ai/keys',
+        keyLinkLabel: 'provider dashboard'
+    };
+}
+
+function providerHasKey(providerId, modelId = null) {
+    if (typeof window.resolveProviderApiKey !== 'function') return false;
+    return Boolean(window.resolveProviderApiKey(providerId, modelId));
+}
+
+function modelHasKey(model) {
+    if (model.isImageGenerator) return providerHasKey('huggingface', model.id);
+    return providerHasKey(model.provider, model.id);
+}
+
+function getModelById(modelId) {
+    return availableModels.find(model => model.id === modelId) || null;
+}
+
+/* ---------- Home screen ---------- */
+
 function initializeModelsGrid() {
     renderProviderGrid();
 }
 
-function getHomeScreenHeading() {
-    return document.querySelector('.home-screen h2');
+function setHomeHeader(title, hint, showBack) {
+    const heading = document.getElementById('home-heading');
+    const hintEl = document.getElementById('provider-hint');
+    const backBtn = document.getElementById('home-back');
+    if (heading) heading.textContent = title;
+    if (hintEl) hintEl.textContent = hint;
+    if (backBtn) backBtn.hidden = !showBack;
 }
 
 function renderProviderGrid() {
     currentProviderFilter = null;
+    setHomeHeader('Pick a provider to start', 'All requests are sent directly to the provider you choose.', false);
 
-    const modelsGrid = document.getElementById('models-grid');
-    const heading = getHomeScreenHeading();
-    modelsGrid.innerHTML = '';
-    if (heading) {
-        heading.textContent = 'Select an AI Provider';
-    }
+    const grid = document.getElementById('models-grid');
+    if (!grid) return;
+    grid.replaceChildren();
 
     const providers = Object.keys(providerDetails).filter(providerId =>
         availableModels.some(model => model.provider === providerId)
     );
 
     providers.forEach(providerId => {
-        const provider = providerDetails[providerId] || {
-            name: providerId,
-            avatar: 'fa-robot',
-            description: 'Available models'
-        };
+        const provider = getProviderMeta(providerId);
+        const models = availableModels.filter(model => model.provider === providerId);
+        const ready = models.some(modelHasKey);
 
-        const providerCard = document.createElement('div');
-        providerCard.className = 'model-card';
-        providerCard.dataset.providerId = providerId;
-
-        providerCard.innerHTML = `
-            <div class="model-avatar">
-                <i class="fas ${provider.avatar}"></i>
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'model-card';
+        card.dataset.providerId = providerId;
+        card.innerHTML = `
+            <div class="model-card-head">
+                <span class="model-avatar" aria-hidden="true"><i class="fas ${provider.avatar}"></i></span>
+                <span class="model-key-state ${ready ? 'is-ready' : ''}">
+                    <i class="fas ${ready ? 'fa-circle-check' : 'fa-key'}" aria-hidden="true"></i>
+                    ${ready ? 'Key ready' : 'Add key'}
+                </span>
             </div>
-            <h3>${provider.name}</h3>
-            <p>${provider.description}</p>
+            <h3></h3>
+            <p class="model-desc"></p>
+            <div class="model-card-foot">
+                <span class="model-count">${models.length} ${models.length === 1 ? 'model' : 'models'}</span>
+                <span class="model-cta">Browse <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+            </div>
         `;
-
-        providerCard.addEventListener('click', () => {
-            renderProviderModels(providerId);
-        });
-
-        modelsGrid.appendChild(providerCard);
+        card.querySelector('h3').textContent = provider.name;
+        card.querySelector('.model-desc').textContent = provider.description;
+        card.addEventListener('click', () => renderProviderModels(providerId));
+        grid.appendChild(card);
     });
 }
 
 function renderProviderModels(providerId) {
     currentProviderFilter = providerId;
+    const provider = getProviderMeta(providerId);
+    setHomeHeader(`${provider.name} models`, provider.description, true);
 
-    const modelsGrid = document.getElementById('models-grid');
-    const heading = getHomeScreenHeading();
-    modelsGrid.innerHTML = '';
+    const grid = document.getElementById('models-grid');
+    if (!grid) return;
+    grid.replaceChildren();
 
-    const provider = providerDetails[providerId] || { name: providerId };
-    if (heading) {
-        heading.textContent = `Select ${provider.name} Model`;
-    }
-
-    const backCard = document.createElement('div');
-    backCard.className = 'model-card';
-    backCard.innerHTML = `
-        <div class="model-avatar">
-            <i class="fas fa-arrow-left"></i>
-        </div>
-        <h3>Back</h3>
-        <p>Go back to providers</p>
-    `;
-    backCard.addEventListener('click', renderProviderGrid);
-    modelsGrid.appendChild(backCard);
-
-    const providerModels = availableModels.filter(model => model.provider === providerId);
-
-    providerModels.forEach(model => {
-        const modelCard = document.createElement('div');
-        modelCard.className = 'model-card';
-        modelCard.dataset.modelId = model.id;
-
-        if (model.isImageGenerator) {
-            modelCard.classList.add('image-generator-card');
-        }
-
-        modelCard.innerHTML = `
-            <div class="model-avatar">
-                <i class="fas ${model.avatar}"></i>
+    const models = availableModels.filter(model => model.provider === providerId);
+    models.forEach(model => {
+        const ready = modelHasKey(model);
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'model-card';
+        card.dataset.modelId = model.id;
+        card.innerHTML = `
+            <div class="model-card-head">
+                <span class="model-avatar" aria-hidden="true"><i class="fas ${model.avatar}"></i></span>
+                <span class="model-key-state ${ready ? 'is-ready' : ''}">
+                    <i class="fas ${ready ? 'fa-circle-check' : 'fa-key'}" aria-hidden="true"></i>
+                    ${ready ? 'Ready' : 'No key'}
+                </span>
             </div>
-            <h3>${model.name}</h3>
-            <p>${model.description}</p>
+            <h3></h3>
+            <p class="model-desc"></p>
+            <div class="model-card-foot">
+                <span class="model-badge"></span>
+                <span class="model-cta">Chat <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+            </div>
         `;
-
-        modelCard.addEventListener('click', () => {
-            selectModel(model);
-        });
-
-        modelsGrid.appendChild(modelCard);
+        card.querySelector('h3').textContent = model.name;
+        card.querySelector('.model-desc').textContent = model.description;
+        card.querySelector('.model-badge').textContent = model.context || provider.name;
+        card.addEventListener('click', () => selectModel(model));
+        grid.appendChild(card);
     });
 }
 
-// Function to select a model and switch to chat view
+function refreshHomeView() {
+    if (document.getElementById('chat-screen') && !document.getElementById('chat-screen').hidden) return;
+    if (currentProviderFilter) renderProviderModels(currentProviderFilter);
+    else renderProviderGrid();
+}
+
+function initModelNavigation() {
+    const backBtn = document.getElementById('home-back');
+    if (backBtn) backBtn.addEventListener('click', renderProviderGrid);
+}
+
+/* ---------- Opening a conversation ---------- */
+
 function selectModel(model) {
-    // First check if this is the image generation model
-    if (model.isImageGenerator && model.provider === 'huggingface') {
-        // Always use the stored Hugging Face API key
-        const storedKeys = JSON.parse(localStorage.getItem('stored_api_keys') || '[]');
-        const huggingFaceKey = storedKeys.find(k => 
-            k.provider === 'huggingface' || 
-            k.name.toLowerCase().includes('hugging') || 
-            k.name.toLowerCase().includes('face')
-        );
-        
-        if (huggingFaceKey) {
-            // Set the Hugging Face key
-            window.HUGGINGFACE_API_KEY = huggingFaceKey.key;
-            localStorage.setItem('huggingface_api_key', huggingFaceKey.key);
-            showToast(`Using ${huggingFaceKey.name} for image generation`);
-        } else {
-            showToast('No Hugging Face API key found. Please add one in settings.');
-            storeApiKey(); // Show the API key storage dialog
-            return;
-        }
-    }
-    
-    // Directly load chat with the selected model without showing API key selector
     loadChatWithSelectedModel(model);
 }
 
-// Function to load chat with selected model
 function loadChatWithSelectedModel(model) {
+    if (!model) return;
+    const provider = getProviderMeta(model.provider);
+
     currentModel = model;
-    
-    // Set appropriate API key based on model provider/model-specific assignment
-    const apiKey = window.resolveProviderApiKey
-        ? window.resolveProviderApiKey(model.provider, model.id)
-        : '';
-    
-    // If no API key is found, prompt the user to add one
-    if (!apiKey) {
-        showToast('API key not found. Please add an API key in settings.');
-        storeApiKey();
+    currentConversation = loadChatHistory(model.id);
+
+    document.getElementById('home-screen').hidden = true;
+    document.getElementById('chat-screen').hidden = false;
+    document.body.classList.add('chat-open');
+
+    const nameEl = document.getElementById('current-model-name');
+    const metaEl = document.getElementById('current-model-meta');
+    const avatarEl = document.getElementById('chat-model-avatar');
+    if (nameEl) nameEl.textContent = model.name;
+    if (metaEl) metaEl.textContent = `${provider.name} · ${model.context || 'Ready'}`;
+    if (avatarEl) avatarEl.innerHTML = `<i class="fas ${model.avatar}" aria-hidden="true"></i>`;
+
+    const context = document.getElementById('app-context');
+    if (context) context.textContent = `Chatting with ${model.name}`;
+
+    const promptDot = document.getElementById('prompt-dot');
+    if (promptDot) promptDot.hidden = !(typeof getSystemPrompt === 'function' && getSystemPrompt(model.id));
+
+    if (typeof window.renderChatMessages === 'function') window.renderChatMessages();
+    if (typeof window.updateKeyWarning === 'function') window.updateKeyWarning(model);
+    if (typeof window.restoreDraft === 'function') window.restoreDraft(model.id);
+    if (typeof window.updateComposerState === 'function') window.updateComposerState();
+    if (typeof window.updateKeyStatus === 'function') window.updateKeyStatus();
+
+    highlightCurrentConversation(model.id);
+
+    const input = document.getElementById('message-input');
+    if (input && window.matchMedia('(min-width: 861px)').matches) input.focus();
+}
+
+function highlightCurrentConversation(modelId) {
+    document.querySelectorAll('[data-conversation-id]').forEach(item => {
+        item.classList.toggle('active-conversation', item.dataset.conversationId === modelId);
+    });
+}
+
+function backToModelSelection() {
+    if (typeof window.stopGeneration === 'function') window.stopGeneration(true);
+
+    document.getElementById('chat-screen').hidden = true;
+    document.getElementById('home-screen').hidden = false;
+    document.body.classList.remove('chat-open');
+
+    const context = document.getElementById('app-context');
+    if (context) context.textContent = 'One workspace, every model';
+
+    currentModel = null;
+    if (currentProviderFilter) renderProviderModels(currentProviderFilter);
+    else renderProviderGrid();
+
+    renderRecentConversations();
+    if (typeof window.closeSidebar === 'function') window.closeSidebar();
+    if (typeof window.updateKeyStatus === 'function') window.updateKeyStatus();
+}
+
+function loadChatHistory(modelId) {
+    try {
+        const raw = localStorage.getItem(`chat_${modelId}`);
+        if (!raw) return [];
+        const messages = JSON.parse(raw);
+        return Array.isArray(messages) ? messages.filter(message => message && message.content) : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+/* ---------- Conversation metadata ---------- */
+
+function getConversationMessages(modelId) {
+    return loadChatHistory(modelId);
+}
+
+function getConversationTitle(modelId) {
+    try {
+        const custom = JSON.parse(localStorage.getItem('conversation_titles') || '{}');
+        if (custom && typeof custom[modelId] === 'string' && custom[modelId].trim()) {
+            return custom[modelId].trim();
+        }
+    } catch (error) { /* fall through to derived title */ }
+
+    const messages = getConversationMessages(modelId);
+    const firstUser = messages.find(message => message.role === 'user' && message.content);
+    if (firstUser) {
+        const text = String(firstUser.content).replace(/\s+/g, ' ').trim();
+        return text.length > 46 ? text.slice(0, 46).trimEnd() + '…' : text;
+    }
+    const model = getModelById(modelId);
+    return model ? `New chat · ${model.name}` : 'New chat';
+}
+
+function getConversationTimestamp(modelId) {
+    const messages = getConversationMessages(modelId);
+    const last = messages[messages.length - 1];
+    return last && last.ts ? Number(last.ts) : 0;
+}
+
+function getConversationMessageCount(modelId) {
+    return getConversationMessages(modelId).length;
+}
+
+function formatWhen(timestamp) {
+    if (!timestamp) return 'Saved chat';
+    const diff = Date.now() - timestamp;
+    if (diff < 60000) return 'Just now';
+    if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
+    if (diff < 86400000) return Math.floor(diff / 3600000) + ' hr ago';
+    if (diff < 172800000) return 'Yesterday';
+    return new Date(timestamp).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+}
+
+function getConversationMeta(modelId) {
+    const model = getModelById(modelId);
+    const count = getConversationMessageCount(modelId);
+    const when = formatWhen(getConversationTimestamp(modelId));
+    const provider = model ? getProviderMeta(model.provider).name : '';
+    return [provider, count ? `${count} messages` : 'Empty', when].filter(Boolean).join(' · ');
+}
+
+/* ---------- Recents ---------- */
+
+function renderRecentConversations() {
+    const section = document.getElementById('recent-section');
+    const list = document.getElementById('recent-list');
+    if (!section || !list) return;
+
+    const conversations = Object.keys(localStorage)
+        .filter(key => key.startsWith('chat_'))
+        .map(key => key.slice(5))
+        .filter(modelId => getConversationMessageCount(modelId) > 0)
+        .sort((a, b) => getConversationTimestamp(b) - getConversationTimestamp(a))
+        .slice(0, 4);
+
+    list.replaceChildren();
+    if (conversations.length === 0) {
+        section.hidden = true;
         return;
     }
-    
-    // Hide home screen and show chat screen
-    document.getElementById('home-screen').style.display = 'none';
-    document.getElementById('chat-screen').style.display = 'flex';
-    
-    // Set the current model name in the UI
-    document.getElementById('current-model-name').textContent = model.name;
-    
-    // Load previous messages for this model
-    currentConversation = loadChatHistory(model.id) || [];
-    
-    // Display previous messages
-    const chatMessages = document.getElementById('chat-messages');
-    chatMessages.innerHTML = '';
-    
-    currentConversation.forEach((msg, index) => {
-        addMessageToChat(msg.role, msg.content, index);
+
+    section.hidden = false;
+    conversations.forEach(modelId => {
+        const model = getModelById(modelId);
+        if (!model) return;
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'recent-card';
+        card.dataset.conversationId = modelId;
+        card.innerHTML = `
+            <span class="recent-avatar" aria-hidden="true"><i class="fas ${model.avatar}"></i></span>
+            <span class="recent-copy">
+                <span class="recent-title"></span>
+                <span class="recent-meta"></span>
+            </span>
+            <span class="recent-go" aria-hidden="true"><i class="fas fa-arrow-right"></i></span>
+        `;
+        card.querySelector('.recent-title').textContent = getConversationTitle(modelId);
+        card.querySelector('.recent-meta').textContent = `${model.name} · ${formatWhen(getConversationTimestamp(modelId))}`;
+        card.addEventListener('click', () => loadChatWithSelectedModel(model));
+        list.appendChild(card);
     });
-    
-    // Highlight the current conversation in the sidebar
-    highlightCurrentConversation(model.id);
-    
-    // Clear the input field
-    document.getElementById('message-input').value = '';
-    document.getElementById('message-input').focus();
 }
 
-// Function to highlight the current conversation in the sidebar
-function highlightCurrentConversation(modelId) {
-    // Remove active class from all conversation items
-    const conversationItems = document.querySelectorAll('#conversation-history li');
-    conversationItems.forEach(item => {
-        item.classList.remove('active-conversation');
+/* ---------- Conversation folders sync ---------- */
+
+function updateConversationHistory() {
+    const conversationIds = Object.keys(localStorage)
+        .filter(key => key.startsWith('chat_'))
+        .map(key => key.slice(5))
+        .filter(modelId => getModelById(modelId));
+
+    const folders = window.conversationFolders || [];
+    const defaultFolder = folders.find(folder => folder.isDefault);
+
+    folders.forEach(folder => {
+        if (!Array.isArray(folder.conversations)) folder.conversations = [];
+        folder.conversations = folder.conversations.filter(id => conversationIds.includes(id));
     });
-    
-    // Add active class to the selected model's conversation
-    const selectedItem = document.querySelector(`#conversation-history li[data-model-id="${modelId}"]`);
-    if (selectedItem) {
-        selectedItem.classList.add('active-conversation');
-    }
-}
 
-// Load chat history for a specific model from localStorage
-function loadChatHistory(modelId) {
-    const conversationKey = `chat_${modelId}`;
-    const savedMessages = localStorage.getItem(conversationKey);
-    
-    if (savedMessages) {
-        try {
-            const messages = JSON.parse(savedMessages);
-            if (Array.isArray(messages) && messages.length > 0) {
-                return messages;
-            }
-        } catch (e) {
-            console.error('Error parsing saved chat history:', e);
-        }
-    }
-    
-    // If no history or invalid format, return a default welcome message
-    return [{
-        role: 'assistant',
-        content: `Hi there 👋\nHow can I help you today?`
-    }];
-}
-
-// Function to go back to model selection
-function backToModelSelection() {
-    document.getElementById('chat-screen').style.display = 'none';
-    document.getElementById('home-screen').style.display = 'block';
-    
-    // Remove highlighting from current conversation before clearing the model
-    if (currentModel) {
-        const conversationItems = document.querySelectorAll('#conversation-history li');
-        conversationItems.forEach(item => {
-            item.classList.remove('active-conversation');
+    if (defaultFolder) {
+        conversationIds.forEach(id => {
+            const placed = folders.some(folder => folder.conversations.includes(id));
+            if (!placed) defaultFolder.conversations.push(id);
         });
     }
 
-    if (currentProviderFilter) {
-        renderProviderModels(currentProviderFilter);
-    } else {
-        renderProviderGrid();
-    }
-    
-    currentModel = null;
+    if (typeof saveFolders === 'function') saveFolders();
+    if (typeof renderFolderTree === 'function') renderFolderTree();
+    renderRecentConversations();
 }
 
-// Update conversation history in the sidebar
-function updateConversationHistory() {
-    // This function is now replaced by the folder tree system
-    // But we still need to update folders with new conversations
-    
-    const keys = Object.keys(localStorage).filter(key => key.startsWith('chat_'));
-    const folders = window.conversationFolders || [];
-    
-    // Add new conversations to uncategorized folder if not already in any folder
-    keys.forEach(key => {
-        const modelId = key.replace('chat_', '');
-        const isInFolder = folders.some(f => f.conversations && f.conversations.includes(modelId));
-        
-        if (!isInFolder) {
-            const uncategorized = folders.find(f => f.isDefault);
-            if (uncategorized) {
-                if (!uncategorized.conversations) uncategorized.conversations = [];
-                uncategorized.conversations.push(modelId);
-            }
-        }
-    });
-    
-    // Save updated folders
-    if (typeof saveFolders === 'function') {
-        saveFolders();
-    }
-    
-    // Render folder tree
-    if (typeof renderFolderTree === 'function') {
-        renderFolderTree();
-    }
-} 
+window.getConversationTitle = getConversationTitle;
+window.getConversationMeta = getConversationMeta;
+window.getConversationMessages = getConversationMessages;
+window.getModelById = getModelById;
+window.providerHasKey = providerHasKey;
+window.providerDetails = providerDetails;
+window.getProviderMeta = getProviderMeta;
+window.updateConversationHistory = updateConversationHistory;
+window.renderRecentConversations = renderRecentConversations;
+window.refreshHomeView = refreshHomeView;

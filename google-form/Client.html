@@ -219,6 +219,14 @@ function normalizeClient(spec) {
 }
 
 /* ============ Status / errors UI ============ */
+function updateCharCount() {
+  var el = $('ffCharCount');
+  if (!el || !editor) return;
+  var n = editor.value.length;
+  el.textContent = n.toLocaleString('en-US') + ' / ' + LIMITS.MAX_PAYLOAD.toLocaleString('en-US') + ' chars';
+  el.classList.toggle('is-over', n > LIMITS.MAX_PAYLOAD);
+}
+
 function setStatus(kind, msg) {
   statusBox.classList.remove('ok', 'err', 'warn');
   if (kind) statusBox.classList.add(kind);
@@ -515,6 +523,7 @@ function bindToolbar() {
         if (!t) { toast('Clipboard is empty.'); return; }
         editor.value = t.trim().replace(/^```(json)?/i, '').replace(/```\s*$/, '').trim();
         invalidate(); setStatus('warn', 'Pasted. Click “Validate JSON” to continue.');
+        updateCharCount();
         toast('Pasted from clipboard.');
         editor.focus();
       }, function () { toast('Clipboard blocked — press Ctrl/Cmd+V in the editor.'); editor.focus(); });
@@ -523,18 +532,20 @@ function bindToolbar() {
   $('btnExample').addEventListener('click', function () {
     editor.value = JSON.stringify(EXAMPLE_SPEC, null, 2);
     invalidate(); setStatus('warn', 'Example loaded. Click “Validate JSON”.');
+    updateCharCount();
     resultSlot.textContent = '';
     toast('Example loaded.');
   });
   $('btnValidate').addEventListener('click', doValidate);
   $('btnFormat').addEventListener('click', function () {
-    try { editor.value = JSON.stringify(JSON.parse(editor.value), null, 2); toast('Formatted.'); }
+    try { editor.value = JSON.stringify(JSON.parse(editor.value), null, 2); updateCharCount(); toast('Formatted.'); }
     catch (e) { toast('Cannot format: invalid JSON.'); }
   });
   $('btnClear').addEventListener('click', function () {
     if (editor.value && !window.confirm('Clear the editor? Unsaved edits will be lost.')) return;
     editor.value = ''; invalidate('Nothing to generate yet.');
     setStatus('warn', 'Editor cleared.'); renderErrors([]);
+    updateCharCount();
     previewEmpty.hidden = false; preview.hidden = true; resultSlot.textContent = '';
   });
   $('btnDownload').addEventListener('click', function () {
@@ -555,6 +566,7 @@ function bindToolbar() {
     r.onload = function () {
       editor.value = String(r.result || '');
       invalidate(); setStatus('warn', 'Imported "' + f.name + '". Click “Validate JSON”.');
+      updateCharCount();
       toast('Imported file.');
     };
     r.readAsText(f);
@@ -738,27 +750,70 @@ function bindMisc() {
   modal.addEventListener('click', function (e) { if (e.target === modal) closeHelp(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeHelp(); });
 
-  $('ffThemeBtn').addEventListener('click', function () {
-    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-    var next = dark ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    updateThemeButton();
-    try { localStorage.setItem('tools-theme', next); } catch (e) { /* Theme stays active for this visit. */ }
+  editor.addEventListener('input', function () {
+    invalidate();
+    setStatus('warn', 'Edited — re-validate before generating.');
+    updateCharCount();
   });
-  updateThemeButton();
 
-  editor.addEventListener('input', function () { invalidate(); setStatus('warn', 'Edited — re-validate before generating.'); });
-
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      doValidate();
+    }
+  });
 }
 
-function updateThemeButton() {
-  var button = $('ffThemeBtn');
-  var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  button.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
-  button.setAttribute('aria-pressed', String(dark));
-  button.innerHTML = dark
-    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>'
-    : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>';
+/* ============ App bar: theme, account, hero action ============ */
+function bindChrome() {
+  var themeBtn = $('ffThemeToggle');
+  function paintTheme(theme) {
+    if (themeBtn) {
+      themeBtn.textContent = theme === 'dark' ? '☀' : '☾';
+      themeBtn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    }
+  }
+  paintTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      paintTheme(next);
+      try { localStorage.setItem('tools-theme', next); } catch (e) {}
+    });
+  }
+
+  var account = $('ffAccount');
+  var accountText = $('ffAccountText');
+  var accountDot = $('ffAccountDot');
+  if (account && accountText && accountDot) {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function (status) {
+          var email = status && status.email ? String(status.email) : '';
+          accountText.textContent = email || 'Signed in with Google';
+          account.title = email || 'Authorized through your Google account';
+          accountDot.classList.add('ok');
+        })
+        .withFailureHandler(function () {
+          accountText.textContent = 'Google account';
+          account.title = 'Account status unavailable — generation will ask for authorization.';
+        })
+        .ffGetAuthStatus();
+    } else {
+      accountText.textContent = 'Local preview';
+      account.title = 'Not connected to Apps Script — deploy to generate forms.';
+    }
+  }
+
+  var heroExample = $('ffHeroExample');
+  if (heroExample) {
+    heroExample.addEventListener('click', function () {
+      $('btnExample').click();
+      editor.focus();
+      editor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
 }
 
 /* ============ Init ============ */
@@ -767,7 +822,8 @@ document.addEventListener('DOMContentLoaded', function () {
   previewEmpty = $('ffPreviewEmpty'); preview = $('ffPreview'); pvTitle = $('pvTitle'); pvDesc = $('pvDesc');
   pvSettings = $('pvSettings'); pvQuestions = $('pvQuestions');
   btnGenerate = $('btnGenerate'); genHint = $('ffGenHint'); resultSlot = $('ffResultSlot'); toastEl = $('ffToast');
-  bindToolbar(); bindGenerate(); bindMisc();
+  bindChrome(); bindToolbar(); bindGenerate(); bindMisc();
+  updateCharCount();
   setGenerateEnabled(false, 'Validate successfully to enable generation.');
 });
 })();

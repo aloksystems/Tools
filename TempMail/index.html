@@ -1,1743 +1,1261 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TempMail Pro - Temporary Email & OTP Receiver</title>
-    <style>
-        :root {
-            color-scheme: light;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --surface-soft: #f7f9fb;
-            --surface-strong: #111827;
-            --line: #d9e1e8;
-            --line-strong: #b9c5d1;
-            --text: #182230;
-            --muted: #667085;
-            --muted-strong: #475467;
-            --accent: #14b8a6;
-            --accent-strong: #0f766e;
-            --accent-soft: #ccfbf1;
-            --blue: #2563eb;
-            --blue-soft: #e8efff;
-            --danger: #d92d20;
-            --danger-soft: #fee4e2;
-            --warning: #b54708;
-            --warning-soft: #fff1db;
-            --success: #027a48;
-            --success-soft: #dcfae6;
-            --shadow: 0 18px 45px rgba(16, 24, 40, 0.09);
-            --radius: 8px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            min-height: 100vh;
-            background:
-                linear-gradient(180deg, rgba(248, 250, 252, 0.94), rgba(248, 250, 252, 1)),
-                repeating-linear-gradient(90deg, rgba(17, 24, 39, 0.04) 0 1px, transparent 1px 84px);
-            color: var(--text);
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            line-height: 1.5;
-        }
-
-        button,
-        input {
-            font: inherit;
-        }
-
-        button {
-            border: 0;
-        }
-
-        .app-shell {
-            min-height: 100vh;
-            display: grid;
-            grid-template-columns: 260px minmax(0, 1fr);
-        }
-
-        .sidebar {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            padding: 26px 22px;
-            background: #111827;
-            color: #f9fafb;
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-mark {
-            width: 42px;
-            height: 42px;
-            border-radius: var(--radius);
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            color: #ffffff;
-            font-weight: 800;
-            letter-spacing: 0;
-        }
-
-        .brand-title {
-            font-size: 1rem;
-            font-weight: 750;
-        }
-
-        .brand-subtitle {
-            color: #98a2b3;
-            font-size: 0.84rem;
-        }
-
-        .nav-stack {
-            display: grid;
-            gap: 8px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: var(--radius);
-            color: #cfd4dc;
-            background: transparent;
-            font-size: 0.94rem;
-        }
-
-        .nav-item.active {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .nav-icon {
-            width: 18px;
-            height: 18px;
-            display: inline-grid;
-            place-items: center;
-            color: inherit;
-        }
-
-        .sidebar-footer {
-            margin-top: auto;
-            padding: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: var(--radius);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .sidebar-footer strong {
-            display: block;
-            font-size: 0.86rem;
-            margin-bottom: 6px;
-        }
-
-        .sidebar-footer span {
-            color: #98a2b3;
-            font-size: 0.82rem;
-        }
-
-        .workspace {
-            min-width: 0;
-            padding: 30px;
-        }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 24px;
-            margin-bottom: 22px;
-        }
-
-        .eyebrow {
-            color: var(--accent-strong);
-            font-size: 0.78rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        h1 {
-            color: var(--text);
-            font-size: clamp(2rem, 4vw, 3.4rem);
-            line-height: 1.05;
-            margin-top: 6px;
-            letter-spacing: 0;
-        }
-
-        .topbar-copy {
-            color: var(--muted);
-            max-width: 620px;
-            margin-top: 12px;
-            font-size: 1rem;
-        }
-
-        .status-indicator {
-            min-width: 300px;
-            max-width: 420px;
-            padding: 14px 16px;
-            border: 1px solid var(--line);
-            border-left: 4px solid var(--accent);
-            border-radius: var(--radius);
-            background: var(--surface);
-            box-shadow: var(--shadow);
-            color: var(--muted-strong);
-            font-weight: 650;
-        }
-
-        .status-indicator.error {
-            border-left-color: var(--danger);
-            background: var(--danger-soft);
-            color: #7a271a;
-        }
-
-        .status-indicator.warning {
-            border-left-color: var(--warning);
-            background: var(--warning-soft);
-            color: #7a2e0e;
-        }
-
-        .status-indicator.success {
-            border-left-color: var(--success);
-            background: var(--success-soft);
-            color: #05603a;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: minmax(360px, 0.88fr) minmax(0, 1.12fr);
-            gap: 22px;
-            align-items: start;
-        }
-
-        .panel {
-            background: rgba(255, 255, 255, 0.92);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 18px 20px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .panel-title {
-            font-size: 0.98rem;
-            font-weight: 800;
-            color: var(--text);
-        }
-
-        .panel-subtitle {
-            color: var(--muted);
-            font-size: 0.86rem;
-            margin-top: 2px;
-        }
-
-        .panel-body {
-            padding: 20px;
-        }
-
-        .email-card {
-            display: grid;
-            gap: 16px;
-        }
-
-        .email-display {
-            position: relative;
-            overflow: hidden;
-            padding: 18px;
-            border-radius: var(--radius);
-            background: #111827;
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .email-display::after {
-            content: "";
-            position: absolute;
-            inset: auto 0 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--blue), #f79009);
-        }
-
-        .email-label {
-            color: #98a2b3;
-            font-size: 0.78rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .email-text {
-            margin-top: 8px;
-            color: #ffffff;
-            font-size: clamp(1.1rem, 2vw, 1.5rem);
-            font-weight: 750;
-            overflow-wrap: anywhere;
-        }
-
-        .service-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-top: 14px;
-        }
-
-        .service-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #d0d5dd;
-            font-size: 0.86rem;
-            font-weight: 700;
-        }
-
-        .service-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #12b76a;
-            box-shadow: 0 0 0 4px rgba(18, 183, 106, 0.15);
-        }
-
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .field {
-            display: grid;
-            gap: 7px;
-        }
-
-        .field label {
-            color: var(--muted-strong);
-            font-size: 0.84rem;
-            font-weight: 700;
-        }
-
-        .field input {
-            width: 100%;
-            border: 1px solid var(--line-strong);
-            border-radius: var(--radius);
-            background: #ffffff;
-            color: var(--text);
-            padding: 11px 12px;
-            outline: none;
-            transition: border-color 0.18s ease, box-shadow 0.18s ease;
-        }
-
-        .field input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(14, 147, 132, 0.14);
-        }
-
-        .actions {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin-top: 16px;
-        }
-
-        .btn {
-            min-height: 46px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 9px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            padding: 11px 15px;
-            background: var(--surface-strong);
-            color: #ffffff;
-            font-weight: 750;
-            transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 12px 24px rgba(16, 24, 40, 0.14);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.58;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-strong);
-        }
-
-        .btn-secondary {
-            background: var(--surface-soft);
-            color: var(--text);
-            border: 1px solid var(--line);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-        }
-
-        .btn.full {
-            grid-column: 1 / -1;
-        }
-
-        .icon {
-            width: 18px;
-            height: 18px;
-            display: inline-block;
-        }
-
-        .loading {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255, 255, 255, 0.35);
-            border-top-color: #ffffff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .progress-wrap {
-            display: grid;
-            gap: 10px;
-            margin-top: 16px;
-            padding: 14px;
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            background: var(--surface-soft);
-        }
-
-        .progress-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 14px;
-            color: var(--muted-strong);
-            font-size: 0.88rem;
-            font-weight: 700;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            overflow: hidden;
-            border-radius: 999px;
-            background: #e4e7ec;
-        }
-
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, var(--accent), var(--blue));
-            transition: width 0.22s ease;
-        }
-
-        .messages-panel {
-            min-height: 620px;
-        }
-
-        .messages-toolbar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .counter {
-            min-width: 34px;
-            height: 28px;
-            display: inline-grid;
-            place-items: center;
-            border-radius: var(--radius);
-            background: var(--blue-soft);
-            color: var(--blue);
-            font-size: 0.84rem;
-            font-weight: 800;
-        }
-
-        .messages-container {
-            display: grid;
-            gap: 12px;
-            max-height: 650px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-
-        .empty-state {
-            min-height: 420px;
-            display: grid;
-            place-items: center;
-            text-align: center;
-            color: var(--muted);
-            border: 1px dashed var(--line-strong);
-            border-radius: var(--radius);
-            background:
-                linear-gradient(135deg, rgba(14, 147, 132, 0.08), rgba(37, 99, 235, 0.08)),
-                #ffffff;
-            padding: 28px;
-        }
-
-        .empty-state strong {
-            display: block;
-            color: var(--text);
-            font-size: 1rem;
-            margin-bottom: 6px;
-        }
-
-        .message-item {
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            background: #ffffff;
-            padding: 16px;
-            cursor: pointer;
-            transition: border-color 0.18s ease, box-shadow 0.18s ease;
-        }
-
-        .message-item:hover {
-            border-color: var(--line-strong);
-            box-shadow: 0 10px 22px rgba(16, 24, 40, 0.08);
-        }
-
-        .message-item.active {
-            border-color: var(--accent);
-            background: var(--accent-soft);
-            box-shadow: 0 10px 22px rgba(14, 147, 132, 0.14);
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(14, 147, 132, 0.28);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(14, 147, 132, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(14, 147, 132, 0);
-            }
-        }
-
-        .message-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
-            margin-bottom: 9px;
-        }
-
-        .message-from {
-            color: var(--text);
-            font-weight: 800;
-            overflow-wrap: anywhere;
-        }
-
-        .message-time {
-            color: var(--muted);
-            flex: 0 0 auto;
-            font-size: 0.84rem;
-            font-weight: 650;
-        }
-
-        .message-subject {
-            color: var(--muted-strong);
-            font-weight: 750;
-            margin-bottom: 8px;
-            overflow-wrap: anywhere;
-        }
-
-        .message-preview {
-            color: var(--muted);
-            font-size: 0.94rem;
-            overflow-wrap: anywhere;
-        }
-
-        .otp-box {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-            margin: 12px 0;
-            padding: 14px;
-            border-radius: var(--radius);
-            background: var(--surface-strong);
-            color: #ffffff;
-        }
-
-        .message-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-            color: var(--muted);
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-
-        .unread-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--blue);
-            flex: 0 0 auto;
-        }
-
-        .email-detail {
-            margin-top: 14px;
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            background: #ffffff;
-            min-height: 280px;
-            display: grid;
-            grid-template-rows: auto auto minmax(140px, 1fr);
-        }
-
-        .detail-head {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--line);
-            display: grid;
-            gap: 6px;
-        }
-
-        .detail-subject {
-            font-size: 1rem;
-            font-weight: 800;
-            overflow-wrap: anywhere;
-        }
-
-        .detail-grid {
-            color: var(--muted-strong);
-            font-size: 0.88rem;
-            display: grid;
-            gap: 4px;
-        }
-
-        .detail-actions {
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--line);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .mini-btn {
-            min-height: 34px;
-            padding: 6px 10px;
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            background: var(--surface-soft);
-            color: var(--text);
-            cursor: pointer;
-            font-weight: 700;
-        }
-
-        .detail-body {
-            padding: 14px 16px;
-            overflow: auto;
-            max-height: 420px;
-        }
-
-        .plain-body {
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-            color: var(--text);
-            font-size: 0.94rem;
-        }
-
-        .html-frame {
-            width: 100%;
-            min-height: 320px;
-            border: 1px solid var(--line);
-            border-radius: 6px;
-            background: #fff;
-        }
-
-        .attachments {
-            margin-top: 14px;
-            border-top: 1px solid var(--line);
-            padding-top: 12px;
-            display: grid;
-            gap: 8px;
-        }
-
-        .email-modal {
-            position: fixed;
-            inset: 0;
-            z-index: 40;
-            display: grid;
-            place-items: center;
-            padding: 20px;
-        }
-
-        .email-modal-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(17, 24, 39, 0.56);
-        }
-
-        .email-modal-dialog {
-            position: relative;
-            z-index: 1;
-            width: min(860px, 100%);
-            max-height: min(88vh, 920px);
-            overflow: hidden;
-            border-radius: var(--radius);
-            border: 1px solid var(--line);
-            background: #ffffff;
-            box-shadow: var(--shadow);
-            display: grid;
-            grid-template-rows: auto auto auto minmax(160px, 1fr);
-        }
-
-        .email-modal-header,
-        .email-modal-meta,
-        .email-modal-actions {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .email-modal-header {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: start;
-        }
-
-        .email-modal-meta {
-            display: grid;
-            gap: 4px;
-            color: var(--muted-strong);
-            font-size: 0.9rem;
-        }
-
-        .email-modal-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .email-modal-body {
-            padding: 16px;
-            overflow: auto;
-        }
-
-        .otp-code {
-            font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-            font-size: 1.75rem;
-            font-weight: 800;
-            letter-spacing: 0.18em;
-        }
-
-        .copy-btn {
-            min-height: 38px;
-            padding: 8px 12px;
-            border-radius: var(--radius);
-            background: #ffffff;
-            color: var(--text);
-            cursor: pointer;
-            font-weight: 800;
-        }
-
-        .toast {
-            position: fixed;
-            top: 22px;
-            right: 22px;
-            z-index: 20;
-            max-width: min(420px, calc(100vw - 44px));
-            padding: 13px 16px;
-            border-radius: var(--radius);
-            background: var(--surface-strong);
-            color: #ffffff;
-            box-shadow: var(--shadow);
-            transform: translateY(-16px);
-            opacity: 0;
-            pointer-events: none;
-            transition: transform 0.22s ease, opacity 0.22s ease;
-            font-weight: 750;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast.error {
-            background: var(--danger);
-        }
-
-        .toast.warning {
-            background: var(--warning);
-        }
-
-        .toast.success {
-            background: var(--success);
-        }
-
-        @media (max-width: 1020px) {
-            .app-shell {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                position: static;
-                height: auto;
-                padding: 18px 22px;
-                flex-direction: row;
-                align-items: center;
-            }
-
-            .nav-stack,
-            .sidebar-footer {
-                display: none;
-            }
-
-            .topbar {
-                flex-direction: column;
-            }
-
-            .status-indicator {
-                width: 100%;
-                max-width: none;
-                min-width: 0;
-            }
-
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .workspace {
-                padding: 18px;
-            }
-
-            .topbar-copy {
-                font-size: 0.94rem;
-            }
-
-            .panel-header,
-            .panel-body {
-                padding: 16px;
-            }
-
-            .settings-grid,
-            .actions {
-                grid-template-columns: 1fr;
-            }
-
-            .messages-panel {
-                min-height: auto;
-            }
-
-            .message-header,
-            .otp-box {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .copy-btn {
-                width: 100%;
-            }
-        }
-    </style>
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
-
-    <meta name="description" content="Use TempMail Pro - Temporary Email &amp; OTP Receiver online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/TempMail/">
-    <meta property="og:title" content="TempMail Pro - Temporary Email &amp; OTP Receiver">
-    <meta property="og:description" content="Use TempMail Pro - Temporary Email &amp; OTP Receiver online for free. Fast, private, and browser-based with no installation required.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/TempMail/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="TempMail Pro - Temporary Email &amp; OTP Receiver">
-    <meta name="twitter:description" content="Use TempMail Pro - Temporary Email &amp; OTP Receiver online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "TempMail Pro - Temporary Email \u0026 OTP Receiver",
-    "description":  "Use TempMail Pro - Temporary Email \u0026 OTP Receiver online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/TempMail/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='64'%20font-family='Arial,sans-serif'%20font-size='40'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3ETM%3C/text%3E%3C/svg%3E">
+  <title>TempMail - Disposable Email &amp; OTP Receiver | Alok Systems Tools</title>
+  <meta name="description" content="Generate a disposable email address, receive messages, and extract verification codes in your browser. Guerrilla Mail and Mail.tm are tried automatically, with no inbox data stored on this site.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://aloksystems.freedev.app/TempMail/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="TempMail - Disposable Email &amp; OTP Receiver">
+  <meta property="og:description" content="Create a temporary inbox, watch incoming mail, and copy verification codes without sharing your real email address.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/TempMail/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="TempMail - Disposable Email &amp; OTP Receiver">
+  <meta name="twitter:description" content="Create a temporary inbox, watch incoming mail, and copy verification codes without sharing your real email address.">
+  <meta name="author" content="Alok Systems">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "TempMail Disposable Email Receiver",
+    "description": "Generate a temporary email address, receive messages, and extract OTP codes in the browser using Guerrilla Mail or Mail.tm.",
+    "url": "https://aloksystems.freedev.app/TempMail/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Is this temporary email private?", "acceptedAnswer": { "@type": "Answer", "text": "The address is not linked to your real identity and this page stores nothing. Messages are handled by the temporary email provider that creates the inbox, so treat it as public and avoid sensitive accounts." } },
+      { "@type": "Question", "name": "How long does the inbox last?", "acceptedAnswer": { "@type": "Answer", "text": "The page keeps the session only in this tab. Reloading starts a new address, and the temporary email provider controls how long its server keeps the old inbox." } },
+      { "@type": "Question", "name": "What happens if both providers are unavailable?", "acceptedAnswer": { "@type": "Answer", "text": "A placeholder address is shown for copying only and cannot receive messages. Generate again later to retry Guerrilla Mail and Mail.tm." } },
+      { "@type": "Question", "name": "How does the OTP watcher work?", "acceptedAnswer": { "@type": "Answer", "text": "It checks the inbox at your chosen interval until it finds a 4–8 digit code or reaches the timeout. The countdown appears beside Refresh inbox. All checks stop when a code is found, you press Stop waiting, or time runs out." } },
+      { "@type": "Question", "name": "Are messages or credentials stored?", "acceptedAnswer": { "@type": "Answer", "text": "No. This page writes no inbox, message, or credential to local storage and has no server of its own. Closing or reloading the tab ends the session." } }
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f8fafc;
+      --surface: #fff;
+      --surface-soft: #f1f5f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --brand: #14b8a6;
+      --brand-strong: #0d9488;
+      --brand-deep: #0f766e;
+      --brand-soft: rgba(20, 184, 166, .09);
+      --danger-border: #fecaca;
+      --danger-bg: #fef2f2;
+      --danger-text: #b91c1c;
+      --danger-dot: #dc2626;
+      --danger-solid: #b91c1c;
+      --danger-solid-alt: #dc2626;
+      --warning-border: #fde68a;
+      --warning-bg: #fffbeb;
+      --warning-text: #b45309;
+      --warning-dot: #d97706;
+      --success-dot: #0d9488;
+      --shadow: 0 8px 26px rgba(15, 23, 42, .06);
+      --radius: 18px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    }
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --page: #0b1120;
+      --surface: #101a2e;
+      --surface-soft: #16223a;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --line: #26354a;
+      --brand: #2dd4bf;
+      --brand-strong: #14b8a6;
+      --brand-deep: #2dd4bf;
+      --brand-soft: rgba(45, 212, 191, .1);
+      --danger-border: #7f1d1d;
+      --danger-bg: #351c27;
+      --danger-text: #fecaca;
+      --danger-dot: #f87171;
+      --warning-border: #78500c;
+      --warning-bg: #33260f;
+      --warning-text: #fcd34d;
+      --warning-dot: #fbbf24;
+      --success-dot: #2dd4bf;
+      --shadow: 0 12px 30px rgba(0, 0, 0, .2);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { min-width: 320px; min-height: 100vh; min-height: 100dvh; margin: 0; display: flex; flex-direction: column; background: var(--page); color: var(--text); font: 16px/1.6 var(--font); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    :focus-visible { outline: 3px solid var(--brand-strong); outline-offset: 3px; }
+    .page-shell { width: min(100% - 48px, 1180px); margin: 0 auto; padding: 44px 0 64px; flex: 1; }
+    .hero { max-width: 820px; margin: 0 auto 26px; text-align: center; }
+    .eyebrow { margin: 0 0 7px; color: var(--brand-deep); font-size: .72rem; font-weight: 800; letter-spacing: .12em; }
+    .hero h1 { margin: 0; font-size: clamp(2.1rem, 5vw, 3.2rem); line-height: 1.12; letter-spacing: -.045em; }
+    .hero > p:not(.eyebrow) { max-width: 760px; margin: 12px auto 0; color: var(--muted); font-size: 1.04rem; }
+    .privacy-note { width: fit-content; max-width: 100%; margin: 18px auto 0; display: flex; align-items: center; gap: 8px; padding: 8px 13px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .8rem; text-align: left; }
+    .privacy-note svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--brand-deep); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); align-items: start; gap: 20px; }
+    .control-column, .inbox-column { display: grid; gap: 16px; min-width: 0; align-self: start; }
+    .panel, .reader-panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .panel { padding: clamp(18px, 2.8vw, 24px); }
+    .panel-heading { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+    .step-number { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border-radius: 11px; background: var(--brand-soft); color: var(--brand-deep); font-size: .75rem; font-weight: 800; }
+    .panel-heading h2 { margin: 0; font-size: 1.12rem; letter-spacing: -.02em; }
+    .panel-heading p { margin: 2px 0 0; color: var(--muted); font-size: .84rem; }
+    .address-card { padding: 15px; border: 1px solid var(--line); border-left: 3px solid var(--brand); border-radius: 12px; background: var(--surface-soft); }
+    .address-label { display: block; color: var(--brand-deep); font-size: .65rem; font-weight: 800; letter-spacing: .1em; }
+    .address-text { margin: 4px 0 0; font-size: clamp(1rem, 2.4vw, 1.16rem); font-weight: 750; line-height: 1.4; letter-spacing: -.02em; overflow-wrap: anywhere; }
+    .address-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; margin-top: 10px; }
+    .service-badge { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: .74rem; font-weight: 650; }
+    .service-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--success-dot); box-shadow: 0 0 0 3px var(--brand-soft); }
+    .service-badge.is-warning .service-dot { background: var(--warning-dot); box-shadow: 0 0 0 3px var(--warning-bg); }
+    .session-tag { color: var(--muted); font-size: .68rem; }
+    .address-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 116px; padding: 16px; border: 1px dashed var(--line); border-radius: 12px; background: var(--page); text-align: center; }
+    .address-empty .empty-icon { width: 38px; height: 38px; margin-bottom: 7px; border-radius: 11px; }
+    .address-empty .empty-icon svg { width: 19px; height: 19px; }
+    .address-empty strong { font-size: .83rem; }
+    .address-empty span { max-width: 280px; margin-top: 1px; color: var(--muted); font-size: .73rem; line-height: 1.45; }
+    .empty-icon { display: grid; place-items: center; background: var(--brand-soft); color: var(--brand-deep); }
+    .empty-icon svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .address-actions { display: grid; gap: 8px; margin-top: 12px; }
+    .provider-note { display: flex; align-items: flex-start; gap: 7px; margin: 10px 0 0; color: var(--muted); font-size: .7rem; line-height: 1.5; }
+    .provider-note svg { width: 14px; height: 14px; flex: none; margin-top: 2px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .btn { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 7px; padding: 9px 14px; border: 1px solid transparent; border-radius: 11px; cursor: pointer; font-size: .83rem; font-weight: 750; text-decoration: none; transition: transform .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease; }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn svg { flex: none; }
+    .btn-primary { background: linear-gradient(135deg, var(--brand-deep), var(--brand)); color: #fff; }
+    .btn-primary:hover:not(:disabled) { box-shadow: 0 7px 17px rgba(20, 184, 166, .2); }
+    .btn-outline { border-color: var(--line); background: var(--surface); color: var(--text); }
+    .btn-outline:hover:not(:disabled) { border-color: var(--brand); color: var(--brand-deep); }
+    .btn-danger { background: linear-gradient(135deg, var(--danger-solid), var(--danger-solid-alt)); color: #fff; }
+    .btn.full { width: 100%; }
+    .loading { width: 16px; height: 16px; flex: none; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; opacity: .8; animation: spin .8s linear infinite; }
+    .status-indicator { display: flex; align-items: flex-start; gap: 8px; margin-top: 11px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--page); color: var(--muted); font-size: .78rem; line-height: 1.5; }
+    .status-indicator::before { content: ""; width: 7px; height: 7px; flex: none; margin-top: 5px; border-radius: 50%; background: var(--brand); }
+    .status-indicator.is-info::before { background: var(--muted); }
+    .status-indicator.is-loading { border-color: var(--brand); background: var(--brand-soft); color: var(--brand-deep); }
+    .status-indicator.is-loading::before { background: var(--brand); animation: pulse 1.2s ease-in-out infinite; }
+    .status-indicator.is-success { border-color: var(--brand); background: var(--brand-soft); color: var(--brand-deep); }
+    .status-indicator.is-success::before { background: var(--success-dot); }
+    .status-indicator.is-warning { border-color: var(--warning-border); background: var(--warning-bg); color: var(--warning-text); }
+    .status-indicator.is-warning::before { background: var(--warning-dot); }
+    .status-indicator.is-error { border-color: var(--danger-border); background: var(--danger-bg); color: var(--danger-text); }
+    .status-indicator.is-error::before { background: var(--danger-dot); }
+    .settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .field label { display: block; margin-bottom: 5px; color: var(--text); font-size: .78rem; font-weight: 700; }
+    .field input { width: 100%; min-height: 44px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--page); color: var(--text); font-size: .84rem; }
+    .field input:focus { border-color: var(--brand-strong); outline: 0; box-shadow: 0 0 0 3px var(--brand-soft); }
+    .field-hint { margin: 9px 0 0; color: var(--muted); font-size: .72rem; line-height: 1.5; }
+    .watcher-actions { margin-top: 13px; }
+    .progress-wrap { margin-top: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--page); }
+    .progress-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 10px; color: var(--muted); font-size: .74rem; font-weight: 650; }
+    .progress-top span:last-child { color: var(--brand-deep); font-variant-numeric: tabular-nums; }
+    .progress-track { width: 100%; height: 7px; overflow: hidden; margin-top: 8px; border-radius: 999px; background: var(--line); }
+    .progress-fill { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--brand-deep), var(--brand)); transition: width .22s ease; }
+    .progress-hint { margin: 8px 0 0; color: var(--muted); font-size: .68rem; }
+    .inbox-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 15px; }
+    .inbox-head .panel-heading { margin-bottom: 0; }
+    .inbox-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 7px; }
+    .count-pill { display: inline-grid; min-width: 29px; height: 28px; place-items: center; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--brand-soft); color: var(--brand-deep); font-size: .72rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .countdown-pill { display: inline-flex; min-height: 28px; align-items: center; padding: 3px 9px; border: 1px solid var(--brand); border-radius: 999px; background: var(--brand-soft); color: var(--brand-deep); font-size: .68rem; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .inbox-toolbar .btn { padding: 7px 11px; font-size: .76rem; }
+    .messages-container { display: grid; gap: 8px; max-height: 540px; overflow-y: auto; padding-right: 3px; scrollbar-gutter: stable; }
+    .empty-state { display: grid; min-height: 330px; place-items: center; align-content: center; gap: 10px; padding: 26px; border: 1px dashed var(--line); border-radius: 13px; background: var(--page); text-align: center; }
+    .empty-state .empty-icon { width: 52px; height: 52px; border-radius: 15px; }
+    .empty-state .empty-icon svg { width: 24px; height: 24px; }
+    .empty-state strong { display: block; font-size: .93rem; }
+    .empty-state span { display: block; max-width: 290px; margin-top: 2px; color: var(--muted); font-size: .8rem; }
+    .message-item { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--page); cursor: pointer; transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease; }
+    .message-item:hover { border-color: var(--brand); }
+    .message-item.active { border-color: var(--brand-strong); background: var(--brand-soft); box-shadow: inset 3px 0 0 var(--brand-strong); }
+    .message-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 3px; }
+    .message-from { min-width: 0; font-size: .81rem; font-weight: 750; overflow-wrap: anywhere; }
+    .message-time { flex: none; color: var(--muted); font-size: .67rem; white-space: nowrap; }
+    .message-subject { color: var(--text); font-size: .82rem; font-weight: 700; line-height: 1.45; overflow-wrap: anywhere; }
+    .message-preview { display: -webkit-box; margin-top: 2px; overflow: hidden; color: var(--muted); font-size: .76rem; line-height: 1.5; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .reader-panel { overflow: hidden; animation: reader-in .18s ease; }
+    .reader-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: clamp(16px, 2.8vw, 22px); border-bottom: 1px solid var(--line); }
+    .reader-header .eyebrow { margin-bottom: 3px; }
+    .reader-subject { margin: 0; font-size: 1.08rem; line-height: 1.4; letter-spacing: -.015em; overflow-wrap: anywhere; }
+    .reader-close { display: grid; width: 36px; height: 36px; flex: none; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-soft); color: var(--muted); cursor: pointer; }
+    .reader-close:hover { border-color: var(--brand); color: var(--brand-deep); }
+    .reader-close svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+    .reader-meta { display: grid; gap: 4px; padding: 11px clamp(16px, 2.8vw, 22px); border-bottom: 1px solid var(--line); color: var(--muted); font-size: .76rem; overflow-wrap: anywhere; }
+    .reader-meta strong { color: var(--text); font-weight: 700; }
+    .reader-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 11px clamp(16px, 2.8vw, 22px); border-bottom: 1px solid var(--line); }
+    .reader-actions .btn { padding: 7px 11px; font-size: .76rem; }
+    .reader-body { max-height: 440px; overflow: auto; padding: clamp(14px, 2.8vw, 20px); }
+    .otp-box { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; padding: 12px 13px; border: 1px solid var(--brand); border-radius: 11px; background: var(--brand-soft); color: var(--brand-deep); }
+    .otp-code { font-family: var(--mono); font-size: 1.3rem; font-weight: 800; letter-spacing: .14em; line-height: 1.3; overflow-wrap: anywhere; }
+    .copy-btn { min-height: 38px; padding: 7px 11px; border: 1px solid var(--brand); border-radius: 8px; background: var(--surface); color: var(--brand-deep); cursor: pointer; font-size: .75rem; font-weight: 750; }
+    .copy-btn:hover { background: var(--brand); color: #fff; }
+    .plain-body { color: var(--text); font-size: .84rem; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .html-frame { display: block; width: 100%; min-height: 320px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+    .content-section { margin-top: 24px; padding: clamp(20px, 3vw, 28px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .section-heading { margin-bottom: 17px; }
+    .section-heading .eyebrow { margin-bottom: 4px; }
+    .section-heading h2 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.6rem); letter-spacing: -.03em; }
+    .steps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .steps-grid li { display: flex; gap: 11px; padding: 14px; border-radius: 13px; background: var(--page); }
+    .steps-grid li > span { color: var(--brand-deep); font-size: .74rem; font-weight: 800; }
+    .steps-grid h3 { margin: 0 0 4px; font-size: .89rem; }
+    .steps-grid p, .faq-section details p { margin: 0; color: var(--muted); font-size: .83rem; }
+    .faq-section details { border-top: 1px solid var(--line); }
+    .faq-section summary { padding: 13px 2px; cursor: pointer; font-weight: 700; }
+    .faq-section details p { padding: 0 2px 14px; }
+    .faq-section summary::marker { color: var(--brand-deep); }
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 10000; max-width: min(420px, calc(100vw - 32px)); padding: 12px 14px; border-radius: 12px; background: var(--text); color: var(--surface); box-shadow: 0 12px 32px rgba(15, 23, 42, .22); font-size: .83rem; font-weight: 650; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease; }
+    .toast.show { opacity: 1; transform: none; }
+    .toast.error { background: var(--danger-text); color: var(--surface); }
+    .toast.warning { background: var(--warning-text); color: var(--surface); }
+    .toast.success { background: var(--brand-deep); color: var(--surface); }
+    [data-theme="dark"] .btn-primary { color: #04211e; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 50% { opacity: .35; } }
+    @keyframes reader-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    @media (min-width: 901px) {
+      .control-column { position: sticky; top: 18px; max-height: calc(100vh - 36px); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; padding: 1px; }
+    }
+    @media (max-width: 900px) {
+      .workspace { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+      .control-column { position: static; max-height: none; overflow: visible; padding: 0; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .messages-container { max-height: none; }
+    }
+    @media (max-width: 700px) {
+      .page-shell { width: min(100% - 32px, 620px); padding-top: 32px; }
+    }
+    @media (max-width: 440px) {
+      .page-shell { width: min(100% - 24px, 400px); padding-top: 25px; }
+      .hero { margin-bottom: 20px; }
+      .hero > p:not(.eyebrow) { font-size: .96rem; }
+      .privacy-note { align-items: flex-start; border-radius: 12px; font-size: .75rem; }
+      .panel { padding: 17px; }
+      .panel-heading { margin-bottom: 15px; }
+      .settings-grid { grid-template-columns: minmax(0, 1fr); }
+      .inbox-head { align-items: center; }
+      .inbox-toolbar { width: 100%; justify-content: flex-start; }
+      .inbox-toolbar .btn { flex: 1 1 auto; }
+      .message-header { flex-direction: column; gap: 1px; }
+      .message-time { white-space: normal; }
+      .reader-header, .reader-meta, .reader-actions, .reader-body { padding-right: 17px; padding-left: 17px; }
+      .reader-actions .btn { flex: 1 1 100%; }
+      .otp-box { align-items: stretch; }
+      .copy-btn { width: 100%; }
+      .toast { right: 12px; bottom: 12px; left: 12px; max-width: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
 <body>
-    <div class="app-shell">
-        <aside class="sidebar" aria-label="Workspace">
-            <div class="brand">
-                <div class="brand-mark" aria-hidden="true">TM</div>
-                <div>
-                    <div class="brand-title">TempMail Pro</div>
-                    <div class="brand-subtitle">Disposable inbox</div>
-                </div>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">TEMPORARY INBOX · OTP READY</p>
+      <h1 id="page-title">A disposable inbox for verification codes.</h1>
+      <p>Generate a temporary address, watch incoming mail, and copy one-time codes without handing over your real inbox. A first address is requested automatically.</p>
+      <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>Session only. This page stores no address, message, or credential.</div>
+    </section>
+
+    <section class="workspace" aria-label="Temporary email workspace">
+      <div class="control-column">
+        <section class="panel" aria-labelledby="address-title">
+          <div class="panel-heading"><span class="step-number">01</span><div><h2 id="address-title">Your address</h2><p>Guerrilla Mail is tried first, then Mail.tm.</p></div></div>
+
+          <div id="emailDisplay" class="address-card" style="display: none;">
+            <span class="address-label">ACTIVE ADDRESS</span>
+            <p id="emailText" class="address-text">No email generated</p>
+            <div class="address-meta">
+              <span class="service-badge"><span class="service-dot" aria-hidden="true"></span><span id="serviceBadge">No Service</span></span>
+              <span class="session-tag">Lives in this tab</span>
             </div>
+          </div>
 
-            <nav class="nav-stack" aria-label="Primary">
-                <div class="nav-item active">
-                    <span class="nav-icon" aria-hidden="true">#</span>
-                    <span>Inbox Console</span>
-                </div>
-                <div class="nav-item">
-                    <span class="nav-icon" aria-hidden="true">@</span>
-                    <span>Email Session</span>
-                </div>
-                <div class="nav-item">
-                    <span class="nav-icon" aria-hidden="true">0</span>
-                    <span>OTP Watcher</span>
-                </div>
-            </nav>
+          <div id="noAddress" class="address-empty">
+            <div class="empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
+            <strong>No address yet</strong>
+            <span>Generate one below to start receiving mail.</span>
+          </div>
 
-            <div class="sidebar-footer">
-                <strong>Session based</strong>
-                <span>Generated inboxes live only inside this browser session.</span>
+          <div class="address-actions">
+            <button id="generateBtn" class="btn btn-primary full" type="button" aria-label="Generate email">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              <span id="generateBtnText">Generate email</span>
+              <span id="generateLoader" class="loading" style="display: none;" aria-hidden="true"></span>
+            </button>
+            <button id="copyEmailBtn" class="btn btn-outline full" type="button" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy address
+            </button>
+          </div>
+
+          <div id="statusIndicator" class="status-indicator" style="display: none;" role="status" aria-live="polite">
+            <span id="statusText">Ready to generate email</span>
+          </div>
+          <p class="provider-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>If both providers fail, a placeholder address is shown for copying only and cannot receive messages.</p>
+        </section>
+
+        <section class="panel" aria-labelledby="watcher-title">
+          <div class="panel-heading"><span class="step-number">02</span><div><h2 id="watcher-title">Watch for an OTP</h2><p>Poll the inbox until a code arrives or time runs out.</p></div></div>
+
+          <div class="settings-grid" aria-label="Watcher settings">
+            <div class="field">
+              <label for="refreshInterval">Refresh interval (s)</label>
+              <input type="number" id="refreshInterval" value="10" min="5" max="60" inputmode="numeric" aria-describedby="watcherHint">
             </div>
-        </aside>
-
-        <main class="workspace">
-            <header class="topbar">
-                <div>
-                    <div class="eyebrow">Temporary email receiver</div>
-                    <h1>Private inbox for fast verification codes.</h1>
-                    <p class="topbar-copy">Generate a disposable address, monitor incoming mail, and capture verification codes without leaving this workspace.</p>
-                </div>
-
-                <div id="statusIndicator" class="status-indicator" style="display: none;" role="status" aria-live="polite">
-                    <span id="statusText">Ready to generate email</span>
-                </div>
-            </header>
-
-            <section class="dashboard">
-                <div class="panel email-section">
-                    <div class="panel-header">
-                        <div>
-                            <div class="panel-title">Email Session</div>
-                            <div class="panel-subtitle">Current disposable address and controls</div>
-                        </div>
-                    </div>
-
-                    <div class="panel-body email-card">
-                        <div id="emailDisplay" class="email-display" style="display: none;">
-                            <div class="email-label">Active address</div>
-                            <div class="email-text" id="emailText">No email generated</div>
-                            <div class="service-row">
-                                <div class="service-badge">
-                                    <span class="service-dot" aria-hidden="true"></span>
-                                    <span id="serviceBadge">No Service</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="settings-grid" aria-label="Polling settings">
-                            <div class="field">
-                                <label for="refreshInterval">Refresh interval</label>
-                                <input type="number" id="refreshInterval" value="10" min="5" max="60" inputmode="numeric">
-                            </div>
-                            <div class="field">
-                                <label for="timeoutSetting">Timeout</label>
-                                <input type="number" id="timeoutSetting" value="300" min="60" max="1800" inputmode="numeric">
-                            </div>
-                        </div>
-
-                        <div class="actions">
-                            <button class="btn btn-primary full" id="generateBtn" type="button">
-                                <span id="generateBtnText">Generate Email</span>
-                                <span id="generateLoader" class="loading" style="display: none;" aria-hidden="true"></span>
-                            </button>
-                            <button class="btn btn-secondary" id="copyEmailBtn" type="button" style="display: none;">
-                                Copy Email
-                            </button>
-                            <button class="btn btn-secondary" id="checkInboxBtn" type="button" style="display: none;">
-                                Check Inbox
-                            </button>
-                            <button class="btn btn-primary full" id="waitOtpBtn" type="button" style="display: none;">
-                                <span id="waitOtpText">Wait for OTP</span>
-                                <span id="waitOtpLoader" class="loading" style="display: none;" aria-hidden="true"></span>
-                            </button>
-                        </div>
-
-                        <div id="progressContainer" class="progress-wrap" style="display: none;">
-                            <div class="progress-top">
-                                <span id="progressText">Waiting for OTP...</span>
-                                <span id="progressPercent">0%</span>
-                            </div>
-                            <div class="progress-bar" aria-hidden="true">
-                                <div class="progress-fill" id="progressFill"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel messages-section messages-panel">
-                    <div class="panel-header">
-                        <div>
-                            <div class="panel-title">Messages & OTPs</div>
-                            <div class="panel-subtitle">Incoming mail appears here</div>
-                        </div>
-                        <div class="messages-toolbar">
-                            <span id="messageCount" class="counter">0</span>
-                        </div>
-                    </div>
-
-                    <div class="panel-body">
-                        <div class="messages-container" id="messagesContainer">
-                            <div class="empty-state" id="noMessages">
-                                <div>
-                                    <strong>No active inbox yet</strong>
-                                    <span>Generate an email first to start receiving messages.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <div id="toast" class="toast" role="status" aria-live="polite">
-        <span id="toastMessage">Message copied.</span>
-    </div>
-    <div id="emailModal" class="email-modal" style="display: none;">
-        <div class="email-modal-overlay" id="emailModalOverlay"></div>
-        <div class="email-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalSubject">
-            <div class="email-modal-header">
-                <div>
-                    <div class="panel-subtitle">Subject</div>
-                    <div class="detail-subject" id="modalSubject">Loading...</div>
-                </div>
-                <button type="button" class="mini-btn" id="closeModalBtn">Close</button>
+            <div class="field">
+              <label for="timeoutSetting">Timeout (s)</label>
+              <input type="number" id="timeoutSetting" value="300" min="60" max="1800" inputmode="numeric" aria-describedby="watcherHint">
             </div>
-            <div class="email-modal-meta">
-                <div><strong>From:</strong> <span id="modalFrom">-</span></div>
-                <div><strong>Received:</strong> <span id="modalReceived">-</span></div>
+          </div>
+          <p class="field-hint" id="watcherHint">Checks every 5–60 seconds for up to 60–1800 seconds. Values are clamped when the watcher starts.</p>
+
+          <div class="watcher-actions">
+            <button id="waitOtpBtn" class="btn btn-primary full" type="button" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <span id="waitOtpText">Wait for OTP</span>
+              <span id="waitOtpLoader" class="loading" style="display: none;" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div id="progressContainer" class="progress-wrap" style="display: none;">
+            <div class="progress-top">
+              <span id="progressText">Waiting for OTP...</span>
+              <span id="progressPercent">0%</span>
             </div>
-            <div class="email-modal-actions">
-                <button type="button" class="mini-btn" id="modalCopyOtpBtn">Copy OTP</button>
-                <button type="button" class="mini-btn" id="modalRefreshBtn">Refresh</button>
+            <div id="progressTrack" class="progress-track" role="progressbar" aria-label="OTP wait progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Waiting for OTP">
+              <div class="progress-fill" id="progressFill"></div>
             </div>
-            <div class="email-modal-body" id="modalBody">
-                <div class="plain-body">Loading message...</div>
+            <p class="progress-hint">The countdown appears beside the inbox refresh button. Keep this tab open while watching.</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="inbox-column">
+        <section class="panel" aria-labelledby="inbox-title">
+          <div class="inbox-head">
+            <div class="panel-heading"><span class="step-number">03</span><div><h2 id="inbox-title">Inbox</h2><p>Messages arrive through the temporary provider.</p></div></div>
+            <div class="inbox-toolbar">
+              <span id="messageCount" class="count-pill" title="Messages in inbox">0</span>
+              <span id="refreshCountdown" class="countdown-pill" hidden>Next check in 10s</span>
+              <button id="checkInboxBtn" class="btn btn-outline" type="button" style="display: none;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+                <span>Refresh inbox</span>
+                <span id="checkInboxLoader" class="loading" style="display: none;" aria-hidden="true"></span>
+              </button>
             </div>
-        </div>
-    </div>
+          </div>
 
-    <script>
-        class TempMailReceiver {
-            constructor() {
-                this.email = null;
-                this.username = null;
-                this.domain = null;
-                this.service = null;
-                this.sessionData = {};
-                this.isWaitingForOTP = false;
-                this.waitingInterval = null;
-                this.seenMessages = new Set();
-                this.isCheckingInbox = false;
-            }
+          <div id="messagesContainer" class="messages-container" aria-label="Inbox messages">
+            <div class="empty-state" id="noMessages">
+              <div class="empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
+              <div><strong>No active inbox yet</strong><span>Generate an email first to start receiving messages.</span></div>
+            </div>
+          </div>
+        </section>
 
-            async generateEmailMailJS() {
-                try {
-                    this.updateStatus('Generating email with MailJS...', 'loading');
-                    this.username = this.generateRandomString(10);
+        <section id="emailModal" class="reader-panel" style="display: none;" role="region" aria-labelledby="modalSubject">
+          <div class="reader-header">
+            <div>
+              <p class="eyebrow">MESSAGE VIEW</p>
+              <h2 id="modalSubject" class="reader-subject" tabindex="-1">Loading...</h2>
+            </div>
+            <button id="closeModalBtn" class="reader-close" type="button" aria-label="Close message">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="reader-meta">
+            <div><strong>From:</strong> <span id="modalFrom">-</span></div>
+            <div><strong>Received:</strong> <span id="modalReceived">-</span></div>
+          </div>
+          <div class="reader-actions">
+            <button type="button" class="btn btn-outline" id="modalCopyOtpBtn">Copy OTP</button>
+            <button type="button" class="btn btn-outline" id="modalRefreshBtn">Refresh message</button>
+          </div>
+          <div class="reader-body" id="modalBody">
+            <div class="plain-body">Loading message...</div>
+          </div>
+        </section>
+      </div>
+    </section>
 
-                    const domainsResponse = await fetch('https://api.mail.tm/domains');
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to receive a code</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Generate an address</h3><p>An inbox is requested automatically. Copy the address into the service that needs verification.</p></div></li>
+        <li><span>02</span><div><h3>Check the inbox</h3><p>Refresh manually, or start the OTP watcher to poll on your schedule with a visible countdown.</p></div></li>
+        <li><span>03</span><div><h3>Copy the code</h3><p>Open a message to read it. Any 4–8 digit code can be copied from the reader or the OTP box.</p></div></li>
+      </ol>
+    </section>
 
-                    if (domainsResponse.ok) {
-                        const domainsData = await domainsResponse.json();
-                        const domains = domainsData['hydra:member'];
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND LIMITS</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>Is this temporary email private?</summary><p>The address is not linked to your real identity, and this page stores nothing. Messages are handled by the temporary email provider that creates the inbox, so treat the address as public and avoid using it for sensitive accounts.</p></details>
+      <details><summary>How long does the inbox last?</summary><p>The session lives only in this tab. Reloading starts a new address, and the provider controls how long its server keeps the old inbox.</p></details>
+      <details><summary>What happens if both providers are unavailable?</summary><p>A placeholder address is shown for copying only and cannot receive messages. Generate again later to retry Guerrilla Mail and Mail.tm.</p></details>
+      <details><summary>How does the OTP watcher work?</summary><p>It checks the inbox at your chosen interval until it finds a 4–8 digit code or reaches the timeout. The countdown appears beside Refresh inbox. All checks stop when a code is found, you press Stop waiting, or time runs out.</p></details>
+      <details><summary>Are messages or credentials stored?</summary><p>No. This page writes no inbox, message, or credential to local storage and has no server of its own. Closing or reloading the tab ends the session.</p></details>
+    </section>
+  </main>
 
-                        if (domains && domains.length > 0) {
-                            this.domain = domains[0].domain;
-                            this.email = `${this.username}@${this.domain}`;
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-                            const accountData = {
-                                address: this.email,
-                                password: 'temppass123'
-                            };
+  <script>
+    class TempMailReceiver {
+      constructor() {
+        this.email = null;
+        this.username = null;
+        this.domain = null;
+        this.service = null;
+        this.sessionData = {};
+        this.isWaitingForOTP = false;
+        this.waitingInterval = null;
+        this.seenMessages = new Set();
+        this.isCheckingInbox = false;
+      }
 
-                            const accountResponse = await fetch('https://api.mail.tm/accounts', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(accountData)
-                            });
+      async generateEmailMailJS() {
+        try {
+          this.updateStatus('Generating email with MailJS...', 'loading');
+          this.username = this.generateRandomString(10);
 
-                            if (accountResponse.status === 201) {
-                                const authResponse = await fetch('https://api.mail.tm/token', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        address: this.email,
-                                        password: 'temppass123'
-                                    })
-                                });
+          const domainsResponse = await fetch('https://api.mail.tm/domains');
 
-                                if (authResponse.ok) {
-                                    const authData = await authResponse.json();
-                                    this.sessionData.token = authData.token;
-                                    this.service = 'MailJS';
-                                    return this.email;
-                                }
-                            }
-                        }
-                    }
+          if (domainsResponse.ok) {
+            const domainsData = await domainsResponse.json();
+            const domains = domainsData['hydra:member'];
 
-                    return null;
-                } catch (error) {
-                    console.error('MailJS error:', error);
-                    return null;
+            if (domains && domains.length > 0) {
+              this.domain = domains[0].domain;
+              this.email = `${this.username}@${this.domain}`;
+
+              const accountData = {
+                address: this.email,
+                password: 'temppass123'
+              };
+
+              const accountResponse = await fetch('https://api.mail.tm/accounts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(accountData)
+              });
+
+              if (accountResponse.status === 201) {
+                const authResponse = await fetch('https://api.mail.tm/token', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    address: this.email,
+                    password: 'temppass123'
+                  })
+                });
+
+                if (authResponse.ok) {
+                  const authData = await authResponse.json();
+                  this.sessionData.token = authData.token;
+                  this.service = 'MailJS';
+                  return this.email;
                 }
+              }
             }
+          }
 
-            async generateEmail1SecMail() {
-                try {
-                    this.updateStatus('Generating email with 1SecMail...', 'loading');
-                    this.username = this.generateRandomString(10);
-
-                    const domainsResponse = await fetch('https://www.1secmail.com/api/v1/?action=getDomainList');
-
-                    if (domainsResponse.ok) {
-                        try {
-                            const domains = await domainsResponse.json();
-                            if (domains && Array.isArray(domains) && domains.length > 0) {
-                                this.domain = domains[Math.floor(Math.random() * domains.length)];
-                                this.email = `${this.username}@${this.domain}`;
-                                this.service = '1SecMail';
-                                return this.email;
-                            }
-                        } catch (jsonError) {
-                            const fallbackDomains = ['1secmail.com', '1secmail.org', '1secmail.net'];
-                            this.domain = fallbackDomains[Math.floor(Math.random() * fallbackDomains.length)];
-                            this.email = `${this.username}@${this.domain}`;
-                            this.service = '1SecMail (Fallback)';
-                            return this.email;
-                        }
-                    }
-
-                    return null;
-                } catch (error) {
-                    console.error('1SecMail error:', error);
-                    return null;
-                }
-            }
-
-            async generateEmailFallback() {
-                try {
-                    this.updateStatus('Using fallback email generator...', 'warning');
-
-                    const fallbackDomains = ['tempmail.org', 'guerrillamail.com', '10minutemail.com'];
-                    this.username = this.generateRandomString(12);
-                    this.domain = fallbackDomains[Math.floor(Math.random() * fallbackDomains.length)];
-                    this.email = `${this.username}@${this.domain}`;
-                    this.service = 'Fallback';
-
-                    return this.email;
-                } catch (error) {
-                    console.error('Fallback error:', error);
-                    return null;
-                }
-            }
-
-            async generateEmail() {
-                const services = [
-                    this.generateEmailMailJS.bind(this),
-                    this.generateEmail1SecMail.bind(this),
-                    this.generateEmailFallback.bind(this)
-                ];
-
-                for (const serviceFunc of services) {
-                    const email = await serviceFunc();
-                    if (email) {
-                        this.updateStatus(`Email generated successfully using ${this.service}`, 'success');
-                        return email;
-                    }
-                }
-
-                this.updateStatus('All services failed. Please try again later.', 'error');
-                return null;
-            }
-
-            async checkInboxMailJS() {
-                try {
-                    if (!this.sessionData.token) return [];
-
-                    const response = await fetch('https://api.mail.tm/messages', {
-                        headers: { 'Authorization': `Bearer ${this.sessionData.token}` }
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        return data['hydra:member'] || [];
-                    }
-                    return [];
-                } catch (error) {
-                    console.error('MailJS inbox error:', error);
-                    return [];
-                }
-            }
-
-            async checkInbox1SecMail() {
-                try {
-                    const response = await fetch(
-                        `https://www.1secmail.com/api/v1/?action=getMessages&login=${encodeURIComponent(this.username)}&domain=${encodeURIComponent(this.domain)}`
-                    );
-
-                    if (response.ok) {
-                        return await response.json();
-                    }
-                    return [];
-                } catch (error) {
-                    console.error('1SecMail inbox error:', error);
-                    return [];
-                }
-            }
-
-            async checkInbox() {
-                if (!this.email) return [];
-
-                if (this.service.includes('MailJS')) {
-                    return await this.checkInboxMailJS();
-                } else if (this.service.includes('1SecMail')) {
-                    return await this.checkInbox1SecMail();
-                }
-
-                return [];
-            }
-
-            async getMessageContent(messageId) {
-                try {
-                    if (this.service.includes('MailJS') && this.sessionData.token) {
-                        const response = await fetch(`https://api.mail.tm/messages/${messageId}`, {
-                            headers: { 'Authorization': `Bearer ${this.sessionData.token}` }
-                        });
-
-                        if (response.ok) {
-                            return await response.json();
-                        }
-                    } else if (this.service.includes('1SecMail')) {
-                        const response = await fetch(
-                            `https://www.1secmail.com/api/v1/?action=readMessage&login=${encodeURIComponent(this.username)}&domain=${encodeURIComponent(this.domain)}&id=${encodeURIComponent(messageId)}`
-                        );
-
-                        if (response.ok) {
-                            return await response.json();
-                        }
-                    }
-                    return null;
-                } catch (error) {
-                    console.error('Get message content error:', error);
-                    return null;
-                }
-            }
-
-            extractOTP(text) {
-                if (!text) return null;
-
-                text = String(text).replace(/\n/g, ' ').replace(/\r/g, ' ');
-
-                const otpPatterns = [
-                    /\b(\d{4,8})\b/g,
-                    /code[:\s]*(\d{4,8})/gi,
-                    /verification[:\s]*(\d{4,8})/gi,
-                    /otp[:\s]*(\d{4,8})/gi,
-                    /pin[:\s]*(\d{4,8})/gi,
-                    /(\d{4,8})[:\s]*is your/gi,
-                    /your[:\s]*(\d{4,8})/gi,
-                    /token[:\s]*(\d{4,8})/gi,
-                    /confirm[:\s]*(\d{4,8})/gi
-                ];
-
-                const foundCodes = [];
-                for (const pattern of otpPatterns) {
-                    const matches = [...text.matchAll(pattern)];
-                    for (const match of matches) {
-                        if (match[1] && match[1].length >= 4) {
-                            foundCodes.push(match[1]);
-                        }
-                    }
-                }
-
-                if (foundCodes.length > 0) {
-                    foundCodes.sort((a, b) => b.length - a.length);
-                    return foundCodes[0];
-                }
-
-                return null;
-            }
-
-            generateRandomString(length) {
-                const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-                let result = '';
-                for (let i = 0; i < length; i++) {
-                    result += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return result;
-            }
-
-            updateStatus(message, type = 'info') {
-                const statusIndicator = document.getElementById('statusIndicator');
-                const statusText = document.getElementById('statusText');
-
-                statusIndicator.style.display = 'block';
-                statusText.textContent = message;
-                statusIndicator.className = 'status-indicator';
-
-                if (type === 'error') statusIndicator.classList.add('error');
-                else if (type === 'warning') statusIndicator.classList.add('warning');
-                else if (type === 'success') statusIndicator.classList.add('success');
-
-                console.log(`[${type.toUpperCase()}] ${message}`);
-            }
+          return null;
+        } catch (error) {
+          console.error('MailJS error:', error);
+          return null;
         }
+      }
 
-        const tempMail = new TempMailReceiver();
-        let inboxMessages = [];
-        let selectedMessage = null;
-        let selectedMessageId = null;
-        let selectedOtp = null;
+      async generateEmailGuerrilla() {
+        try {
+          this.updateStatus('Generating email with Guerrilla Mail...', 'loading');
 
-        function clampNumber(value, min, max, fallback) {
-            const parsed = Number.parseInt(value, 10);
-            if (Number.isNaN(parsed)) return fallback;
-            return Math.min(Math.max(parsed, min), max);
+          const response = await fetch('https://api.guerrillamail.com/ajax.php?f=get_email_address&lang=en');
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.email_addr && data.sid_token) {
+              this.email = data.email_addr;
+              [this.username, this.domain] = data.email_addr.split('@');
+              this.sessionData.sidToken = data.sid_token;
+              this.service = 'Guerrilla Mail';
+              return this.email;
+            }
+          }
+
+          return null;
+        } catch (error) {
+          console.error('Guerrilla Mail error:', error);
+          return null;
         }
+      }
 
-        function setMessageCount(count) {
-            document.getElementById('messageCount').textContent = String(count);
+      async generateEmailFallback() {
+        try {
+          this.updateStatus('Using fallback email generator...', 'warning');
+
+          const fallbackDomains = ['tempmail.org', 'guerrillamail.com', '10minutemail.com'];
+          this.username = this.generateRandomString(12);
+          this.domain = fallbackDomains[Math.floor(Math.random() * fallbackDomains.length)];
+          this.email = `${this.username}@${this.domain}`;
+          this.service = 'Fallback';
+
+          return this.email;
+        } catch (error) {
+          console.error('Fallback error:', error);
+          return null;
         }
+      }
 
-        function normalizeMessageId(message) {
-            const id = message?.id || message?.['@id'] || message?.messageId || message?.uid;
-            if (!id) return null;
-            const raw = String(id);
-            return raw.startsWith('/messages/') ? raw.split('/').pop() : raw;
-        }
+      async generateEmail() {
+        const services = [
+          this.generateEmailGuerrilla.bind(this),
+          this.generateEmailMailJS.bind(this),
+          this.generateEmailFallback.bind(this)
+        ];
 
-        function getSender(message) {
-            const sender = message?.from || message?.sender;
-            if (!sender) return 'Unknown';
-            if (typeof sender === 'string') return sender;
-            return sender.address || sender.name || 'Unknown';
-        }
-
-        function extractTextContent(content) {
-            const html = Array.isArray(content?.html) ? content.html.join('\n') : (content?.html || '');
-            const text = content?.text || content?.textBody || content?.body || content?.intro || '';
-            if (text) return String(text);
-            const div = document.createElement('div');
-            div.innerHTML = html;
-            return (div.textContent || div.innerText || '').trim();
-        }
-
-        function sanitizeHtml(html) {
-            let safe = String(html || '');
-            safe = safe.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
-            safe = safe.replace(/\son\w+="[^"]*"/gi, '');
-            safe = safe.replace(/\son\w+='[^']*'/gi, '');
-            safe = safe.replace(/<a\s/gi, '<a target="_blank" rel="noopener noreferrer" ');
-            return safe;
-        }
-
-        function openModalLoading(message) {
-            const modal = document.getElementById('emailModal');
-            modal.style.display = 'grid';
-            document.getElementById('modalSubject').textContent = message?.subject || 'Loading...';
-            document.getElementById('modalFrom').textContent = getSender(message);
-            document.getElementById('modalReceived').textContent = 'Loading...';
-            document.getElementById('modalBody').innerHTML = '<div class="plain-body">Loading message...</div>';
-            selectedOtp = null;
-        }
-
-        function closeModal() {
-            document.getElementById('emailModal').style.display = 'none';
-        }
-
-        function renderModalContent(message, content) {
-            const subject = content?.subject || message?.subject || 'No Subject';
-            const receivedAt = content?.createdAt || content?.date || message?.createdAt || message?.date;
-            const displayTime = receivedAt ? new Date(receivedAt).toLocaleString() : '-';
-            const sender = getSender(content || message);
-            const html = Array.isArray(content?.html) ? content.html.join('\n') : (content?.html || '');
-            const text = extractTextContent(content);
-            const otp = tempMail.extractOTP(text);
-            const body = document.getElementById('modalBody');
-
-            document.getElementById('modalSubject').textContent = subject;
-            document.getElementById('modalFrom').textContent = sender;
-            document.getElementById('modalReceived').textContent = displayTime;
-
-            if (html) {
-                body.innerHTML = otp ? `<div class="otp-box"><div class="otp-code">${otp}</div><button class="copy-btn" type="button" id="modalInlineOtpCopy">Copy OTP</button></div>` : '';
-                const frame = document.createElement('iframe');
-                frame.className = 'html-frame';
-                frame.setAttribute('sandbox', 'allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation');
-                frame.srcdoc = sanitizeHtml(html);
-                body.appendChild(frame);
+        for (const serviceFunc of services) {
+          const email = await serviceFunc();
+          if (email) {
+            if (this.service === 'Fallback') {
+              this.updateStatus('Fallback address generated. It can be copied but cannot receive mail.', 'warning');
             } else {
-                const safeText = (text || 'No message body available.').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                body.innerHTML = `${otp ? `<div class="otp-box"><div class="otp-code">${otp}</div><button class="copy-btn" type="button" id="modalInlineOtpCopy">Copy OTP</button></div>` : ''}<div class="plain-body">${safeText}</div>`;
+              this.updateStatus(`Email generated successfully using ${this.service}`, 'success');
             }
-
-            const inlineCopy = document.getElementById('modalInlineOtpCopy');
-            if (inlineCopy && otp) {
-                inlineCopy.addEventListener('click', () => {
-                    copyToClipboard(otp);
-                    showToast('OTP copied.', 'success');
-                });
-            }
-
-            selectedMessage = { message, content, text };
-            selectedOtp = otp;
+            return email;
+          }
         }
 
-        async function openMessage(message) {
-            const messageId = normalizeMessageId(message);
-            if (!messageId) {
-                showToast('Unable to open: missing message id.', 'error');
-                return;
-            }
-            selectedMessageId = messageId;
-            openModalLoading(message);
-            try {
-                const content = await tempMail.getMessageContent(messageId);
-                if (!content) {
-                    document.getElementById('modalBody').innerHTML = '<div class="plain-body">Unable to load message content.</div>';
-                    showToast('Failed to load message.', 'error');
-                    return;
-                }
-                renderModalContent(message, content);
-            } catch (error) {
-                console.error('Open message error:', error);
-                document.getElementById('modalBody').innerHTML = '<div class="plain-body">Failed to open message.</div>';
-                showToast('Failed to open message.', 'error');
-            }
+        this.updateStatus('All services failed. Please try again later.', 'error');
+        return null;
+      }
+
+      async checkInboxMailJS() {
+        try {
+          if (!this.sessionData.token) return [];
+
+          const response = await fetch('https://api.mail.tm/messages', {
+            headers: { 'Authorization': `Bearer ${this.sessionData.token}` }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            return data['hydra:member'] || [];
+          }
+          return [];
+        } catch (error) {
+          console.error('MailJS inbox error:', error);
+          return [];
+        }
+      }
+
+      async checkInboxGuerrilla() {
+        try {
+          if (!this.sessionData.sidToken) return [];
+
+          const response = await fetch(
+            `https://api.guerrillamail.com/ajax.php?f=check_email&seq=0&sid_token=${encodeURIComponent(this.sessionData.sidToken)}`
+          );
+
+          if (!response.ok) return [];
+
+          const data = await response.json();
+          if (!Array.isArray(data.list)) return [];
+
+          return data.list.map((message) => ({
+            id: String(message.mail_id),
+            from: message.mail_from,
+            subject: message.mail_subject || 'No Subject',
+            intro: message.mail_excerpt || '',
+            createdAt: new Date((Number(message.mail_timestamp) || 0) * 1000).toISOString()
+          }));
+        } catch (error) {
+          console.error('Guerrilla Mail inbox error:', error);
+          return [];
+        }
+      }
+
+      async checkInbox() {
+        if (!this.email) return [];
+
+        if (this.service.includes('Guerrilla')) {
+          return await this.checkInboxGuerrilla();
+        } else if (this.service.includes('MailJS')) {
+          return await this.checkInboxMailJS();
         }
 
-        async function generateEmail() {
-            const generateBtn = document.getElementById('generateBtn');
-            const generateBtnText = document.getElementById('generateBtnText');
-            const generateLoader = document.getElementById('generateLoader');
-            const emailDisplay = document.getElementById('emailDisplay');
-            const emailText = document.getElementById('emailText');
-            const serviceBadge = document.getElementById('serviceBadge');
-            const copyEmailBtn = document.getElementById('copyEmailBtn');
-            const waitOtpBtn = document.getElementById('waitOtpBtn');
-            const checkInboxBtn = document.getElementById('checkInboxBtn');
-            generateBtn.disabled = true;
-            generateBtnText.style.display = 'none';
-            generateLoader.style.display = 'inline-block';
-            try {
-                const email = await tempMail.generateEmail();
-                if (email) {
-                    emailDisplay.style.display = 'block';
-                    emailText.textContent = email;
-                    serviceBadge.textContent = tempMail.service;
-                    copyEmailBtn.style.display = 'inline-flex';
-                    waitOtpBtn.style.display = 'inline-flex';
-                    checkInboxBtn.style.display = 'inline-flex';
-                    tempMail.seenMessages.clear();
-                    inboxMessages = [];
-                    updateMessagesDisplay([]);
-                    closeModal();
-                    showToast('Email generated successfully.', 'success');
-                } else {
-                    showToast('Failed to generate email. Please try again.', 'error');
-                }
-            } catch (error) {
-                console.error('Generate email error:', error);
-                showToast('Error generating email. Please try again.', 'error');
-            } finally {
-                generateBtn.disabled = false;
-                generateBtnText.style.display = 'inline-block';
-                generateLoader.style.display = 'none';
-            }
-        }
+        return [];
+      }
 
-        async function checkInbox() {
-            if (!tempMail.email) {
-                showToast('Please generate an email first.', 'error');
-                return;
-            }
-            tempMail.updateStatus('Checking inbox...', 'loading');
-            try {
-                const messages = await tempMail.checkInbox();
-                updateMessagesDisplay(messages);
-                if (messages.length > 0) {
-                    tempMail.updateStatus(`Found ${messages.length} message(s)`, 'success');
-                    showToast(`Found ${messages.length} message(s).`, 'success');
-                } else {
-                    tempMail.updateStatus('No messages found', 'info');
-                    showToast('No messages found.', 'info');
-                }
-            } catch (error) {
-                console.error('Check inbox error:', error);
-                tempMail.updateStatus('Error checking inbox', 'error');
-                showToast('Error checking inbox.', 'error');
-            }
-        }
+      async getMessageContent(messageId) {
+        try {
+          if (this.service.includes('Guerrilla') && this.sessionData.sidToken) {
+            const response = await fetch(
+              `https://api.guerrillamail.com/ajax.php?f=fetch_email&email_id=${encodeURIComponent(messageId)}&sid_token=${encodeURIComponent(this.sessionData.sidToken)}`
+            );
 
-        async function startWaitingForOTP() {
-            if (!tempMail.email) {
-                showToast('Please generate an email first.', 'error');
-                return;
+            if (response.ok) {
+              const data = await response.json();
+              const body = String(data.mail_body || '');
+              const isHtml = /<[a-z][\s\S]*>/i.test(body);
+              return {
+                id: String(data.mail_id || messageId),
+                subject: data.mail_subject || 'No Subject',
+                from: data.mail_from,
+                createdAt: new Date((Number(data.mail_timestamp) || 0) * 1000).toISOString(),
+                html: isHtml ? body : '',
+                text: isHtml ? '' : body
+              };
             }
-            if (tempMail.service === 'Fallback') {
-                showToast('Fallback emails cannot receive messages. Please generate a new email.', 'error');
-                return;
-            }
-            const waitOtpBtn = document.getElementById('waitOtpBtn');
-            const waitOtpText = document.getElementById('waitOtpText');
-            const waitOtpLoader = document.getElementById('waitOtpLoader');
-            const progressContainer = document.getElementById('progressContainer');
-            const progressFill = document.getElementById('progressFill');
-            const progressText = document.getElementById('progressText');
-            const progressPercent = document.getElementById('progressPercent');
-            if (tempMail.isWaitingForOTP) {
-                stopWaitingForOTP();
-                return;
-            }
-            tempMail.isWaitingForOTP = true;
-            waitOtpBtn.classList.remove('btn-primary');
-            waitOtpBtn.classList.add('btn-danger');
-            waitOtpText.textContent = 'Stop Waiting';
-            waitOtpLoader.style.display = 'inline-block';
-            progressContainer.style.display = 'grid';
-            progressFill.style.width = '0%';
-            progressPercent.textContent = '0%';
-            const timeoutSeconds = clampNumber(document.getElementById('timeoutSetting').value, 60, 1800, 300);
-            const intervalSeconds = clampNumber(document.getElementById('refreshInterval').value, 5, 60, 10);
-            document.getElementById('timeoutSetting').value = timeoutSeconds;
-            document.getElementById('refreshInterval').value = intervalSeconds;
-            const totalChecks = Math.max(1, Math.floor(timeoutSeconds / intervalSeconds));
-            let currentCheck = 0;
-            tempMail.updateStatus(`Waiting for OTP (${timeoutSeconds}s timeout)...`, 'loading');
-            tempMail.waitingInterval = setInterval(async () => {
-                if (!tempMail.isWaitingForOTP || tempMail.isCheckingInbox) return;
-                tempMail.isCheckingInbox = true;
-                currentCheck++;
-                const progress = Math.min(100, Math.round((currentCheck / totalChecks) * 100));
-                const secondsRemaining = Math.max(0, timeoutSeconds - (currentCheck * intervalSeconds));
-                progressFill.style.width = `${progress}%`;
-                progressPercent.textContent = `${progress}%`;
-                progressText.textContent = `Waiting for OTP... ${secondsRemaining}s remaining`;
-                try {
-                    const messages = await tempMail.checkInbox();
-                    updateMessagesDisplay(messages);
-                    for (const message of messages) {
-                        const id = normalizeMessageId(message);
-                        if (!id || tempMail.seenMessages.has(id)) continue;
-                        tempMail.seenMessages.add(id);
-                        const content = await tempMail.getMessageContent(id);
-                        if (!content) continue;
-                        const otp = tempMail.extractOTP(extractTextContent(content));
-                        if (otp) {
-                            stopWaitingForOTP();
-                            tempMail.updateStatus(`OTP found: ${otp}`, 'success');
-                            showToast(`OTP found: ${otp}`, 'success');
-                            await openMessage(message);
-                            return;
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error while waiting for OTP:', error);
-                } finally {
-                    tempMail.isCheckingInbox = false;
-                }
-                if (currentCheck >= totalChecks) {
-                    stopWaitingForOTP();
-                    tempMail.updateStatus('Timeout reached. No OTP received.', 'warning');
-                    showToast('Timeout reached. No OTP received.', 'warning');
-                }
-            }, intervalSeconds * 1000);
-        }
-
-        function stopWaitingForOTP() {
-            tempMail.isWaitingForOTP = false;
-            tempMail.isCheckingInbox = false;
-            if (tempMail.waitingInterval) {
-                clearInterval(tempMail.waitingInterval);
-                tempMail.waitingInterval = null;
-            }
-            document.getElementById('waitOtpBtn').classList.remove('btn-danger');
-            document.getElementById('waitOtpBtn').classList.add('btn-primary');
-            document.getElementById('waitOtpText').textContent = 'Wait for OTP';
-            document.getElementById('waitOtpLoader').style.display = 'none';
-            document.getElementById('progressContainer').style.display = 'none';
-        }
-
-        function createMessageShell() {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'message-item';
-            messageElement.setAttribute('role', 'button');
-            messageElement.setAttribute('tabindex', '0');
-            const header = document.createElement('div');
-            header.className = 'message-header';
-            const from = document.createElement('div');
-            from.className = 'message-from';
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            const subject = document.createElement('div');
-            subject.className = 'message-subject';
-            const preview = document.createElement('div');
-            preview.className = 'message-preview';
-            header.append(from, time);
-            messageElement.append(header, subject, preview);
-            return { messageElement, from, time, subject, preview };
-        }
-
-        function updateMessagesDisplay(messages) {
-            inboxMessages = messages;
-            const messagesContainer = document.getElementById('messagesContainer');
-            const noMessages = document.getElementById('noMessages');
-            setMessageCount(messages.length);
-            if (messages.length === 0) {
-                noMessages.style.display = 'grid';
-                noMessages.querySelector('strong').textContent = tempMail.email ? 'No messages yet' : 'No active inbox yet';
-                noMessages.querySelector('span').textContent = tempMail.email ? 'Waiting for incoming emails.' : 'Generate an email first to start receiving messages.';
-                return;
-            }
-            noMessages.style.display = 'none';
-            messagesContainer.querySelectorAll('.message-item').forEach((msg) => msg.remove());
-            messages.forEach((message) => {
-                const { messageElement, from, time, subject, preview } = createMessageShell();
-                const id = normalizeMessageId(message);
-                const sender = getSender(message);
-                const subjectText = message.subject || 'No Subject';
-                const timeValue = message.createdAt || message.date || new Date().toISOString();
-                const previewText = message.intro || message.text || 'Click to open';
-                from.textContent = sender;
-                time.textContent = new Date(timeValue).toLocaleString();
-                subject.textContent = subjectText;
-                preview.textContent = `${String(previewText).substring(0, 200)}${String(previewText).length > 200 ? '...' : ''}`;
-                if (id && id === selectedMessageId) {
-                    messageElement.classList.add('active');
-                }
-                const onOpen = () => openMessage(message);
-                messageElement.addEventListener('click', onOpen);
-                messageElement.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        onOpen();
-                    }
-                });
-                messagesContainer.appendChild(messageElement);
+          } else if (this.service.includes('MailJS') && this.sessionData.token) {
+            const response = await fetch(`https://api.mail.tm/messages/${messageId}`, {
+              headers: { 'Authorization': `Bearer ${this.sessionData.token}` }
             });
+
+            if (response.ok) {
+              return await response.json();
+            }
+          }
+          return null;
+        } catch (error) {
+          console.error('Get message content error:', error);
+          return null;
+        }
+      }
+
+      extractOTP(text) {
+        if (!text) return null;
+
+        text = String(text).replace(/\n/g, ' ').replace(/\r/g, ' ');
+
+        const otpPatterns = [
+          /\b(\d{4,8})\b/g,
+          /code[:\s]*(\d{4,8})/gi,
+          /verification[:\s]*(\d{4,8})/gi,
+          /otp[:\s]*(\d{4,8})/gi,
+          /pin[:\s]*(\d{4,8})/gi,
+          /(\d{4,8})[:\s]*is your/gi,
+          /your[:\s]*(\d{4,8})/gi,
+          /token[:\s]*(\d{4,8})/gi,
+          /confirm[:\s]*(\d{4,8})/gi
+        ];
+
+        const foundCodes = [];
+        for (const pattern of otpPatterns) {
+          const matches = [...text.matchAll(pattern)];
+          for (const match of matches) {
+            if (match[1] && match[1].length >= 4) {
+              foundCodes.push(match[1]);
+            }
+          }
         }
 
-        function copyEmail() {
-            if (tempMail.email) {
-                copyToClipboard(tempMail.email);
-                showToast('Email copied to clipboard.', 'success');
-            }
+        if (foundCodes.length > 0) {
+          foundCodes.sort((a, b) => b.length - a.length);
+          return foundCodes[0];
         }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                console.log('Copied to clipboard:', text);
-            }).catch(err => {
-                console.error('Failed to copy:', err);
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-            });
+        return null;
+      }
+
+      generateRandomString(length) {
+        const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
         }
+        return result;
+      }
 
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
+      updateStatus(message, type = 'info') {
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
 
-            toastMessage.textContent = message;
-            toast.className = `toast ${type}`;
-            toast.classList.add('show');
+        statusIndicator.style.display = 'flex';
+        statusText.textContent = message;
+        statusIndicator.className = 'status-indicator';
 
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+        if (type === 'error') statusIndicator.classList.add('is-error');
+        else if (type === 'warning') statusIndicator.classList.add('is-warning');
+        else if (type === 'success') statusIndicator.classList.add('is-success');
+        else if (type === 'loading') statusIndicator.classList.add('is-loading');
+        else statusIndicator.classList.add('is-info');
+
+        console.log(`[${type.toUpperCase()}] ${message}`);
+      }
+    }
+
+    const tempMail = new TempMailReceiver();
+    let inboxMessages = [];
+    let selectedMessageId = null;
+    let selectedOtp = null;
+    let readerTrigger = null;
+    let countdownTimer = null;
+    let nextCheckAt = 0;
+    let toastTimer = null;
+
+    function clampNumber(value, min, max, fallback) {
+      const parsed = Number.parseInt(value, 10);
+      if (Number.isNaN(parsed)) return fallback;
+      return Math.min(Math.max(parsed, min), max);
+    }
+
+    function setMessageCount(count) {
+      document.getElementById('messageCount').textContent = String(count);
+    }
+
+    function normalizeMessageId(message) {
+      const id = message?.id || message?.['@id'] || message?.messageId || message?.uid;
+      if (!id) return null;
+      const raw = String(id);
+      return raw.startsWith('/messages/') ? raw.split('/').pop() : raw;
+    }
+
+    function getSender(message) {
+      const sender = message?.from || message?.sender;
+      if (!sender) return 'Unknown';
+      if (typeof sender === 'string') return sender;
+      return sender.address || sender.name || 'Unknown';
+    }
+
+    function extractTextContent(content) {
+      const html = Array.isArray(content?.html) ? content.html.join('\n') : (content?.html || '');
+      const text = content?.text || content?.textBody || content?.body || content?.intro || '';
+      if (text) return String(text);
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      return (div.textContent || div.innerText || '').trim();
+    }
+
+    function sanitizeHtml(html) {
+      let safe = String(html || '');
+      safe = safe.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+      safe = safe.replace(/\son\w+="[^"]*"/gi, '');
+      safe = safe.replace(/\son\w+='[^']*'/gi, '');
+      safe = safe.replace(/<a\s/gi, '<a target="_blank" rel="noopener noreferrer" ');
+      const csp = '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src https: data:; style-src \'unsafe-inline\' https:; font-src https: data:; base-uri \'none\'; form-action \'none\'">';
+      return csp + safe;
+    }
+
+    function scrollToReader() {
+      const reader = document.getElementById('emailModal');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      reader.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      const subject = document.getElementById('modalSubject');
+      try { subject.focus({ preventScroll: true }); } catch (error) { subject.focus(); }
+    }
+
+    function openModalLoading(message) {
+      const modal = document.getElementById('emailModal');
+      modal.style.display = 'grid';
+      modal.setAttribute('aria-busy', 'true');
+      document.getElementById('modalSubject').textContent = message?.subject || 'Loading...';
+      document.getElementById('modalFrom').textContent = getSender(message);
+      document.getElementById('modalReceived').textContent = 'Loading...';
+      document.getElementById('modalBody').innerHTML = '<div class="plain-body">Loading message...</div>';
+      selectedOtp = null;
+      window.requestAnimationFrame(scrollToReader);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('emailModal');
+      const wasOpen = modal.style.display !== 'none';
+      modal.style.display = 'none';
+      modal.setAttribute('aria-busy', 'false');
+      if (wasOpen && readerTrigger && document.body.contains(readerTrigger)) {
+        try { readerTrigger.focus({ preventScroll: true }); } catch (error) {}
+      }
+    }
+
+    function renderModalContent(message, content) {
+      const subject = content?.subject || message?.subject || 'No Subject';
+      const receivedAt = content?.createdAt || content?.date || message?.createdAt || message?.date;
+      const displayTime = receivedAt ? new Date(receivedAt).toLocaleString() : '-';
+      const sender = getSender(content || message);
+      const html = Array.isArray(content?.html) ? content.html.join('\n') : (content?.html || '');
+      const text = extractTextContent(content);
+      const otp = tempMail.extractOTP(text);
+      const body = document.getElementById('modalBody');
+
+      document.getElementById('modalSubject').textContent = subject;
+      document.getElementById('modalFrom').textContent = sender;
+      document.getElementById('modalReceived').textContent = displayTime;
+
+      if (html) {
+        body.innerHTML = otp ? `<div class="otp-box"><div class="otp-code">${otp}</div><button class="copy-btn inline-otp-copy" type="button">Copy OTP</button></div>` : '';
+        const frame = document.createElement('iframe');
+        frame.className = 'html-frame';
+        frame.title = 'Email message content';
+        frame.setAttribute('sandbox', 'allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation');
+        frame.srcdoc = sanitizeHtml(html);
+        body.appendChild(frame);
+      } else {
+        const safeText = (text || 'No message body available.').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        body.innerHTML = `${otp ? `<div class="otp-box"><div class="otp-code">${otp}</div><button class="copy-btn inline-otp-copy" type="button">Copy OTP</button></div>` : ''}<div class="plain-body">${safeText}</div>`;
+      }
+
+      const inlineCopy = body.querySelector('.inline-otp-copy');
+      if (inlineCopy && otp) {
+        inlineCopy.addEventListener('click', () => {
+          copyToClipboard(otp).then((copied) => {
+            showToast(copied ? 'OTP copied.' : 'Could not copy the OTP.', copied ? 'success' : 'error');
+          });
+        });
+      }
+
+      selectedOtp = otp;
+      document.getElementById('emailModal').setAttribute('aria-busy', 'false');
+    }
+
+    function setActiveMessage(messageId) {
+      document.querySelectorAll('#messagesContainer .message-item').forEach((item) => {
+        item.classList.toggle('active', Boolean(messageId) && item.dataset.messageId === messageId);
+      });
+    }
+
+    async function openMessage(message, trigger = null) {
+      const messageId = normalizeMessageId(message);
+      if (!messageId) {
+        showToast('Unable to open: missing message id.', 'error');
+        return;
+      }
+      if (trigger) readerTrigger = trigger;
+      selectedMessageId = messageId;
+      setActiveMessage(messageId);
+      openModalLoading(message);
+      try {
+        const content = await tempMail.getMessageContent(messageId);
+        if (!content) {
+          document.getElementById('modalReceived').textContent = '-';
+          document.getElementById('modalBody').innerHTML = '<div class="plain-body">Unable to load message content.</div>';
+          document.getElementById('emailModal').setAttribute('aria-busy', 'false');
+          showToast('Failed to load message.', 'error');
+          return;
         }
+        renderModalContent(message, content);
+      } catch (error) {
+        console.error('Open message error:', error);
+        document.getElementById('modalReceived').textContent = '-';
+        document.getElementById('modalBody').innerHTML = '<div class="plain-body">Failed to open message.</div>';
+        document.getElementById('emailModal').setAttribute('aria-busy', 'false');
+        showToast('Failed to open message.', 'error');
+      }
+    }
 
-        document.getElementById('generateBtn').addEventListener('click', generateEmail);
-        document.getElementById('copyEmailBtn').addEventListener('click', copyEmail);
-        document.getElementById('waitOtpBtn').addEventListener('click', startWaitingForOTP);
-        document.getElementById('checkInboxBtn').addEventListener('click', checkInbox);
-        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-        document.getElementById('emailModalOverlay').addEventListener('click', closeModal);
-        document.getElementById('modalCopyOtpBtn').addEventListener('click', () => {
-            if (!selectedOtp) {
-                showToast('No OTP found in this email.', 'warning');
-                return;
-            }
-            copyToClipboard(selectedOtp);
-            showToast('OTP copied.', 'success');
-        });
-        document.getElementById('modalRefreshBtn').addEventListener('click', async () => {
-            if (!selectedMessageId) {
-                showToast('No message selected.', 'warning');
-                return;
-            }
-            const message = inboxMessages.find((item) => normalizeMessageId(item) === selectedMessageId);
-            if (!message) {
-                showToast('Message no longer in inbox.', 'warning');
-                return;
-            }
-            await openMessage(message);
-        });
+    async function generateEmail() {
+      const generateBtn = document.getElementById('generateBtn');
+      const generateBtnText = document.getElementById('generateBtnText');
+      const generateLoader = document.getElementById('generateLoader');
+      const emailDisplay = document.getElementById('emailDisplay');
+      const noAddress = document.getElementById('noAddress');
+      const emailText = document.getElementById('emailText');
+      const serviceBadge = document.getElementById('serviceBadge');
+      const copyEmailBtn = document.getElementById('copyEmailBtn');
+      const waitOtpBtn = document.getElementById('waitOtpBtn');
+      const checkInboxBtn = document.getElementById('checkInboxBtn');
+      stopWaitingForOTP();
+      generateBtn.disabled = true;
+      generateBtn.setAttribute('aria-busy', 'true');
+      generateBtnText.style.display = 'none';
+      generateLoader.style.display = 'inline-block';
+      try {
+        const email = await tempMail.generateEmail();
+        if (email) {
+          emailDisplay.style.display = 'block';
+          noAddress.style.display = 'none';
+          emailText.textContent = email;
+          serviceBadge.textContent = tempMail.service;
+          const serviceBadgeWrap = serviceBadge.closest('.service-badge');
+          if (serviceBadgeWrap) serviceBadgeWrap.classList.toggle('is-warning', tempMail.service === 'Fallback');
+          copyEmailBtn.style.display = 'inline-flex';
+          waitOtpBtn.style.display = 'inline-flex';
+          checkInboxBtn.style.display = 'inline-flex';
+          generateBtnText.textContent = 'Generate another email';
+          tempMail.seenMessages.clear();
+          inboxMessages = [];
+          selectedMessageId = null;
+          updateMessagesDisplay([]);
+          closeModal();
+          readerTrigger = null;
+          showToast(
+            tempMail.service === 'Fallback' ? 'Fallback address generated. It cannot receive mail.' : 'Email generated successfully.',
+            tempMail.service === 'Fallback' ? 'warning' : 'success'
+          );
+        } else {
+          showToast('Failed to generate email. Please try again.', 'error');
+        }
+      } catch (error) {
+        console.error('Generate email error:', error);
+        showToast('Error generating email. Please try again.', 'error');
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.removeAttribute('aria-busy');
+        generateBtnText.style.display = 'inline-block';
+        generateLoader.style.display = 'none';
+      }
+    }
 
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                generateEmail();
-            }, 1000);
-        });
+    async function checkInbox() {
+      if (!tempMail.email) {
+        showToast('Please generate an email first.', 'error');
+        return;
+      }
+      if (tempMail.service === 'Fallback') {
+        tempMail.updateStatus('This fallback address cannot receive messages.', 'warning');
+        showToast('Fallback addresses are copy-only. Generate a new email to retry.', 'warning');
+        return;
+      }
+      const checkBtn = document.getElementById('checkInboxBtn');
+      const checkLoader = document.getElementById('checkInboxLoader');
+      if (checkBtn.disabled) return;
+      checkBtn.disabled = true;
+      checkBtn.setAttribute('aria-busy', 'true');
+      checkLoader.style.display = 'inline-block';
+      tempMail.updateStatus('Checking inbox...', 'loading');
+      try {
+        const messages = await tempMail.checkInbox();
+        updateMessagesDisplay(messages);
+        if (messages.length > 0) {
+          tempMail.updateStatus(`Found ${messages.length} message(s)`, 'success');
+          showToast(`Found ${messages.length} message(s).`, 'success');
+        } else {
+          tempMail.updateStatus('No messages found', 'info');
+          showToast('No messages found.', 'info');
+        }
+      } catch (error) {
+        console.error('Check inbox error:', error);
+        tempMail.updateStatus('Error checking inbox', 'error');
+        showToast('Error checking inbox.', 'error');
+      } finally {
+        checkBtn.disabled = false;
+        checkBtn.removeAttribute('aria-busy');
+        checkLoader.style.display = 'none';
+      }
+    }
 
-        window.addEventListener('beforeunload', () => {
-            if (tempMail.isWaitingForOTP) {
-                stopWaitingForOTP();
+    function renderCountdown() {
+      const countdown = document.getElementById('refreshCountdown');
+      if (!countdown || countdown.hidden) return;
+      const remaining = Math.max(0, Math.ceil((nextCheckAt - Date.now()) / 1000));
+      countdown.textContent = remaining > 0 ? `Next check in ${remaining}s` : 'Checking now…';
+    }
+
+    function stopRefreshCountdown() {
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+      }
+      const countdown = document.getElementById('refreshCountdown');
+      if (countdown) {
+        countdown.hidden = true;
+        countdown.textContent = '';
+      }
+    }
+
+    function startRefreshCountdown(intervalSeconds) {
+      stopRefreshCountdown();
+      nextCheckAt = Date.now() + (intervalSeconds * 1000);
+      const countdown = document.getElementById('refreshCountdown');
+      countdown.hidden = false;
+      renderCountdown();
+      countdownTimer = setInterval(renderCountdown, 1000);
+    }
+
+    function startWaitingForOTP() {
+      if (!tempMail.email) {
+        showToast('Please generate an email first.', 'error');
+        return;
+      }
+      if (tempMail.service === 'Fallback') {
+        showToast('Fallback emails cannot receive messages. Please generate a new email.', 'error');
+        return;
+      }
+      const waitOtpBtn = document.getElementById('waitOtpBtn');
+      const waitOtpText = document.getElementById('waitOtpText');
+      const waitOtpLoader = document.getElementById('waitOtpLoader');
+      const progressContainer = document.getElementById('progressContainer');
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      const progressPercent = document.getElementById('progressPercent');
+      const progressTrack = document.getElementById('progressTrack');
+      if (tempMail.isWaitingForOTP) {
+        stopWaitingForOTP();
+        return;
+      }
+      tempMail.isWaitingForOTP = true;
+      waitOtpBtn.classList.remove('btn-primary');
+      waitOtpBtn.classList.add('btn-danger');
+      waitOtpText.textContent = 'Stop waiting';
+      waitOtpLoader.style.display = 'inline-block';
+      progressContainer.style.display = 'grid';
+      progressFill.style.width = '0%';
+      progressPercent.textContent = '0%';
+      progressTrack.setAttribute('aria-valuenow', '0');
+      progressTrack.setAttribute('aria-valuetext', 'Waiting for OTP');
+      const timeoutSeconds = clampNumber(document.getElementById('timeoutSetting').value, 60, 1800, 300);
+      const intervalSeconds = clampNumber(document.getElementById('refreshInterval').value, 5, 60, 10);
+      document.getElementById('timeoutSetting').value = timeoutSeconds;
+      document.getElementById('refreshInterval').value = intervalSeconds;
+      const totalChecks = Math.max(1, Math.floor(timeoutSeconds / intervalSeconds));
+      let currentCheck = 0;
+      tempMail.updateStatus(`Waiting for OTP (${timeoutSeconds}s timeout)...`, 'loading');
+      startRefreshCountdown(intervalSeconds);
+      tempMail.waitingInterval = setInterval(async () => {
+        if (!tempMail.isWaitingForOTP || tempMail.isCheckingInbox) return;
+        tempMail.isCheckingInbox = true;
+        currentCheck++;
+        const progress = Math.min(100, Math.round((currentCheck / totalChecks) * 100));
+        const secondsRemaining = Math.max(0, timeoutSeconds - (currentCheck * intervalSeconds));
+        progressFill.style.width = `${progress}%`;
+        progressPercent.textContent = `${progress}%`;
+        progressText.textContent = `Waiting for OTP... ${secondsRemaining}s remaining`;
+        progressTrack.setAttribute('aria-valuenow', String(progress));
+        progressTrack.setAttribute('aria-valuetext', `${secondsRemaining} seconds remaining`);
+        try {
+          const messages = await tempMail.checkInbox();
+          updateMessagesDisplay(messages);
+          for (const message of messages) {
+            const id = normalizeMessageId(message);
+            if (!id || tempMail.seenMessages.has(id)) continue;
+            tempMail.seenMessages.add(id);
+            const content = await tempMail.getMessageContent(id);
+            if (!content) continue;
+            const otp = tempMail.extractOTP(extractTextContent(content));
+            if (otp) {
+              stopWaitingForOTP();
+              tempMail.updateStatus(`OTP found: ${otp}`, 'success');
+              showToast(`OTP found: ${otp}`, 'success');
+              await openMessage(message);
+              return;
             }
+          }
+        } catch (error) {
+          console.error('Error while waiting for OTP:', error);
+        } finally {
+          tempMail.isCheckingInbox = false;
+          nextCheckAt = Date.now() + (intervalSeconds * 1000);
+          renderCountdown();
+        }
+        if (currentCheck >= totalChecks) {
+          stopWaitingForOTP();
+          tempMail.updateStatus('Timeout reached. No OTP received.', 'warning');
+          showToast('Timeout reached. No OTP received.', 'warning');
+        }
+      }, intervalSeconds * 1000);
+    }
+
+    function stopWaitingForOTP() {
+      tempMail.isWaitingForOTP = false;
+      tempMail.isCheckingInbox = false;
+      if (tempMail.waitingInterval) {
+        clearInterval(tempMail.waitingInterval);
+        tempMail.waitingInterval = null;
+      }
+      stopRefreshCountdown();
+      const waitBtn = document.getElementById('waitOtpBtn');
+      if (waitBtn) {
+        waitBtn.classList.remove('btn-danger');
+        waitBtn.classList.add('btn-primary');
+      }
+      const waitText = document.getElementById('waitOtpText');
+      if (waitText) waitText.textContent = 'Wait for OTP';
+      const waitLoader = document.getElementById('waitOtpLoader');
+      if (waitLoader) waitLoader.style.display = 'none';
+      const progressContainer = document.getElementById('progressContainer');
+      if (progressContainer) progressContainer.style.display = 'none';
+    }
+
+    function createMessageShell() {
+      const messageElement = document.createElement('div');
+      messageElement.className = 'message-item';
+      messageElement.setAttribute('role', 'button');
+      messageElement.setAttribute('tabindex', '0');
+      const header = document.createElement('div');
+      header.className = 'message-header';
+      const from = document.createElement('div');
+      from.className = 'message-from';
+      const time = document.createElement('div');
+      time.className = 'message-time';
+      const subject = document.createElement('div');
+      subject.className = 'message-subject';
+      const preview = document.createElement('div');
+      preview.className = 'message-preview';
+      header.append(from, time);
+      messageElement.append(header, subject, preview);
+      return { messageElement, from, time, subject, preview };
+    }
+
+    function updateMessagesDisplay(messages) {
+      inboxMessages = messages;
+      const messagesContainer = document.getElementById('messagesContainer');
+      const noMessages = document.getElementById('noMessages');
+      setMessageCount(messages.length);
+      messagesContainer.querySelectorAll('.message-item').forEach((msg) => msg.remove());
+      if (messages.length === 0) {
+        noMessages.style.display = 'grid';
+        const title = noMessages.querySelector('strong');
+        const description = noMessages.querySelector('span');
+        if (!tempMail.email) {
+          title.textContent = 'No active inbox yet';
+          description.textContent = 'Generate an email first to start receiving messages.';
+        } else if (tempMail.service === 'Fallback') {
+          title.textContent = 'Copy-only fallback address';
+          description.textContent = 'This address cannot receive mail. Generate a new email to retry the providers.';
+        } else {
+          title.textContent = 'No messages yet';
+          description.textContent = 'Refresh the inbox or start the OTP watcher.';
+        }
+        return;
+      }
+      noMessages.style.display = 'none';
+      messages.forEach((message) => {
+        const { messageElement, from, time, subject, preview } = createMessageShell();
+        const id = normalizeMessageId(message);
+        const sender = getSender(message);
+        const subjectText = message.subject || 'No Subject';
+        const timeValue = message.createdAt || message.date || new Date().toISOString();
+        const previewText = message.intro || message.text || 'Click to open';
+        from.textContent = sender;
+        time.textContent = new Date(timeValue).toLocaleString();
+        subject.textContent = subjectText;
+        preview.textContent = `${String(previewText).substring(0, 200)}${String(previewText).length > 200 ? '...' : ''}`;
+        if (id) messageElement.dataset.messageId = id;
+        messageElement.setAttribute('aria-label', `Open message from ${sender}: ${subjectText}`);
+        if (id && id === selectedMessageId) {
+          messageElement.classList.add('active');
+        }
+        const onOpen = () => openMessage(message, messageElement);
+        messageElement.addEventListener('click', onOpen);
+        messageElement.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onOpen();
+          }
         });
-        window.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                closeModal();
-            }
+        messagesContainer.appendChild(messageElement);
+      });
+    }
+
+    function copyEmail() {
+      if (tempMail.email) {
+        copyToClipboard(tempMail.email).then((copied) => {
+          showToast(copied ? 'Email copied to clipboard.' : 'Could not copy the address.', copied ? 'success' : 'error');
         });
-    </script>
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.setAttribute('readonly', '');
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (error) { ok = false; }
+      document.body.removeChild(textArea);
+      return ok;
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text)
+          .then(() => true)
+          .catch((error) => {
+            console.error('Failed to copy:', error);
+            return fallbackCopy(text);
+          });
+      }
+      return Promise.resolve(fallbackCopy(text));
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    document.getElementById('generateBtn').addEventListener('click', generateEmail);
+    document.getElementById('copyEmailBtn').addEventListener('click', copyEmail);
+    document.getElementById('waitOtpBtn').addEventListener('click', startWaitingForOTP);
+    document.getElementById('checkInboxBtn').addEventListener('click', checkInbox);
+    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+    document.getElementById('modalCopyOtpBtn').addEventListener('click', () => {
+      if (!selectedOtp) {
+        showToast('No OTP found in this email.', 'warning');
+        return;
+      }
+      copyToClipboard(selectedOtp).then((copied) => {
+        showToast(copied ? 'OTP copied.' : 'Could not copy the OTP.', copied ? 'success' : 'error');
+      });
+    });
+    document.getElementById('modalRefreshBtn').addEventListener('click', async () => {
+      if (!selectedMessageId) {
+        showToast('No message selected.', 'warning');
+        return;
+      }
+      const message = inboxMessages.find((item) => normalizeMessageId(item) === selectedMessageId);
+      if (!message) {
+        showToast('Message no longer in inbox.', 'warning');
+        return;
+      }
+      await openMessage(message);
+    });
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        generateEmail();
+      }, 1000);
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (tempMail.isWaitingForOTP) {
+        stopWaitingForOTP();
+      }
+      stopRefreshCountdown();
+    });
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
 </body>
 </html>

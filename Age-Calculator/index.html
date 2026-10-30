@@ -3,68 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Age Calculator – Calculate Your Exact Age Instantly</title>
-  <meta name="description" content="Calculate your exact age in years, months, and days, see total days lived, and find your next birthday. Free, private, and processed in your browser.">
   <meta name="color-scheme" content="light dark">
-  <meta name="author" content="Alok Systems">
+  <meta name="theme-color" content="#0f766e">
+  <title>Age Calculator | Exact Age in Years, Months and Days</title>
+  <meta name="description" content="Calculate your exact age in years, months and days, total time lived, and your next birthday. Private, accurate, and free — everything runs in your browser.">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-  <meta name="language" content="English">
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Age Calculator – Calculate Your Exact Age Instantly">
-  <meta property="og:description" content="Calculate your exact age in years, months, weeks, days, hours, minutes, and seconds. Accurate, instant, and beautifully simple age calculator.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://aloksystems.freedev.app/Age-Calculator/">
-  <meta property="og:image" content="https://aloksystems.freedev.app/Age-Calculator/icons/icon-512x512.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:site_name" content="Alok Systems Tools">
-  <meta property="og:locale" content="en_US">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Age Calculator – Calculate Your Exact Age Instantly">
-  <meta name="twitter:description" content="Calculate your exact age in years, months, weeks, days, hours, minutes, and seconds. Accurate, instant, and beautifully simple age calculator.">
-  <meta name="twitter:image" content="https://aloksystems.freedev.app/Age-Calculator/icons/icon-512x512.png">
-
-  <!-- Schema Markup -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Age Calculator",
-    "description": "Calculate your exact age, total days lived, and next birthday privately in your browser.",
-    "url": "https://aloksystems.freedev.app/Age-Calculator/",
-    "applicationCategory": "UtilityApplication",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type":"Question","name":"How is my age calculated?","acceptedAnswer":{"@type":"Answer","text":"Your age is calculated from the calendar difference between your date of birth and the selected date. Total days use calendar dates, so daylight saving changes do not affect the count."}},
-      {"@type":"Question","name":"Can I calculate my age on a past or future date?","acceptedAnswer":{"@type":"Answer","text":"Yes. Turn on Calculate age on a specific date and enter any valid date on or after your birthday."}},
-      {"@type":"Question","name":"Is my date of birth stored or uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The calculation runs in your browser. The date you enter is not sent to a server or saved by this tool."}},
-      {"@type":"Question","name":"How are leap-day birthdays handled?","acceptedAnswer":{"@type":"Answer","text":"For a birthday on February 29, the next birthday countdown uses February 28 in years that are not leap years."}}
-    ]
-  }
-  </script>
-
-  <!-- Canonical -->
+  <meta name="author" content="Alok Systems">
   <link rel="canonical" href="https://aloksystems.freedev.app/Age-Calculator/">
 
-  <!-- PWA -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Age Calculator - Exact Age in Years, Months and Days">
+  <meta property="og:description" content="Find your exact age, total time lived, and next birthday privately in your browser.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Age-Calculator/">
+  <meta property="og:image" content="https://aloksystems.freedev.app/Age-Calculator/icons/icon-512x512.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Age Calculator - Alok Systems Tools">
+  <meta name="twitter:description" content="Find your exact age, total time lived, and next birthday privately in your browser.">
+
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0f766e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="AgeCalc">
@@ -72,18 +29,41 @@
   <meta name="application-name" content="Age Calculator">
   <meta name="msapplication-TileColor" content="#0f766e">
   <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
-
-  <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-
-  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="alternate icon" href="icons/icon-48x48.png">
 
-  <!-- Styles -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Age Calculator",
+    "description": "Calculate your exact age, total time lived, and next birthday privately in your browser.",
+    "url": "https://aloksystems.freedev.app/Age-Calculator/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"How is my age calculated?","acceptedAnswer":{"@type":"Answer","text":"Your age is the calendar difference between your date of birth and the chosen date. Months are counted with their real lengths, and leap years are handled automatically."}},
+      {"@type":"Question","name":"Can I calculate my age on a past or future date?","acceptedAnswer":{"@type":"Answer","text":"Yes. Turn on Calculate age on another date and pick any date on or after your birthday. Future dates are allowed and are labelled as a projection."}},
+      {"@type":"Question","name":"Is my date of birth stored or uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The calculation runs in your browser. Your dates are not sent to a server and this tool does not save them."}},
+      {"@type":"Question","name":"How are February 29 birthdays handled?","acceptedAnswer":{"@type":"Answer","text":"For a birthday on February 29, the tool uses February 28 in years that are not leap years, so a birthday is still counted once each year."}}
+    ]
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
   <script>
     try {
       var savedTheme = localStorage.getItem('tools-theme');
@@ -91,224 +71,182 @@
       document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
     } catch (e) {}
   </script>
-  <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
 </head>
 <body>
-
-  <header class="top-bar">
-    <a class="tool-brand" href="/" aria-label="Alok Systems Tools home">
-      <span class="tool-brand-mark" aria-hidden="true">A</span>
-      <span><strong>Alok Systems</strong><small>Tools</small></span>
-    </a>
-    <nav class="tool-nav" aria-label="Primary navigation">
-      <a href="/">Home</a>
-      <a href="/#tools">Tools</a>
-      <a href="/#about">About</a>
-    </nav>
-    <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path id="themeIconSun" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-    </button>
-  </header>
-
-  <main class="container">
-    <section class="hero">
-      <p class="eyebrow">FREE · PRIVATE · INSTANT</p>
-      <h1 class="hero-title">Age Calculator</h1>
-      <p class="hero-subtitle">Find your exact age, total days lived, and the date of your next birthday. Your date stays in this browser.</p>
-    </section>
-
-    <section class="calculator" aria-label="Age calculator">
-      <div class="card">
-        <div class="field">
-          <label class="field-label" for="dobDay">Your date of birth</label>
-          <p class="date-note">Enter day, month, and year (DD / MM / YYYY).</p>
-          <div class="date-fields">
-            <div class="date-field-group">
-              <input type="text" id="dobDay" class="date-field" placeholder="DD" aria-label="Day of birth" maxlength="2" inputmode="numeric" autocomplete="off">
-              <span class="field-hint">Day</span>
-            </div>
-            <span class="field-sep"></span>
-            <div class="date-field-group">
-              <input type="text" id="dobMonth" class="date-field" placeholder="MM" aria-label="Month of birth" maxlength="2" inputmode="numeric" autocomplete="off">
-              <span class="field-hint">Month</span>
-            </div>
-            <span class="field-sep"></span>
-            <div class="date-field-group">
-              <input type="text" id="dobYear" class="date-field" placeholder="YYYY" aria-label="Year of birth" maxlength="4" inputmode="numeric" autocomplete="off">
-              <span class="field-hint">Year</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="specific-date-toggle">
-          <button type="button" id="toggleSpecificDate" class="toggle-link" aria-expanded="false" aria-controls="specificDateField">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
-            </svg>
-            <span>Calculate age on a specific date</span>
-          </button>
-        </div>
-
-        <div class="field hidden" id="specificDateField">
-          <label class="field-label" for="targetDay">Calculate age on this date</label>
-          <div class="date-fields">
-            <div class="date-field-group">
-              <input type="text" id="targetDay" class="date-field" placeholder="DD" aria-label="Target day" maxlength="2" inputmode="numeric" autocomplete="off">
-              <span class="field-hint">Day</span>
-            </div>
-            <span class="field-sep"></span>
-            <div class="date-field-group">
-              <input type="text" id="targetMonth" class="date-field" placeholder="MM" aria-label="Target month" maxlength="2" inputmode="numeric" autocomplete="off">
-              <span class="field-hint">Month</span>
-            </div>
-            <span class="field-sep"></span>
-            <div class="date-field-group">
-              <input type="text" id="targetYear" class="date-field" placeholder="YYYY" aria-label="Target year" maxlength="4" inputmode="numeric" autocomplete="off">
-              <span class="field-hint">Year</span>
-            </div>
-          </div>
-        </div>
-
-        <button id="calculateBtn" class="calc-btn">
-          <span class="btn-text">Calculate Age</span>
-        </button>
-
-        <div class="error-message hidden" id="errorMessage" role="alert">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>
-          </svg>
-          <span id="errorText"></span>
-        </div>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">EXACT AGE, CALENDAR-PERFECT</p>
+      <h1 id="page-title">Age Calculator</h1>
+      <p>Find your exact age, the time you've lived, and your next birthday in seconds.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        Your birthday is never uploaded or stored.
       </div>
     </section>
 
-    <section class="how-to section-card" aria-labelledby="how-to-title">
-      <div class="section-heading"><p class="eyebrow">THREE SIMPLE STEPS</p><h2 id="how-to-title">How to use the age calculator</h2></div>
-      <ol class="steps">
-        <li><span>01</span><div><h3>Enter your birthday</h3><p>Type the day, month, and four-digit year in the fields above.</p></div></li>
-        <li><span>02</span><div><h3>Choose a date to calculate to</h3><p>Leave the optional date off to calculate your age today, or select it to check your age on another date.</p></div></li>
-        <li><span>03</span><div><h3>View your results</h3><p>See your age breakdown, time lived, next birthday countdown, and a few date details.</p></div></li>
+    <section class="workspace" aria-label="Age calculator">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="dob-title">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div>
+              <h2 id="dob-title">Your date of birth</h2>
+              <p>Pick the day and month, then type your year. No calendar scrolling.</p>
+            </div>
+          </div>
+          <fieldset class="field dob-field" aria-describedby="dobHelp">
+            <legend class="field-label">Date of birth</legend>
+            <div class="dob-grid">
+              <div class="dob-part">
+                <label class="dob-sublabel" for="dobDay">Day</label>
+                <select id="dobDay" autocomplete="bday-day">
+                  <option value="">Day</option>
+                </select>
+              </div>
+              <div class="dob-part">
+                <label class="dob-sublabel" for="dobMonth">Month</label>
+                <select id="dobMonth" autocomplete="bday-month">
+                  <option value="">Month</option>
+                </select>
+              </div>
+              <div class="dob-part">
+                <label class="dob-sublabel" for="dobYear">Year</label>
+                <input type="number" id="dobYear" inputmode="numeric" min="1582" max="2026" step="1" placeholder="YYYY" autocomplete="bday-year">
+              </div>
+            </div>
+            <p class="field-help" id="dobHelp">Your age appears automatically once the day, month, and year are filled in.</p>
+          </fieldset>
+          <div class="quick-hint">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <p>Leap-day birthdays are counted on February 28 in non-leap years.</p>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="target-title">
+          <div class="panel-heading">
+            <span class="step-number">02</span>
+            <div>
+              <h2 id="target-title">Choose the date</h2>
+              <p>Today is the default. Switch this on for a past or future date.</p>
+            </div>
+          </div>
+
+          <label class="switch-row" for="specificDateToggle">
+            <input type="checkbox" id="specificDateToggle" aria-controls="specificDateField">
+            <span class="switch-track" aria-hidden="true"></span>
+            <span class="switch-copy">
+              <strong>Calculate age on another date</strong>
+              <small>Useful for forms, exams, visas, or a future milestone.</small>
+            </span>
+          </label>
+
+          <div class="field target-field" id="specificDateField" hidden>
+            <label class="field-label" for="targetDate">Age on this date</label>
+            <input type="date" id="targetDate" aria-describedby="targetHelp">
+            <p class="field-help" id="targetHelp">On or after your birthday. Leave empty to use today.</p>
+          </div>
+
+          <p class="input-error" id="errorMessage" role="alert" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            <span id="errorText"></span>
+          </p>
+
+          <div class="form-actions">
+            <button type="button" id="calculateBtn" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="m9 15 2 2 4-4"/></svg>
+              Calculate age
+            </button>
+            <button type="button" id="resetBtn" class="btn btn-outline">Reset</button>
+          </div>
+          <p class="field-help actions-note">Everything is calculated locally in this browser.</p>
+        </section>
+      </div>
+
+      <section class="summary-panel" aria-labelledby="result-title">
+        <div class="summary-heading">
+          <p class="eyebrow">YOUR AGE</p>
+          <h2 id="result-title">At a glance</h2>
+          <p class="summary-period" id="resultContext">Pick your date of birth to begin.</p>
+        </div>
+
+        <div class="result-empty" id="resultEmpty">
+          <div class="empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 20h16M5 20V9h14v11M3 9h18l-2-4H5L3 9Z"/><path d="M9 13h.01M15 13h.01M12 16h.01"/></svg>
+          </div>
+          <h3>No age yet</h3>
+          <p>Your exact years, months, and days will show here — along with your totals and next birthday.</p>
+        </div>
+
+        <div class="result-body" id="resultBody" hidden>
+          <div class="age-hero">
+            <div class="age-main">
+              <span class="age-number" id="displayYears">0</span>
+              <span class="age-years-label" id="yearsLabel">years</span>
+            </div>
+            <p class="age-secondary">
+              <span id="displayMonths">0</span> <span id="monthsLabel">months</span>
+              <span class="age-dot" aria-hidden="true">·</span>
+              <span id="displayDays">0</span> <span id="daysLabel">days</span>
+            </p>
+          </div>
+
+          <div class="breakdown-grid" aria-label="Total time lived">
+            <div class="breakdown-cell"><span class="breakdown-value" id="totalMonths">0</span><span class="breakdown-label">Total months</span></div>
+            <div class="breakdown-cell"><span class="breakdown-value" id="totalWeeks">0</span><span class="breakdown-label">Total weeks</span></div>
+            <div class="breakdown-cell"><span class="breakdown-value" id="totalDays">0</span><span class="breakdown-label">Total days</span></div>
+            <div class="breakdown-cell"><span class="breakdown-value" id="totalHours">0</span><span class="breakdown-label">Total hours</span></div>
+            <div class="breakdown-cell"><span class="breakdown-value" id="totalMinutes">0</span><span class="breakdown-label">Total minutes</span></div>
+            <div class="breakdown-cell"><span class="breakdown-value live-value" id="totalSeconds">0</span><span class="breakdown-label">Total seconds <span class="live-dot" aria-hidden="true"></span></span></div>
+          </div>
+          <p class="live-note" id="liveNote">Totals are calculated to today.</p>
+
+          <div class="birthday-card">
+            <div class="birthday-header">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21h16M5 21v-8h14v8M3 13h18v-3H3v3Z"/><path d="M12 7c0-1.5 1-2 1-3.5C13 2.5 12 2 12 2s-1 .5-1 1.5C11 5 12 5.5 12 7Z"/></svg>
+              <span>Next birthday</span>
+            </div>
+            <p class="birthday-days"><strong id="nextBirthdayDays">0</strong><span id="nextBirthdayLabel">days to go</span></p>
+            <p class="birthday-date" id="nextBirthdayDate">—</p>
+          </div>
+
+          <div class="detail-list" aria-label="Birth date details">
+            <div class="detail-row"><span>Day you were born</span><strong id="dayBorn">—</strong></div>
+            <div class="detail-row"><span>Zodiac sign</span><strong id="zodiacSign">—</strong></div>
+            <div class="detail-row"><span>Born in a leap year</span><strong id="leapYear">—</strong></div>
+          </div>
+        </div>
+
+        <button type="button" id="copyBtn" class="btn btn-outline copy-btn" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy result
+        </button>
+        <p class="copy-status" id="copyStatus" role="status" aria-live="polite"></p>
+        <p class="summary-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+          Calculated on this device. Nothing is saved.
+        </p>
+      </section>
+    </section>
+
+    <p class="sr-only" id="calcStatus" role="status" aria-live="polite"></p>
+
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How the age calculator works</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Pick your birthday</h3><p>Choose your date of birth. The result updates as soon as the date is complete.</p></div></li>
+        <li><span>02</span><div><h3>Choose a measuring date</h3><p>Keep today, or switch on another date to see your age then — past or future.</p></div></li>
+        <li><span>03</span><div><h3>Read or copy the result</h3><p>See your exact age, total time lived, and next birthday, then copy a clean summary.</p></div></li>
       </ol>
     </section>
 
-    <section class="faq section-card" aria-labelledby="faq-title">
-      <div class="section-heading"><p class="eyebrow">GOOD TO KNOW</p><h2 id="faq-title">Frequently asked questions</h2></div>
-      <details><summary>How is my age calculated?</summary><p>Your age is calculated from the calendar difference between your date of birth and the selected date. Total days use calendar dates, so daylight saving changes do not affect the count.</p></details>
-      <details><summary>Can I calculate my age on a past or future date?</summary><p>Yes. Turn on “Calculate age on a specific date” and enter any valid date on or after your birthday.</p></details>
-      <details><summary>Is my date of birth stored or uploaded?</summary><p>No. The calculation runs in your browser. The date you enter is not sent to a server or saved by this tool.</p></details>
-      <details><summary>How are leap-day birthdays handled?</summary><p>For a birthday on February 29, the next birthday countdown uses February 28 in years that are not leap years.</p></details>
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>How is my age calculated?</summary><p>Your age is the calendar difference between your date of birth and the chosen date. Months use their real lengths, and leap years are handled automatically.</p></details>
+      <details><summary>Can I calculate my age on a past or future date?</summary><p>Yes. Turn on “Calculate age on another date” and pick any date on or after your birthday. Future dates are allowed and treated as a projection.</p></details>
+      <details><summary>Is my date of birth stored or uploaded?</summary><p>No. The calculation runs in your browser. Your dates are not sent to a server and this tool does not save them.</p></details>
+      <details><summary>How are February 29 birthdays handled?</summary><p>For a birthday on February 29, the tool uses February 28 in years that are not leap years, so a birthday is still counted once each year.</p></details>
     </section>
-
-    <section class="results hidden" id="resultsSection" aria-label="Age results">
-
-      <div class="age-hero">
-        <div class="age-main">
-          <span class="age-number" id="displayYears">0</span>
-          <span class="age-unit">Years</span>
-        </div>
-        <div class="age-breakdown">
-          <span class="age-part">
-            <span class="age-part-number" id="displayMonths">0</span>
-            <span class="age-part-label">Months</span>
-          </span>
-          <span class="age-part-sep">·</span>
-          <span class="age-part">
-            <span class="age-part-number" id="displayDays">0</span>
-            <span class="age-part-label">Days</span>
-          </span>
-        </div>
-      </div>
-
-      <div class="details-card">
-        <div class="details-grid">
-          <div class="detail-cell">
-            <span class="detail-value" id="detailYears">0</span>
-            <span class="detail-label">Years</span>
-          </div>
-          <div class="detail-cell">
-            <span class="detail-value" id="detailMonths">0</span>
-            <span class="detail-label">Months</span>
-          </div>
-          <div class="detail-cell">
-            <span class="detail-value" id="detailWeeks">0</span>
-            <span class="detail-label">Weeks</span>
-          </div>
-          <div class="detail-cell">
-            <span class="detail-value" id="detailDays">0</span>
-            <span class="detail-label">Days</span>
-          </div>
-          <div class="detail-cell">
-            <span class="detail-value" id="detailHours">0</span>
-            <span class="detail-label">Hours</span>
-          </div>
-          <div class="detail-cell">
-            <span class="detail-value" id="detailMinutes">0</span>
-            <span class="detail-label">Minutes</span>
-          </div>
-          <div class="detail-cell">
-            <span class="detail-value live" id="detailSeconds">0</span>
-            <span class="detail-label">Seconds</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="next-birthday-card">
-        <div class="next-birthday-header">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>
-          </svg>
-          <span>Next Birthday</span>
-        </div>
-        <div class="next-birthday-count">
-          <span class="next-birthday-days" id="nextBirthdayDays">—</span>
-          <span class="next-birthday-label">Days Left</span>
-        </div>
-        <div class="next-birthday-date" id="nextBirthdayDate"><span class="date-dmy">—</span></div>
-      </div>
-
-      <div class="info-card">
-        <div class="info-row">
-          <span class="info-label">Day Born</span>
-          <span class="info-value" id="dayBorn">—</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Zodiac Sign</span>
-          <span class="info-value" id="zodiacSign">—</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Leap Year</span>
-          <span class="info-value" id="leapYear">—</span>
-        </div>
-      </div>
-
-      <button class="reset-btn" id="resetBtn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-        </svg>
-        <span>Calculate Again</span>
-      </button>
-    </section>
-
   </main>
-
-  <footer class="site-footer">
-    <div class="site-footer-inner">
-      <a class="footer-brand" href="/" aria-label="Alok Systems Tools home"><span class="tool-brand-mark" aria-hidden="true">A</span><span><strong>Alok Systems Tools</strong><small>&copy; 2026 · Your calculation stays on this device.</small></span></a>
-      <nav class="footer-nav" aria-label="Footer navigation">
-        <a href="/">Home</a>
-        <a href="/#tools">All tools</a>
-        <a href="/#about">About</a>
-      </nav>
-    </div>
-    <!-- Footer navigation points to sections on the live tools homepage. -->
-    <div class="footer-copy">
-      <p>Alok Systems Tools · Your calculation stays on this device.</p>
-    </div>
-  </footer>
 
   <script src="script.js"></script>
 </body>

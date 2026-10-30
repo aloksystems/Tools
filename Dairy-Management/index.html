@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <title>Dairy Management Calculator | Milk Delivery Accounts</title>
   <meta name="description" content="Track milk deliveries, missed days, customer accounts, and billing totals. Export a clear dairy delivery statement privately from your browser.">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
@@ -46,6 +47,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
   <script>
     try {
       var savedTheme = localStorage.getItem('tools-theme');
@@ -55,24 +58,11 @@
   </script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="site-header-inner">
-      <a class="site-brand" href="/" aria-label="Alok Systems Tools home">
-        <span class="brand-mark" aria-hidden="true">A</span>
-        <span><strong>Alok Systems</strong><small>Tools</small></span>
-      </a>
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="/">Home</a><a href="/#tools">All tools</a><a href="/#about">About</a>
-      </nav>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark theme" aria-pressed="false"></button>
-    </div>
-  </header>
-
   <main class="page-shell">
     <section class="hero" aria-labelledby="page-title">
       <p class="eyebrow">DAILY BUSINESS, MADE CLEAR</p>
       <h1 id="page-title">Dairy Management</h1>
-      <p>Keep delivery days and customer milk accounts organized. Calculate billing, spot missed deliveries, and export a ready-to-share statement.</p>
+      <p>Track delivery days and customer milk accounts, calculate billing, and export a ready-to-share statement.</p>
       <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>Customer records stay in this browser on this device.</div>
     </section>
 
@@ -158,14 +148,6 @@
       <details><summary>What happens when I share on WhatsApp?</summary><p>The tool opens WhatsApp with a prepared summary. You can review or edit the message before choosing to send it.</p></details>
     </section>
   </main>
-
-  <footer class="site-footer">
-    <div class="site-footer-inner">
-      <a class="footer-brand" href="/" aria-label="Alok Systems Tools home"><span class="brand-mark" aria-hidden="true">A</span><span><strong>Alok Systems Tools</strong><small>Free tools. Private by design.</small></span></a>
-      <nav class="footer-nav" aria-label="Footer navigation"><a href="/">Home</a><a href="/#tools">All tools</a><a href="/#about">About</a></nav>
-    </div>
-    <p class="copyright">© 2026 Alok Systems Tools</p>
-  </footer>
 
   <script src="script.js" defer></script>
 </body>

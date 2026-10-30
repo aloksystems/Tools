@@ -23,9 +23,109 @@
   }
 
   function injectTheme() {
-    // Tool pages own their layout and theme tokens. Do not inject a global
-    // stylesheet that can override a tool's workflow-specific CSS.
-    return;
+    // Keep the dashboard's theme preference available on every standalone tool.
+    try {
+      var saved = localStorage.getItem("tools-theme");
+      if (saved === "light" || saved === "dark") {
+        document.documentElement.setAttribute("data-theme", saved);
+      } else if (!document.documentElement.hasAttribute("data-theme")) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+        );
+      }
+    } catch (e) {}
+
+    if (!document.querySelector('link[data-shared-tool-theme]')) {
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = resolveSibling("shared-tools.css");
+      link.setAttribute("data-shared-tool-theme", "");
+      document.head.appendChild(link);
+    }
+
+    document.body.classList.add("global-tool-page");
+    syncAppTheme();
+
+    var pageHeader = document.querySelector("body > header");
+    var isAgeCalculatorHeader = pageHeader && pageHeader.classList.contains("top-bar");
+    var hasSiteNavigation = pageHeader && pageHeader.querySelector("nav");
+    if (!isAgeCalculatorHeader) addSharedShell(pageHeader, !!hasSiteNavigation);
+
+    var pageFooter = document.querySelector("body > footer");
+    var isAgeCalculatorFooter = pageFooter && pageFooter.classList.contains("site-footer") &&
+      pageFooter.querySelector(".site-footer-inner .footer-brand");
+    if (!isAgeCalculatorFooter) standardizeFooter(pageFooter);
+  }
+
+  function resolveSibling(file) {
+    var script = document.currentScript;
+    if (!script) script = document.querySelector('script[src$="/back.js"], script[src="back.js"]');
+    if (script && script.src) return new URL(file, script.src).href;
+    return file;
+  }
+
+  function toggleTheme() {
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    var next = dark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("tools-theme", next); } catch (e) {}
+    syncAppTheme();
+  }
+
+  function syncAppTheme() {
+    var checkbox = document.querySelector("#dark-mode-toggle, [data-dark-mode-toggle]");
+    var shouldBeDark = document.documentElement.getAttribute("data-theme") === "dark";
+    if (checkbox && !checkbox.getAttribute("data-shared-theme-bound")) {
+      checkbox.setAttribute("data-shared-theme-bound", "");
+      checkbox.addEventListener("change", function () {
+        var next = checkbox.checked ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", next);
+        try { localStorage.setItem("tools-theme", next); } catch (e) {}
+      });
+    }
+    if (checkbox && checkbox.checked !== shouldBeDark) {
+      checkbox.checked = shouldBeDark;
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
+    var appButton = document.querySelector("#darkModeToggle");
+    if (appButton && !appButton.getAttribute("data-shared-theme-bound")) {
+      appButton.setAttribute("data-shared-theme-bound", "");
+      appButton.addEventListener("click", function () {
+        window.setTimeout(function () {
+          var next = document.body.classList.contains("dark-mode") ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", next);
+          try { localStorage.setItem("tools-theme", next); } catch (e) {}
+        }, 0);
+      });
+    }
+    if (appButton && document.body.classList.contains("dark-mode") !== shouldBeDark) {
+      appButton.click();
+    }
+  }
+
+  function standardizeFooter(existingFooter) {
+    if (existingFooter && existingFooter.querySelector("button, input, select, textarea, form, [role='button'], a[download]")) {
+      existingFooter.classList.add("global-tool-local-actions");
+    } else if (existingFooter) {
+      existingFooter.remove();
+    }
+    addSharedFooter();
+  }
+
+  function addSharedFooter() {
+    var footer = document.createElement("footer");
+    footer.className = "global-tool-footer";
+    footer.setAttribute("data-global-footer", "");
+    footer.innerHTML =
+      '<div class="global-tool-footer-inner">' +
+      '<a class="global-tool-footer-brand" href="/" aria-label="Alok Systems Tools home">' +
+      '<span class="global-brand-mark" aria-hidden="true">A</span>' +
+      '<span><strong>Alok Systems Tools</strong><small>© ' + new Date().getFullYear() + ' · Tools for everyday work.</small></span></a>' +
+      '<nav class="global-tool-footer-nav" aria-label="Footer navigation"><a href="/">Home</a><a href="/#tools">All tools</a><a href="/#about">About</a></nav>' +
+      '</div>';
+    document.body.appendChild(footer);
   }
 
   function addBackButton() {
@@ -58,18 +158,33 @@
     document.body.appendChild(a);
   }
 
-  function addSharedShell() {
+  function addSharedShell(existingHeader, replaceHeader) {
     if (!document.body || isHomepage() || document.querySelector("[data-global-shell]")) {
       return;
     }
     document.body.classList.add("global-tool-page");
 
-    var title = (document.title || "Tool").split(" - ")[0].trim();
-    var path = (window.location.pathname || "/").replace(/\/+$/, "");
-    var segments = path.split("/").filter(function (segment) {
-      return segment.length > 0 && segment.toLowerCase() !== "index.html";
-    });
-    var category = segments.length > 1 ? segments[segments.length - 2] : "";
+    var retainedThemeButton = null;
+    var retainedActions = [];
+    var retainedSectionLinks = [];
+    if (existingHeader) {
+      retainedThemeButton = existingHeader.querySelector(
+        ".theme-btn, #themeBtn, #themeToggle, #ffThemeBtn, #theme-toggle, #darkModeToggle, .site-theme-toggle, .theme-toggle, [data-theme-toggle]"
+      );
+      if (replaceHeader) {
+        existingHeader.querySelectorAll("button, [role='button']").forEach(function (button) {
+          if (button === retainedThemeButton || button.matches(".global-menu-toggle, [data-menu-toggle], .menu-button")) return;
+          retainedActions.push(button);
+        });
+        existingHeader.querySelectorAll("nav a[href^='#']").forEach(function (link) {
+          retainedSectionLinks.push(link);
+        });
+        existingHeader.remove();
+      } else if (retainedThemeButton) {
+        retainedThemeButton.remove();
+      }
+    }
+
     var home = document.createElement("header");
     home.className = "global-shell";
     home.setAttribute("data-global-shell", "");
@@ -82,26 +197,30 @@
       '<nav class="global-nav" aria-label="Primary navigation">' +
       '<a href="/">Home</a><a href="/#tools">Tools</a><a href="/#about">About</a>' +
       "</nav>" +
+      '<div class="global-tool-actions" data-global-actions></div>' +
       '<button class="global-theme-toggle" type="button" aria-label="Toggle color theme">' +
       '<span aria-hidden="true">◐</span></button>' +
       '<button class="global-menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">☰</button>' +
-      "</div>" +
-      '<div class="global-breadcrumb" aria-label="Breadcrumb">' +
-      '<a href="/">Home</a><span aria-hidden="true">›</span><a href="/#tools">Tools</a>' +
-      (category ? '<span aria-hidden="true">›</span><span>' + escapeText(category) + "</span>" : "") +
-      '<span aria-hidden="true">›</span><strong>' + escapeText(title) + "</strong></div>";
+      "</div>";
 
-    document.body.insertBefore(home, document.body.firstChild);
+    var navSlot = home.querySelector(".global-nav");
+    retainedSectionLinks.forEach(function (link) { navSlot.appendChild(link); });
+
+    if (retainedThemeButton) {
+      retainedThemeButton.classList.add("global-theme-toggle");
+      home.querySelector(".global-theme-toggle").replaceWith(retainedThemeButton);
+    }
+    var actionSlot = home.querySelector("[data-global-actions]");
+    retainedActions.forEach(function (action) { actionSlot.appendChild(action); });
+    if (!retainedActions.length) actionSlot.remove();
+    var firstChild = document.body.firstElementChild;
+    if (firstChild && (firstChild.classList.contains("skip-link") || firstChild.classList.contains("ff-skip"))) {
+      document.body.insertBefore(home, firstChild.nextSibling);
+    } else {
+      document.body.insertBefore(home, firstChild);
+    }
     var themeButton = home.querySelector(".global-theme-toggle");
-    themeButton.addEventListener("click", function () {
-      var dark = document.documentElement.getAttribute("data-theme") === "dark";
-      document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
-      try {
-        localStorage.setItem("tools-theme", dark ? "light" : "dark");
-      } catch (err) {
-        // Theme still changes for this page when storage is unavailable.
-      }
-    });
+    if (!retainedThemeButton) themeButton.addEventListener("click", toggleTheme);
     var menuButton = home.querySelector(".global-menu-toggle");
     menuButton.addEventListener("click", function () {
       var open = home.classList.toggle("is-menu-open");

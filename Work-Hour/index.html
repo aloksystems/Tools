@@ -1,99 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Work Hours</title>
-  <meta name="description" content="Calculate work hours and minutes.">
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#1a1a2e" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Work Hours" />
-  <link rel="apple-touch-icon" href="icon.svg" />
-  <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="../back.css">
-    <script src="../back.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f766e">
+  <title>Work Hour Calculator | Track Shifts, Weekly Hours and Pay</title>
+  <meta name="description" content="Work out shift hours, deduct breaks, log shifts, and see weekly totals with estimated pay. Everything is saved privately in your browser.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="author" content="Alok Systems">
+  <link rel="canonical" href="https://aloksystems.freedev.app/Work-Hour/">
 
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://aloksystems.freedev.app/Work%20Hour/">
-    <meta property="og:title" content="Work Hours">
-    <meta property="og:description" content="Calculate work hours and minutes.">
-    <meta property="og:url" content="https://aloksystems.freedev.app/Work Hour/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Alok Systems Tools">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Work Hours">
-    <meta name="twitter:description" content="Calculate work hours and minutes.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
-{
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Work Hours",
-    "description":  "Calculate work hours and minutes.",
-    "url":  "https://aloksystems.freedev.app/Work Hour/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
-}
-    </script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alok Systems Tools">
+  <meta property="og:title" content="Work Hour Calculator - Track Hours and Pay">
+  <meta property="og:description" content="Calculate shift hours, log your days, and see a weekly summary with estimated earnings — all locally.">
+  <meta property="og:url" content="https://aloksystems.freedev.app/Work-Hour/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Work Hour Calculator - Alok Systems Tools">
+  <meta name="twitter:description" content="Calculate shifts, log work days, and see weekly hours with estimated pay.">
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Work Hours">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Work Hour Calculator",
+    "description": "Calculate shift hours, log work days, and see weekly hours with estimated pay privately in your browser.",
+    "url": "https://aloksystems.freedev.app/Work-Hour/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"How are shift hours calculated?","acceptedAnswer":{"@type":"Answer","text":"Hours are the time between start and end, minus the unpaid break. If the end time is on or before the start time, the shift is counted as overnight."}},
+      {"@type":"Question","name":"Where are my shifts saved?","acceptedAnswer":{"@type":"Answer","text":"Shifts are stored in your browser's local storage on this device. They are never uploaded. Clearing browser data or using a private window can remove them."}},
+      {"@type":"Question","name":"How is pay estimated?","acceptedAnswer":{"@type":"Answer","text":"Estimated pay is net worked hours multiplied by the hourly rate you enter. It does not include tax, overtime premiums, or other deductions."}},
+      {"@type":"Question","name":"How does the weekly summary work?","acceptedAnswer":{"@type":"Answer","text":"The weekly summary adds logged shifts from Monday through Sunday of the current week. Today's total counts only shifts logged with today's date."}}
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../back.css">
+  <script src="../back.js" defer></script>
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('tools-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  </script>
 </head>
 <body>
-
-  <main class="card">
-    <h1>Work Hours</h1>
-    <p class="sub">Slide to set time</p>
-
-    <section>
-      <label>Start</label>
-      <div class="time-row">
-        <div class="slide-picker" id="startHourPicker"></div>
-        <span class="sep">:</span>
-        <div class="slide-picker" id="startMinPicker"></div>
-        <select id="startPer" class="per">
-          <option value="AM">AM</option>
-          <option value="PM">PM</option>
-        </select>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">HOURS, WITHOUT THE GUESSWORK</p>
+      <h1 id="page-title">Work Hour Calculator</h1>
+      <p>Add up a shift in seconds, then track daily totals, the week, and estimated pay.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        Your shift log is saved only on this device.
       </div>
     </section>
 
-    <section>
-      <label>End</label>
-      <div class="time-row">
-        <div class="slide-picker" id="endHourPicker"></div>
-        <span class="sep">:</span>
-        <div class="slide-picker" id="endMinPicker"></div>
-        <select id="endPer" class="per">
-          <option value="AM">AM</option>
-          <option value="PM">PM</option>
-        </select>
+    <section class="workspace" aria-label="Work hour calculator and shift log">
+      <div class="input-column">
+        <section class="panel" aria-labelledby="entry-title">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div>
+              <h2 id="entry-title">Calculate a shift</h2>
+              <p>Set the times and break. The total updates as you type.</p>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label" for="shiftDate">Date</label>
+              <input type="date" id="shiftDate" autocomplete="off">
+            </div>
+            <div class="field">
+              <label class="field-label" for="breakMinutes">Unpaid break <span class="optional">optional</span></label>
+              <div class="input-suffix">
+                <input type="number" id="breakMinutes" min="0" max="1440" step="5" value="0" inputmode="numeric">
+                <span>min</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label" for="startTime">Start time</label>
+              <input type="time" id="startTime" value="09:00" step="60">
+            </div>
+            <div class="field">
+              <label class="field-label" for="endTime">End time</label>
+              <input type="time" id="endTime" value="17:00" step="60">
+            </div>
+          </div>
+          <p class="overnight-hint">An end time on or before the start counts as an overnight shift.</p>
+
+          <div class="field rate-field">
+            <label class="field-label" for="hourlyRate">Hourly rate <span class="optional">optional</span></label>
+            <div class="rate-line">
+              <select id="currency" aria-label="Currency for hourly rate">
+                <option value="INR">₹ INR</option>
+                <option value="USD">$ USD</option>
+                <option value="EUR">€ EUR</option>
+                <option value="GBP">£ GBP</option>
+                <option value="AUD">$ AUD</option>
+                <option value="CAD">$ CAD</option>
+              </select>
+              <input type="number" id="hourlyRate" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 250">
+            </div>
+            <p class="field-help">Used for an estimate only — no tax or overtime rules are applied.</p>
+          </div>
+
+          <p class="input-error" id="errorMessage" role="alert" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            <span id="errorText"></span>
+          </p>
+
+          <div class="form-actions">
+            <button type="button" id="addShiftBtn" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              Add shift to log
+            </button>
+            <button type="button" id="resetBtn" class="btn btn-outline">Reset</button>
+          </div>
+          <p class="storage-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+            Stored in this browser. Nothing is uploaded.
+          </p>
+        </section>
+
+        <section class="panel log-panel" aria-labelledby="log-title">
+          <div class="panel-heading">
+            <span class="step-number">02</span>
+            <div>
+              <h2 id="log-title">Shift log</h2>
+              <p>Every saved shift feeds the totals beside it.</p>
+            </div>
+          </div>
+          <div class="log-toolbar">
+            <p id="logCount" class="log-count">0 shifts saved</p>
+            <button type="button" id="exportBtn" class="btn btn-outline export-btn" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg>
+              Export CSV
+            </button>
+          </div>
+
+          <div class="log-empty" id="emptyLog">
+            <div class="empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M9 15h6"/></svg>
+            </div>
+            <p><strong>No shifts logged yet.</strong> Add your first shift above and it will appear here.</p>
+          </div>
+          <ul class="shift-list" id="shiftList" aria-label="Saved shifts"></ul>
+        </section>
       </div>
+
+      <section class="summary-panel" aria-labelledby="summary-title">
+        <div class="summary-heading">
+          <p class="eyebrow">SHIFT SUMMARY</p>
+          <h2 id="summary-title">Hours that count</h2>
+          <p class="summary-period" id="shiftContext">Today · 9:00 AM to 5:00 PM</p>
+        </div>
+
+        <div class="shift-result">
+          <p class="shift-total" id="shiftTotal" aria-live="polite">8h 00m</p>
+          <p class="shift-break" id="breakNote">No unpaid break</p>
+          <div class="earnings-row">
+            <span>Estimated shift pay</span>
+            <strong id="shiftEarnings">—</strong>
+          </div>
+        </div>
+
+        <div class="quick-stats">
+          <div class="stat-card">
+            <span class="stat-label">Logged today</span>
+            <strong class="stat-value" id="todayHours">0h 00m</strong>
+            <span class="stat-sub" id="todayEarnings">No pay recorded</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">This week</span>
+            <strong class="stat-value" id="weekHours">0h 00m</strong>
+            <span class="stat-sub" id="weekRange">—</span>
+            <span class="stat-sub stat-earn" id="weekEarnings">No pay recorded</span>
+          </div>
+        </div>
+
+        <button type="button" id="copyBtn" class="btn btn-outline copy-btn" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy summary
+        </button>
+        <p class="summary-note">Weekly totals run Monday to Sunday. Entries stay in your browser.</p>
+      </section>
     </section>
 
-    <p class="err" id="errorMsg"></p>
+    <section class="content-section" aria-labelledby="how-title">
+      <div class="section-heading"><p class="eyebrow">QUICK GUIDE</p><h2 id="how-title">How to track a work day</h2></div>
+      <ol class="steps-grid">
+        <li><span>01</span><div><h3>Enter the shift</h3><p>Choose the date, start, end, and any unpaid break. The total appears instantly.</p></div></li>
+        <li><span>02</span><div><h3>Add it to the log</h3><p>Save the shift, then reuse the form for the next day. Every entry can be deleted.</p></div></li>
+        <li><span>03</span><div><h3>Review your week</h3><p>Check today's logged total, the Monday–Sunday summary, and estimated earnings.</p></div></li>
+      </ol>
+    </section>
 
-    <button class="btn btn-primary" id="calcBtn">Calculate</button>
-
-    <div class="stats" id="statsWrap" style="display:none">
-      <div class="stat"><span class="stat-val" id="resHm">--</span><span class="stat-lbl">Worked</span></div>
-      <div class="stat"><span class="stat-val" id="resMin">--</span><span class="stat-lbl">Minutes</span></div>
-    </div>
-
-    <div class="bar-wrap" id="barWrap" style="display:none">
-      <div class="bar-fill" id="barFill"></div>
-    </div>
-
-    <div class="actions" id="actionsWrap" style="display:none">
-      <button class="btn btn-outline" id="copyBtn">Copy</button>
-      <button class="btn btn-outline" id="resetBtn">Reset</button>
-    </div>
+    <section class="content-section faq-section" aria-labelledby="faq-title">
+      <div class="section-heading"><p class="eyebrow">HELP AND PRIVACY</p><h2 id="faq-title">Frequently asked questions</h2></div>
+      <details><summary>How are shift hours calculated?</summary><p>Hours are the time between start and end, minus the unpaid break. If the end time is on or before the start time, the shift is counted as overnight.</p></details>
+      <details><summary>Where are my shifts saved?</summary><p>Shifts are stored in your browser's local storage on this device. They are never uploaded. Clearing browser data or using a private window can remove them.</p></details>
+      <details><summary>How is pay estimated?</summary><p>Estimated pay is net worked hours multiplied by the hourly rate you enter. It does not include tax, overtime premiums, or other deductions.</p></details>
+      <details><summary>How does the weekly summary work?</summary><p>The weekly summary adds logged shifts from Monday through Sunday of the current week. Today's total counts only shifts logged with today's date.</p></details>
+    </section>
   </main>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="script.js"></script>
   <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function () {
-        navigator.serviceWorker.register("sw.js");
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
       });
     }
   </script>

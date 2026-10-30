@@ -171,7 +171,7 @@
                     <td>${page.width}</td>
                     <td>${page.height}</td>
                     <td>${page.orientation}</td>
-                    <td>${page.rotation}Â°</td>
+                    <td>${page.rotation}°</td>
                 </tr>
             `).join('');
 

@@ -322,7 +322,7 @@ export function renderFileCard(record) {
 
   if (record.status === "done" && record.processedBlobURL) {
     actions.push(h("button", {
-      class: "btn btn-soft btn-sm",
+      class: "btn btn-secondary btn-sm",
       onclick: () => callbacks.onDownloadOne(record.id),
     }, "Download"));
   }
@@ -435,14 +435,14 @@ function renderResult() {
   const heading = failed.length
     ? `${readyCount} ready · ${failed.length} need attention`
     : `${done.length} ready`;
-  el.resultHeading.textContent = done.length ? "Your Documents Are Ready" : "Processing Results";
+  el.resultHeading.textContent = done.length ? "Your documents are ready" : "Processing results";
   el.resultSummary.textContent = heading;
 }
 
 function renderResultCard(record) {
   const isImage = record.fileType.startsWith("image/");
   const preview = record.processedBlobURL && (isImage || record.resultDetails?.format !== "pdf")
-    ? h("div", { class: "card-preview" }, h("img", { src: record.processedBlobURL, alt: `Result of ${record.currentName}` }))
+    ? h("div", { class: "card-preview card-preview-image" }, h("img", { src: record.processedBlobURL, alt: `Result of ${record.currentName}` }))
     : h("div", { class: "card-preview" }, h("span", { class: "pdf-icon" }, "PDF"));
 
   const d = record.resultDetails || {};
@@ -885,7 +885,7 @@ export function openImageEditor(record) {
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(currentCanvas, 0, 0, canvas.width, canvas.height);
     if (cropEnabled && cropW > 0 && cropH > 0) {
-      ctx.strokeStyle = "#4f46e5";
+      ctx.strokeStyle = "#14b8a6";
       ctx.lineWidth = 2;
       const sx = cropX * scale, sy = cropY * scale, sw = cropW * scale, sh = cropH * scale;
       ctx.strokeRect(sx, sy, sw, sh);
@@ -895,25 +895,29 @@ export function openImageEditor(record) {
     dimInfo.textContent = `${currentCanvas.width} × ${currentCanvas.height} px source`;
   }
 
+  // Crop values are stored in source-image pixels; the preview canvas is scaled.
+  const sourcePoint = (clientX, clientY) => {
+    const rect = canvas.getBoundingClientRect();
+    const k = currentCanvas ? currentCanvas.width / rect.width : 1;
+    return { x: (clientX - rect.left) * k, y: (clientY - rect.top) * k };
+  };
+
   canvas.addEventListener("mousedown", (e) => {
     if (!cropEnabled) return;
     mouseDown = true;
     mode = "new";
-    const rect = canvas.getBoundingClientRect();
-    dragStartX = e.clientX - rect.left;
-    dragStartY = e.clientY - rect.top;
+    const p = sourcePoint(e.clientX, e.clientY);
+    dragStartX = p.x;
+    dragStartY = p.y;
   });
   window.addEventListener("mousemove", (e) => {
     if (!mouseDown) return;
-    const rect = canvas.getBoundingClientRect();
-    const scale = canvas.width / rect.width;
-    const curX = (e.clientX - rect.left) * scale;
-    const curY = (e.clientY - rect.top) * scale;
+    const p = sourcePoint(e.clientX, e.clientY);
     if (mode === "new") {
-      cropX = Math.min(dragStartX * scale, curX);
-      cropY = Math.min(dragStartY * scale, curY);
-      cropW = Math.abs(curX - dragStartX * scale);
-      cropH = Math.abs(curY - dragStartY * scale);
+      cropX = Math.min(dragStartX, p.x);
+      cropY = Math.min(dragStartY, p.y);
+      cropW = Math.abs(p.x - dragStartX);
+      cropH = Math.abs(p.y - dragStartY);
     }
     draw();
   });
@@ -923,29 +927,25 @@ export function openImageEditor(record) {
     if (!cropEnabled) return;
     mouseDown = true; mode = "new";
     const t = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const scale = canvas.width / rect.width;
-    dragStartX = (t.clientX - rect.left) * scale;
-    dragStartY = (t.clientY - rect.top) * scale;
+    const p = sourcePoint(t.clientX, t.clientY);
+    dragStartX = p.x;
+    dragStartY = p.y;
   }, { passive: true });
   document.addEventListener("touchmove", (e) => {
     if (!mouseDown) return;
-    const rect = canvas.getBoundingClientRect();
-    const scale = canvas.width / rect.width;
     const t = e.touches[0];
-    const curX = (t.clientX - rect.left) * scale;
-    const curY = (t.clientY - rect.top) * scale;
+    const p = sourcePoint(t.clientX, t.clientY);
     if (mode === "new") {
-      cropX = Math.min(dragStartX, curX);
-      cropY = Math.min(dragStartY, curY);
-      cropW = Math.abs(curX - dragStartX);
-      cropH = Math.abs(curY - dragStartY);
+      cropX = Math.min(dragStartX, p.x);
+      cropY = Math.min(dragStartY, p.y);
+      cropW = Math.abs(p.x - dragStartX);
+      cropH = Math.abs(p.y - dragStartY);
     }
     draw();
   }, { passive: true });
 
   const cropCheck = h("input", { type: "checkbox", id: "edCrop", checked: false });
-  const rotateBtn = h("button", { class: "btn btn-soft btn-sm", onclick: () => {
+  const rotateBtn = h("button", { class: "btn btn-secondary btn-sm", onclick: () => {
     rotateDeg = (rotateDeg + 90) % 360;
     applyRotate();
   } }, "⟳ Rotate 90°");
@@ -987,6 +987,10 @@ export function openImageEditor(record) {
 
   function applyRotate() {
     currentCanvas = rotateImageCompat(currentCanvas, 90);
+    if (cropEnabled) {
+      cropX = currentCanvas.width * 0.1; cropY = currentCanvas.height * 0.1;
+      cropW = currentCanvas.width * 0.8; cropH = currentCanvas.height * 0.8;
+    }
     draw();
   }
 
@@ -1012,13 +1016,16 @@ export function openImageEditor(record) {
     overrides.quality = Number(body.querySelector("#edQuality").value) || 80;
     overrides.kind = "image-edit";
     if (cropEnabled && cropW > 2 && cropH > 2 && currentCanvas) {
-      const ratio = currentCanvas.width / canvas.width;
+      const w = currentCanvas.width;
+      const h = currentCanvas.height;
+      const x = Math.max(0, Math.min(w - 1, Math.round(cropX)));
+      const y = Math.max(0, Math.min(h - 1, Math.round(cropY)));
       overrides.crop = {
         enabled: true,
-        x: Math.round(cropX * ratio),
-        y: Math.round(cropY * ratio),
-        width: Math.round(cropW * ratio),
-        height: Math.round(cropH * ratio),
+        x,
+        y,
+        width: Math.max(1, Math.min(w - x, Math.round(cropW))),
+        height: Math.max(1, Math.min(h - y, Math.round(cropH))),
       };
     } else {
       overrides.crop = null;
