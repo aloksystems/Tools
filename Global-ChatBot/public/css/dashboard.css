@@ -12,6 +12,7 @@ body { min-height: 100vh; }
 .gc-eyebrow { margin: 0 0 6px; color: var(--brand-deep); font-size: .7rem; font-weight: 800; letter-spacing: .12em; }
 .gc-hero h1 { font-size: clamp(1.75rem, 3.4vw, 2.35rem); line-height: 1.14; letter-spacing: -.035em; }
 .gc-lead { max-width: 620px; margin-top: 9px; color: var(--muted); font-size: .96rem; line-height: 1.6; }
+.gc-field-hint { margin-top: -6px; color: var(--muted); font-size: .76rem; line-height: 1.45; }
 
 .gc-section { margin-top: 22px; }
 .gc-section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 11px; }
@@ -41,6 +42,7 @@ body { min-height: 100vh; }
   transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
 }
 .gc-global-card:hover { transform: translateY(-2px); border-color: var(--brand); box-shadow: var(--shadow-lg); }
+.gc-global-card:focus-visible, .gc-room-card:focus-visible { outline: 3px solid var(--brand-strong); outline-offset: 3px; }
 .gc-global-icon {
   display: grid;
   width: 48px;
@@ -67,18 +69,35 @@ body { min-height: 100vh; }
 
 .gc-room-card {
   display: flex;
-  width: 100%;
+  min-width: 0;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: 8px;
+  padding: 8px;
   border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--surface);
-  color: var(--text);
-  text-align: left;
   transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
 }
+.gc-room-open {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  width: 100%;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+}
 .gc-room-card:hover { transform: translateY(-1px); border-color: var(--brand); box-shadow: var(--shadow); }
+.gc-room-open:focus-visible { outline: 3px solid var(--brand-strong); outline-offset: 2px; }
+.gc-room-delete { display: grid; width: 40px; height: 40px; flex: none; place-items: center; border: 1px solid transparent; border-radius: 12px; background: transparent; color: var(--muted); }
+.gc-room-delete:hover { border-color: var(--danger-line); background: var(--danger-soft); color: var(--danger); }
+.gc-room-delete:disabled { opacity: .55; cursor: wait; }
+.gc-room-card:active, .gc-global-card:active { transform: scale(.995); }
 .gc-room-icon {
   display: grid;
   width: 44px;
@@ -156,4 +175,9 @@ body { min-height: 100vh; }
   .gc-fab { right: 18px; bottom: 20px; }
   .gc-topbar-new span { display: none; }
   .gc-topbar-new { width: 42px; padding: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gc-global-card, .gc-room-card, .gc-fab, .gc-icon-option { transition: none; }
+  .gc-global-card:hover, .gc-room-card:hover, .gc-fab:hover { transform: none; }
 }

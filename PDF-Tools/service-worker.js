@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pdf-studio-v5';
+const CACHE_NAME = 'pdf-studio-v7';
 const PRECACHE = [
   'index.html',
   'tool.html',
@@ -6,7 +6,9 @@ const PRECACHE = [
   'premium-ui.js',
   'tool-shell.js',
   'tool-registry.js',
-  'tools/pdf-suite.js',
+  'css/pdf-tool.css',
+  'tools/ui.js',
+  'tools/engine.js',
   'theme-init.js',
   'manifest.json',
   'icons/app-icon.svg',

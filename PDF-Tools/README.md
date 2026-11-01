@@ -21,7 +21,7 @@ All supported processing happens locally in your browser — **your files never 
 
 * **[JPG to PDF](JPG-to-PDF/index.html)** - Combine JPG or PNG images into a single ordered PDF document.
 
-* **[PDF to JPG](PDF-to-JPG/index.html)** - Export PDF pages as high-quality JPG or PNG images.
+* **[PDF to JPG](PDF-to-JPG/index.html)** - Export PDF pages as JPG, PNG, or WebP images at up to 300 DPI.
 
 * **[PDF to Text](PDF-to-Text/index.html)** - Extract text from PDF documents and export it as TXT or RTF.
 
@@ -47,9 +47,7 @@ All supported processing happens locally in your browser — **your files never 
 
 ### 🗜️ Compression & Optimization
 
-* **[Compress PDF](Compress-PDF/index.html)** - Rewrite and optimize PDF documents to reduce file size where possible.
-
-* **[PDF Size Reducer](Pdf-Size-Reducer/index.html)** - Reduce PDF file size toward a selected target such as 100 KB, 400 KB, 500 KB, or 1 MB.
+* **[PDF Size Reducer](Pdf-Size-Reducer/index.html)** - Reduce PDF file size toward a selected target such as 100 KB, 500 KB, 1 MB, or a custom size.
 
 ### ✏️ Edit & Review Tools
 
@@ -83,59 +81,49 @@ All supported processing happens locally in your browser — **your files never 
 
 ### Using the Main PDF Tools Page
 
-Open:
+The dashboard itself is plain HTML and opens from anywhere:
 
 ```text
 PDF-Tools/index.html
 ```
 
-This is the **main PDF Tools dashboard** containing links to all available tools.
-
-Select the tool you need and follow the instructions shown on that tool's page.
+It lists every tool. The tool pages themselves load their interface as JavaScript
+modules, and browsers refuse to load module files from `file://`, so they need a web
+server — see **Running Locally** below. Opened straight from disk, a tool page shows a
+short notice with the exact command and address to use instead.
 
 ### Running Locally
 
-You can run the project using any local HTTP server.
+Serve the folder that **contains** `PDF-Tools` (not `PDF-Tools` itself) — the tool pages
+reference shared files one level up, e.g. `../theme-init.js` and `../../back.css`.
 
 #### Python HTTP Server
 
 1. Make sure Python is installed.
 
-2. Navigate to the PDF-Tools directory:
+2. Start a local HTTP server from the parent folder:
 
 ```bash
-cd path/to/PDF-Tools
-```
-
-3. Start a local HTTP server:
-
-```bash
+cd path/to/Tools
 python -m http.server 8000
 ```
 
-4. Open:
+3. Open the PDF Tools dashboard:
 
 ```text
-http://localhost:8000
+http://localhost:8000/PDF-Tools/
 ```
 
-5. Open the main dashboard:
+4. Individual tools are then served from:
 
 ```text
-http://localhost:8000/index.html
+http://localhost:8000/PDF-Tools/Merge-PDF/
 ```
 
 ### Using VS Code Live Server
 
-You can also use the **Live Server** extension in VS Code.
-
-Open the `PDF-Tools` folder and launch:
-
-```text
-index.html
-```
-
-with Live Server.
+You can also use the **Live Server** extension in VS Code. Open the folder that contains
+`PDF-Tools`, right-click `PDF-Tools/index.html` and choose **Open with Live Server**.
 
 ---
 
@@ -228,183 +216,93 @@ The project is designed around:
 ### Frontend
 
 * **HTML5** - Structure and content
-* **CSS3** - Styling and responsive layouts
-* **JavaScript (ES6+)** - Functionality and interactivity
-* **Font Awesome** - Icons
+* **CSS3** - Styling, theming, and responsive layouts
+* **JavaScript ES modules** - Functionality and interactivity
+* **Inter (Google Fonts)** - Typography
 
 ### PDF & Document Libraries
 
 * **[pdf-lib](https://pdf-lib.js.org/)** - PDF creation and manipulation
 * **[PDF.js](https://mozilla.github.io/pdf.js/)** - PDF rendering and text extraction
 * **[JSZip](https://stuk.github.io/jszip/)** - ZIP file creation for batch downloads
+* **[Tesseract.js](https://tesseract.projectnaptha.com/)** - On-device OCR
 * **[html2pdf.js](https://github.com/eKoopmans/html2pdf.js)** - HTML to PDF conversion
 
 ### Utilities
 
-* **FileSaver.js** - Client-side file saving
 * Browser **File API**
 * Browser **Canvas API**
-* Browser-based processing APIs where applicable
+* Browser **Clipboard API**
+* Blob URLs for client-side downloads
+
+Libraries are loaded from CDN only when a tool needs them.
 
 ---
 
 ## File Structure
 
-The project is organized so that **PDF-Tools itself contains the main dashboard**, while every individual PDF tool has its own dedicated folder.
+`PDF-Tools/index.html` is the dashboard. Every tool folder contains only its HTML shell; all behavior lives in shared ES modules under `tools/`.
 
 ```text
 PDF-Tools/
 │
 ├── index.html                         # Main PDF Tools dashboard
+├── tool.html                          # Generic shell: tool.html?tool=Tool-Id
+├── tool-registry.js                   # Titles, categories, icons, and routes for all 23 tools
+├── tool-shell.js                      # Loads the matching module into the shell
+├── app.js                             # Dashboard filtering, search, and favorites
+├── style.css                          # Dashboard styles
+├── premium-theme.css                  # Shared design tokens and components
+├── premium-ui.js                      # Shared enhancements (theme menu, pin, toasts)
+├── theme-init.js                      # Applies the saved theme before paint
+├── service-worker.js                  # Network-first offline shell cache
+├── manifest.json                      # Web app manifest
+├── icons/                             # App icons
+├── css/
+│   └── pdf-tool.css                   # Tool workspace layout
 │
-├── icons/                             # Shared icons/assets
+├── tools/
+│   ├── engine.js                      # PDF libraries, rendering, OCR, image, download helpers
+│   ├── ui.js                          # Workspace, fields, segmented controls, result cards
+│   ├── Merge-PDF.js
+│   ├── Split-PDF.js
+│   ├── Pdf-Size-Reducer.js
+│   ├── Rotate-PDF.js
+│   ├── Extract-Pages.js
+│   ├── Delete-Pages.js
+│   ├── Reorder-PDF-Pages.js
+│   ├── Add-Page-Numbers.js
+│   ├── Sign-PDF.js
+│   ├── Watermark-PDF.js
+│   ├── Crop-PDF.js
+│   ├── Highlight-PDF.js
+│   ├── Edit-PDF-Text.js
+│   ├── PDF-Metadata-Editor.js
+│   ├── PDF-Info.js
+│   ├── PDF-to-JPG.js
+│   ├── JPG-to-PDF.js
+│   ├── PDF-to-Text.js
+│   ├── HTML-to-PDF.js
+│   ├── OCR-PDF.js
+│   ├── Protect-PDF.js
+│   ├── Unlock-PDF.js
+│   └── Scan-to-PDF.js
 │
-├── Merge-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Split-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Compress-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Pdf-Size-Reducer/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Rotate-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Unlock-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Watermark-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Add-Page-Numbers/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Extract-Pages/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Delete-Pages/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Reorder-PDF-Pages/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Sign-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── PDF-Metadata-Editor/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── PDF-Info/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── PDF-to-JPG/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── JPG-to-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── HTML-to-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── PDF-to-Text/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Protect-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Crop-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Highlight-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Edit-PDF-Text/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── OCR-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── Scan-to-PDF/
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
-│
-├── app.js                              # Shared application logic
-├── style.css                           # Shared/global styles
-├── premium-theme.css                   # Shared premium UI theme
-├── premium-ui.js                       # Shared UI enhancements
-├── tool-registry.js                    # Tool configuration/registry
-├── tool-shell.js                       # Shared tool shell behavior
-├── theme-init.js                       # Theme initialization
-├── service-worker.js                   # Service worker
-├── manifest.json                       # Web app manifest
-└── README.md                           # Project documentation
+├── Merge-PDF/index.html               # HTML shell only
+├── Split-PDF/index.html
+├── ...                                # One folder per tool (23 total)
+└── README.md
 ```
 
 ### Folder Structure Principle
 
-Each individual PDF tool follows this pattern:
+Every tool folder contains a single `index.html` that declares its metadata and loads the shared shell:
 
-```text
-Tool-Name/
-├── index.html
-├── script.js
-└── style.css
+```html
+<script type="module" src="../tool-shell.js"></script>
 ```
 
-The root `PDF-Tools/index.html` remains the **main dashboard**.
-
-Shared resources remain in the `PDF-Tools` root instead of being unnecessarily duplicated inside every tool folder.
+The shell reads the tool id, loads `tools/<Tool-Id>.js`, and that module renders into the shared workspace using `tools/ui.js` and `tools/engine.js`. Adding a tool means adding one module plus one registry entry — no duplicated CSS or script per folder.
 
 ---
 

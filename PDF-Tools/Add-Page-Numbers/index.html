@@ -4,145 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stamp page numbers with your choice of position, format, size, colour, and start number. Runs entirely in your browser — no uploads, no sign-up.">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#2f4a76">
+    <meta name="theme-color" content="#0f766e">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='60'%20font-family='Arial,sans-serif'%20font-size='30'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EPDF%3C/text%3E%3C/svg%3E">
-    <title>Add Page Numbers to PDF</title>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js" integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI" crossorigin="anonymous"></script>
-    
+    <title>Add Page Numbers — Free & Private PDF Tool</title>
     <script src="../theme-init.js"></script>
     <link rel="manifest" href="../manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../premium-theme.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/pdf-tool.css">
     <link rel="stylesheet" href="../../back.css">
     <script src="../../back.js" defer></script>
 
-    <meta name="description" content="Use Add Page Numbers to PDF online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <link rel="canonical" href="https://aloksystems.freedev.app/PDF-Tools/Add-Page-Numbers/">
-    <meta property="og:title" content="Add Page Numbers to PDF">
-    <meta property="og:description" content="Use Add Page Numbers to PDF online for free. Fast, private, and browser-based with no installation required.">
+    <meta property="og:title" content="Add Page Numbers — Free & Private PDF Tool">
+    <meta property="og:description" content="Stamp page numbers with your choice of position, format, size, colour, and start number. Runs entirely in your browser — no uploads, no sign-up.">
     <meta property="og:url" content="https://aloksystems.freedev.app/PDF-Tools/Add-Page-Numbers/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alok Systems Tools">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Add Page Numbers to PDF">
-    <meta name="twitter:description" content="Use Add Page Numbers to PDF online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
+    <meta name="twitter:title" content="Add Page Numbers — Free & Private PDF Tool">
+    <meta name="twitter:description" content="Stamp page numbers with your choice of position, format, size, colour, and start number. Runs entirely in your browser — no uploads, no sign-up.">
+    <meta name="author" content="Alok Systems">
+    <script type="application/ld+json">
 {
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Add Page Numbers to PDF",
-    "description":  "Use Add Page Numbers to PDF online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/PDF-Tools/Add-Page-Numbers/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Add Page Numbers",
+    "description": "Stamp page numbers with your choice of position, format, size, colour, and start number. Runs entirely in your browser — no uploads, no sign-up.",
+    "url": "https://aloksystems.freedev.app/PDF-Tools/Add-Page-Numbers/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
 }
     </script>
 </head>
 
-<body>
-    <div class="container">
-        <header>
-            <a href="../index.html" class="back-button">
-                <i class="fas fa-arrow-left"></i> Back to Tools
-            </a>
-            <h1><i class="fas fa-hashtag"></i> Add Page Numbers</h1>
-            <p>Add page numbering to your PDF documents</p>
-        </header>
-
-        <div class="content">
-            <label for="pdfFile">
-                <i class="fas fa-file-pdf"></i> Select PDF File
-            </label>
-            <div id="dropZone">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p><span class="highlight">Click to upload</span> or drag and drop</p>
-                <p style="font-size: 0.9em;">Only PDF files are accepted</p>
-            </div>
-            <input type="file" id="pdfFile" accept=".pdf">
-
-            <div id="status"></div>
-
-            <div class="options-section" id="optionsSection">
-                <h3 style="margin-bottom: 15px; color: var(--primary-color);">
-                    <i class="fas fa-cog"></i> Page Number Settings
-                </h3>
-
-                <div class="option-group">
-                    <label>Position</label>
-                    <div class="position-grid">
-                        <div class="position-option" data-position="top-left">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>Top Left</span>
-                        </div>
-                        <div class="position-option" data-position="top-center">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>Top Center</span>
-                        </div>
-                        <div class="position-option" data-position="top-right">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>Top Right</span>
-                        </div>
-                        <div class="position-option" data-position="bottom-left">
-                            <i class="fas fa-arrow-down"></i>
-                            <span>Bottom Left</span>
-                        </div>
-                        <div class="position-option active" data-position="bottom-center">
-                            <i class="fas fa-arrow-down"></i>
-                            <span>Bottom Center</span>
-                        </div>
-                        <div class="position-option" data-position="bottom-right">
-                            <i class="fas fa-arrow-down"></i>
-                            <span>Bottom Right</span>
-                        </div>
-                    </div>
+<body data-tool-id="Add-Page-Numbers">
+    <div class="page">
+        <main class="tool-shell" data-tool-shell>
+            <header class="tool-hero">
+                <div class="tool-hero__icon" data-tool-icon></div>
+                <div class="tool-hero__content">
+                    <span class="tool-hero__eyebrow" data-tool-category>Edit & Review</span>
+                    <h1 data-tool-title>Add Page Numbers</h1>
+                    <p data-tool-description>Stamp page numbers with your choice of position, format, size, colour, and start number.</p>
                 </div>
-
-                <div class="option-group">
-                    <label>Format</label>
-                    <div class="format-options">
-                        <div class="format-btn active" data-format="{n}">Page {n}</div>
-                        <div class="format-btn" data-format="{n} of {total}">{n} of {total}</div>
-                        <div class="format-btn" data-format="Page {n} / {total}">Page {n} / {total}</div>
-                        <div class="format-btn" data-format="{n}">{n}</div>
-                    </div>
+                <div class="tool-hero__actions">
+                    <button class="btn btn-ghost" type="button" data-tool-favorite>
+                        <i class="ti ti-star"></i> Pin
+                    </button>
+                    <span class="tool-chip" data-tool-chip><i class="ti ti-shield"></i> 100% local</span>
                 </div>
-
-                <div class="option-group">
-                    <label>Font Size</label>
-                    <div class="size-control">
-                        <input type="range" id="fontSize" min="8" max="24" value="12">
-                        <span class="size-value"><span id="fontSizeValue">12</span>pt</span>
-                    </div>
+            </header>
+            <section class="tool-body">
+                <div class="tool-panel" data-tool-panel>
+                    <div class="pw-empty">Loading Add Page Numbers…</div>
                 </div>
-
-                <div class="option-group">
-                    <label>Start From Page</label>
-                    <input type="number" id="startPage" min="1" value="1">
-                </div>
-
-                <div class="preview-box">
-                    <strong>Preview:</strong>
-                    <div class="preview-text" id="previewText">Page 1</div>
-                </div>
-
-                <button id="addNumbersBtn">
-                    <i class="fas fa-plus-circle"></i>
-                    Add Page Numbers
-                </button>
-            </div>
-        </div>
+                <aside class="tool-sidebar">
+                    <div class="sidebar-card" data-tool-tips></div>
+                    <div class="sidebar-card" data-tool-recents></div>
+                </aside>
+            </section>
+        </main>
     </div>
-
-    
     <script src="../tool-registry.js"></script>
     <script src="../premium-ui.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="../tool-shell.js"></script>
 </body>
 
 </html>
-
-
-
-

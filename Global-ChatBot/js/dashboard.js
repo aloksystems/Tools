@@ -25,6 +25,7 @@
   var currentUser = null;
   var roomPreviewRefs = [];
   var roomUnsubscribers = [];
+  var roomRenderVersion = 0;
 
   function $(id) {
     return document.getElementById(id);
@@ -409,10 +410,12 @@
   }
 
   function roomCard(roomId, room) {
-    var card = document.createElement('button');
-    card.type = 'button';
+    var card = document.createElement('article');
     card.className = 'gc-room-card';
-    card.innerHTML =
+    var openButton = document.createElement('button');
+    openButton.type = 'button';
+    openButton.className = 'gc-room-open';
+    openButton.innerHTML =
       '<span class="gc-room-icon"><i class="fas ' + safeIcon(room.icon) + '" aria-hidden="true"></i></span>' +
       '<span class="gc-room-body">' +
       '<span class="gc-room-top"><span class="gc-room-name">' + escapeHTML(room.name || 'Room') + '</span>' +
@@ -420,9 +423,20 @@
       '<span class="gc-room-preview"><strong>No messages yet</strong><span></span></span>' +
       '</span>' +
       '<span class="gc-room-chevron"><i class="fas fa-chevron-right" aria-hidden="true"></i></span>';
-    card.addEventListener('click', function () {
+    openButton.addEventListener('click', function () {
       window.location.href = 'chat.html?room=' + encodeURIComponent(roomId);
     });
+    card.appendChild(openButton);
+    if (room.isOwner) {
+      var deleteButton = document.createElement('button');
+      deleteButton.type = 'button';
+      deleteButton.className = 'gc-room-delete';
+      deleteButton.setAttribute('aria-label', 'Delete ' + (room.name || 'room'));
+      deleteButton.title = 'Delete room';
+      deleteButton.innerHTML = '<i class="fas fa-trash-can" aria-hidden="true"></i>';
+      deleteButton.addEventListener('click', function () { deleteRoom(roomId, room.name, deleteButton); });
+      card.appendChild(deleteButton);
+    }
     watchRoomPreview(roomId, card);
     return card;
   }
@@ -456,20 +470,75 @@
     roomUnsubscribers = [];
     var unsubscribe = db.collection('users').doc(currentUser.uid).collection('rooms')
       .onSnapshot(function (snapshot) {
+        var version = ++roomRenderVersion;
         var rooms = [];
         snapshot.forEach(function (doc) {
           var data = doc.data() || {};
-          rooms.push({ id: doc.id, name: data.name, icon: data.icon, joined: data.joined });
+          rooms.push({
+            id: doc.id,
+            name: data.name,
+            icon: data.icon,
+            joined: data.joined,
+            isOwner: false
+          });
         });
         rooms.sort(function (a, b) {
           return toMillis(b.joined) - toMillis(a.joined);
         });
-        renderRooms(rooms);
+        Promise.all(rooms.map(function (room) {
+          return db.collection('rooms').doc(room.id).get().then(function (roomDoc) {
+            if (!roomDoc.exists) {
+              return db.collection('users').doc(currentUser.uid).collection('rooms').doc(room.id).delete()
+                .catch(function () {})
+                .then(function () { return null; });
+            }
+            var data = roomDoc.data() || {};
+            room.name = data.name || room.name;
+            room.icon = data.icon || room.icon;
+            room.isOwner = data.createdBy === currentUser.uid;
+            return room;
+          });
+        })).then(function (validRooms) {
+          if (version === roomRenderVersion) renderRooms(validRooms.filter(Boolean));
+        }).catch(function (error) {
+          console.error('Room details failed', error);
+          if (version === roomRenderVersion) showToast('Could not verify your room list.', 'error');
+        });
       }, function (error) {
         console.error('Room list failed', error);
         showToast('Could not load your rooms. Check Firestore rules.', 'error');
       });
     roomUnsubscribers.push(unsubscribe);
+  }
+
+  function deleteRoom(roomId, roomName, button) {
+    if (!db || !currentUser || !roomId) return;
+    if (!window.confirm('Delete “' + (roomName || 'this room') + '”? The room will be removed from chat lists. This cannot be undone.')) return;
+    if (button) button.disabled = true;
+
+    var roomRef = db.collection('rooms').doc(roomId);
+    roomRef.get().then(function (snapshot) {
+      if (!snapshot.exists) throw new Error('MISSING');
+      var room = snapshot.data() || {};
+      if (room.createdBy !== currentUser.uid) throw new Error('NOT_OWNER');
+      return roomRef.delete();
+    }).then(function () {
+      return db.collection('users').doc(currentUser.uid).collection('rooms').doc(roomId).delete()
+        .catch(function () {});
+    }).then(function () {
+      if (rtdb) rtdb.ref('room_members/' + roomId + '/' + currentUser.uid).remove().catch(function () {});
+      showToast('Room deleted.', 'success');
+    }).catch(function (error) {
+      console.error('Delete room failed', error);
+      var message = error && error.message === 'NOT_OWNER'
+        ? 'Only the room creator can delete it.'
+        : error && error.message === 'MISSING'
+          ? 'This room has already been deleted.'
+          : 'Could not delete the room. Check your connection and try again.';
+      showToast(message, 'error');
+    }).then(function () {
+      if (button) button.disabled = false;
+    });
   }
 
   function createRoom() {
@@ -504,7 +573,9 @@
         name: name,
         icon: icon,
         joined: firebase.firestore.FieldValue.serverTimestamp(),
-        isAdmin: true
+        isAdmin: true,
+        isOwner: true,
+        createdBy: currentUser.uid
       }).then(function () {
         return docRef.id;
       });
@@ -535,7 +606,12 @@
     }
     var roomId = (els.roomIdInput && els.roomIdInput.value || '').trim();
     if (!roomId) {
-      showToast('Paste a room ID first.', 'error');
+      showToast('Paste a room code first.', 'error');
+      return;
+    }
+    if (!/^[A-Za-z0-9_-]{6,64}$/.test(roomId)) {
+      showToast('That room code does not look valid. Check it and try again.', 'error');
+      if (els.roomIdInput) els.roomIdInput.focus();
       return;
     }
     var dbRef = db;
@@ -551,7 +627,9 @@
           name: data.name || 'Room',
           icon: data.icon || 'fa-users',
           joined: firebase.firestore.FieldValue.serverTimestamp(),
-          isAdmin: Array.isArray(data.admins) && data.admins.indexOf(currentUser.uid) !== -1
+          isAdmin: Array.isArray(data.admins) && data.admins.indexOf(currentUser.uid) !== -1,
+          isOwner: data.createdBy === currentUser.uid,
+          createdBy: data.createdBy || ''
         });
       }).then(function () {
         return roomId;
@@ -566,7 +644,7 @@
       window.location.href = 'chat.html?room=' + encodeURIComponent(id);
     }).catch(function (error) {
       console.error('Join room failed', error);
-      showToast(error && error.message === 'MISSING' ? 'No room found with that ID.' : 'Could not join the room.', 'error');
+      showToast(error && error.message === 'MISSING' ? 'No room found with that code.' : 'Could not join the room. Check the code and try again.', 'error');
     }).then(function () {
       if (els.joinRoomBtn) els.joinRoomBtn.disabled = false;
     });

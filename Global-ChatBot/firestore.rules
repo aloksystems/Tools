@@ -26,22 +26,28 @@ service cloud.firestore {
       allow read: if signedIn();
 
       allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['name', 'icon', 'createdBy', 'createdAt', 'members', 'admins'])
         && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.createdAt is timestamp
         && request.resource.data.name is string
         && request.resource.data.name.size() >= 3
         && request.resource.data.name.size() <= 60
         && request.resource.data.icon is string
-        && request.resource.data.icon.size() <= 40
+        && request.resource.data.icon.matches('^fa-[a-z0-9-]{1,32}$')
         && request.resource.data.members is list
-        && request.resource.data.members.hasOnly([request.auth.uid])
+        && request.resource.data.members == [request.auth.uid]
         && request.resource.data.admins is list
-        && request.resource.data.admins.hasOnly([request.auth.uid]);
+        && request.resource.data.admins == [request.auth.uid];
 
       allow update: if signedIn() && (
         (
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members'])
           && request.resource.data.members is list
+          && request.resource.data.members.size() <= 100
+          && request.resource.data.members.toSet().size() == request.resource.data.members.size()
           && request.resource.data.members.toSet().difference(resource.data.members.toSet()).hasOnly([request.auth.uid])
+          && request.resource.data.members.toSet().difference(resource.data.members.toSet()).size() <= 1
+          && resource.data.members.toSet().difference(request.resource.data.members.toSet()).size() == 0
         )
         || (
           isAdmin(resource.data)
@@ -50,9 +56,17 @@ service cloud.firestore {
             && request.resource.data.name.size() >= 3
             && request.resource.data.name.size() <= 60
             && request.resource.data.icon is string
-            && request.resource.data.icon.size() <= 40
+            && request.resource.data.icon.matches('^fa-[a-z0-9-]{1,32}$')
+            && request.resource.data.members is list
+            && request.resource.data.members.size() <= 100
+            && request.resource.data.members.toSet().size() == request.resource.data.members.size()
+            && request.resource.data.admins is list
+            && request.resource.data.admins.hasAll(resource.data.admins)
         )
       );
+
+      allow delete: if signedIn()
+        && resource.data.createdBy == request.auth.uid;
     }
   }
 }

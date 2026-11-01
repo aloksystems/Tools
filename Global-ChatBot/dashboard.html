@@ -69,7 +69,7 @@
             <section class="gc-hero" aria-labelledby="page-title">
                 <p class="gc-eyebrow">YOUR CONVERSATIONS</p>
                 <h1 id="page-title">Chats</h1>
-                <p class="gc-lead">Say hello in the global room or open a private room with your circle. Everything updates live.</p>
+                <p class="gc-lead">Drop into the public chat, or make a room for your circle and invite people with its room code.</p>
             </section>
 
             <section class="gc-section" aria-labelledby="pinned-title">
@@ -80,12 +80,12 @@
                     <span class="gc-global-icon" aria-hidden="true"><i class="fas fa-globe"></i></span>
                     <span class="gc-global-body">
                         <span class="gc-global-top">
-                            <span class="gc-global-name">Global Chat</span>
+                            <span class="gc-global-name">Public chat</span>
                             <span class="gc-global-time" id="global-last-time">—</span>
                         </span>
                         <span class="gc-global-preview">
                             <strong id="global-last-sender">Everyone</strong>
-                            <span id="global-last-message">Start the conversation</span>
+                            <span id="global-last-message">Open the public conversation</span>
                         </span>
                     </span>
                     <span class="gc-global-cta" aria-hidden="true"><i class="fas fa-arrow-right"></i></span>
@@ -101,7 +101,7 @@
                 <div class="gc-empty" id="rooms-empty" hidden>
                     <span class="gc-empty-icon" aria-hidden="true"><i class="fas fa-comments"></i></span>
                     <h3>No rooms yet</h3>
-                    <p>Create a private room or join one with a Room ID. You can own up to 3 rooms.</p>
+                    <p>Create a room and share its code, or enter a code someone sent you.</p>
                     <button class="gc-btn gc-btn-primary" id="empty-create-btn" type="button">
                         <i class="fas fa-plus" aria-hidden="true"></i> Create a room
                     </button>
@@ -224,7 +224,7 @@
                 </p>
                 <ul class="gc-feature-list">
                     <li><i class="fas fa-check" aria-hidden="true"></i> Live messaging with the global room and private rooms</li>
-                    <li><i class="fas fa-check" aria-hidden="true"></i> Google, Facebook or email sign-in</li>
+                    <li><i class="fas fa-check" aria-hidden="true"></i> Google or email sign-in</li>
                     <li><i class="fas fa-check" aria-hidden="true"></i> Presence and typing indicators</li>
                     <li><i class="fas fa-check" aria-hidden="true"></i> Message replies, reactions, editing and deleting</li>
                     <li><i class="fas fa-check" aria-hidden="true"></i> Light and dark themes that match the rest of the tools</li>
@@ -272,13 +272,14 @@
                     </button>
                 </section>
 
-                <div class="gc-divider">or join with an ID</div>
+                <div class="gc-divider">or join with a room code</div>
 
                 <section>
                     <h3>Join a room</h3>
                     <label class="gc-field">
-                        <span>Room ID</span>
-                        <input class="gc-input" id="roomIdInput" type="text" placeholder="Paste the room ID" autocomplete="off">
+                        <span>Room code</span>
+                        <input class="gc-input" id="roomIdInput" type="text" placeholder="Paste the room code" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="64" aria-describedby="room-code-hint">
+                        <small class="gc-field-hint" id="room-code-hint">Ask a room member to copy it from the room menu.</small>
                     </label>
                     <button class="gc-btn gc-btn-ghost gc-btn-block" id="joinRoomBtn" type="button">
                         <i class="fas fa-right-to-bracket" aria-hidden="true"></i> Join room

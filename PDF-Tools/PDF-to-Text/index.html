@@ -4,97 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Extract readable text page by page and export as TXT or RTF. Runs entirely in your browser — no uploads, no sign-up.">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#2f4a76">
+    <meta name="theme-color" content="#0f766e">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='60'%20font-family='Arial,sans-serif'%20font-size='30'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EPDF%3C/text%3E%3C/svg%3E">
-    <title>Extract Text from PDF</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" integrity="sha384-PlRSzpewlarQuj5alIadXwjNUX+2eNMKwr0f07ShWYLy8B6TjEbm7ZlcN/ScSbwy" crossorigin="anonymous"></script>
-    
+    <title>PDF to Text — Free & Private PDF Tool</title>
     <script src="../theme-init.js"></script>
     <link rel="manifest" href="../manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../premium-theme.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/pdf-tool.css">
     <link rel="stylesheet" href="../../back.css">
     <script src="../../back.js" defer></script>
 
-    <meta name="description" content="Use Extract Text from PDF online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <link rel="canonical" href="https://aloksystems.freedev.app/PDF-Tools/PDF-to-Text/">
-    <meta property="og:title" content="Extract Text from PDF">
-    <meta property="og:description" content="Use Extract Text from PDF online for free. Fast, private, and browser-based with no installation required.">
+    <meta property="og:title" content="PDF to Text — Free & Private PDF Tool">
+    <meta property="og:description" content="Extract readable text page by page and export as TXT or RTF. Runs entirely in your browser — no uploads, no sign-up.">
     <meta property="og:url" content="https://aloksystems.freedev.app/PDF-Tools/PDF-to-Text/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alok Systems Tools">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Extract Text from PDF">
-    <meta name="twitter:description" content="Use Extract Text from PDF online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
+    <meta name="twitter:title" content="PDF to Text — Free & Private PDF Tool">
+    <meta name="twitter:description" content="Extract readable text page by page and export as TXT or RTF. Runs entirely in your browser — no uploads, no sign-up.">
+    <meta name="author" content="Alok Systems">
+    <script type="application/ld+json">
 {
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Extract Text from PDF",
-    "description":  "Use Extract Text from PDF online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/PDF-Tools/PDF-to-Text/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF to Text",
+    "description": "Extract readable text page by page and export as TXT or RTF. Runs entirely in your browser — no uploads, no sign-up.",
+    "url": "https://aloksystems.freedev.app/PDF-Tools/PDF-to-Text/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
 }
     </script>
 </head>
 
-<body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-file-lines"></i> Extract Text from PDF</h1>
-            <p>Convert PDF pages into plain text or Word-compatible RTF format in your browser.</p>
-        </header>
-
-        <div class="content">
-            <label for="fileInput">
-                <div id="dropZone">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Drop your PDF here or click to browse</span>
-                    <small>No upload needed. Text is extracted locally and kept private.</small>
-                    <div id="fileName"></div>
+<body data-tool-id="PDF-to-Text">
+    <div class="page">
+        <main class="tool-shell" data-tool-shell>
+            <header class="tool-hero">
+                <div class="tool-hero__icon" data-tool-icon></div>
+                <div class="tool-hero__content">
+                    <span class="tool-hero__eyebrow" data-tool-category>Convert</span>
+                    <h1 data-tool-title>PDF to Text</h1>
+                    <p data-tool-description>Extract readable text page by page and export as TXT or RTF.</p>
                 </div>
-            </label>
-            <input type="file" id="fileInput" accept=".pdf">
-
-            <div id="info"></div>
-
-            <!-- Text/Document Conversion Section -->
-            <div class="conversion-section">
-                <h3><i class="fas fa-file-alt"></i> Text Extraction Options</h3>
-                <div class="radio-group">
-                    <label>
-                        <input type="radio" name="textFormat" value="txt" checked>
-                        <span>Plain Text (.txt)</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="textFormat" value="doc">
-                        <span>RTF Document (.rtf) - Word Compatible</span>
-                    </label>
+                <div class="tool-hero__actions">
+                    <button class="btn btn-ghost" type="button" data-tool-favorite>
+                        <i class="ti ti-star"></i> Pin
+                    </button>
+                    <span class="tool-chip" data-tool-chip><i class="ti ti-shield"></i> 100% local</span>
                 </div>
-                
-                <div class="note">
-                    <h4><i class="fas fa-info-circle"></i> Text Extraction Mode</h4>
-                    <p>This tool extracts the readable text layer from PDF pages. Visual layout and advanced formatting are not preserved.</p>
+            </header>
+            <section class="tool-body">
+                <div class="tool-panel" data-tool-panel>
+                    <div class="pw-empty">Loading PDF to Text…</div>
                 </div>
-                
-                <button id="textConvertBtn" onclick="convertToText()" disabled>
-                    <i class="fas fa-file-export"></i> EXTRACT TEXT
-                </button>
-            </div>
-        </div>
+                <aside class="tool-sidebar">
+                    <div class="sidebar-card" data-tool-tips></div>
+                    <div class="sidebar-card" data-tool-recents></div>
+                </aside>
+            </section>
+        </main>
     </div>
-
-    
     <script src="../tool-registry.js"></script>
     <script src="../premium-ui.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="../tool-shell.js"></script>
 </body>
 
 </html>
-
-
-

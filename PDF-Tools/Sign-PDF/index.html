@@ -4,125 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Draw, type, or upload a signature and place it exactly where it belongs. Runs entirely in your browser — no uploads, no sign-up.">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#2f4a76">
+    <meta name="theme-color" content="#0f766e">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='60'%20font-family='Arial,sans-serif'%20font-size='30'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EPDF%3C/text%3E%3C/svg%3E">
-    <title>Sign PDF - Add Signature</title>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js" integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
-    
+    <title>Sign PDF — Free & Private PDF Tool</title>
     <script src="../theme-init.js"></script>
     <link rel="manifest" href="../manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../premium-theme.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/pdf-tool.css">
     <link rel="stylesheet" href="../../back.css">
     <script src="../../back.js" defer></script>
 
-    <meta name="description" content="Use Sign PDF - Add Signature online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <link rel="canonical" href="https://aloksystems.freedev.app/PDF-Tools/Sign-PDF/">
-    <meta property="og:title" content="Sign PDF - Add Signature">
-    <meta property="og:description" content="Use Sign PDF - Add Signature online for free. Fast, private, and browser-based with no installation required.">
+    <meta property="og:title" content="Sign PDF — Free & Private PDF Tool">
+    <meta property="og:description" content="Draw, type, or upload a signature and place it exactly where it belongs. Runs entirely in your browser — no uploads, no sign-up.">
     <meta property="og:url" content="https://aloksystems.freedev.app/PDF-Tools/Sign-PDF/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alok Systems Tools">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Sign PDF - Add Signature">
-    <meta name="twitter:description" content="Use Sign PDF - Add Signature online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
+    <meta name="twitter:title" content="Sign PDF — Free & Private PDF Tool">
+    <meta name="twitter:description" content="Draw, type, or upload a signature and place it exactly where it belongs. Runs entirely in your browser — no uploads, no sign-up.">
+    <meta name="author" content="Alok Systems">
+    <script type="application/ld+json">
 {
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Sign PDF - Add Signature",
-    "description":  "Use Sign PDF - Add Signature online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/PDF-Tools/Sign-PDF/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Sign PDF",
+    "description": "Draw, type, or upload a signature and place it exactly where it belongs. Runs entirely in your browser — no uploads, no sign-up.",
+    "url": "https://aloksystems.freedev.app/PDF-Tools/Sign-PDF/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
 }
     </script>
 </head>
 
-<body>
-    <div class="container">
-        <header>
-            <a href="../index.html" class="back-button">
-                <i class="fas fa-arrow-left"></i> Back to Tools
-            </a>
-            <h1><i class="fas fa-signature"></i> Sign PDF</h1>
-            <p>Add your signature to PDF documents</p>
-        </header>
-
-        <div class="content">
-            <label for="pdfFile">
-                <i class="fas fa-file-pdf"></i> Select PDF File
-            </label>
-            <div id="dropZone">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p><span class="highlight">Click to upload</span> or drag and drop</p>
-                <p style="font-size: 0.9em;">Only PDF files are accepted</p>
-            </div>
-            <input type="file" id="pdfFile" accept=".pdf">
-
-            <div id="status"></div>
-
-            <div id="signatureOptions" style="display: none;">
-                <h3 style="margin: 20px 0; color: var(--primary-color);">Choose Signature Type</h3>
-                <div class="signature-section">
-                    <div class="signature-type active" data-type="draw">
-                        <i class="fas fa-pen"></i>
-                        <h3>Draw</h3>
-                        <p>Draw your signature</p>
-                    </div>
-                    <div class="signature-type" data-type="type">
-                        <i class="fas fa-keyboard"></i>
-                        <h3>Type</h3>
-                        <p>Type your name</p>
-                    </div>
+<body data-tool-id="Sign-PDF">
+    <div class="page">
+        <main class="tool-shell" data-tool-shell>
+            <header class="tool-hero">
+                <div class="tool-hero__icon" data-tool-icon></div>
+                <div class="tool-hero__content">
+                    <span class="tool-hero__eyebrow" data-tool-category>Edit & Review</span>
+                    <h1 data-tool-title>Sign PDF</h1>
+                    <p data-tool-description>Draw, type, or upload a signature and place it exactly where it belongs.</p>
                 </div>
-
-                <!-- Draw Signature -->
-                <div class="canvas-container show" id="drawContainer">
-                    <div class="canvas-controls">
-                        <div class="color-selector">
-                            <span style="font-weight: 600; margin-right: 10px;">Color:</span>
-                            <div class="color-option active" data-color="#000000" style="background: #000000;"></div>
-                            <div class="color-option" data-color="#0891b2" style="background: #0891b2;"></div>
-                            <div class="color-option" data-color="#dc2626" style="background: #dc2626;"></div>
-                            <div class="color-option" data-color="#7c3aed" style="background: #7c3aed;"></div>
-                        </div>
-                        <button class="secondary" onclick="clearCanvas()">
-                            <i class="fas fa-eraser"></i> Clear
-                        </button>
-                    </div>
-                    <canvas id="signatureCanvas" width="600" height="200"></canvas>
+                <div class="tool-hero__actions">
+                    <button class="btn btn-ghost" type="button" data-tool-favorite>
+                        <i class="ti ti-star"></i> Pin
+                    </button>
+                    <span class="tool-chip" data-tool-chip><i class="ti ti-shield"></i> 100% local</span>
                 </div>
-
-                <!-- Type Signature -->
-                <div class="text-signature" id="typeContainer">
-                    <input type="text" class="text-input" id="signatureText" placeholder="Type your name">
-                    <div class="font-selector">
-                        <div class="font-option active" data-font="cursive" style="font-family: 'Brush Script MT', cursive;">Signature</div>
-                        <div class="font-option" data-font="'Dancing Script', cursive" style="font-family: 'Dancing Script', cursive;">Dancing</div>
-                        <div class="font-option" data-font="'Pacifico', cursive" style="font-family: 'Pacifico', cursive;">Pacifico</div>
-                        <div class="font-option" data-font="'Great Vibes', cursive" style="font-family: 'Great Vibes', cursive;">Great Vibes</div>
-                    </div>
+            </header>
+            <section class="tool-body">
+                <div class="tool-panel" data-tool-panel>
+                    <div class="pw-empty">Loading Sign PDF…</div>
                 </div>
-
-                <button class="full-width" id="addSignatureBtn">
-                    <i class="fas fa-plus-circle"></i> Add Signature to PDF
-                </button>
-            </div>
-        </div>
+                <aside class="tool-sidebar">
+                    <div class="sidebar-card" data-tool-tips></div>
+                    <div class="sidebar-card" data-tool-recents></div>
+                </aside>
+            </section>
+        </main>
     </div>
-
-    
     <script src="../tool-registry.js"></script>
     <script src="../premium-ui.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="../tool-shell.js"></script>
 </body>
 
 </html>
-
-
-
-

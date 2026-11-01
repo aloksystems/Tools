@@ -53,7 +53,6 @@
         var errorBox = document.getElementById("error-message");
         var statusBox = document.getElementById("status-message");
         var googleButton = document.getElementById("google-signup");
-        var facebookButton = document.getElementById("facebook-signup");
         var passwordToggle = document.getElementById("toggle-password");
         var serviceNotice = document.getElementById("serviceNotice");
 
@@ -72,11 +71,6 @@
         googleButton.addEventListener("click", function () {
             if (auth) {
                 signUpWithProvider(new firebase.auth.GoogleAuthProvider(), "Google");
-            }
-        });
-        facebookButton.addEventListener("click", function () {
-            if (auth) {
-                signUpWithProvider(new firebase.auth.FacebookAuthProvider(), "Facebook");
             }
         });
         nameInput.addEventListener("input", function () {
@@ -242,7 +236,6 @@
 
         function setSocialBusy(isBusy) {
             googleButton.disabled = isBusy;
-            facebookButton.disabled = isBusy;
         }
 
         function setupPasswordToggle() {
@@ -263,7 +256,6 @@
             }
             form.querySelector("fieldset").disabled = true;
             googleButton.disabled = true;
-            facebookButton.disabled = true;
         }
 
         function setFieldError(fieldName, message) {

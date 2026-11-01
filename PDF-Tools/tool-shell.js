@@ -62,43 +62,46 @@
             }
             writeStorage('pdfStudioFavorites', favorites.slice(0, 12));
             setFavoriteState(button, toolId);
+            if (window.PDFStudio && window.PDFStudio.toast) {
+                window.PDFStudio.toast(index === -1 ? 'Tool pinned' : 'Tool unpinned');
+            }
         });
     }
 
-    function renderSidebarRecents(container) {
+    function renderSidebarRecents(container, currentId) {
         if (!container) {
             return;
         }
-        var recents = readStorage('pdfStudioRecents', []);
+        var recents = readStorage('pdfStudioRecents', []).filter(function (id) {
+            return id !== currentId;
+        });
         if (!recents.length || !registry || !registry.getToolById) {
-            container.textContent = 'Recent tools will appear here.';
+            container.innerHTML = '<strong>Recent tools</strong><p class="tool-sidebar__empty">Tools you open will appear here.</p>';
             return;
         }
-        var items = recents.slice(0, 3).map(function (id) {
+        var items = recents.slice(0, 4).map(function (id) {
             var tool = registry.getToolById(id);
             if (!tool) {
                 return '';
             }
-            return '<a href="' + tool.href + '">' + tool.title + '</a>';
+            return '<a class="tool-sidebar__link" href="../' + tool.href + '">' + iconSvg(tool.icon) + '<span>' + tool.title + '</span></a>';
         }).filter(Boolean);
-        container.innerHTML = '<strong>Recent tools</strong><div style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">' + items.join('') + '</div>';
-        container.querySelectorAll('a').forEach(function (link) {
-            link.style.textDecoration = 'none';
-            link.style.color = 'inherit';
-        });
+        container.innerHTML = '<strong>Recent tools</strong><div class="tool-sidebar__links">' + items.join('') + '</div>';
     }
 
-    function renderSidebarTips(container, tips) {
+    function renderSidebarTips(container, tool) {
         if (!container) {
             return;
         }
-        if (!tips || !tips.length) {
-            container.textContent = 'Tips and shortcuts will appear here.';
-            return;
-        }
-        container.innerHTML = '<strong>Tips</strong><ul style="margin:8px 0 0; padding-left:18px;">' +
-            tips.map(function (tip) { return '<li>' + tip + '</li>'; }).join('') +
-            '</ul>';
+        var tips = (tool && tool.tips) || [];
+        var html = '<strong>How to use it</strong><ol class="tool-sidebar__steps">';
+        html += '<li>Drop a file — it stays on your device.</li>';
+        tips.forEach(function (tip) {
+            html += '<li>' + tip + '</li>';
+        });
+        html += '</ol>';
+        html += '<a class="tool-sidebar__all" href="../index.html">' + iconSvg('layers') + ' All PDF tools</a>';
+        container.innerHTML = html;
     }
 
     function mountTool(toolId) {
@@ -112,19 +115,19 @@
             return;
         }
         if (!tool) {
-            panel.innerHTML = '<div class="empty-state">Tool not found. Return to the library to choose another.</div>';
+            panel.innerHTML = '<div class="pw-empty">Tool not found. <a href="../index.html">Browse all PDF tools</a>.</div>';
             return;
         }
 
         document.body.dataset.toolId = toolId;
-        document.title = tool.title + ' | PDF Studio';
+        document.title = tool.title + ' | PDF Tools';
         var descriptionMeta = document.querySelector('meta[name="description"]');
         if (descriptionMeta) {
-            descriptionMeta.setAttribute('content', tool.description + ' Run locally in your browser with PDF Studio.');
+            descriptionMeta.setAttribute('content', tool.description + ' Free and private — every file is processed locally in your browser.');
         }
         var themeMeta = document.querySelector('meta[name="theme-color"]');
         if (themeMeta) {
-            themeMeta.setAttribute('content', document.documentElement.getAttribute('data-theme') === 'dark' ? '#0f172a' : '#f8fafc');
+            themeMeta.setAttribute('content', document.documentElement.getAttribute('data-theme') === 'dark' ? '#0b1120' : '#f8fafc');
         }
 
         var icon = document.querySelector('[data-tool-icon]');
@@ -132,42 +135,34 @@
         var description = document.querySelector('[data-tool-description]');
         var category = document.querySelector('[data-tool-category]');
         var favoriteButton = document.querySelector('[data-tool-favorite]');
+        var chip = document.querySelector('[data-tool-chip]');
 
         if (icon) {
-            var iconName = tool && tool.icon ? tool.icon : 'file-text';
-            icon.innerHTML = iconSvg(iconName);
+            icon.innerHTML = iconSvg(tool.icon || 'file-text');
             if (window.PDFStudio && typeof window.PDFStudio.normalizeIcons === 'function') {
                 window.PDFStudio.normalizeIcons(icon);
             }
         }
-        if (title) {
-            title.textContent = tool.title;
-        }
-        if (description) {
-            description.textContent = tool.description;
-        }
-        if (category) {
-            category.textContent = getCategoryLabel(tool.category);
-        }
-        if (favoriteButton) {
-            initFavorite(favoriteButton, toolId);
-        }
+        if (title) title.textContent = tool.title;
+        if (description) description.textContent = tool.description;
+        if (category) category.textContent = getCategoryLabel(tool.category);
+        if (chip) chip.innerHTML = iconSvg('shield') + ' <span>100% local</span>';
+        if (favoriteButton) initFavorite(favoriteButton, toolId);
 
-        renderSidebarTips(document.querySelector('[data-tool-tips]'), tool.tips || []);
-        renderSidebarRecents(document.querySelector('[data-tool-recents]'));
+        renderSidebarTips(document.querySelector('[data-tool-tips]'), tool);
+        renderSidebarRecents(document.querySelector('[data-tool-recents]'), toolId);
 
-        var modulePath = tool.module ? './tools/pdf-suite.js' : './tools/' + toolId + '.js';
-
-        import(modulePath)
+        import('./tools/' + toolId + '.js')
             .then(function (module) {
                 if (module && module.render) {
                     module.render(panel, { tool: tool, registry: registry });
                 } else {
-                    panel.innerHTML = '<div class="empty-state">Tool module is missing a render function.</div>';
+                    panel.innerHTML = '<div class="pw-empty">This tool is missing its render function.</div>';
                 }
             })
             .catch(function (error) {
-                panel.innerHTML = '<div class="empty-state">Unable to load this tool. ' + error.message + '</div>';
+                panel.innerHTML = '<div class="pw-empty">This tool could not load. ' + (error && error.message ? error.message : '') + '<br>Try reloading the page.</div>';
+                if (window.console && console.error) console.error(error);
             });
     }
 

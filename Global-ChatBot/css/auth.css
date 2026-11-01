@@ -274,7 +274,7 @@ button, input { font: inherit; }
 }
 .auth-divider::before,
 .auth-divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }
-.social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.social-grid { display: grid; grid-template-columns: 1fr; gap: 9px; }
 .social-btn { font-weight: 700; }
 .social-btn svg { width: 17px; height: 17px; }
 

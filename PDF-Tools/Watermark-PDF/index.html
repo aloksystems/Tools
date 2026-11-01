@@ -1,186 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Add text or image watermarks with opacity, rotation, tiling, and page ranges. Runs entirely in your browser — no uploads, no sign-up.">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#2f4a76">
+    <meta name="theme-color" content="#0f766e">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%230f766e'/%3E%3Cstop%20offset='100%25'%20stop-color='%230d9488'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='100'%20height='100'%20rx='22'%20fill='url(%23g)'/%3E%3Ctext%20x='50'%20y='60'%20font-family='Arial,sans-serif'%20font-size='30'%20font-weight='bold'%20fill='white'%20text-anchor='middle'%20letter-spacing='-1'%3EPDF%3C/text%3E%3C/svg%3E">
-    <title>Add Watermark to PDF</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js" integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI" crossorigin="anonymous"></script>
-    
-      <script src="../theme-init.js"></script>
+    <title>Watermark PDF — Free & Private PDF Tool</title>
+    <script src="../theme-init.js"></script>
     <link rel="manifest" href="../manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../premium-theme.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/pdf-tool.css">
     <link rel="stylesheet" href="../../back.css">
     <script src="../../back.js" defer></script>
 
-    <meta name="description" content="Use Add Watermark to PDF online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <link rel="canonical" href="https://aloksystems.freedev.app/PDF-Tools/Watermark-PDF/">
-    <meta property="og:title" content="Add Watermark to PDF">
-    <meta property="og:description" content="Use Add Watermark to PDF online for free. Fast, private, and browser-based with no installation required.">
+    <meta property="og:title" content="Watermark PDF — Free & Private PDF Tool">
+    <meta property="og:description" content="Add text or image watermarks with opacity, rotation, tiling, and page ranges. Runs entirely in your browser — no uploads, no sign-up.">
     <meta property="og:url" content="https://aloksystems.freedev.app/PDF-Tools/Watermark-PDF/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alok Systems Tools">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Add Watermark to PDF">
-    <meta name="twitter:description" content="Use Add Watermark to PDF online for free. Fast, private, and browser-based with no installation required.">
-    <meta name="author" content="Alok Systems">    <script type="application/ld+json">
+    <meta name="twitter:title" content="Watermark PDF — Free & Private PDF Tool">
+    <meta name="twitter:description" content="Add text or image watermarks with opacity, rotation, tiling, and page ranges. Runs entirely in your browser — no uploads, no sign-up.">
+    <meta name="author" content="Alok Systems">
+    <script type="application/ld+json">
 {
-    "@context":  "https://schema.org",
-    "@type":  "WebApplication",
-    "name":  "Add Watermark to PDF",
-    "description":  "Use Add Watermark to PDF online for free. Fast, private, and browser-based with no installation required.",
-    "url":  "https://aloksystems.freedev.app/PDF-Tools/Watermark-PDF/",
-    "applicationCategory":  "UtilityApplication",
-    "operatingSystem":  "Any"
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Watermark PDF",
+    "description": "Add text or image watermarks with opacity, rotation, tiling, and page ranges. Runs entirely in your browser — no uploads, no sign-up.",
+    "url": "https://aloksystems.freedev.app/PDF-Tools/Watermark-PDF/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
 }
     </script>
 </head>
 
-  <body>
-    <div class="container">
-      <header>
-        <h1><i class="fas fa-tint"></i> Add Watermark to PDF</h1>
-        <p>Add a watermark or text as protection to your PDF files</p>
-      </header>
-
-      <div class="content">
-        <label for="fileInput">
-          <div id="dropZone">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <span>Drop your PDF here or click to browse</span>
-            <small>Supports all PDF files - Add text or image watermarks</small>
-            <div id="fileName"></div>
-          </div>
-        </label>
-        <input type="file" id="fileInput" accept=".pdf" />
-
-        <div id="info"></div>
-
-        <div class="watermark-options" id="watermarkOptions">
-          <h3>Watermark Options</h3>
-
-          <div class="watermark-type-selector">
-            <div
-              class="watermark-type active"
-              data-type="text"
-              id="textWatermarkType"
-            >
-              <i class="fas fa-font"></i>
-              <div>Text Watermark</div>
-            </div>
-            <div
-              class="watermark-type"
-              data-type="image"
-              id="imageWatermarkType"
-            >
-              <i class="fas fa-image"></i>
-              <div>Image Watermark</div>
-            </div>
-          </div>
-
-          <div class="options-grid">
-            <div class="option-group">
-              <label for="watermarkText">Watermark Text:</label>
-              <input
-                type="text"
-                id="watermarkText"
-                value="CONFIDENTIAL"
-                placeholder="Enter watermark text"
-              />
-            </div>
-
-            <div class="option-group">
-              <label for="fontSize">Font Size:</label>
-              <input
-                type="number"
-                id="fontSize"
-                value="50"
-                min="10"
-                max="200"
-              />
-            </div>
-
-            <div class="option-group">
-              <label>Text Color:</label>
-              <div class="color-picker">
-                <input type="color" id="textColor" value="#ff0000" />
-                <div
-                  class="color-preview"
-                  id="textColorPreview"
-                  style="background-color: #ff0000"
-                ></div>
-              </div>
-            </div>
-
-            <div class="option-group">
-              <label for="opacity">Opacity (0-1):</label>
-              <input
-                type="number"
-                id="opacity"
-                value="0.3"
-                min="0"
-                max="1"
-                step="0.1"
-              />
-            </div>
-
-            <div class="option-group">
-              <label for="rotation">Rotation (degrees):</label>
-              <input
-                type="number"
-                id="rotation"
-                value="45"
-                min="-360"
-                max="360"
-              />
-            </div>
-
-            <div class="option-group">
-              <label for="position">Position:</label>
-              <select id="position">
-                <option value="center">Center</option>
-                <option value="top-left">Top Left</option>
-                <option value="top-right">Top Right</option>
-                <option value="bottom-left">Bottom Left</option>
-                <option value="bottom-right">Bottom Right</option>
-                <option value="tile">Tile (Repeat)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="preview-container">
-            <h4>Preview (Page 1)</h4>
-            <canvas id="previewCanvas"></canvas>
-          </div>
-
-          <div class="btn-group">
-            <button id="previewBtn" onclick="previewWatermark()">
-              <i class="fas fa-eye"></i> Preview Watermark
-            </button>
-            <button
-              id="downloadBtn"
-              onclick="downloadWatermarkedPDF()"
-              disabled
-            >
-              <i class="fas fa-download"></i> Download Watermarked PDF
-            </button>
-          </div>
-        </div>
-      </div>
+<body data-tool-id="Watermark-PDF">
+    <div class="page">
+        <main class="tool-shell" data-tool-shell>
+            <header class="tool-hero">
+                <div class="tool-hero__icon" data-tool-icon></div>
+                <div class="tool-hero__content">
+                    <span class="tool-hero__eyebrow" data-tool-category>Edit & Review</span>
+                    <h1 data-tool-title>Watermark PDF</h1>
+                    <p data-tool-description>Add text or image watermarks with opacity, rotation, tiling, and page ranges.</p>
+                </div>
+                <div class="tool-hero__actions">
+                    <button class="btn btn-ghost" type="button" data-tool-favorite>
+                        <i class="ti ti-star"></i> Pin
+                    </button>
+                    <span class="tool-chip" data-tool-chip><i class="ti ti-shield"></i> 100% local</span>
+                </div>
+            </header>
+            <section class="tool-body">
+                <div class="tool-panel" data-tool-panel>
+                    <div class="pw-empty">Loading Watermark PDF…</div>
+                </div>
+                <aside class="tool-sidebar">
+                    <div class="sidebar-card" data-tool-tips></div>
+                    <div class="sidebar-card" data-tool-recents></div>
+                </aside>
+            </section>
+        </main>
     </div>
-
-    
-      <script src="../tool-registry.js"></script>
+    <script src="../tool-registry.js"></script>
     <script src="../premium-ui.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="../tool-shell.js"></script>
 </body>
+
 </html>
-
-
-
-

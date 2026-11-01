@@ -45,7 +45,6 @@
         var statusBox = document.getElementById("status-message");
         var forgotLink = document.getElementById("forgot-password-link");
         var googleButton = document.getElementById("google-login");
-        var facebookButton = document.getElementById("facebook-login");
         var passwordToggle = document.getElementById("toggle-password");
         var serviceNotice = document.getElementById("serviceNotice");
 
@@ -64,11 +63,6 @@
         googleButton.addEventListener("click", function () {
             if (auth) {
                 signInWithProvider(new firebase.auth.GoogleAuthProvider(), "Google");
-            }
-        });
-        facebookButton.addEventListener("click", function () {
-            if (auth) {
-                signInWithProvider(new firebase.auth.FacebookAuthProvider(), "Facebook");
             }
         });
         emailInput.addEventListener("input", function () {
@@ -209,7 +203,6 @@
 
         function setSocialBusy(isBusy) {
             googleButton.disabled = isBusy;
-            facebookButton.disabled = isBusy;
         }
 
         function setupPasswordToggle() {
@@ -230,7 +223,6 @@
             }
             form.querySelector("fieldset").disabled = true;
             googleButton.disabled = true;
-            facebookButton.disabled = true;
             forgotLink.setAttribute("aria-disabled", "true");
         }
 

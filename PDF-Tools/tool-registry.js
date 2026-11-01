@@ -1,241 +1,248 @@
 (function () {
     const categories = [
         { id: 'organize', label: 'Organize', description: 'Merge, split, reorder, extract, rotate, and delete pages.' },
-        { id: 'convert', label: 'Convert', description: 'Convert PDFs to and from browser-supported formats.' },
-        { id: 'edit-review', label: 'Edit & Review', description: 'Sign, watermark, highlight, crop, annotate, and inspect PDFs.' },
-        { id: 'secure', label: 'Secure', description: 'Unlock authorized files, protect documents, and add usage metadata.' },
-        { id: 'media', label: 'Media', description: 'Prepare images and scans for PDFs.' }
+        { id: 'convert', label: 'Convert', description: 'Convert PDFs to and from images, text, HTML, and OCR text.' },
+        { id: 'edit-review', label: 'Edit & Review', description: 'Sign, watermark, highlight, crop, number, and inspect PDFs.' },
+        { id: 'secure', label: 'Secure', description: 'Add or remove real AES password protection locally.' },
+        { id: 'media', label: 'Media', description: 'Turn scans and photos into clean PDFs.' }
     ];
 
     const tools = [
         {
-            id: 'pdf-size-reducer',
+            id: 'Pdf-Size-Reducer',
             title: 'PDF Size Reducer',
-            description: 'Reduce PDF file size to a target KB or MB while keeping the best possible quality.',
+            description: 'Shrink a PDF to a target size in KB or MB while keeping the best quality that fits.',
             category: 'organize',
             icon: 'minimize-2',
             href: 'Pdf-Size-Reducer/index.html',
+            tips: ['Pick a target such as 200 KB or 1 MB.', 'Choose Balanced to keep text when possible.'],
             keywords: ['compress', 'reduce', 'size', 'kb', 'mb', 'optimize']
         },
         {
-            id: 'merge-pdfs',
+            id: 'Merge-PDF',
             title: 'Merge PDF',
-            description: 'Combine multiple PDFs and reorder pages.',
+            description: 'Combine PDFs in the order you want, with thumbnails, page ranges, and reordering.',
             category: 'organize',
             icon: 'files',
             href: 'Merge-PDF/index.html',
-            keywords: ['merge', 'combine', 'organize']
+            tips: ['Drag rows to change the file order.', 'Use a page range to merge only part of a file.'],
+            keywords: ['merge', 'combine', 'join', 'organize']
         },
         {
-            id: 'split-pdf',
+            id: 'Split-PDF',
             title: 'Split PDF',
-            description: 'Split a PDF into smaller files by range.',
+            description: 'Split by fixed ranges, every N pages, or into one file per page — downloaded as a ZIP.',
             category: 'organize',
             icon: 'cut',
             href: 'Split-PDF/index.html',
-            keywords: ['split', 'range', 'extract']
+            tips: ['Custom ranges look like 1-3, 5, 8-10.', 'One page per file is great for sharing single sheets.'],
+            keywords: ['split', 'range', 'separate', 'extract']
         },
         {
-            id: 'compress-pdf',
-            title: 'Compress PDF',
-            description: 'Rewrite and optimize PDFs in the browser.',
-            category: 'organize',
-            icon: 'file-zip',
-            href: 'Compress-PDF/index.html',
-            keywords: ['compress', 'optimize', 'size']
-        },
-        {
-            id: 'rotate-pdf',
+            id: 'Rotate-PDF',
             title: 'Rotate PDF',
-            description: 'Rotate pages 90, 180, or 270 degrees.',
+            description: 'Rotate individual pages or the whole document in 90° steps with a live preview.',
             category: 'organize',
             icon: 'rotate',
             href: 'Rotate-PDF/index.html',
-            keywords: ['rotate', 'pages']
+            tips: ['Click a page thumbnail to rotate just that page.', 'Use Rotate all when a scan is consistently sideways.'],
+            keywords: ['rotate', 'pages', 'orientation', 'landscape']
         },
         {
-            id: 'unlock-pdf',
-            title: 'Unlock PDF',
-            description: 'Remove password protection from authorized files.',
-            category: 'secure',
-            icon: 'lock-open',
-            href: 'Unlock-PDF/index.html',
-            keywords: ['unlock', 'password']
-        },
-        {
-            id: 'add-watermark',
-            title: 'Watermark PDF',
-            description: 'Protect documents with text or image marks.',
-            category: 'edit-review',
-            icon: 'droplet',
-            href: 'Watermark-PDF/index.html',
-            keywords: ['watermark', 'protect']
-        },
-        {
-            id: 'add-page-numbers',
-            title: 'Add Page Numbers',
-            description: 'Number pages with flexible position and style.',
-            category: 'edit-review',
-            icon: 'list-numbers',
-            href: 'Add-Page-Numbers/index.html',
-            keywords: ['page numbers', 'paginate', 'footer', 'header']
-        },
-        {
-            id: 'extract-pages',
+            id: 'Extract-Pages',
             title: 'Extract Pages',
-            description: 'Select and export only the pages you need.',
+            description: 'Pick pages visually and export them as one PDF or a ZIP of separate files.',
             category: 'organize',
             icon: 'file-export',
             href: 'Extract-Pages/index.html',
-            keywords: ['extract', 'pages', 'export']
+            tips: ['Click thumbnails to select pages.', 'The code 2-6, 9 works too if you prefer typing.'],
+            keywords: ['extract', 'pages', 'export', 'select']
         },
         {
-            id: 'remove-pages',
+            id: 'Delete-Pages',
             title: 'Delete Pages',
-            description: 'Delete selected pages from a PDF in seconds.',
+            description: 'Remove unwanted pages visually and keep everything else untouched.',
             category: 'organize',
             icon: 'trash',
             href: 'Delete-Pages/index.html',
+            tips: ['Selected pages are the ones that get removed.', 'Use Select all then untick pages to keep.'],
             keywords: ['delete', 'pages', 'remove']
         },
         {
-            id: 'rearrange-pages',
+            id: 'Reorder-PDF-Pages',
             title: 'Reorder PDF Pages',
-            description: 'Reorder pages with a drag-and-drop flow.',
+            description: 'Drag thumbnails into a new order, reverse the document, or move pages by buttons.',
             category: 'organize',
             icon: 'arrows-up-down',
             href: 'Reorder-PDF-Pages/index.html',
-            keywords: ['reorder', 'pages', 'organize']
+            tips: ['Drag thumbnails to rearrange them.', 'Use the arrow buttons for precise moves.'],
+            keywords: ['reorder', 'pages', 'organize', 'arrange']
         },
         {
-            id: 'sign-pdf',
+            id: 'Add-Page-Numbers',
+            title: 'Add Page Numbers',
+            description: 'Stamp page numbers with your choice of position, format, size, colour, and start number.',
+            category: 'edit-review',
+            icon: 'list-numbers',
+            href: 'Add-Page-Numbers/index.html',
+            tips: ['Use “Page 1 of 12” for reports.', 'Skip the first page for cover sheets.'],
+            keywords: ['page numbers', 'paginate', 'footer', 'header']
+        },
+        {
+            id: 'Sign-PDF',
             title: 'Sign PDF',
-            description: 'Add a typed or drawn signature in seconds.',
+            description: 'Draw, type, or upload a signature and place it exactly where it belongs.',
             category: 'edit-review',
             icon: 'signature',
             href: 'Sign-PDF/index.html',
-            keywords: ['sign', 'signature']
+            tips: ['Draw with a mouse or finger.', 'Drag the signature preview before you save.'],
+            keywords: ['sign', 'signature', 'initial', 'date']
         },
         {
-            id: 'edit-metadata',
-            title: 'PDF Metadata Editor',
-            description: 'Update title, author, and keywords.',
+            id: 'Watermark-PDF',
+            title: 'Watermark PDF',
+            description: 'Add text or image watermarks with opacity, rotation, tiling, and page ranges.',
             category: 'edit-review',
-            icon: 'info-circle',
-            href: 'PDF-Metadata-Editor/index.html',
-            keywords: ['metadata', 'info']
+            icon: 'droplet',
+            href: 'Watermark-PDF/index.html',
+            tips: ['Use tiling for a document-wide watermark.', 'Lower opacity keeps text readable underneath.'],
+            keywords: ['watermark', 'protect', 'draft', 'confidential']
         },
         {
-            id: 'pdf-info',
-            title: 'PDF Info',
-            description: 'Review metadata, page count, and document stats.',
-            category: 'edit-review',
-            icon: 'file-info',
-            href: 'PDF-Info/index.html',
-            keywords: ['info', 'metadata', 'stats']
-        },
-        {
-            id: 'pdf-to-images',
-            title: 'PDF to JPG',
-            description: 'Export PDF pages as high-quality PNG or JPG files.',
-            category: 'convert',
-            icon: 'photo-scan',
-            href: 'PDF-to-JPG/index.html',
-            keywords: ['pdf', 'png', 'jpg', 'export']
-        },
-        {
-            id: 'images-to-pdf',
-            title: 'JPG to PDF',
-            description: 'Combine JPG or PNG files into a single ordered PDF.',
-            category: 'convert',
-            icon: 'photo',
-            href: 'JPG-to-PDF/index.html',
-            keywords: ['jpg', 'png', 'combine', 'convert', 'merge']
-        },
-        {
-            id: 'html-to-pdf',
-            title: 'HTML to PDF',
-            description: 'Render HTML and CSS into a print-ready PDF.',
-            category: 'convert',
-            icon: 'code',
-            href: 'HTML-to-PDF/index.html',
-            keywords: ['html', 'css', 'render', 'convert']
-        },
-        {
-            id: 'extract-text',
-            title: 'PDF to Text',
-            description: 'Pull text from PDFs and export as TXT or RTF.',
-            category: 'convert',
-            icon: 'file-text',
-            href: 'PDF-to-Text/index.html',
-            keywords: ['pdf', 'text', 'rtf', 'txt']
-        },
-        {
-            id: 'protect-pdf',
-            title: 'Protect PDF',
-            description: 'Add owner metadata and download a protected-copy workflow.',
-            category: 'secure',
-            icon: 'lock',
-            href: 'Protect-PDF/index.html',
-            module: true,
-            status: 'browser-supported',
-            keywords: ['protect', 'password', 'security', 'encrypt']
-        },
-        {
-            id: 'crop-pdf',
+            id: 'Crop-PDF',
             title: 'Crop PDF',
-            description: 'Apply page crop margins to trim whitespace or headers.',
+            description: 'Trim margins visually or auto-detect the content area, then apply to any page range.',
             category: 'edit-review',
             icon: 'crop',
             href: 'Crop-PDF/index.html',
-            module: true,
-            keywords: ['crop', 'trim', 'margins']
+            tips: ['Auto trim detects the content box for you.', 'Negative values can extend the page slightly.'],
+            keywords: ['crop', 'trim', 'margins', 'whitespace']
         },
         {
-            id: 'highlight-pdf',
+            id: 'Highlight-PDF',
             title: 'Highlight PDF',
-            description: 'Place translucent highlights on selected pages.',
+            description: 'Draw translucent highlight regions on any page with custom colours and opacity.',
             category: 'edit-review',
             icon: 'highlight',
             href: 'Highlight-PDF/index.html',
-            module: true,
-            keywords: ['highlight', 'annotate', 'review']
+            tips: ['Drag directly on the page preview.', 'Add as many highlights per page as you need.'],
+            keywords: ['highlight', 'annotate', 'review', 'mark']
         },
         {
-            id: 'edit-pdf-text',
+            id: 'Edit-PDF-Text',
             title: 'Edit PDF Text',
-            description: 'Overlay replacement text blocks on PDF pages.',
+            description: 'Place new text anywhere on a page, with font, size, colour, and optional whiteout.',
             category: 'edit-review',
             icon: 'text-recognition',
             href: 'Edit-PDF-Text/index.html',
-            module: true,
-            keywords: ['edit', 'text', 'overlay']
+            tips: ['Click the page to place text.', 'Use whiteout to cover the old value first.'],
+            keywords: ['edit', 'text', 'overlay', 'whiteout']
         },
         {
-            id: 'ocr-pdf',
+            id: 'PDF-Metadata-Editor',
+            title: 'PDF Metadata Editor',
+            description: 'Read and rewrite the title, author, subject, keywords, creator, and producer.',
+            category: 'edit-review',
+            icon: 'info-circle',
+            href: 'PDF-Metadata-Editor/index.html',
+            tips: ['Clear hidden metadata before sharing.', 'Keywords are comma separated.'],
+            keywords: ['metadata', 'info', 'title', 'author']
+        },
+        {
+            id: 'PDF-Info',
+            title: 'PDF Info',
+            description: 'Inspect metadata, page sizes, orientation, encryption, and document statistics.',
+            category: 'edit-review',
+            icon: 'file-info',
+            href: 'PDF-Info/index.html',
+            tips: ['Export the report as JSON.', 'The page table shows every page size.'],
+            keywords: ['info', 'metadata', 'stats', 'details']
+        },
+        {
+            id: 'PDF-to-JPG',
+            title: 'PDF to JPG',
+            description: 'Export pages as JPG, PNG, or WebP at 72–300 DPI, individually or as a ZIP.',
+            category: 'convert',
+            icon: 'photo-scan',
+            href: 'PDF-to-JPG/index.html',
+            tips: ['Use 150 DPI for sharing and 300 DPI for print.', 'Pick a page range to export only some pages.'],
+            keywords: ['pdf', 'png', 'jpg', 'webp', 'image', 'export']
+        },
+        {
+            id: 'JPG-to-PDF',
+            title: 'JPG to PDF',
+            description: 'Combine photos and scans into one PDF with page size, margin, rotation, and quality control.',
+            category: 'convert',
+            icon: 'photo',
+            href: 'JPG-to-PDF/index.html',
+            tips: ['Drag image rows to change page order.', 'Use A4 with a small margin for printing.'],
+            keywords: ['jpg', 'png', 'webp', 'images', 'combine', 'convert']
+        },
+        {
+            id: 'PDF-to-Text',
+            title: 'PDF to Text',
+            description: 'Extract readable text page by page and export as TXT or RTF.',
+            category: 'convert',
+            icon: 'file-text',
+            href: 'PDF-to-Text/index.html',
+            tips: ['Scanned PDFs need OCR instead.', 'Preview and edit the text before downloading.'],
+            keywords: ['pdf', 'text', 'rtf', 'txt', 'extract']
+        },
+        {
+            id: 'HTML-to-PDF',
+            title: 'HTML to PDF',
+            description: 'Render HTML and CSS into a print-ready PDF with page size and margin options.',
+            category: 'convert',
+            icon: 'code',
+            href: 'HTML-to-PDF/index.html',
+            tips: ['Use the preview to check layout before saving.', 'External images need CORS-enabled hosts.'],
+            keywords: ['html', 'css', 'render', 'convert', 'webpage']
+        },
+        {
+            id: 'OCR-PDF',
             title: 'OCR PDF',
-            description: 'Run browser OCR when supported and export recognized text.',
+            description: 'Recognise text in scans and images with Tesseract, then copy it or save a searchable PDF.',
             category: 'convert',
             icon: 'scan-eye',
             href: 'OCR-PDF/index.html',
-            module: true,
-            keywords: ['ocr', 'scan', 'text recognition']
+            tips: ['English and Hindi are supported.', 'Searchable PDF works best with clean Latin text.'],
+            keywords: ['ocr', 'scan', 'text recognition', 'searchable']
         },
         {
-            id: 'scan-to-pdf',
+            id: 'Protect-PDF',
+            title: 'Protect PDF',
+            description: 'Encrypt a PDF with AES-256, a password, and precise print/copy/modify permissions.',
+            category: 'secure',
+            icon: 'lock',
+            href: 'Protect-PDF/index.html',
+            tips: ['Store the password somewhere safe — it cannot be recovered.', 'An owner password protects permissions.'],
+            keywords: ['protect', 'password', 'security', 'encrypt', 'aes']
+        },
+        {
+            id: 'Unlock-PDF',
+            title: 'Unlock PDF',
+            description: 'Remove a known password from a PDF you own and save a clean, unrestricted copy.',
+            category: 'secure',
+            icon: 'lock-open',
+            href: 'Unlock-PDF/index.html',
+            tips: ['You need the current password.', 'Restriction-only PDFs usually unlock with an empty user password.'],
+            keywords: ['unlock', 'password', 'decrypt', 'restrictions']
+        },
+        {
+            id: 'Scan-to-PDF',
             title: 'Scan to PDF',
-            description: 'Use camera captures or uploaded scans to build a PDF.',
+            description: 'Capture pages with your camera or upload photos, clean them up, and build a PDF.',
             category: 'media',
             icon: 'scan',
             href: 'Scan-to-PDF/index.html',
-            module: true,
-            keywords: ['scan', 'camera', 'pdf']
+            tips: ['Use good lighting for cleaner scans.', 'The B&W filter is ideal for documents.'],
+            keywords: ['scan', 'camera', 'photo', 'pdf']
         }
     ];
 
     function getToolById(id) {
         return tools.find(function (tool) {
-            return tool.id === id;
+            return tool.id === id || tool.href === id;
         });
     }
 

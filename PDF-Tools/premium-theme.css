@@ -229,7 +229,7 @@ body.premium-ui #info {
     box-shadow: var(--premium-shadow-soft);
 }
 
-body.premium-ui button:not(.icon-btn):not(.tool-card__favorite):not(.segmented-control__item):not(.btn-ghost),
+body.premium-ui button:not(.icon-btn):not(.tool-card__favorite):not(.segmented-control__item):not(.btn-ghost):not(.pw-iconbtn):not(.pw-segment):not(.pw-swatch):not(.pw-btn--ghost),
 body.premium-ui .tool-link {
     border-radius: var(--premium-radius-sm) !important;
     background: var(--premium-gradient) !important;
@@ -240,14 +240,14 @@ body.premium-ui .tool-link {
     transition: transform var(--premium-ease), background var(--premium-ease), box-shadow var(--premium-ease);
 }
 
-body.premium-ui button:not(.icon-btn):not(.tool-card__favorite):not(.segmented-control__item):not(.btn-ghost):hover:not(:disabled),
+body.premium-ui button:not(.icon-btn):not(.tool-card__favorite):not(.segmented-control__item):not(.btn-ghost):not(.pw-iconbtn):not(.pw-segment):not(.pw-swatch):not(.pw-btn--ghost):hover:not(:disabled),
 body.premium-ui .tool-link:hover {
     transform: translateY(-1px);
     background: var(--premium-accent-strong) !important;
     box-shadow: 0 12px 24px -12px rgba(20, 184, 166, 0.5);
 }
 
-body.premium-ui button:not(.icon-btn):not(.tool-card__favorite):not(.segmented-control__item):not(.btn-ghost):disabled,
+body.premium-ui button:not(.icon-btn):not(.tool-card__favorite):not(.segmented-control__item):not(.btn-ghost):not(.pw-iconbtn):not(.pw-segment):not(.pw-swatch):not(.pw-btn--ghost):disabled,
 body.premium-ui .tool-link:disabled {
     opacity: 0.55;
     box-shadow: none;

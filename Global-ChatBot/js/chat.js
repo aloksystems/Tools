@@ -27,6 +27,8 @@
     redirecting: false,
     authErrored: false,
     messages: new Map(),
+    messageQuery: null,
+    messageReadVersion: 0,
     hidden: new Set(),
     messagesPath: roomId ? 'room_messages/' + roomId : 'global_messages',
     typingPath: roomId ? 'typing/rooms/' + roomId : 'typing/global',
@@ -706,8 +708,12 @@
       return firestore.collection('users').doc(state.user.uid).collection('rooms').doc(roomId).get()
         .then(function (memberSnap) {
           if (memberSnap.exists) {
-            if (rtdb) rtdb.ref('room_members/' + roomId + '/' + state.user.uid).set(true).catch(function () {});
-            return true;
+            if (!rtdb) throw new Error('Realtime Database is unavailable.');
+            return rtdb.ref('room_members/' + roomId + '/' + state.user.uid).set(true)
+              .then(function () {
+                watchRoomDeletion();
+                return true;
+              });
           }
           showLockedNotice({
             icon: 'fa-lock',
@@ -722,14 +728,36 @@
     }).catch(function (error) {
       console.error('Room load failed', error);
       showLockedNotice({
-        icon: 'fa-plug-circle-xmark',
-        title: 'Could not open this room',
-        text: 'Check your connection and reload the page.',
+        icon: error && error.code === 'PERMISSION_DENIED' ? 'fa-lock' : 'fa-plug-circle-xmark',
+        title: error && error.code === 'PERMISSION_DENIED' ? 'Room access is out of sync' : 'Could not open this room',
+        text: error && error.code === 'PERMISSION_DENIED'
+          ? 'Go back to All chats and rejoin this room with its code.'
+          : 'Check your connection and reload the page.',
         action: 'All chats',
         href: 'dashboard.html'
       });
       setComposerEnabled(false);
       return false;
+    });
+  }
+
+  function watchRoomDeletion() {
+    if (!roomId || !firestore) return;
+    firestore.collection('rooms').doc(roomId).onSnapshot(function (snapshot) {
+      if (snapshot.exists) return;
+      if (state.messageQuery) state.messageQuery.off();
+      state.messages.clear();
+      scheduleRender();
+      setComposerEnabled(false);
+      showLockedNotice({
+        icon: 'fa-trash-can',
+        title: 'This room was deleted',
+        text: 'The room creator deleted this conversation.',
+        action: 'All chats',
+        href: 'dashboard.html'
+      });
+    }, function (error) {
+      console.error('Room status listener failed', error);
     });
   }
 
@@ -1032,19 +1060,38 @@
     if (!rtdb) return;
     els.messages.replaceChildren();
     state.firstRender = true;
+    state.messages.clear();
 
     var query = rtdb.ref(state.messagesPath).orderByChild('timestamp').limitToLast(50);
-    query.on('child_added', function (snapshot) {
-      state.messages.set(snapshot.key, snapshot.val());
-      scheduleRender();
-    }, handleMessagesError);
-    query.on('child_changed', function (snapshot) {
-      state.messages.set(snapshot.key, snapshot.val());
-      scheduleRender();
-    }, handleMessagesError);
-    query.on('child_removed', function (snapshot) {
-      state.messages.delete(snapshot.key);
-      scheduleRender();
+    state.messageQuery = query;
+    query.on('value', function (snapshot) {
+      var version = ++state.messageReadVersion;
+      state.messages.clear();
+      snapshot.forEach(function (child) {
+        state.messages.set(child.key, child.val());
+      });
+      if (snapshot.exists()) {
+        scheduleRender();
+        return;
+      }
+
+      // Recover older records even if a legacy timestamp index/query returns empty.
+      rtdb.ref(state.messagesPath).once('value').then(function (allMessages) {
+        if (version !== state.messageReadVersion) return;
+        var records = [];
+        allMessages.forEach(function (child) {
+          records.push([child.key, child.val()]);
+        });
+        records.sort(function (a, b) {
+          var difference = toMillis(a[1] && a[1].timestamp) - toMillis(b[1] && b[1].timestamp);
+          return difference !== 0 ? difference : (a[0] < b[0] ? -1 : 1);
+        });
+        state.messages.clear();
+        records.slice(-50).forEach(function (record) {
+          state.messages.set(record[0], record[1]);
+        });
+        scheduleRender();
+      }).catch(handleMessagesError);
     }, handleMessagesError);
   }
 

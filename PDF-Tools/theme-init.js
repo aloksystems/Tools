@@ -82,6 +82,88 @@
         }
     } catch (e) {}
 
+    function esc(value) {
+        return String(value).replace(/[&<>"]/g, function (ch) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch];
+        });
+    }
+
+    // file:///D:/Projects/Tools/... -> D:\Projects\Tools (cmd/Explorer style)
+    function toNativePath(posixPath) {
+        return /^\/[A-Za-z]:/.test(posixPath) ? posixPath.slice(1).replace(/\//g, '\\') : posixPath;
+    }
+
+    // Tool pages mount their UI through ES modules, which browsers refuse to load
+    // from file://. Without this the page would sit forever on "Loading <Tool>…".
+    function showLocalServerHelp() {
+        if (location.protocol !== 'file:') return;
+        var panel = document.querySelector('[data-tool-panel]');
+        if (!panel) return;
+
+        var cut = location.pathname.indexOf('/PDF-Tools/');
+        // Path the web server will serve, i.e. everything from /PDF-Tools/ onwards.
+        var served = cut === -1 ? location.pathname : location.pathname.slice(cut);
+        var httpUrl = 'http://localhost:8000' + served + location.search;
+        var root = cut === -1 ? '' : toNativePath(decodeURIComponent(location.pathname.slice(0, cut)));
+        var serveCmd = (root ? 'cd "' + root + '" && ' : '') + 'python -m http.server 8000';
+        var canonical = document.querySelector('link[rel="canonical"]');
+        var liveUrl = canonical && /^https?:/.test(canonical.href) ? canonical.href : '';
+
+        document.body.classList.add('pw-fileonly');
+        panel.innerHTML =            '<div class="pw-filehelp">' +
+            '<h2 class="pw-filehelp__title">Open this tool over http://</h2>' +
+            '<p class="pw-filehelp__lead">The tool interface is loaded as JavaScript modules, and browsers block module files on <code>file://</code> pages. Nothing here is broken — start a local web server and this same page works.</p>' +
+            '<ol class="pw-filehelp__steps">' +
+            '<li><span>Start a server in the folder that contains <code>PDF-Tools</code>:</span>' +
+            '<span class="pw-filehelp__cmd"><code>' + esc(serveCmd) + '</code><button class="pw-btn pw-btn--ghost pw-filehelp__copy" type="button" data-copy="' + esc(serveCmd) + '">Copy</button></span></li>' +
+            '<li><span>Reload this page from the served address:</span>' +
+            '<span class="pw-filehelp__cmd"><code>' + esc(httpUrl) + '</code><button class="pw-btn pw-btn--ghost pw-filehelp__copy" type="button" data-copy="' + esc(httpUrl) + '">Copy</button></span></li>' +
+            '</ol>' +
+            '<div class="pw-filehelp__actions">' +
+            '<a class="pw-filehelp__btn pw-filehelp__btn--primary" href="' + esc(httpUrl) + '">Open over http://</a>' +
+            (liveUrl ? '<a class="pw-filehelp__btn" href="' + esc(liveUrl) + '" target="_blank" rel="noopener">Open hosted site</a>' : '') +
+            '<a class="pw-filehelp__btn" href="' + (cut === -1 ? './' : location.pathname.slice(0, cut + 11)) + '">Back to all tools</a>' +
+            '</div></div>';
+
+        Array.prototype.forEach.call(panel.querySelectorAll('.pw-filehelp__copy'), function (button) {
+            button.addEventListener('click', function () {
+                var field = document.createElement('textarea');
+                field.value = button.getAttribute('data-copy');
+                document.body.appendChild(field);
+                field.select();
+                try { document.execCommand('copy'); } catch (e) {}
+                document.body.removeChild(field);
+                button.textContent = 'Copied';
+            });
+        });
+        // premium-ui.js publishes window.PDFStudio from its own DOMContentLoaded
+        // handler, which runs after this one, so wait for the next task.
+        setTimeout(fillHeroFromRegistry, 0);
+    }
+
+    // The hero is static HTML, so over file:// it is the one part that can still be
+    // completed from the registry even though tool-shell.js is blocked.
+    function fillHeroFromRegistry() {
+        var registry = window.PDF_STUDIO_REGISTRY;
+        if (!registry || !registry.getToolById) return;
+        var id = document.body.dataset.toolId;
+        if (!id && window.URL) {
+            id = new URL(location.href).searchParams.get('tool');
+        }
+        var tool = id && registry.getToolById(id);
+        if (!tool) return;
+
+        var icon = document.querySelector('[data-tool-icon]');
+        if (icon && !icon.textContent.trim() && window.PDFStudio && window.PDFStudio.iconSvg) {
+            icon.innerHTML = window.PDFStudio.iconSvg(tool.icon || 'file-text');
+            if (window.PDFStudio.normalizeIcons) window.PDFStudio.normalizeIcons(icon);
+        }
+        [['[data-tool-title]', tool.title], ['[data-tool-description]', tool.description]].forEach(function (pair) {
+            var node = document.querySelector(pair[0]);
+            if (node && !node.textContent.trim()) node.textContent = pair[1];
+        });
+    }
+
     function ready(fn) {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', fn, { once: true });
@@ -92,6 +174,7 @@
 
     ready(function () {
         syncAppToggle();
+        showLocalServerHelp();
         // Keep the hub navbar button and the shared site header toggle in sync.
         if (window.MutationObserver && document.getElementById('themeToggle')) {
             new MutationObserver(mirrorTheme).observe(docEl, {
