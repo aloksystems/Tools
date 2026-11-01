@@ -304,8 +304,17 @@
                     return label + " sign-in is not enabled for this project.";
                 case "auth/network-request-failed":
                     return "Network error. Check your connection and try again.";
+                case "auth/unauthorized-domain":
+                    return "This domain is not allowlisted in Firebase. Add it under " +
+                        "Authentication → Settings → Authorized domains.";
+                case "auth/invalid-api-key":
+                case "auth/configuration-not-found":
+                    return "This page's Firebase setup is incomplete. Check the web API key " +
+                        "and that Google sign-in is enabled in the project.";
                 default:
-                    return label + " sign-in failed. Please try again.";
+                    // The code is the only thing that tells us which of the above cases to add.
+                    return label + " sign-in failed (" + (code || "unknown error") + "). " +
+                        "Please try again.";
             }
         }
     });

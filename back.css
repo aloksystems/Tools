@@ -44,7 +44,6 @@
 .global-shell-inner {
   gap: 1.5rem;
   min-height: 72px;
-  max-width: 1120px;
 }
 .global-tool-actions { align-items: center; display: flex; gap: .45rem; }
 .global-tool-actions > button { flex: none; }

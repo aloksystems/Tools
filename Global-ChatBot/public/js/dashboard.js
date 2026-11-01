@@ -111,20 +111,6 @@
     return new Date(time).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   }
 
-  /* ---------- Theme ---------- */
-
-  function bindTheme() {
-    if (!els.themeToggle) return;
-    els.themeToggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
-    els.themeToggle.addEventListener('change', function () {
-      var next = els.themeToggle.checked ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      try {
-        localStorage.setItem('tools-theme', next);
-      } catch (e) {}
-    });
-  }
-
   /* ---------- Drawer & modals ---------- */
 
   function openDrawer() {
@@ -192,7 +178,7 @@
       });
     }
 
-    [els.createRoomFab, els.newChatHeaderBtn, els.emptyCreateBtn].forEach(function (button) {
+    [els.newChatHeaderBtn, els.emptyCreateBtn, els.sectionCreateBtn].forEach(function (button) {
       if (!button) return;
       button.addEventListener('click', function () {
         openModal(els.manageRoomsModal);
@@ -424,7 +410,7 @@
       '</span>' +
       '<span class="gc-room-chevron"><i class="fas fa-chevron-right" aria-hidden="true"></i></span>';
     openButton.addEventListener('click', function () {
-      window.location.href = 'chat.html?room=' + encodeURIComponent(roomId);
+      window.location.href = 'room.html?room=' + encodeURIComponent(roomId);
     });
     card.appendChild(openButton);
     if (room.isOwner) {
@@ -586,7 +572,7 @@
         .catch(function () { return roomId; });
     }).then(function (roomId) {
       if (els.newRoomName) els.newRoomName.value = '';
-      window.location.href = 'chat.html?room=' + encodeURIComponent(roomId);
+      window.location.href = 'room.html?room=' + encodeURIComponent(roomId);
     }).catch(function (error) {
       console.error('Create room failed', error);
       if (error && error.message === 'LIMIT') {
@@ -641,7 +627,7 @@
         .catch(function () { return id; });
     }).then(function (id) {
       if (els.roomIdInput) els.roomIdInput.value = '';
-      window.location.href = 'chat.html?room=' + encodeURIComponent(id);
+      window.location.href = 'room.html?room=' + encodeURIComponent(id);
     }).catch(function (error) {
       console.error('Join room failed', error);
       showToast(error && error.message === 'MISSING' ? 'No room found with that code.' : 'Could not join the room. Check the code and try again.', 'error');
@@ -665,13 +651,12 @@
       userEmail: $('user-email'),
       logoutBtn: $('logout-btn'),
       profileSettings: $('profile-settings'),
-      themeToggle: $('theme-toggle'),
       chatRooms: $('chat-rooms'),
       roomsEmpty: $('rooms-empty'),
       roomsCount: $('rooms-count'),
       emptyCreateBtn: $('empty-create-btn'),
       newChatHeaderBtn: $('new-chat-header-btn'),
-      createRoomFab: $('create-room-fab'),
+      sectionCreateBtn: $('section-create-btn'),
       globalLastTime: $('global-last-time'),
       globalLastSender: $('global-last-sender'),
       globalLastMessage: $('global-last-message'),
@@ -703,7 +688,6 @@
 
   function boot() {
     cacheElements();
-    bindTheme();
     bindShell();
     bindProfile();
     if (els.createRoomBtn) els.createRoomBtn.addEventListener('click', createRoom);

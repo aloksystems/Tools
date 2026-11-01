@@ -1,6 +1,6 @@
 /* Global Chat — chat page
    Wires the RTDB message stream, presence, typing, reactions, replies,
-   edits, deletes and the account drawer to chat.html. */
+   edits, deletes and the account drawer to room.html. */
 
 (function () {
   'use strict';

@@ -72,7 +72,7 @@ body.global-tool-page .global-shell .global-theme-toggle {
 }
 
 .global-tool-footer-inner {
-  width: min(100% - 48px, 1120px);
+  width: min(100% - 48px, 1180px);
   min-height: 92px;
   margin: 0 auto;
   display: flex;

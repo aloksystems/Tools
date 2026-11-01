@@ -48,7 +48,7 @@ app/
 ├── js/
 │   ├── app.js         # Main application logic
 │   ├── models.js      # AI model definitions and selection
-│   └── chat.js        # Chat functionality and API integration
+│   └── engine.js      # Chat functionality and API integration
 └── assets/            # Icons and images (if needed)
 ```
 

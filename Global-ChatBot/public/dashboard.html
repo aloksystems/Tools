@@ -43,18 +43,19 @@
 <body>
     <div class="gc-app">
         <div class="gc-topbar">
-            <div class="gc-topbar-left">
-                <button class="gc-icon-btn" id="menu-button" type="button" aria-label="Open account menu" aria-expanded="false">
-                    <i class="fas fa-bars" aria-hidden="true"></i>
-                </button>
-                <a class="gc-brand" href="dashboard.html">
-                    <span class="gc-brand-mark" aria-hidden="true">GC</span>
-                    <span><strong>Global Chat</strong><small>Chat rooms</small></span>
-                </a>
-            </div>
-            <button class="gc-btn gc-btn-primary gc-topbar-new" id="new-chat-header-btn" type="button">
-                <i class="fas fa-plus" aria-hidden="true"></i><span>New chat</span>
+            <button class="gc-user-chip" id="menu-button" type="button" aria-label="Open account menu" aria-expanded="false">
+                <span class="gc-avatar gc-avatar-sm" id="profile-pic" aria-hidden="true">U</span>
+                <span id="username">User</span>
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
+            <div class="gc-topbar-actions">
+                <a class="gc-btn gc-btn-ghost gc-topbar-public" href="room.html">
+                    <i class="fas fa-globe" aria-hidden="true"></i><span>Public chat</span>
+                </a>
+                <button class="gc-btn gc-btn-primary" id="new-chat-header-btn" type="button">
+                    <i class="fas fa-plus" aria-hidden="true"></i><span>New room</span>
+                </button>
+            </div>
         </div>
 
         <main class="gc-main">
@@ -67,16 +68,18 @@
             </div>
 
             <section class="gc-hero" aria-labelledby="page-title">
-                <p class="gc-eyebrow">YOUR CONVERSATIONS</p>
-                <h1 id="page-title">Chats</h1>
-                <p class="gc-lead">Drop into the public chat, or make a room for your circle and invite people with its room code.</p>
+                <p class="gc-eyebrow">REAL-TIME · BROWSER-BASED</p>
+                <h1 id="page-title">Global Chat</h1>
+                <p class="gc-lead">Drop into the public room, or set up a private room for your circle and invite people with its code.</p>
+                <p class="gc-trust"><i class="fas fa-shield-halved" aria-hidden="true"></i> Private rooms stay closed until someone has the code.</p>
             </section>
 
             <section class="gc-section" aria-labelledby="pinned-title">
                 <div class="gc-section-head">
-                    <h2 id="pinned-title">Pinned</h2>
+                    <span class="gc-section-badge" aria-hidden="true"><i class="fas fa-globe"></i></span>
+                    <h2 id="pinned-title">Pinned room</h2>
                 </div>
-                <a class="gc-global-card" href="chat.html">
+                <a class="gc-global-card" href="room.html">
                     <span class="gc-global-icon" aria-hidden="true"><i class="fas fa-globe"></i></span>
                     <span class="gc-global-body">
                         <span class="gc-global-top">
@@ -94,8 +97,12 @@
 
             <section class="gc-section" aria-labelledby="rooms-title">
                 <div class="gc-section-head">
+                    <span class="gc-section-badge" aria-hidden="true"><i class="fas fa-users"></i></span>
                     <h2 id="rooms-title">Your rooms</h2>
                     <span class="gc-count" id="rooms-count" hidden>0</span>
+                    <button class="gc-btn gc-btn-ghost gc-section-action" id="section-create-btn" type="button">
+                        <i class="fas fa-plus" aria-hidden="true"></i> New room
+                    </button>
                 </div>
                 <div class="gc-room-list" id="chat-rooms"></div>
                 <div class="gc-empty" id="rooms-empty" hidden>
@@ -110,17 +117,12 @@
         </main>
     </div>
 
-    <button class="gc-fab" id="create-room-fab" type="button" aria-label="Create or join a room">
-        <i class="fas fa-plus" aria-hidden="true"></i>
-    </button>
-
     <!-- Account drawer -->
     <div class="gc-drawer-overlay" id="menu-overlay"></div>
     <aside class="gc-drawer" id="side-menu" aria-label="Account menu">
         <div class="gc-drawer-head">
-            <div class="gc-avatar" id="profile-pic">U</div>
             <div class="gc-drawer-user">
-                <strong id="username">User</strong>
+                <strong>Signed in</strong>
                 <span id="user-email"></span>
             </div>
             <button class="gc-icon-btn" id="menu-close" type="button" aria-label="Close menu">
@@ -131,20 +133,12 @@
             <button class="gc-menu-item" id="profile-settings" type="button">
                 <i class="fas fa-user" aria-hidden="true"></i> Profile settings
             </button>
-            <a class="gc-menu-item" href="chat.html">
+            <a class="gc-menu-item" href="room.html">
                 <i class="fas fa-globe" aria-hidden="true"></i> Global chat
             </a>
             <button class="gc-menu-item" id="about-funchat" type="button">
                 <i class="fas fa-circle-info" aria-hidden="true"></i> About Global Chat
             </button>
-            <div class="gc-menu-divider"></div>
-            <label class="gc-menu-item gc-menu-switch">
-                <span><i class="fas fa-moon" aria-hidden="true"></i> Dark mode</span>
-                <span class="gc-switch">
-                    <input type="checkbox" id="theme-toggle">
-                    <span class="gc-switch-track" aria-hidden="true"></span>
-                </span>
-            </label>
             <div class="gc-menu-divider"></div>
             <button class="gc-menu-item gc-menu-danger" id="logout-btn" type="button">
                 <i class="fas fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out

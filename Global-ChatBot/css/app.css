@@ -79,35 +79,6 @@ h1, h2, h3, p { margin: 0; }
 }
 
 /* ---- Top bar -------------------------------------------------------- */
-.gc-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  width: min(100% - 40px, 960px);
-  margin: 0 auto;
-  padding: 22px 0 8px;
-}
-
-.gc-topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.gc-brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; min-width: 0; }
-.gc-brand-mark {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  flex: none;
-  place-items: center;
-  border-radius: 13px;
-  background: linear-gradient(135deg, var(--brand-deep), var(--brand));
-  color: #fff;
-  font-size: .82rem;
-  font-weight: 800;
-  letter-spacing: -.02em;
-}
-[data-theme="dark"] .gc-brand-mark { color: #04211e; }
-.gc-brand strong { display: block; font-size: .98rem; line-height: 1.2; letter-spacing: -.02em; }
-.gc-brand small { display: block; color: var(--muted); font-size: .72rem; }
-
 .gc-icon-btn {
   display: inline-grid;
   width: 42px;
@@ -184,6 +155,7 @@ h1, h2, h3, p { margin: 0; }
   text-transform: uppercase;
 }
 .gc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.gc-avatar-sm { width: 32px; height: 32px; font-size: .78rem; }
 .gc-avatar-lg { width: 84px; height: 84px; font-size: 1.7rem; }
 
 /* ---- Drawer --------------------------------------------------------- */
@@ -387,7 +359,6 @@ h1, h2, h3, p { margin: 0; }
 .gc-notice strong { display: block; margin-bottom: 2px; }
 
 @media (max-width: 600px) {
-  .gc-topbar { width: calc(100% - 28px); padding-top: 16px; }
   .gc-modal { padding: 12px; align-items: flex-end; }
   .gc-modal-card { max-height: 92vh; }
   .gc-toasts { top: 12px; right: 12px; }

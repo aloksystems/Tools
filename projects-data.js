@@ -53,7 +53,7 @@ const projectsData = [
     description:
       "A paced writing assistant for handwritten assignments. Paste an assignment, choose how much text to see at once — word, phrase, or sentence — and follow a moving highlight as you write it out by hand at your own speed. Runs entirely in the browser with no uploads.",
     tags: ["Assignments", "Writing", "Productivity", "Study"],
-    demo: "https://aloksystems.freedev.app/WriteFlow/",
+    demo: "https://aloksystems.freedev.app/Assignment-Writer/",
     icon: "A",
     iconColor: "#14B8A6",
     pinned: true,
@@ -99,9 +99,9 @@ const projectsData = [
     name: "SnapShare",
     category: "Productivity",
     description:
-      "A secure temporary file sharing platform with password protection, auto-expiry, one-time viewing, and download restrictions built using Express, Vite, and TypeScript.",
+      "Bundle photos and videos into a self-destructing share link with a password, an expiry timer and one-time view — everything stays in your browser.",
     tags: ["TypeScript", "Express", "Vite", "File Sharing", "Security"],
-    demo: "https://tools-lovat-beta.vercel.app/",
+    demo: "https://aloksystems.freedev.app/SnapShare/",
     icon: "S",
     iconColor: "#6366F1",
     pinned: true,
@@ -305,7 +305,7 @@ const projectsData = [
     iconColor: "#3B82F6",
   },
   {
-    name: "Alok Systems Apps",
+    name: "Android Apps",
     category: "Android Apps",
     description:
       "A catalogue of Android apps from Alok Systems, with app details, release information, and APK downloads.",
