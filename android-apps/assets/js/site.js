@@ -209,37 +209,22 @@ async function startDownload(url, panel) {
   const label = panel.querySelector('.progress-label');
   const button = panel.querySelector('[data-download]');
   panel.hidden = false;
-  label.textContent = 'Connecting…';
+  label.textContent = 'Preparing download…';
   label.classList.remove('download-failed');
-  if (track) track.style.width = '0%';
+  if (track) track.style.width = '100%';
   if (button) { button.disabled = true; button.setAttribute('aria-busy', 'true'); }
   try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    if (!response.body) throw new Error('Streaming not supported');
-    const total = Number(response.headers.get('content-length')) || 0;
-    const reader = response.body.getReader();
-    const chunks = [];
-    let received = 0;
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (value) { chunks.push(value); received += value.length; }
-      const pct = total ? Math.min(100, Math.round((received / total) * 100)) : 0;
-      if (track) track.style.width = pct + '%';
-      label.textContent = total ? `Downloading ${pct}%` : `Downloading ${(received / 1048576).toFixed(1)} MB`;
-    }
-    const blob = new Blob(chunks, { type: 'application/vnd.android.package-archive' });
+    // Native download: hand the URL to the browser's built-in APK downloader.
+    // This avoids buffering the whole file in memory and bypasses the
+    // fetch()/streaming/CORS failures that broke large-file downloads.
     const a = document.createElement('a');
-    const objectUrl = URL.createObjectURL(blob);
-    a.href = objectUrl;
+    a.href = url;
     a.download = url.split('?')[0].split('/').pop() || 'app.apk';
+    a.rel = 'noopener';
     document.body.appendChild(a);
     a.click();
     a.remove();
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 4000);
-    label.textContent = 'Download complete ✓';
-    if (track) track.style.width = '100%';
+    label.textContent = 'Download started ✓';
   } catch (err) {
     label.textContent = 'Download failed — check connection and try again.';
     label.classList.add('download-failed');
