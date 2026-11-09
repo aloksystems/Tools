@@ -1,4 +1,4 @@
-const projectsData = [
+﻿const projectsData = [
   // Developer Tools
   {
     name: "TempMail",
@@ -310,7 +310,7 @@ const projectsData = [
     description:
       "A catalogue of Android apps from Alok Systems, with app details, release information, and APK downloads.",
     tags: ["Android", "APK", "Apps"],
-    demo: "https://aloksystems.freedev.app/apk-website/",
+    demo: "https://aloksystems.freedev.app/android-apps/",
     icon: "A",
     iconColor: "#3B82F6",
     pinned: true,
