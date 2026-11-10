@@ -17,7 +17,7 @@
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href="https://aloksystems.freedev.app/android-apps/" />
     <meta property="og:url" content="https://aloksystems.freedev.app/android-apps/" />
-    <script>try{var t=localStorage.getItem('alok-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');</script>
+    <script>try{var s=localStorage.getItem('alok-theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=s==='dark'||(!s&&d)?'dark':'light'}catch(e){}document.documentElement.classList.add('js');</script>
     <link rel="stylesheet" href="assets/css/site.css?v=20261030" />
     <title>Alok Systems Apps — Useful Apps for a Better Digital Life</title>
     <script defer src="assets/js/site.js?v=20261030"></script>
@@ -38,6 +38,7 @@
             class="button button-dark"
             href="https://github.com/aloksystems"
             rel="noopener"
+            target="_blank"
             >GitHub ↗</a
           ><button
             class="icon-button"
@@ -63,7 +64,7 @@
       >
         <a href="index.html">Home</a><a href="apps.html">Apps</a
         ><a href="about.html">About</a><a href="contact.html">Contact</a
-        ><a href="https://github.com/aloksystems" rel="noopener">GitHub ↗</a>
+        ><a href="https://github.com/aloksystems" rel="noopener" target="_blank">GitHub ↗</a>
       </nav>
     </header>
     <main id="main" tabindex="-1">

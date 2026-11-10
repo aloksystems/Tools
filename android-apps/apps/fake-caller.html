@@ -24,7 +24,7 @@
       property="og:url"
       content="https://aloksystems.freedev.app/android-apps/apps/fake-caller.html"
     />
-    <script>try{var t=localStorage.getItem('alok-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');</script>
+    <script>try{var s=localStorage.getItem('alok-theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=s==='dark'||(!s&&d)?'dark':'light'}catch(e){}document.documentElement.classList.add('js');</script>
     <link rel="stylesheet" href="../assets/css/site.css?v=20261030" />
     <title>Fake Caller — Alok Systems Apps</title>
     <script defer src="../assets/js/site.js?v=20261030"></script>
@@ -47,6 +47,7 @@
             class="button button-dark"
             href="https://github.com/aloksystems"
             rel="noopener"
+            target="_blank"
             >GitHub ↗</a
           ><button
             class="icon-button"
@@ -73,7 +74,7 @@
         ><a href="../apps.html" aria-current="page">Apps</a
         ><a href="../about.html">About</a
         ><a href="../contact.html">Contact</a
-        ><a href="https://github.com/aloksystems" rel="noopener">GitHub ↗</a>
+        ><a href="https://github.com/aloksystems" rel="noopener" target="_blank">GitHub ↗</a>
       </nav>
     </header>
     <main

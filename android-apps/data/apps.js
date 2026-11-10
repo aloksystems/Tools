@@ -23,7 +23,7 @@ window.ALOK_APPS = [
     "packageName": "com.driftlock.app",
     "fileSize": "15.1 MB",
     "sha256": "70c55f8279d5bd14e3ced72cfbb7136b4fe77c338ffdff62e4ec0a09aee1eaa8",
-    "downloadUrl": "/downloads/driftlock.apk",
+    "downloadUrl": "https://github.com/aloksystems/Tools/releases/latest/download/driftlock.apk",
     "featured": true,
     "status": "available",
     "changelog": [
@@ -57,7 +57,7 @@ window.ALOK_APPS = [
     "packageName": "com.vaultix.vaultix",
     "fileSize": "23.3 MB",
     "sha256": "708bbba2db70e7245a355816944ff44f6aa6c7a95f6ce5dc05b31ec82a2a0431",
-    "downloadUrl": "/downloads/vaultix.apk",
+    "downloadUrl": "https://github.com/aloksystems/Tools/releases/latest/download/vaultix.apk",
     "featured": true,
     "status": "available",
     "changelog": [
@@ -90,7 +90,7 @@ window.ALOK_APPS = [
     "packageName": "com.fakecaller.app",
     "fileSize": "17.8 MB",
     "sha256": "3d21662ed35680aaa333dbf7bea855ef5cd5254df33689029284aa45cea59954",
-    "downloadUrl": "/downloads/fake-caller.apk",
+    "downloadUrl": "https://github.com/aloksystems/Tools/releases/latest/download/fake-caller.apk",
     "featured": false,
     "status": "available",
     "changelog": [
@@ -126,7 +126,7 @@ window.ALOK_APPS = [
     "packageName": "com.apexclass.apex_class",
     "fileSize": "54.2 MB",
     "sha256": "c3f14bbc889a2a99dd87caa1a13ce15b1d8d2fe1df798ea68bd924cc58a82590",
-    "downloadUrl": "/downloads/apexclasses-app.apk",
+    "downloadUrl": "https://github.com/aloksystems/Tools/releases/latest/download/apexclasses-app.apk",
     "featured": false,
     "status": "available",
     "changelog": [

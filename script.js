@@ -340,16 +340,28 @@ class ToolsApp {
     const targetUrl = project.demo || project.repo || "#";
     const glyph = escapeHtml(project.icon || (project.name || "?")[0]);
     const color = project.iconColor || colorFor(project.name);
+    const downloadLinks =
+      Array.isArray(project.downloads) && project.downloads.length
+        ? `<div class="tool-downloads">${project.downloads
+            .map(
+              (d) =>
+                `<a class="tool-dl" href="${escapeHtml(d.url)}" download target="_blank" rel="noopener">${escapeHtml(d.label)}</a>`,
+            )
+            .join("")}</div>`
+        : "";
 
     return `
-      <a class="tool-card" href="${escapeHtml(targetUrl)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(project.name)}">
-        <div class="tool-card-top">
-          <span class="tool-icon" style="background:${color}" aria-hidden="true">${glyph}</span>
-          <span class="tool-cat">${escapeHtml(project.category)}</span>
-        </div>
-        <h3 class="tool-title">${escapeHtml(project.name)}</h3>
-        <p class="tool-desc">${escapeHtml(project.description)}</p>
-      </a>
+      <div class="tool-card">
+        <a class="tool-card-link" href="${escapeHtml(targetUrl)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(project.name)}">
+          <div class="tool-card-top">
+            <span class="tool-icon" style="background:${color}" aria-hidden="true">${glyph}</span>
+            <span class="tool-cat">${escapeHtml(project.category)}</span>
+          </div>
+          <h3 class="tool-title">${escapeHtml(project.name)}</h3>
+          <p class="tool-desc">${escapeHtml(project.description)}</p>
+        </a>
+        ${downloadLinks}
+      </div>
     `;
   }
 

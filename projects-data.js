@@ -1,4 +1,22 @@
 ﻿const projectsData = [
+  {
+    name: "Universal Converter",
+    category: "Desktop App",
+    description:
+      "A privacy-first desktop converter that turns images, documents, audio, video and archives into other formats entirely offline — files never leave your PC. Built with Tauri and Rust for fast, native performance.",
+    tags: ["Windows", "Desktop", "Offline", "Rust", "Tauri"],
+    repo: "https://github.com/aloksystems/universal-converter",
+    icon: "⇄",
+    iconColor: "#14B8A6",
+    pinned: true,
+    featured: true,
+    downloads: [
+      {
+        label: "Portable for Windows (.zip)",
+        url: "https://github.com/aloksystems/Tools/releases/latest/download/Universal-Converter-Portable-1.0.1.zip",
+      },
+    ],
+  },
   // Developer Tools
   {
     name: "TempMail",

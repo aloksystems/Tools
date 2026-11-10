@@ -21,7 +21,8 @@ function saveTheme(theme) {
   try { localStorage.setItem('alok-theme', theme); } catch { /* Theme still works for this page view. */ }
 }
 const savedTheme = readTheme();
-root.dataset.theme = savedTheme || 'dark';
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+root.dataset.theme = savedTheme === 'dark' || (!savedTheme && prefersDark) ? 'dark' : 'light';
 
 let revealObserver = null;
 function observeReveal() {
