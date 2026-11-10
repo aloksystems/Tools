@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,7 +37,7 @@
     :root {
       color-scheme: light;
       --page: #f8fafc;
-      --surface: #ffffff;
+      --surface: #fff;
       --surface-soft: #f1f5f9;
       --text: #0f172a;
       --muted: #64748b;
@@ -46,6 +46,17 @@
       --brand-strong: #0d9488;
       --brand-deep: #0f766e;
       --brand-soft: rgba(20, 184, 166, .09);
+      --danger-border: #fecaca;
+      --danger-bg: #fef2f2;
+      --danger-text: #b91c1c;
+      --danger-dot: #dc2626;
+      --danger-solid: #b91c1c;
+      --danger-solid-alt: #dc2626;
+      --warning-border: #fde68a;
+      --warning-bg: #fffbeb;
+      --warning-text: #b45309;
+      --warning-dot: #d97706;
+      --success-dot: #0d9488;
       --shadow: 0 8px 26px rgba(15, 23, 42, .06);
       --radius: 18px;
       --font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -63,128 +74,142 @@
       --brand-strong: #14b8a6;
       --brand-deep: #2dd4bf;
       --brand-soft: rgba(45, 212, 191, .1);
+      --danger-border: #7f1d1d;
+      --danger-bg: rgba(220, 38, 38, .08);
+      --danger-text: #fca5a5;
+      --danger-dot: #f87171;
+      --danger-solid: #dc2626;
+      --danger-solid-alt: #ef4444;
+      --warning-border: #78350f;
+      --warning-bg: rgba(217, 119, 6, .08);
+      --warning-text: #fbbf24;
+      --warning-dot: #f59e0b;
+      --success-dot: #2dd4bf;
       --shadow: 0 10px 30px rgba(0, 0, 0, .35);
     }
     * { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; }
     body {
-      margin: 0;
-      font-family: var(--font);
-      background: var(--page);
-      color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      margin: 0; font-family: var(--font); background: var(--page); color: var(--text);
+      line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column;
     }
+    :focus-visible { outline: 3px solid var(--brand-strong); outline-offset: 3px; }
     a { color: var(--brand-strong); text-decoration: none; }
     a:hover { text-decoration: underline; }
+
+    /* Site chrome */
     .site-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 28px;
-      border-bottom: 1px solid var(--line);
-      background: var(--surface);
-      position: sticky; top: 0; z-index: 20;
+      padding: 12px max(24px, env(safe-area-inset-left)) 12px max(24px, env(safe-area-inset-right));
+      border-bottom: 1px solid var(--line); background: var(--surface);
+      position: sticky; top: 0; z-index: 20; gap: 16px;
     }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; color: var(--text); }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; color: var(--text); }
     .brand .logo {
       width: 32px; height: 32px; border-radius: 9px;
       display: grid; place-items: center;
-      background: linear-gradient(135deg, var(--brand-deep), var(--brand-strong));
-      color: #fff; font-size: 18px;
+      background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+      color: #fff; font-size: 18px; flex: none;
     }
-    .brand a { color: inherit; }
+    .brand a { color: inherit; display: inline-flex; align-items: center; gap: 10px; }
     .header-actions { display: flex; align-items: center; gap: 12px; }
-    .nav-home { font-size: 14px; font-weight: 600; }
+    .nav-home { font-size: 14px; font-weight: 700; color: var(--text); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; background: var(--surface); }
+    .nav-home:hover { border-color: var(--brand); text-decoration: none; }
     .theme-toggle {
       background: var(--surface-soft); color: var(--text);
       border: 1px solid var(--line); border-radius: 999px;
       width: 38px; height: 38px; cursor: pointer; font-size: 17px;
-      display: grid; place-items: center;
+      display: grid; place-items: center; transition: border-color .16s ease;
     }
     .theme-toggle:hover { border-color: var(--brand); }
-    .page-shell { width: 100%; max-width: 1040px; margin: 0 auto; padding: 40px 24px 64px; flex: 1; }
-    .hero { text-align: center; max-width: 760px; margin: 0 auto 44px; }
-    .eyebrow {
-      display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .14em;
-      text-transform: uppercase; color: var(--brand-strong);
-      border: 1px solid var(--line); background: var(--brand-soft);
-      padding: 6px 14px; border-radius: 999px; margin-bottom: 18px;
-    }
-    .hero h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.15; margin: 0 0 14px; letter-spacing: -0.02em; }
-    .hero .lead { color: var(--muted); font-size: 17px; margin: 0 auto; max-width: 620px; }
+
+    .page-shell { width: min(100% - 48px, 960px); margin: 0 auto; padding: 40px 0 64px; flex: 1; }
+
+    /* Hero */
+    .hero { max-width: 780px; margin: 0 auto 34px; text-align: center; }
+    .eyebrow { margin: 0 0 7px; color: var(--brand-deep); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .hero h1 { margin: 0; font-size: clamp(2.1rem, 5vw, 3.2rem); line-height: 1.12; letter-spacing: -.045em; }
+    .hero > p:not(.eyebrow) { max-width: 680px; margin: 12px auto 0; color: var(--muted); font-size: 1.04rem; }
     .privacy-note {
-      display: inline-flex; align-items: center; gap: 8px;
-      margin-top: 20px; font-size: 13px; font-weight: 600; color: var(--brand-strong);
-      background: var(--brand-soft); border: 1px solid var(--line);
-      padding: 8px 16px; border-radius: 999px;
+      width: fit-content; max-width: 100%; margin: 18px auto 0; display: flex; align-items: center; gap: 8px;
+      padding: 8px 13px; border: 1px solid var(--line); border-radius: 999px;
+      background: var(--surface); color: var(--muted); font-size: .8rem; text-align: left;
     }
-    .privacy-note svg { width: 16px; height: 16px; fill: currentColor; }
-    .download-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; margin-bottom: 40px; }
-    .card {
-      background: var(--surface); border: 1px solid var(--line);
-      border-radius: var(--radius); padding: 26px;
-      box-shadow: var(--shadow); display: flex; flex-direction: column;
-    }
-    .card.recommended { border-color: var(--brand); }
-    .card .badge {
-      align-self: flex-start; font-size: 11px; font-weight: 800; letter-spacing: .08em;
-      text-transform: uppercase; color: #fff; background: var(--brand-deep);
-      padding: 4px 10px; border-radius: 999px; margin-bottom: 14px;
-    }
-    .card h2 { font-size: 19px; margin: 0 0 6px; }
-    .card .kind { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-    .card .meta { font-size: 13px; color: var(--muted); margin: 4px 0 10px; }
-    .card p { font-size: 14px; color: var(--muted); margin: 0 0 18px; }
-    .card ul { margin: 0 0 18px; padding-left: 18px; font-size: 13.5px; color: var(--muted); }
-    .card li { margin-bottom: 4px; }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      font-weight: 700; font-size: 15px; border-radius: 12px;
-      padding: 13px 18px; border: 1px solid transparent; cursor: pointer;
-      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-      text-decoration: none !important;
-    }
-    .btn svg { width: 18px; height: 18px; fill: currentColor; }
-    .btn-primary {
-      background: var(--brand-strong); color: #fff; width: 100%;
-      box-shadow: 0 6px 18px rgba(13, 148, 136, .3);
-    }
-    .btn-primary:hover { background: var(--brand-deep); transform: translateY(-1px); }
-    .btn-outline { background: var(--surface); color: var(--text); border-color: var(--line); width: 100%; }
-    .btn-outline:hover { border-color: var(--brand); }
-    .source-link { margin-top: 12px; text-align: center; font-size: 13px; }
-    .section-title { font-size: 20px; margin: 0 0 18px; }
-    .details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 40px; }
-    .detail { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
-    .detail h3 { font-size: 14px; margin: 0 0 8px; }
-    .detail p { font-size: 13.5px; color: var(--muted); margin: 0; }
-    .detail .kbd {
-      display: inline-block; font-family: var(--mono); font-size: 12px;
-      background: var(--surface-soft); border: 1px solid var(--line);
-      padding: 2px 8px; border-radius: 6px; color: var(--text);
-    }
-    .convert-list { columns: 2; column-gap: 28px; font-size: 13.5px; color: var(--muted); list-style: none; padding: 0; }
-    .convert-list li { padding: 4px 0 4px 22px; position: relative; break-inside: avoid; }
-    .convert-list li::before { content: ""; position: absolute; left: 0; top: 10px; width: 8px; height: 8px; border-radius: 3px; background: var(--brand); }
-    .faq .card { margin-bottom: 14px; }
-    .faq h3 { font-size: 15px; margin: 0 0 6px; }
+    .privacy-note svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--brand-deep); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* Panels */
+    .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); padding: clamp(18px, 2.8vw, 24px); }
+    .panel-heading { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+    .panel-heading h2 { margin: 0; font-size: 1.12rem; letter-spacing: -.02em; }
+    .panel-heading p { margin: 2px 0 0; color: var(--muted); font-size: .84rem; }
+    .step-number { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border-radius: 11px; background: var(--brand-soft); color: var(--brand-deep); font-size: .75rem; font-weight: 800; }
+
+    .section-title { margin: 0 0 16px; font-size: 1.3rem; letter-spacing: -.02em; }
+
+    /* Download grid */
+    .download-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 34px; }
+    .dl-card { display: flex; flex-direction: column; }
+    .dl-card.recommended { border-color: var(--brand); }
+    .dl-badge { align-self: flex-start; font-size: .66rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: linear-gradient(135deg, var(--brand-deep), var(--brand)); padding: 4px 10px; border-radius: 999px; margin: 0 0 10px; }
+    .dl-kind { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--brand-deep); }
+    .dl-meta { font-size: .8rem; color: var(--muted); margin: 3px 0 10px; }
+    .dl-desc { font-size: .9rem; color: var(--muted); margin: 0 0 14px; }
+    .dl-list { margin: 0 0 18px; padding: 0; list-style: none; font-size: .85rem; color: var(--muted); }
+    .dl-list li { position: relative; padding: 3px 0 3px 22px; }
+    .dl-list li::before { content: ""; position: absolute; left: 0; top: 11px; width: 8px; height: 8px; border-radius: 3px; background: var(--brand); }
+    .dl-actions { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+
+    /* Buttons */
+    .btn { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 7px; padding: 9px 14px; border: 1px solid transparent; border-radius: 11px; cursor: pointer; font-size: .83rem; font-weight: 750; text-decoration: none; transition: transform .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease; }
+    .btn:hover { transform: translateY(-1px); text-decoration: none; }
+    .btn svg { width: 17px; height: 17px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-primary { background: linear-gradient(135deg, var(--brand-deep), var(--brand)); color: #fff; }
+    .btn-primary:hover { box-shadow: 0 7px 17px rgba(20, 184, 166, .2); }
+    [data-theme="dark"] .btn-primary { color: #04211e; }
+    .btn-outline { border-color: var(--line); background: var(--surface); color: var(--text); }
+    .btn-outline:hover { border-color: var(--brand); color: var(--brand-deep); }
+    .btn.full { width: 100%; }
+    .source-note { text-align: center; font-size: .8rem; color: var(--muted); }
+
+    /* Spec strip */
+    .spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+    .spec { background: var(--surface-soft); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+    .spec h3 { margin: 0 0 4px; font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .spec p { margin: 0; font-size: .9rem; }
+    .kbd { display: inline-block; font-family: var(--mono); font-size: .82rem; background: var(--surface); border: 1px solid var(--line); padding: 1px 7px; border-radius: 6px; }
+
+    /* Convert list */
+    .convert-list { columns: 2; column-gap: 28px; margin: 0; padding: 0; list-style: none; font-size: .87rem; color: var(--muted); }
+    .convert-list li { position: relative; padding: 4px 0 4px 22px; break-inside: avoid; }
+    .convert-list li::before { content: ""; position: absolute; left: 0; top: 11px; width: 8px; height: 8px; border-radius: 3px; background: var(--brand); }
+
+    /* FAQ */
+    .faq { margin-top: 34px; }
+    .faq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+    .faq h3 { margin: 0 0 6px; font-size: .98rem; }
+    .faq p { margin: 0; font-size: .87rem; color: var(--muted); }
+
     .site-footer {
       border-top: 1px solid var(--line); background: var(--surface);
-      padding: 26px 24px; text-align: center; font-size: 13px; color: var(--muted);
+      padding: 26px max(24px, env(safe-area-inset-left)); text-align: center; font-size: .84rem; color: var(--muted);
     }
-    .site-footer a { color: var(--brand-strong); font-weight: 600; }
+    .site-footer a { color: var(--brand-strong); font-weight: 700; }
+
     @media (max-width: 640px) {
+      .page-shell { width: min(100% - 32px, 960px); padding-top: 28px; }
       .convert-list { columns: 1; }
-      .page-shell { padding: 28px 18px 48px; }
+      .site-header { padding: 10px 16px; }
+      .brand { font-size: 15px; }
     }
   </style>
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
-      <span class="logo" aria-hidden="true">⇄</span>
-      <a href="https://aloksystems.freedev.app/">Alok Systems<span style="color:var(--brand-strong)"> Tools</span></a>
+      <a href="https://aloksystems.freedev.app/">
+        <span class="logo" aria-hidden="true">⇄</span>
+        Alok Systems <span style="color:var(--brand-strong)">Tools</span>
+      </a>
     </div>
     <div class="header-actions">
       <a class="nav-home" href="https://aloksystems.freedev.app/">All Tools</a>
@@ -194,78 +219,86 @@
 
   <main class="page-shell">
     <section class="hero" aria-labelledby="page-title">
-      <span class="eyebrow">Desktop app · Windows · Free</span>
+      <p class="eyebrow">Desktop app · Windows · Free</p>
       <h1 id="page-title">Universal Converter</h1>
-      <p class="lead">Convert images, documents, audio, video and archives into other formats — entirely offline. Files never leave your PC. Built with Tauri and Rust for fast, native performance.</p>
-      <span class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>100% offline · no uploads · files stay on your PC</span>
+      <p>Convert images, documents, audio, video and archives into other formats — entirely offline. Files never leave your PC. Built with Tauri and Rust for fast, native performance.</p>
+      <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.7 3.2 7.8 7.5 9.5 4.3-1.7 7.5-4.8 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>100% offline · no uploads · files stay on your PC</div>
     </section>
 
     <section class="download-grid" aria-label="Download options">
-      <article class="card recommended">
-        <span class="badge">Recommended</span>
-        <h2>Portable ZIP</h2>
-        <div class="kind">Full bundle · no install</div>
-        <div class="meta">Version 1.0.1 · ~715 MB · Windows 10/11</div>
-        <p>Everything included out of the box — the app plus the bundled converters (7-Zip, FFmpeg, LibreOffice). Extract and run. No installation required.</p>
-        <ul>
+      <article class="panel dl-card recommended">
+        <span class="dl-badge">Recommended</span>
+        <div class="panel-heading"><span class="step-number">01</span><div><h2>Portable ZIP</h2><p>Full bundle · no install</p></div></div>
+        <div class="dl-meta">Version 1.0.1 · ~715 MB · Windows 10/11</div>
+        <p class="dl-desc">Everything you need in one package — the app plus bundled converters (7-Zip, FFmpeg, LibreOffice). Extract and run. No installation required.</p>
+        <ul class="dl-list">
           <li>All conversion engines pre-packaged</li>
           <li>No installer, no admin rights needed</li>
           <li>Works fully offline</li>
         </ul>
-        <a class="btn btn-primary" href="https://github.com/aloksystems/Tools/releases/latest/download/Universal-Converter-Portable-1.0.1.zip" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10m0 0 4-4m-4 4-4-4M5 17h14v3H5z"/></svg>Download ZIP (Portable)</a>
+        <div class="dl-actions">
+          <a class="btn btn-primary full" href="https://github.com/aloksystems/Tools/releases/latest/download/Universal-Converter-Portable-1.0.1.zip" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10m0 0 4-4m-4 4-4-4M5 17h14v3H5z"/></svg>Download ZIP (Portable)</a>
+        </div>
       </article>
 
-      <article class="card">
-        <h2>Standalone EXE</h2>
-        <div class="kind">Application executable</div>
-        <div class="meta">Version 1.0.1 · ~19 MB · Windows 10/11</div>
-        <p>The core Universal Converter executable. Use this if you already have the bundled tools, or prefer the full Portable ZIP above for a self-contained experience.</p>
-        <ul>
+      <article class="panel dl-card">
+        <div class="panel-heading"><span class="step-number">02</span><div><h2>Standalone EXE</h2><p>Application executable</p></div></div>
+        <div class="dl-meta">Version 1.0.1 · ~19 MB · Windows 10/11</div>
+        <p class="dl-desc">The core Universal Converter executable. Choose this if you already have the bundled tools, or prefer the full Portable ZIP above for a self-contained experience.</p>
+        <ul class="dl-list">
           <li>Single executable file</li>
           <li>Requires Windows WebView2 runtime</li>
           <li>Pair with the bundled tools for full conversions</li>
         </ul>
-        <a class="btn btn-outline" href="https://github.com/aloksystems/Tools/releases/download/v1.0.0/Universal-Converter-1.0.1.exe" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10m0 0 4-4m-4 4-4-4M5 17h14v3H5z"/></svg>Download EXE</a>
-        <div class="source-link">Or browse the <a href="https://github.com/aloksystems/Tools/tree/main/universal-converter" target="_blank" rel="noopener noreferrer">source code</a> on GitHub.</div>
+        <div class="dl-actions">
+          <a class="btn btn-outline full" href="https://github.com/aloksystems/Tools/releases/download/v1.0.0/Universal-Converter-1.0.1.exe" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10m0 0 4-4m-4 4-4-4M5 17h14v3H5z"/></svg>Download EXE</a>
+          <span class="source-note">Or browse the <a href="https://github.com/aloksystems/Tools/tree/main/universal-converter" target="_blank" rel="noopener noreferrer">source code</a> on GitHub.</span>
+        </div>
       </article>
     </section>
 
     <section aria-label="Details">
       <h2 class="section-title">Details</h2>
-      <div class="details-grid">
-        <div class="detail"><h3>Version</h3><p><span class="kbd">1.0.1</span> · release v1.0.0</p></div>
-        <div class="detail"><h3>Platform</h3><p>Windows 10 &amp; 11 (x64)</p></div>
-        <div class="detail"><h3>How it runs</h3><p>Uses the OS WebView2 runtime — no separate browser install needed.</p></div>
-        <div class="detail"><h3>Privacy</h3><p>All conversions happen locally. Nothing is uploaded to any server.</p></div>
+      <div class="panel">
+        <div class="spec-grid">
+          <div class="spec"><h3>Version</h3><p><span class="kbd">1.0.1</span> · v1.0.0</p></div>
+          <div class="spec"><h3>Platform</h3><p>Windows 10 &amp; 11 (x64)</p></div>
+          <div class="spec"><h3>Requires</h3><p>Windows WebView2 runtime</p></div>
+          <div class="spec"><h3>Privacy</h3><p>All conversions run locally</p></div>
+        </div>
       </div>
     </section>
 
-    <section aria-label="Supported conversions">
+    <section style="margin-top:34px" aria-label="Supported conversions">
       <h2 class="section-title">What you can convert</h2>
-      <ul class="convert-list">
-        <li>Images → PNG · JPG · WebP · AVIF · GIF</li>
-        <li>Documents → PDF · DOCX · ODT · TXT · HTML</li>
-        <li>Audio → MP3 · WAV · M4A · FLAC · OGG</li>
-        <li>Video → MP4 · MKV · AVI · MOV · WEBM</li>
-        <li>Archives → ZIP · 7Z · TAR · GZ</li>
-        <li>Batch processing multiple files at once</li>
-        <li>Custom quality &amp; size settings</li>
-        <li>Drag-and-drop interface</li>
-      </ul>
+      <div class="panel">
+        <ul class="convert-list">
+          <li>Images → PNG · JPG · WebP · AVIF · GIF</li>
+          <li>Documents → PDF · DOCX · ODT · TXT · HTML</li>
+          <li>Audio → MP3 · WAV · M4A · FLAC · OGG</li>
+          <li>Video → MP4 · MKV · AVI · MOV · WEBM</li>
+          <li>Archives → ZIP · 7Z · TAR · GZ</li>
+          <li>Batch processing multiple files at once</li>
+          <li>Custom quality &amp; size settings</li>
+          <li>Drag-and-drop interface</li>
+        </ul>
+      </div>
     </section>
 
     <section class="faq" aria-label="Frequently asked questions">
       <h2 class="section-title">Frequently asked questions</h2>
-      <article class="card">
-        <h3>Is this really free and offline?</h3>
-        <p>Yes. Universal Converter is free, and every conversion runs on your own machine. No files are uploaded to any server.</p>
-      </article>
-      <article class="card">
-        <h3>What is the difference between ZIP and EXE?</h3>
-        <p>The <strong>Portable ZIP</strong> is the complete package — it includes the app and all bundled converters, so it works straight after extracting. The <strong>EXE</strong> is the core executable on; if you choose it, you'll need the bundled tools present for the full range of conversions.</p>
-      </article>
+      <div class="faq-grid">
+        <article class="panel">
+          <h3>Is this really free and offline?</h3>
+          <p>Yes. Universal Converter is free, and every conversion runs on your own machine. No files are uploaded to any server.</p>
+        </article>
+        <article class="panel">
+          <h3>What is the difference between ZIP and EXE?</h3>
+          <p>The <strong>Portable ZIP</strong> is the complete package — it includes the app and all bundled converters, so it works right after extracting. The <strong>EXE</strong> is the core executable; for the full range of conversions it needs the bundled tools present.</p>
+        </article>
+      </div>
     </section>
   </main>
 
