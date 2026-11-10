@@ -1,0 +1,51 @@
+[package]
+name = "universal-converter"
+version = "1.0.1"
+description = "Offline-first universal file converter for Windows"
+authors = ["Alok Kumar"]
+edition = "2024"
+rust-version = "1.88"
+
+[build-dependencies]
+tauri-build = { version = "2.6.3", features = [] }
+
+[dependencies]
+ab_glyph = "0.2.29"
+base64 = "0.22.1"
+digest = "0.10.7"
+kamadak-exif = "0.6.1"
+image = { version = "0.25.9", default-features = false, features = ["jpeg", "png", "webp", "bmp", "tiff", "gif", "ico"] }
+log = "0.4.35"
+md-5 = "0.10.6"
+notify = "8.2.0"
+sha1 = "0.10.6"
+sha2 = "0.10.9"
+lopdf = { version = "0.42.0", default-features = false }
+pdfium-render = { version = "0.9.5", default-features = false, features = ["pdfium_8125", "image_025", "thread_safe"] }
+rusqlite = { version = "0.40.2", features = ["bundled"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+sysinfo = { version = "0.36.1", features = ["system"] }
+tauri = { version = "2.11.6", features = ["tray-icon"] }
+tauri-plugin-dialog = "2.7.3"
+tauri-plugin-log = "2.9.2"
+tauri-plugin-opener = "2.5.5"
+thiserror = "2.0.21"
+uuid = { version = "1.26.1", features = ["v4", "serde"] }
+zip = { version = "9.2.2", default-features = false, features = ["deflate"] }
+tauri-plugin-single-instance = "2.4.5"
+tauri-plugin-notification = "2.8.0"
+winreg = "0.56"
+
+[dev-dependencies]
+tar = "0.4.44"
+
+# Dependency debug info dominates the debug target and is rarely needed;
+# the application crate keeps full debug info.
+[profile.dev.package."*"]
+debug = false
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+strip = true

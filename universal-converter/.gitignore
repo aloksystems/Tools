@@ -1,0 +1,43 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Bundled engine payload (downloaded/placed locally, too large for the repo).
+# Small documentation and licence files under resources/ stay trackable.
+resources/7zip/
+resources/ffmpeg/
+resources/imagemagick/
+resources/libreoffice/
+resources/pdfium/
+resources/qpdf/
+resources/tesseract/
+
+# Local dependency download/extraction staging
+.uc-downloads/
+.uc-scratch/
+.release-staging/
+
+# Build output
+src-tauri/target/
+release/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

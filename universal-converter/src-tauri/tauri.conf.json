@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Universal Converter",
+  "version": "1.0.1",
+  "identifier": "dev.alok.universalconverter",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Universal Converter",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 940,
+        "minHeight": 620,
+        "center": true,
+        "resizable": true,
+        "visible": false,
+        "theme": "Dark"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost blob: data:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "category": "Utility",
+    "shortDescription": "Offline file conversion",
+    "longDescription": "Convert images, documents, audio, video and archives in batch without sending files anywhere.",
+    "copyright": "© Alok Kumar",
+    "targets": [
+      "nsis"
+    ],
+    "resources": {
+      "../resources/pdfium": "resources/pdfium/",
+      "../resources/qpdf": "resources/qpdf/",
+      "../resources/ffmpeg": "resources/ffmpeg/",
+      "../resources/7zip": "resources/7zip/",
+      "../resources/libreoffice": "resources/libreoffice/",
+      "../resources/tesseract": "resources/tesseract/",
+      "../resources/licenses": "resources/licenses/",
+      "../THIRD-PARTY-NOTICES.md": "resources/licenses/THIRD-PARTY-NOTICES.md"
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "publisher": "Alok Kumar",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": false,
+        "languages": [
+          "English"
+        ],
+        "compression": "lzma"
+      }
+    }
+  }
+}
