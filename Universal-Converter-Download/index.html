@@ -277,7 +277,7 @@
     (function () {
       var root = document.documentElement;
       var stored = null;
-      try { stored = localStorage.getItem("uc-theme"); } catch (e) {}
+      try { stored = localStorage.getItem("tools-theme"); } catch (e) {}
       var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
       var theme = stored || (prefersDark ? "dark" : "light");
       root.setAttribute("data-theme", theme);
@@ -286,7 +286,7 @@
         btn.addEventListener("click", function () {
           var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
           root.setAttribute("data-theme", next);
-          try { localStorage.setItem("uc-theme", next); } catch (e) {}
+          try { localStorage.setItem("tools-theme", next); } catch (e) {}
         });
       }
     })();

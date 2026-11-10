@@ -11,16 +11,6 @@
     iconColor: "#14B8A6",
     pinned: true,
     featured: true,
-    downloads: [
-      {
-        label: "Portable for Windows (.zip)",
-        url: "https://github.com/aloksystems/Tools/releases/latest/download/Universal-Converter-Portable-1.0.1.zip",
-      },
-      {
-        label: "Standalone for Windows (.exe)",
-        url: "https://github.com/aloksystems/Tools/releases/download/v1.0.0/Universal-Converter-1.0.1.exe",
-      },
-    ],
   },
   // Developer Tools
   {
