@@ -5,8 +5,8 @@ Work through these top-to-bottom. Items marked **you** need a decision only you 
 ## State
 
 - ✅ Static site validated: all pages, `data/apps.js`, CSS/JS, and APK downloads serve HTTP 200.
-- ✅ APK hashes in `data/apps.js` match `downloads/`.
-- ✅ Duplicate root-level `*.apk` copies removed; only `downloads/` ships.
+- ✅ APK hashes in `data/apps.js` match the GitHub Release assets.
+- ✅ All APKs hosted on GitHub Releases; no local `.apk` copies ship with the site.
 - ✅ `site.js` is host-agnostic (no hardcoded host).
 - ✅ Contact form posts to your Google Apps Script / FormForge endpoint (no PHP, no keys).
 
@@ -34,7 +34,7 @@ Get-ChildItem -Recurse -Include *.html,*.xml,*.txt |
 
 ## 3. Upload (you)
 
-Upload the **contents** of this folder to your web root — `index.html` directly inside, beside `assets/`, `apps/`, `data/`, `downloads/`, and `.htaccess`.
+Upload the **contents** of this folder to your web root — `index.html` directly inside, beside `assets/`, `apps/`, `data/`, and `.htaccess`. APK downloads are not hosted here — they resolve to GitHub Releases.
 
 ## 4. Contact form (you)
 

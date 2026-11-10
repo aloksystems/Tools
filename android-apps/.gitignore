@@ -2,3 +2,6 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# APK binaries are hosted on GitHub Releases, not committed here
+downloads/

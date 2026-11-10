@@ -17,7 +17,7 @@ Then visit http://localhost:8000. This is only for preview; production is static
 - `index.html`, `apps.html`, `about.html`, `contact.html`, `privacy.html` — the five main pages
 - `apps/*.html` — individually refreshable app detail pages
 - `data/apps.js` — central app catalogue (single source of truth)
-- `downloads/*.apk` — the APK files served to visitors
+- APK binaries are hosted on **GitHub Releases** — every app's `downloadUrl` in `data/apps.js` points to `https://github.com/aloksystems/Tools/releases/latest/download/*.apk`
 - `assets/css/site.css`, `assets/js/site.js`, `assets/icons/` — styling, behaviour and app marks
 - `.htaccess` — optional Apache tuning (gzip, caching, security headers); harmless elsewhere
 - `design-direction.md`, `DEPLOY-CHECKLIST.md` — notes and go-live steps
@@ -40,7 +40,7 @@ The form uses these Google Form entry IDs (fixed in `assets/js/site.js`):
 ## Deploying
 
 1. Any static host works — including GitHub Pages. No PHP or server required.
-2. Upload the **contents** of this folder to the web root — `index.html` directly inside, beside `assets/`, `apps/`, `data/`, `downloads/`, and `.htaccess`.
+2. Upload the **contents** of this folder to the web root — `index.html` directly inside, beside `assets/`, `apps/`, `data/`, and `.htaccess`. APK downloads are not hosted here — they resolve to GitHub Releases.
 3. If you use Apache with `.htaccess` enabled, upload it too; otherwise it is safe to ignore.
 4. Update `sitemap.xml` and `robots.txt` with your real domain (they currently use a placeholder), and set canonical / `og:url` tags on every page to match.
 5. Visit the served URL, hard-reload `/apps.html` and one `/apps/<slug>.html` page, and submit a test message via the contact form.
