@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#10131e"/>
+<link rel="manifest" href="/static/manifest.webmanifest"/>
+<link rel="icon" href="/static/icons/icon.svg" type="image/svg+xml"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { darkMode: "class", theme: { extend: {
+  colors: {
+    "on-tertiary-container": "#31057e", "tertiary-container": "#9b7fed", "surface-container-highest": "#313440",
+    "surface-bright": "#363945", "on-secondary-fixed": "#002113", "surface-container-low": "#181b26",
+    "on-primary-fixed": "#23005c", "on-tertiary-fixed": "#21005e", "on-primary-container": "#340080",
+    "primary": "#d0bcff", "tertiary": "#cebdff", "surface-container": "#1c1f2b", "on-surface": "#e0e1f1",
+    "on-secondary": "#003824", "outline-variant": "#494454", "on-primary-fixed-variant": "#5516be",
+    "outline": "#958ea0", "on-surface-variant": "#cbc3d7", "secondary-container": "#00a572",
+    "primary-fixed-dim": "#d0bcff", "background": "#10131e", "surface-container-lowest": "#0b0e18",
+    "surface-dim": "#10131e", "inverse-surface": "#e0e1f1", "on-error-container": "#ffdad6",
+    "inverse-primary": "#6d3bd7", "primary-container": "#a078ff", "on-secondary-container": "#00311f",
+    "inverse-on-surface": "#2d303c", "secondary-fixed-dim": "#4edea3", "surface-variant": "#313440",
+    "secondary": "#4edea3", "surface-container-high": "#272935", "on-secondary-fixed-variant": "#005236",
+    "error-container": "#93000a", "on-tertiary": "#381385", "primary-fixed": "#e9ddff",
+    "tertiary-fixed-dim": "#cebdff", "secondary-fixed": "#6ffbbe", "surface": "#10131e",
+    "tertiary-fixed": "#e8ddff", "on-primary": "#3c0091", "on-error": "#690005", "on-background": "#e0e1f1",
+    "error": "#ffb4ab", "surface-tint": "#d0bcff", "on-tertiary-fixed-variant": "#4f319c"
+  },
+  borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+  spacing: { "margin-md": "1.5rem", "space-xl": "2.5rem", "margin-lg": "2.5rem", "space-xs": "0.25rem",
+    "space-sm": "0.5rem", "space-md": "1rem", gutter: "1rem", "gutter-lg": "1.5rem", margin: "1rem",
+    "space-lg": "1.5rem" },
+  fontFamily: { "label-code": ["JetBrains Mono"], "body-lg": ["Inter"], "headline-md": ["Geist"],
+    "body-md": ["Inter"], "headline-lg": ["Geist"], "label-md": ["Inter"], "headline-xl-mobile": ["Geist"],
+    "headline-lg-mobile": ["Geist"], "headline-xl": ["Geist"], "label-mono-sm": ["JetBrains Mono"],
+    "body-sm": ["Inter"] },
+  fontSize: { "label-code": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }],
+    "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+    "headline-md": ["20px", { lineHeight: "26px", letterSpacing: "-0.01em", fontWeight: "500" }],
+    "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+    "headline-lg": ["28px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "600" }],
+    "label-md": ["13px", { lineHeight: "16px", fontWeight: "500" }],
+    "headline-xl-mobile": ["30px", { lineHeight: "36px", letterSpacing: "-0.02em", fontWeight: "600" }],
+    "headline-lg-mobile": ["22px", { lineHeight: "28px", letterSpacing: "-0.015em", fontWeight: "600" }],
+    "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.025em", fontWeight: "600" }],
+    "label-mono-sm": ["11px", { lineHeight: "14px", fontWeight: "400" }],
+    "body-sm": ["12px", { lineHeight: "18px", fontWeight: "400" }] }
+} } }
+</script>
+<style>
+  html, body { width: 100vw; margin: 0; padding: 0; background-color: #10131e; color: #e0e1f1; }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom,0px); }
+  .pt-safe { padding-top: env(safe-area-inset-top,0px); }
+  ::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased flex flex-col min-h-screen">
+
+<header class="fixed top-0 w-full z-50 bg-surface-container-lowest/85 backdrop-blur-xl pt-safe shadow-[0_1px_12px_rgba(0,0,0,0.4)]">
+  <div class="h-16 px-gutter flex items-center justify-between">
+    <div class="flex items-center gap-space-sm">
+      <div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center">
+        <span class="material-symbols-outlined text-on-primary text-[20px]">download</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight">YT Downloader</span>
+        <span class="px-1.5 py-0.5 rounded-full bg-primary-container/20 text-primary font-label-code text-label-code uppercase tracking-wider font-semibold">v2.4</span>
+      </div>
+    </div>
+    <span class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high/80 text-secondary font-label-mono-sm text-label-mono-sm">
+      <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span><span>Local Engine</span>
+    </span>
+  </div>
+</header>
+
+<main class="flex-1 flex flex-col relative w-full pt-20 pb-28 bg-surface">
+  <div class="flex flex-col w-full px-gutter py-space-sm space-y-space-lg">
+
+    <!-- Hero -->
+    <section class="flex flex-col space-y-space-md">
+      <div class="space-y-1">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-label-mono-sm text-label-mono-sm">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+          <span>Ready to transcode</span>
+        </div>
+        <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-semibold tracking-tight">Download your videos</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant">Paste a video or playlist URL to get started.</p>
+      </div>
+
+      <!-- URL input -->
+      <div class="relative bg-surface-container rounded-xl p-space-md shadow-xl">
+        <div class="space-y-space-sm">
+          <div class="flex items-center justify-between">
+            <span class="font-label-code text-label-code text-on-surface-variant uppercase tracking-wider">Input Mode</span>
+            <div class="flex items-center gap-1 bg-surface-container-lowest rounded-full p-1">
+              <button id="mode-single" class="px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-code text-label-code" type="button">Single</button>
+              <button id="mode-batch" class="px-3 py-1 rounded-full text-on-surface-variant font-label-code text-label-code hover:text-on-surface" type="button">Batch</button>
+            </div>
+          </div>
+
+          <div id="single-input-row" class="relative flex items-center bg-surface-container-lowest rounded-lg p-1.5 focus-within:bg-surface-container-low">
+            <div class="pl-2 pr-1 flex items-center text-outline">
+              <span class="material-symbols-outlined text-[20px]">link</span>
+            </div>
+            <input class="w-full bg-transparent px-2 py-2 text-on-surface placeholder:text-outline font-body-md text-body-md focus:outline-none"
+                   id="url-input" inputmode="url" placeholder="https://www.youtube.com/watch?v=..." type="url"/>
+            <button id="paste-btn" class="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-md bg-surface-container-high hover:bg-surface-container-highest text-primary font-label-code text-label-code transition-transform active:scale-95" type="button">
+              <span class="material-symbols-outlined text-[16px]">content_paste</span><span>Paste</span>
+            </button>
+          </div>
+
+          <div id="batch-input-row" class="hidden relative bg-surface-container-lowest rounded-lg p-2">
+            <textarea id="batch-textarea" rows="4" class="w-full bg-transparent resize-none text-on-surface placeholder:text-outline font-body-md text-body-md focus:outline-none"
+                      placeholder="Paste multiple URLs, one per line"></textarea>
+            <div class="flex justify-between items-center pt-2">
+              <span id="batch-count" class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">0 URLs</span>
+              <button id="batch-paste-btn" class="flex items-center gap-1 px-3 py-1.5 rounded-md bg-surface-container-high hover:bg-surface-container-highest text-primary font-label-code text-label-code transition-transform active:scale-95" type="button">
+                <span class="material-symbols-outlined text-[16px]">content_paste</span><span>Paste</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="batch-format" class="hidden grid grid-cols-2 gap-2">
+            <button data-batch-format="video" class="batch-format-btn p-2.5 rounded-lg bg-surface-container-high flex flex-col gap-1 text-left">
+              <span class="material-symbols-outlined text-[20px] text-primary">movie</span>
+              <span class="font-label-md text-label-md font-semibold text-on-surface">Video</span>
+              <span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">MP4 / MKV</span>
+            </button>
+            <button data-batch-format="audio" class="batch-format-btn p-2.5 rounded-lg bg-surface-container flex flex-col gap-1 text-left">
+              <span class="material-symbols-outlined text-[20px] text-on-surface-variant">headphones</span>
+              <span class="font-label-md text-label-md font-semibold text-on-surface">Audio</span>
+              <span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">MP3 / FLAC</span>
+            </button>
+          </div>
+
+          <button id="analyze-btn" class="w-full mt-2 flex items-center justify-center gap-2 py-3.5 px-4 rounded-lg bg-primary-container hover:bg-tertiary-container active:scale-[0.98] text-on-primary font-headline-md text-body-lg font-semibold tracking-wide transition-all shadow-md" type="button">
+            <span class="material-symbols-outlined text-[20px]" id="analyze-icon">auto_awesome</span>
+            <span id="analyze-text">Analyze Video</span>
+          </button>
+          <button id="batch-download-btn" class="hidden w-full mt-2 flex items-center justify-center gap-2 py-3.5 px-4 rounded-lg bg-primary hover:bg-tertiary-container active:scale-[0.98] text-on-primary font-headline-md text-body-lg font-semibold tracking-wide transition-all shadow-md" type="button">
+            <span class="material-symbols-outlined text-[20px]">playlist_add</span>
+            <span id="batch-download-text">Download All</span>
+          </button>
+          <p id="analyze-error" class="hidden text-error font-body-sm text-body-sm"></p>
+          <p id="batch-note" class="hidden text-on-surface-variant font-body-sm text-body-sm"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results panel (hidden until analyze) -->
+    <section id="result-panel" class="hidden space-y-space-md">
+      <div class="flex gap-3 bg-surface-container rounded-xl p-3 shadow-lg">
+        <img id="result-thumb" class="w-28 h-16 object-cover rounded-lg bg-surface-container-high flex-shrink-0" alt=""/>
+        <div class="flex-1 min-w-0 flex flex-col justify-center gap-1">
+          <h2 id="result-title" class="font-label-md text-label-md font-semibold text-on-surface truncate"></h2>
+          <p id="result-channel" class="font-label-mono-sm text-label-mono-sm text-on-surface-variant truncate"></p>
+          <div class="flex items-center gap-2">
+            <span id="result-duration" class="font-label-mono-sm text-label-mono-sm text-secondary"></span>
+            <span id="result-has-audio" class="px-1.5 rounded bg-surface-container-highest text-on-surface-variant font-label-mono-sm text-label-mono-sm hidden">Audio</span>
+            <span id="result-playlist" class="px-1.5 rounded bg-secondary-container/20 text-secondary font-label-mono-sm text-label-mono-sm hidden"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download options -->
+      <div class="bg-surface-container rounded-xl p-space-md space-y-3 shadow-lg">
+        <div class="flex items-center justify-between">
+          <span class="font-label-code text-label-code text-on-surface-variant uppercase tracking-wider">Download Options</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button data-format="video" class="format-btn p-2.5 rounded-lg bg-surface-container-high flex flex-col gap-1 text-left">
+            <span class="material-symbols-outlined text-[20px] text-primary">movie</span>
+            <span class="font-label-md text-label-md font-semibold text-on-surface">Video</span>
+            <span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">MP4 / MKV</span>
+          </button>
+          <button data-format="audio" class="format-btn p-2.5 rounded-lg bg-surface-container flex flex-col gap-1 text-left">
+            <span class="material-symbols-outlined text-[20px] text-on-surface-variant">headphones</span>
+            <span class="font-label-md text-label-md font-semibold text-on-surface">Audio</span>
+            <span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">MP3 / FLAC</span>
+          </button>
+        </div>
+        <div id="quality-selector" class="hidden flex flex-wrap gap-2"></div>
+        <button id="download-btn" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-primary hover:bg-tertiary-container active:scale-[0.98] text-on-primary font-headline-md text-body-lg font-semibold transition-all shadow-md" type="button">
+          <span class="material-symbols-outlined text-[20px]">download</span>
+          <span>Download</span>
+        </button>
+        <p id="download-note" class="hidden text-on-surface-variant font-body-sm text-body-sm"></p>
+      </div>
+    </section>
+
+    <!-- Playlist item selection (visible when analyze returns a playlist) -->
+    <section id="playlist-panel" class="hidden space-y-space-md">
+      <div class="bg-surface-container rounded-xl p-space-md space-y-3 shadow-lg">
+        <div class="flex items-center justify-between">
+          <span class="font-label-code text-label-code text-on-surface-variant uppercase tracking-wider">Select Videos</span>
+          <button id="pl-select-all" class="px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-code text-label-code hover:bg-surface-container-highest" type="button">Select All</button>
+        </div>
+        <div id="pl-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
+        <button id="pl-download-btn" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-primary hover:bg-tertiary-container active:scale-[0.98] text-on-primary font-headline-md text-body-lg font-semibold transition-all shadow-md" type="button">
+          <span class="material-symbols-outlined text-[20px]">playlist_add</span>
+          <span id="pl-download-text">Download Selected (0)</span>
+        </button>
+        <p id="pl-note" class="hidden text-on-surface-variant font-body-sm text-body-sm"></p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_16px_rgba(0,0,0,0.5)]">
+  <div class="flex justify-around items-center h-16 px-gutter">
+    <a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-primary font-semibold" href="/">
+      <span class="material-symbols-outlined text-[22px]">download</span><span class="font-label-md text-label-md">Home</span>
+    </a>
+    <a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" href="/downloads">
+      <span class="material-symbols-outlined text-[22px]">sync</span><span class="font-label-md text-label-md">Downloads</span>
+    </a>
+    <a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" href="/history">
+      <span class="material-symbols-outlined text-[22px]">history</span><span class="font-label-md text-label-md">History</span>
+    </a>
+    <a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" href="/settings">
+      <span class="material-symbols-outlined text-[22px]">settings</span><span class="font-label-md text-label-md">Settings</span>
+    </a>
+  </div>
+</nav>
+
+<script>
+(function initHome() {
+  const $ = (id) => document.getElementById(id);
+  const urlInput = $('url-input');
+  const analyzeBtn = $('analyze-btn');
+  const analyzeIcon = $('analyze-icon');
+  const analyzeText = $('analyze-text');
+  const analyzeError = $('analyze-error');
+  const resultPanel = $('result-panel');
+
+  let currentInfo = null;
+  let selectedFormat = 'video';
+  let selectedQuality = 'best';
+
+  $('paste-btn').addEventListener('click', async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        const text = await navigator.clipboard.readText();
+        if (text) { urlInput.value = text; urlInput.focus(); return; }
+      }
+    } catch (e) {}
+    urlInput.value = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  });
+
+  // ---- Mode toggle (Single / Batch) ----
+  let batchFormat = 'video';
+  const modeButtons = { single: $('mode-single'), batch: $('mode-batch') };
+  const singleRow = $('single-input-row');
+  const batchRow = $('batch-input-row');
+  const batchFormatRow = $('batch-format');
+  const batchDownloadBtn = $('batch-download-btn');
+  const batchNote = $('batch-note');
+
+  function setMode(mode) {
+    const isBatch = mode === 'batch';
+    modeButtons.single.className = isBatch
+      ? 'px-3 py-1 rounded-full text-on-surface-variant font-label-code text-label-code hover:text-on-surface'
+      : 'px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-code text-label-code';
+    modeButtons.batch.className = isBatch
+      ? 'px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-code text-label-code'
+      : 'px-3 py-1 rounded-full text-on-surface-variant font-label-code text-label-code hover:text-on-surface';
+    singleRow.classList.toggle('hidden', isBatch);
+    batchRow.classList.toggle('hidden', !isBatch);
+    batchFormatRow.classList.toggle('hidden', !isBatch);
+    analyzeBtn.classList.toggle('hidden', isBatch);
+    batchDownloadBtn.classList.toggle('hidden', !isBatch);
+    analyzeError.classList.add('hidden');
+    batchNote.classList.add('hidden');
+    if (isBatch) updateBatchCount();
+  }
+
+  modeButtons.single.addEventListener('click', () => setMode('single'));
+  modeButtons.batch.addEventListener('click', () => setMode('batch'));
+
+  $('batch-paste-btn').addEventListener('click', async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        const text = await navigator.clipboard.readText();
+        if (text) { $('batch-textarea').value = text; }
+      }
+    } catch (e) {}
+    updateBatchCount();
+  });
+
+  $('batch-textarea').addEventListener('input', updateBatchCount);
+
+  function parseBatchUrls() {
+    return $('batch-textarea').value.split('\n')
+      .map((s) => s.trim()).filter((s) => s.length > 0);
+  }
+
+  function updateBatchCount() {
+    const n = parseBatchUrls().length;
+    $('batch-count').textContent = `${n} URL${n === 1 ? '' : 's'}`;
+    $('batch-download-text').textContent = n > 0 ? `Download All (${n})` : 'Download All';
+  }
+
+  document.querySelectorAll('.batch-format-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.batch-format-btn').forEach((b) => {
+        b.classList.remove('bg-surface-container-high'); b.classList.add('bg-surface-container');
+        b.querySelector('.material-symbols-outlined').classList.remove('text-primary');
+        b.querySelector('.material-symbols-outlined').classList.add('text-on-surface-variant');
+      });
+      btn.classList.remove('bg-surface-container'); btn.classList.add('bg-surface-container-high');
+      btn.querySelector('.material-symbols-outlined').classList.add('text-primary');
+      batchFormat = btn.dataset.batchFormat;
+    });
+  });
+
+  batchDownloadBtn.addEventListener('click', async () => {
+    const urls = parseBatchUrls();
+    if (urls.length === 0) { batchNote.textContent = 'Add at least one URL first.'; batchNote.classList.remove('hidden'); return; }
+    batchDownloadBtn.disabled = true;
+    batchNote.textContent = `Queuing ${urls.length} download(s)...`; batchNote.classList.remove('hidden');
+    try {
+      const res = await fetch('/api/download_batch', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urls, format: batchFormat, quality: 'best' })
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Failed to queue batch');
+      batchNote.textContent = `${data.queued.length} download(s) queued. Watch progress in Downloads.`;
+      setTimeout(() => { window.location.href = '/downloads'; }, 1400);
+    } catch (err) {
+      batchNote.textContent = err.message;
+    } finally {
+      batchDownloadBtn.disabled = false;
+    }
+  });
+
+  document.querySelectorAll('.format-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.format-btn').forEach((b) => {
+        b.classList.remove('bg-surface-container-high'); b.classList.add('bg-surface-container');
+        b.querySelector('.material-symbols-outlined').classList.remove('text-primary');
+        b.querySelector('.material-symbols-outlined').classList.add('text-on-surface-variant');
+      });
+      btn.classList.remove('bg-surface-container'); btn.classList.add('bg-surface-container-high');
+      btn.querySelector('.material-symbols-outlined').classList.add('text-primary');
+      selectedFormat = btn.dataset.format;
+      renderQualitySelector();
+    });
+  });
+
+  function renderQualitySelector() {
+    const q = $('quality-selector');
+    q.innerHTML = '';
+    if (selectedFormat === 'audio') { q.classList.add('hidden'); return; }
+    q.classList.remove('hidden');
+    const heights = currentInfo && currentInfo.resolutions ? currentInfo.resolutions : [];
+    const options = [['best', 'Best']].concat(heights.map((r) => [r.label, r.label]));
+    options.forEach(([val, label]) => {
+      const b = document.createElement('button');
+      b.className = val === selectedQuality
+        ? 'px-3 py-1.5 rounded-full bg-primary-container text-on-primary font-label-code text-label-code'
+        : 'px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-code text-label-code hover:text-on-surface';
+      b.textContent = label;
+      b.addEventListener('click', () => { selectedQuality = val; renderQualitySelector(); });
+      q.appendChild(b);
+    });
+  }
+
+  analyzeBtn.addEventListener('click', async () => {
+    const val = urlInput.value.trim();
+    if (!val) { urlInput.placeholder = 'Please paste a valid YouTube URL first...'; urlInput.focus(); return; }
+    analyzeBtn.disabled = true;
+    analyzeIcon.textContent = 'sync'; analyzeIcon.classList.add('animate-spin');
+    analyzeText.textContent = 'Parsing Streams...'; analyzeError.classList.add('hidden'); resultPanel.classList.add('hidden');
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: val })
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Analysis failed');
+      currentInfo = data.info;
+      selectedQuality = 'best';
+      $('result-thumb').src = currentInfo.thumbnail || '';
+      $('result-title').textContent = currentInfo.title || 'Untitled';
+      $('result-channel').textContent = currentInfo.channel || '';
+      $('result-duration').textContent = currentInfo.duration_display || '';
+      const audioBadge = $('result-has-audio');
+      audioBadge.classList.toggle('hidden', !currentInfo.has_audio);
+      const plBadge = $('result-playlist');
+      if (currentInfo.is_playlist) {
+        plBadge.textContent = `Playlist · ${currentInfo.playlist_count || '?'} videos`;
+        plBadge.classList.remove('hidden');
+      } else {
+        plBadge.classList.add('hidden');
+      }
+      renderQualitySelector();
+      resultPanel.classList.remove('hidden');
+      renderPlaylist();
+      analyzeText.textContent = 'Streams Found';
+    } catch (err) {
+      analyzeError.textContent = err.message; analyzeError.classList.remove('hidden');
+    } finally {
+      analyzeBtn.disabled = false;
+      analyzeIcon.textContent = 'auto_awesome'; analyzeIcon.classList.remove('animate-spin');
+      if (!resultPanel.classList.contains('hidden')) analyzeText.textContent = 'Analyze Again';
+    }
+  });
+
+  // ---- Playlist item selection ----
+  const playlistPanel = $('playlist-panel');
+  const plList = $('pl-list');
+  const plNote = $('pl-note');
+  let selectedIds = new Set();
+  let playlistEntries = [];
+
+  function renderPlaylist() {
+    plList.innerHTML = '';
+    playlistEntries = (currentInfo && currentInfo.entries) || [];
+    const isPl = currentInfo && currentInfo.is_playlist && playlistEntries.length > 0;
+    playlistPanel.classList.toggle('hidden', !isPl);
+    if (!isPl) return;
+    selectedIds = new Set(playlistEntries.map((e) => e.id));
+    updatePlCount();
+    plList.innerHTML = '';
+    playlistEntries.forEach((e) => {
+      const row = document.createElement('label');
+      row.className = 'flex items-center gap-3 p-2 rounded-lg bg-surface-container-lowest cursor-pointer hover:bg-surface-container-low';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = selectedIds.has(e.id);
+      cb.className = 'accent-[#a078ff] w-4 h-4';
+      cb.addEventListener('change', () => {
+        if (cb.checked) selectedIds.add(e.id); else selectedIds.delete(e.id);
+        updatePlCount();
+        $('pl-select-all').textContent = selectedIds.size === playlistEntries.length ? 'Clear All' : 'Select All';
+      });
+      const thumb = document.createElement('img');
+      thumb.className = 'w-16 h-9 object-cover rounded-md bg-surface-container-high flex-shrink-0';
+      thumb.src = e.thumbnail || '';
+      const meta = document.createElement('div');
+      meta.className = 'flex-1 min-w-0 flex flex-col gap-0.5';
+      const title = document.createElement('div');
+      title.className = 'font-label-md text-label-md text-on-surface truncate';
+      title.textContent = e.title || 'Untitled';
+      const dur = document.createElement('span');
+      dur.className = 'font-label-mono-sm text-label-mono-sm text-on-surface-variant';
+      dur.textContent = e.duration_display || '';
+      meta.appendChild(title); meta.appendChild(dur);
+      row.appendChild(cb); row.appendChild(thumb); row.appendChild(meta);
+      plList.appendChild(row);
+    });
+    $('pl-select-all').textContent = selectedIds.size === playlistEntries.length ? 'Clear All' : 'Select All';
+  }
+
+  function updatePlCount() {
+    $('pl-download-text').textContent = `Download Selected (${selectedIds.size})`;
+  }
+
+  $('pl-select-all').addEventListener('click', () => {
+    if (selectedIds.size === playlistEntries.length) {
+      selectedIds = new Set();
+    } else {
+      selectedIds = new Set(playlistEntries.map((e) => e.id));
+    }
+    [...plList.children].forEach((row) => {
+      const cb = row.querySelector('input[type=checkbox]');
+      cb.checked = selectedIds.has(playlistEntries[[...plList.children].indexOf(row)].id);
+    });
+    updatePlCount();
+    $('pl-select-all').textContent = selectedIds.size === playlistEntries.length ? 'Clear All' : 'Select All';
+  });
+
+  $('pl-download-btn').addEventListener('click', async () => {
+    const urls = playlistEntries.filter((e) => selectedIds.has(e.id)).map((e) => e.url);
+    if (urls.length === 0) { plNote.textContent = 'Select at least one video.'; plNote.classList.remove('hidden'); return; }
+    plNote.textContent = `Queuing ${urls.length} video(s)...`; plNote.classList.remove('hidden');
+    const btn = $('pl-download-btn'); btn.disabled = true;
+    try {
+      const res = await fetch('/api/download_batch', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urls, format: selectedFormat, quality: selectedQuality })
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Failed to queue selection');
+      plNote.textContent = `${data.queued.length} video(s) queued. Watch progress in Downloads.`;
+      setTimeout(() => { window.location.href = '/downloads'; }, 1400);
+    } catch (err) {
+      plNote.textContent = err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  $('download-btn').addEventListener('click', async () => {
+    const note = $('download-note');
+    const val = urlInput.value.trim();
+    if (!val || !currentInfo) return;
+    note.textContent = 'Starting download...'; note.classList.remove('hidden');
+    try {
+      const res = await fetch('/api/download', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: val, format: selectedFormat, quality: selectedQuality,
+          playlist: !!(currentInfo && currentInfo.is_playlist)
+        })
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Failed to start download');
+      note.textContent = `Download queued (${data.task.id}). Watch progress in Downloads.`;
+      setTimeout(() => { window.location.href = '/downloads'; }, 1200);
+    } catch (err) {
+      note.textContent = err.message; note.classList.remove('hidden');
+    }
+  });
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/static/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-container": "#31057e", "tertiary-container": "#9b7fed", "surface-container-highest": "#313440", "surface-bright": "#363945", "on-secondary-fixed": "#002113", "surface-container-low": "#181b26", "on-primary-fixed": "#23005c", "on-tertiary-fixed": "#21005e", "on-primary-container": "#340080", "primary": "#d0bcff", "tertiary": "#cebdff", "surface-container": "#1c1f2b", "on-surface": "#e0e1f1", "on-secondary": "#003824", "outline-variant": "#494454", "on-primary-fixed-variant": "#5516be", "outline": "#958ea0", "on-surface-variant": "#cbc3d7", "secondary-container": "#00a572", "primary-fixed-dim": "#d0bcff", "background": "#10131e", "surface-container-lowest": "#0b0e18", "surface-dim": "#10131e", "inverse-surface": "#e0e1f1", "on-error-container": "#ffdad6", "inverse-primary": "#6d3bd7", "primary-container": "#a078ff", "on-secondary-container": "#00311f", "inverse-on-surface": "#2d303c", "secondary-fixed-dim": "#4edea3", "surface-variant": "#313440", "secondary": "#4edea3", "surface-container-high": "#272935", "on-secondary-fixed-variant": "#005236", "error-container": "#93000a", "on-tertiary": "#381385", "primary-fixed": "#e9ddff", "tertiary-fixed-dim": "#cebdff", "secondary-fixed": "#6ffbbe", "surface": "#10131e", "tertiary-fixed": "#e8ddff", "on-primary": "#3c0091", "on-error": "#690005", "on-background": "#e0e1f1", "error": "#ffb4ab", "surface-tint": "#d0bcff", "on-tertiary-fixed-variant": "#4f319c" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-md": "1.5rem", "space-xl": "2.5rem", "margin-lg": "2.5rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-md": "1rem", "gutter": "1rem", "gutter-lg": "1.5rem", "margin": "1rem", "space-lg": "1.5rem" }, "fontFamily": { "label-code": ["JetBrains Mono"], "body-lg": ["Inter"], "headline-md": ["Geist"], "body-md": ["Inter"], "headline-lg": ["Geist"], "label-md": ["Inter"], "headline-xl-mobile": ["Geist"], "headline-lg-mobile": ["Geist"], "headline-xl": ["Geist"], "label-mono-sm": ["JetBrains Mono"], "body-sm": ["Inter"] }, "fontSize": { "label-code": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "label-md": ["13px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-xl-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "label-mono-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }] } } } }</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#10131e;color:#e0e1f1;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest/85 backdrop-blur-xl pt-safe shadow-[0_1px_12px_rgba(0,0,0,0.4)]"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="YT Downloader Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrD-F6vB8hkWD8kvTdKoPER2gAK-RvG9oZBgc6VrkBp5o3HBdugoI4LSLQOpHJA3USAtLXKcteJTSmqsNyQiopZrFhahrNe8ZbwxeFyzgVgvzqPG7jGngJPYw1bynIv6nILnJxeW6YC0y6Gl8YFhOTaZCHy1T7GvBWPZMb7sDqzdxwFNSWX3HaqYyUKDrAroHXZvAqdj8PPjgLGPQsKRo6XPV1Pvy9YrCQ_okRCSFW8"/><div class="flex items-center gap-1.5"><span class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight">YT Downloader</span><span class="px-1.5 py-0.5 rounded-full bg-primary-container/20 text-primary font-label-code text-label-code uppercase tracking-wider font-semibold">v2.4</span></div></div><div class="flex items-center gap-space-xs"><div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high/80 text-secondary font-label-mono-sm text-label-mono-sm"><span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span><span>Local Engine</span></div><button aria-label="Quick Options" class="w-11 h-11 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">tune</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="px-gutter pb-space-xs"><span class="sr-only">Home</span></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface"><div class="flex flex-col w-full px-gutter space-y-space-md">
+<!-- Sub-header & Global Queue Metrics -->
+<div class="flex flex-col space-y-space-xs pt-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-semibold tracking-tight">Active Queue</h1>
+<span class="px-2 py-0.5 rounded-full bg-primary-container/25 text-primary font-label-code text-[11px] font-semibold tracking-wide">6 Tasks</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors text-label-md font-label-md active:scale-95" id="pause-all-btn">
+<span class="material-symbols-outlined text-[17px]">pause_circle</span>
+<span id="pause-all-label">Pause All</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" title="Engine options">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- State Summary Pill -->
+<div class="flex items-center gap-2 text-label-mono-sm font-label-mono-sm text-on-surface-variant">
+<span class="inline-flex items-center gap-1 text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+        2 Active
+      </span>
+<span>•</span>
+<span class="text-on-surface-variant">3 Queued</span>
+<span>•</span>
+<span class="text-secondary">1 Muxing</span>
+</div>
+</div>
+<!-- Filter Pills (Scrollable Segmented Control) -->
+<div class="flex items-center gap-2 overflow-x-auto py-0.5 no-scrollbar">
+<button class="px-3.5 py-1.5 rounded-full bg-primary text-on-primary font-label-md text-label-md font-medium shrink-0 shadow-sm shadow-primary/20">
+      All (6)
+    </button>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md shrink-0 transition-colors">
+      Downloading (2)
+    </button>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md shrink-0 transition-colors">
+      Queued (3)
+    </button>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md shrink-0 transition-colors">
+      Completed (12)
+    </button>
+</div>
+<!-- Network & Transcoder Performance Card -->
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-sm relative overflow-hidden">
+<div class="absolute -right-10 -top-10 w-28 h-28 bg-primary/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">speed</span>
+</div>
+<div>
+<span class="font-label-code text-[11px] uppercase tracking-wider text-on-surface-variant">Engine Aggregation</span>
+<div class="flex items-center gap-1.5">
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">28.4</span>
+<span class="font-label-code text-label-code text-primary font-medium">MB/s</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping ml-0.5"></span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-code text-[11px] uppercase tracking-wider text-on-surface-variant">Target SSD</span>
+<div class="flex items-center justify-end gap-1 font-label-code text-label-code text-on-surface font-medium">
+<span class="material-symbols-outlined text-[14px] text-secondary">hard_drive</span>
+<span>142.8 GB free</span>
+</div>
+</div>
+</div>
+<!-- Mini Telemetry Strip -->
+<div class="grid grid-cols-3 gap-2 pt-2 bg-surface-container-lowest/60 rounded-lg p-2 font-label-mono-sm text-label-mono-sm">
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-[10px]">THREADS</span>
+<span class="text-on-surface font-medium">16 yt-dlp</span>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-[10px]">MUX CORES</span>
+<span class="text-on-surface font-medium">8 HW-accel</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-on-surface-variant text-[10px]">THROTTLE</span>
+<span class="text-secondary font-medium">Unlimited</span>
+</div>
+</div>
+</div>
+<!-- Section 1: In-Progress Downloads -->
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between px-0.5">
+<span class="font-label-md text-label-md text-on-surface-variant font-medium uppercase tracking-wider">In Progress (2)</span>
+<span class="font-label-mono-sm text-label-mono-sm text-primary">↓ 28.4 MB/s combined</span>
+</div>
+<!-- Card 1: Active 4K Download -->
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-sm flex flex-col gap-3 relative overflow-hidden group">
+<!-- Top Row: Thumbnail + Metadata -->
+<div class="flex items-start gap-space-sm">
+<div class="relative w-24 h-16 rounded-lg overflow-hidden bg-surface-container shrink-0">
+<img class="w-full h-full object-cover" data-alt="Modern high tech programming desk setup displaying Next.js and AI code on ultrawide monitors in a dark moody neon room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXGxZBN69iOqA440wLNlP7zr-AavsoWm-Wo0OdJp4Cg9cVBexRADbvRGLIeMo_kwtNtoGUTustVp-OuHKZjEoXdP-zl1dv0Ase0Hg-RVijroOaWYKnsZJmry7yHXzfmpOSDB-2QGzIi6VW4BYLPc431qBTmSI-Rx70yyDyQOe359TsIML87TlCd9VdU5e_wbWLZ7g3VOa2GuxIDjk9xFi8TFLguoPEeLuN_SAqCV8"/>
+<span class="absolute bottom-1 right-1 px-1 rounded bg-surface-container-lowest/90 text-on-surface font-label-mono-sm text-[10px] leading-tight">18:42</span>
+<span class="absolute top-1 left-1 w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<div class="flex-1 min-w-0 flex flex-col justify-between">
+<h2 class="font-body-md text-body-md text-on-surface font-medium line-clamp-1 truncate">
+            Building a Full-Stack AI App with Next.js 15, Tailwind &amp; Gemini 2.0
+          </h2>
+<div class="flex flex-wrap items-center gap-1.5 mt-1">
+<span class="px-1.5 py-0.5 rounded bg-primary-container/20 text-primary font-label-code text-[11px] font-semibold">4K 2160p60</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-code text-[11px]">MP4 (H.264)</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-code text-[11px]">YouTube</span>
+</div>
+</div>
+</div>
+<!-- Center: Dynamic Progress Bar & Metrics -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between font-label-mono-sm text-label-mono-sm">
+<span class="text-on-surface font-medium">1.05 GB <span class="text-on-surface-variant font-normal">/ 1.42 GB</span></span>
+<div class="flex items-center gap-2">
+<span class="text-primary font-medium">18.2 MB/s</span>
+<span class="text-on-surface-variant">ETA 00:21</span>
+<span class="text-primary font-semibold">74%</span>
+</div>
+</div>
+<!-- Custom Sleek Progress Bar -->
+<div class="w-full h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container via-primary to-tertiary rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(160,120,255,0.4)]" style="width: 74%;"></div>
+</div>
+</div>
+<!-- Action Row -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1 text-on-surface-variant font-label-mono-sm text-[11px]">
+<span class="material-symbols-outlined text-[15px] text-secondary">bolt</span>
+<span>Turbo Priority: High</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-7 h-7 rounded-lg bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" title="Pause Download">
+<span class="material-symbols-outlined text-[17px]">pause</span>
+</button>
+<button class="w-7 h-7 rounded-lg bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-error transition-colors" title="Cancel Download">
+<span class="material-symbols-outlined text-[17px]">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Active FFmpeg Muxing Task -->
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-sm flex flex-col gap-3 relative overflow-hidden">
+<!-- Top Row -->
+<div class="flex items-start gap-space-sm">
+<div class="relative w-24 h-16 rounded-lg overflow-hidden bg-surface-container shrink-0">
+<img class="w-full h-full object-cover" data-alt="Futuristic cybernetic music album artwork with retro synthesizer and neon ambient indigo light, cozy studio vibe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAbiC6xxitHXULcTs5o0IlMvMpIrMCKyDEPj6OKefILwgCj3Vg6VRdnu9HdNQIgJP5g2nrnik-P4_e1VYvex_F_xYLYnLFJteSpWSEnricievGQ47Ce1-Hx5fX7domD4eb2_NoDynF5_iXDmZ6T-QRmro_g3ymdtC3i_JZRsH59obsi-EGb16q8mQ4hO-L_49b4ilCB4eus3URkwTyuKeiAKNndkqh1xWGWfbUqUw"/>
+<span class="absolute bottom-1 right-1 px-1 rounded bg-surface-container-lowest/90 text-on-surface font-label-mono-sm text-[10px] leading-tight">1:24:18</span>
+<span class="absolute top-1 left-1 w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+</div>
+<div class="flex-1 min-w-0 flex flex-col justify-between">
+<h2 class="font-body-md text-body-md text-on-surface font-medium line-clamp-1 truncate">
+            Lo-Fi Chill Beats 2024 - Deep Focus &amp; Study Session
+          </h2>
+<div class="flex flex-wrap items-center gap-1.5 mt-1">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/20 text-secondary font-label-code text-[11px] font-semibold">MP3 320kbps</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-code text-[11px]">Audio Extract</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary/15 text-secondary font-label-mono-sm text-[10px] font-medium">Muxing</span>
+</div>
+</div>
+</div>
+<!-- Center: Muxing Indicator & Progress -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between font-label-mono-sm text-label-mono-sm">
+<span class="text-secondary flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[14px] animate-spin">sync</span>
+            FFmpeg Merging Audio &amp; Metadata
+          </span>
+<span class="text-secondary font-semibold">92%</span>
+</div>
+<!-- Emerald Tint Muxing Progress Track -->
+<div class="w-full h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-secondary rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(78,222,163,0.35)]" style="width: 92%;"></div>
+</div>
+</div>
+<!-- Action Row -->
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-mono-sm text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+          FFmpeg v6.1 • Local Pass 2/2
+        </span>
+<div class="flex items-center gap-1">
+<button class="w-7 h-7 rounded-lg bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-error transition-colors" title="Abort transcoding">
+<span class="material-symbols-outlined text-[17px]">close</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Queued Items -->
+<div class="space-y-space-sm pb-space-sm">
+<div class="flex items-center justify-between px-0.5">
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md text-on-surface-variant font-medium uppercase tracking-wider">Queue</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-on-surface-variant font-label-mono-sm text-[10px]">3 Items</span>
+</div>
+<button class="font-label-md text-label-md text-primary hover:text-primary-fixed transition-colors">
+        Reorder
+      </button>
+</div>
+<!-- Queued Item 1 -->
+<div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-space-sm hover:bg-surface-container/60 transition-colors">
+<div class="flex items-center gap-space-sm min-w-0 flex-1">
+<div class="flex items-center justify-center text-on-surface-variant/40 shrink-0">
+<span class="material-symbols-outlined text-[18px]">drag_indicator</span>
+</div>
+<div class="w-14 h-10 rounded-lg overflow-hidden bg-surface-container shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="Neural network graph and deep learning architecture visualization with glowing vector nodes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfT-ZkN6YQaAIARsAT5__E3_StRkl6eJCIlg39ez1-dII_tocSE-08A18JzhzT2EBrzWC0So2y6pDQ_D8o1GUbwAA0tnmW2iAUlALbWzuDCSLn4ErvRq9XwrZxYw0l8OInDc1xjQhk49ZiZuG0rvsRYLmhqfVyBpI2OnekPy7fXOoRREjNKNJj2p1U1EK4WeGYciGG1I0__iWXc76cnIFhHm8G_lg6Glpc6oE7f2U"/>
+<span class="absolute bottom-0.5 right-0.5 px-0.5 rounded bg-surface-container-lowest/80 text-on-surface font-label-mono-sm text-[8px]">2:15:00</span>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-body-sm text-body-sm text-on-surface font-medium truncate">
+            Karpathy - Deep Dive into LLMs from Scratch
+          </h3>
+<div class="flex items-center gap-1.5 mt-0.5 font-label-mono-sm text-label-mono-sm text-on-surface-variant">
+<span>1080p MP4</span>
+<span>•</span>
+<span>~680 MB</span>
+<span>•</span>
+<span class="text-tertiary">Waiting for slot #1</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 shrink-0">
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors" title="Move to Top">
+<span class="material-symbols-outlined text-[17px]">vertical_align_top</span>
+</button>
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-error transition-colors" title="Remove">
+<span class="material-symbols-outlined text-[17px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Queued Item 2 -->
+<div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-space-sm hover:bg-surface-container/60 transition-colors">
+<div class="flex items-center gap-space-sm min-w-0 flex-1">
+<div class="flex items-center justify-center text-on-surface-variant/40 shrink-0">
+<span class="material-symbols-outlined text-[18px]">drag_indicator</span>
+</div>
+<div class="w-14 h-10 rounded-lg overflow-hidden bg-surface-container shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="Cyberpunk sci-fi rainy night alleyway with vivid neon purple reflections on dark asphalt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdL3bFkx9F251Mw_7WYcS9HY-Gwsmd4xbi1wqKi2jvmP8NWdlXow18zGLCmVlmXaq64_qAd5Z9MM0H7uk54f1E1Gr1CX2XuwCVFrQ17EIq5oQJfkyeaVtb-Q1uhFc19hXwCsL4CET6AMr4csnQIgk5kpoNSBtDgXlpLgLEvlrpuIAkLzu-yOXcs-BeKqlp-EDdCDveSOhVAPnTDeuhmyqhNpNXIVIbhKt3c1dNMP4"/>
+<span class="absolute bottom-0.5 right-0.5 px-0.5 rounded bg-surface-container-lowest/80 text-on-surface font-label-mono-sm text-[8px]">58:12</span>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-body-sm text-body-sm text-on-surface font-medium truncate">
+            Cyberpunk 2077 OST - Full Album FLAC Remaster
+          </h3>
+<div class="flex items-center gap-1.5 mt-0.5 font-label-mono-sm text-label-mono-sm text-on-surface-variant">
+<span>FLAC Lossless</span>
+<span>•</span>
+<span>~450 MB</span>
+<span>•</span>
+<span class="text-on-surface-variant">In Queue</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 shrink-0">
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors" title="Move to Top">
+<span class="material-symbols-outlined text-[17px]">vertical_align_top</span>
+</button>
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-error transition-colors" title="Remove">
+<span class="material-symbols-outlined text-[17px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Queued Item 3 -->
+<div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-space-sm hover:bg-surface-container/60 transition-colors opacity-80">
+<div class="flex items-center gap-space-sm min-w-0 flex-1">
+<div class="flex items-center justify-center text-on-surface-variant/40 shrink-0">
+<span class="material-symbols-outlined text-[18px]">drag_indicator</span>
+</div>
+<div class="w-14 h-10 rounded-lg overflow-hidden bg-surface-container shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="Minimalist architectural photography of clean concrete lines and sky, studio grade lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCABlN7joKIkQ2d9rQql5_vXUT2AT2OHk88dXmNkADs0z9SxivtXGbwtaWGdl-CNZzgjRWh8r1w_FFi5f7qISmDPvMwoTysNgDAiUZM3oRJBdFRFLDOYnvLz8e6knnPLYRAVXjEUVCZqHpvsL0b282DwDSjqE1UuKe0vWFtBxg4J5A83JPOe0LEYqThlp72igMG_0WG6S9Q5Bx46ov2VGF7LhcrFpOKHPIOtQSvzAE"/>
+<span class="absolute bottom-0.5 right-0.5 px-0.5 rounded bg-surface-container-lowest/80 text-on-surface font-label-mono-sm text-[8px]">14:02</span>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-body-sm text-body-sm text-on-surface font-medium truncate">
+            Design Systems at Scale - Linear &amp; Raycast Case Study
+          </h3>
+<div class="flex items-center gap-1.5 mt-0.5 font-label-mono-sm text-label-mono-sm text-on-surface-variant">
+<span>1440p60 VP9</span>
+<span>•</span>
+<span>~310 MB</span>
+<span>•</span>
+<span class="text-on-surface-variant">In Queue</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 shrink-0">
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors" title="Move to Top">
+<span class="material-symbols-outlined text-[17px]">vertical_align_top</span>
+</button>
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-error transition-colors" title="Remove">
+<span class="material-symbols-outlined text-[17px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Floating Action Bar -->
+<div class="sticky bottom-2 z-20 w-full flex items-center gap-2 p-1.5 rounded-2xl bg-surface-container-high/90 backdrop-blur-xl shadow-lg border-0">
+<div class="flex-1 flex items-center gap-2 pl-3">
+<span class="material-symbols-outlined text-[18px] text-primary">swap_vert</span>
+<div class="flex flex-col">
+<span class="font-label-mono-sm text-[10px] text-on-surface-variant uppercase">Bandwidth Engine</span>
+<span class="font-label-code text-label-code text-on-surface font-medium">Max Throughput</span>
+</div>
+</div>
+<button class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-semibold shadow-md shadow-primary/25 hover:bg-primary-fixed transition-all active:scale-95" id="add-link-btn">
+<span class="material-symbols-outlined text-[18px]">add_link</span>
+<span>Add to Queue</span>
+</button>
+</div>
+</div>
+<script>
+  // Ensure the shell navigation correctly illuminates "Downloads" tab
+  (function initTabHighlight() {
+    const navLinks = document.querySelectorAll('nav a[data-path]');
+    navLinks.forEach(link => {
+      const path = link.getAttribute('data-path');
+      if (path === 'downloads') {
+        link.classList.remove('text-on-surface-variant');
+        link.classList.add('text-primary', 'font-semibold');
+      } else {
+        link.classList.remove('text-primary', 'font-semibold');
+        link.classList.add('text-on-surface-variant');
+      }
+    });
+
+    // Pause all toggle interaction
+    const pauseAllBtn = document.getElementById('pause-all-btn');
+    const pauseAllLabel = document.getElementById('pause-all-label');
+    let isPaused = false;
+    if (pauseAllBtn && pauseAllLabel) {
+      pauseAllBtn.addEventListener('click', () => {
+        isPaused = !isPaused;
+        pauseAllLabel.textContent = isPaused ? 'Resume All' : 'Pause All';
+        const icon = pauseAllBtn.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isPaused ? 'play_circle' : 'pause_circle';
+        }
+      });
+    }
+
+    // Interactive feedback for Add link
+    const addBtn = document.getElementById('add-link-btn');
+    if (addBtn) {
+      addBtn.addEventListener('click', () => {
+        const homeNav = document.querySelector('nav a[data-path="home"]');
+        if (homeNav) {
+          homeNav.click();
+        }
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_16px_rgba(0,0,0,0.5)]" data-active-classes="text-primary font-semibold"><div class="flex justify-around items-center h-16 px-gutter"><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] relative text-on-surface-variant hover:text-on-surface transition-all" data-path="home" href="#"><span class="material-symbols-outlined text-[22px]">download</span><span class="font-label-md text-label-md">Home</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] relative text-on-surface-variant hover:text-on-surface transition-all" data-path="downloads" href="#"><div class="relative flex items-center justify-center"><span class="material-symbols-outlined text-[22px]">sync</span><span class="absolute -top-1 -right-2 px-1 min-w-[14px] h-[14px] rounded-full bg-primary text-on-primary font-label-code text-[10px] leading-[14px] text-center font-bold">1</span></div><span class="font-label-md text-label-md">Downloads</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-all" data-path="history" href="#"><span class="material-symbols-outlined text-[22px]">history</span><span class="font-label-md text-label-md">History</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-all" data-path="settings" href="#"><span class="material-symbols-outlined text-[22px]">settings</span><span class="font-label-md text-label-md">Settings</span></a></div></nav></body></html>

@@ -2,6 +2,50 @@
 
 Modern, fast, and easy-to-use desktop app to download YouTube videos, playlists, or audio with best quality using `yt-dlp` and a sleek `customtkinter` UI. Supports up to 8K/4320p, merges best video+audio, embeds metadata and thumbnails, and optionally downloads subtitles.
 
+> **New in v2.4**: the app now also ships as a responsive web + desktop app sharing one codebase (Flask backend + Obsidian Violet front-end). See [Web + Desktop App](#web--desktop-app) below. The original `customtkinter` GUI (`main.py`) remains available.
+
+### Web + Desktop App
+
+A single Flask backend (`app.py`) serves the UI and downloads, reused by:
+- **Web**: any browser (`http://127.0.0.1:5001/`)
+- **Desktop**: a native window via `pywebview` (`python run_desktop.py`)
+
+Same `yt-dlp` logic from `main.py` was ported into `backend/downloader.py` (analysis, download queue with live progress/speed/ETA, error handling). Screens replicate the Gemini-generated **Obsidian Violet** design system.
+
+#### Run the web app
+
+```bash
+python -m venv .venv
+.\.venv\Scripts\pip install -r requirements.txt
+.\.venv\Scripts\python app.py
+# open http://127.0.0.1:5001/
+```
+
+#### Run the desktop app
+
+```bash
+.\.venv\Scripts\python run_desktop.py
+```
+
+Requires the **Microsoft Edge WebView2 Runtime** (preinstalled on Win10/11). `ffmpeg` must be on PATH for video merge / MP3 conversion.
+
+#### Android (PWA)
+
+The web app is a **Progressive Web App** (`static/manifest.webmanifest` + `static/sw.js`). Open `http://<host>:5001/` in Chrome on Android and choose **"Add to Home screen" / Install** — it installs as a standalone app with its own icon, works offline (cached shell), and reuses the same backend. The LV is fully responsive with bottom navigation for one-handed use.
+
+#### API
+
+- `POST /api/analyze` — extract metadata for a URL (`{ "url": "..." }`; playlists return `entries` list for per-video selection)
+- `POST /api/download` — queue a download (`{ "url", "format": "video"|"audio", "quality": "1080p", "playlist" }`)
+- `POST /api/download_batch` — queue many downloads (`{ "urls": ["..."], "format", "quality" }`, max 50)
+- `GET /api/tasks?status=` — list tasks (queue, progress, history)
+- `POST /api/tasks/<id>/cancel` — cancel a running task
+- `GET|POST /api/settings` — read/update persisted settings (`data/settings.json`)
+
+#### Settings
+
+Stored in `data/settings.json` (created on first save): default quality/format, output dir, subtitles, thumbnail embedding, max simultaneous downloads, theme, language.
+
 ### Features
 - **Best quality video**: smart format selection via `yt-dlp` (bestvideo+bestaudio, or limit by resolution)
 - **High quality audio**: extract to MP3 (FFmpeg) with metadata
@@ -96,8 +140,17 @@ Notes:
 
 ```text
 Yt_Downloader/
-├─ main.py              # Application entrypoint (GUI)
+├─ app.py               # Flask web app (shared backend)
+├─ run_desktop.py       # pywebview desktop launcher
+├─ backend/
+│  ├─ downloader.py     # yt-dlp orchestration (analyze/download/progress)
+│  ├─ tasks.py          # thread-safe task + registry
+│  └─ settings.py       # persisted JSON settings
+├─ templates/           # Obsidian Violet screens (home/downloads/history/settings)
+├─ data/                # settings.json (runtime)
+├─ main.py              # Legacy customtkinter GUI
 ├─ main.spec            # PyInstaller build spec
+├─ requirements.txt     # flask, yt-dlp, pywebview
 ├─ dist/                # Built artifacts (e.g., main.exe)
 └─ build/               # PyInstaller build cache
 ```

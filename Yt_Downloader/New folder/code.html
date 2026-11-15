@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-container": "#31057e", "tertiary-container": "#9b7fed", "surface-container-highest": "#313440", "surface-bright": "#363945", "on-secondary-fixed": "#002113", "surface-container-low": "#181b26", "on-primary-fixed": "#23005c", "on-tertiary-fixed": "#21005e", "on-primary-container": "#340080", "primary": "#d0bcff", "tertiary": "#cebdff", "surface-container": "#1c1f2b", "on-surface": "#e0e1f1", "on-secondary": "#003824", "outline-variant": "#494454", "on-primary-fixed-variant": "#5516be", "outline": "#958ea0", "on-surface-variant": "#cbc3d7", "secondary-container": "#00a572", "primary-fixed-dim": "#d0bcff", "background": "#10131e", "surface-container-lowest": "#0b0e18", "surface-dim": "#10131e", "inverse-surface": "#e0e1f1", "on-error-container": "#ffdad6", "inverse-primary": "#6d3bd7", "primary-container": "#a078ff", "on-secondary-container": "#00311f", "inverse-on-surface": "#2d303c", "secondary-fixed-dim": "#4edea3", "surface-variant": "#313440", "secondary": "#4edea3", "surface-container-high": "#272935", "on-secondary-fixed-variant": "#005236", "error-container": "#93000a", "on-tertiary": "#381385", "primary-fixed": "#e9ddff", "tertiary-fixed-dim": "#cebdff", "secondary-fixed": "#6ffbbe", "surface": "#10131e", "tertiary-fixed": "#e8ddff", "on-primary": "#3c0091", "on-error": "#690005", "on-background": "#e0e1f1", "error": "#ffb4ab", "surface-tint": "#d0bcff", "on-tertiary-fixed-variant": "#4f319c" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-md": "1.5rem", "space-xl": "2.5rem", "margin-lg": "2.5rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-md": "1rem", "gutter": "1rem", "gutter-lg": "1.5rem", "margin": "1rem", "space-lg": "1.5rem" }, "fontFamily": { "label-code": ["JetBrains Mono"], "body-lg": ["Inter"], "headline-md": ["Geist"], "body-md": ["Inter"], "headline-lg": ["Geist"], "label-md": ["Inter"], "headline-xl-mobile": ["Geist"], "headline-lg-mobile": ["Geist"], "headline-xl": ["Geist"], "label-mono-sm": ["JetBrains Mono"], "body-sm": ["Inter"] }, "fontSize": { "label-code": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "label-md": ["13px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-xl-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "label-mono-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }] } } } }</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#10131e;color:#e0e1f1;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest/85 backdrop-blur-xl pt-safe shadow-[0_1px_12px_rgba(0,0,0,0.4)]"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="YT Downloader Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrD-F6vB8hkWD8kvTdKoPER2gAK-RvG9oZBgc6VrkBp5o3HBdugoI4LSLQOpHJA3USAtLXKcteJTSmqsNyQiopZrFhahrNe8ZbwxeFyzgVgvzqPG7jGngJPYw1bynIv6nILnJxeW6YC0y6Gl8YFhOTaZCHy1T7GvBWPZMb7sDqzdxwFNSWX3HaqYyUKDrAroHXZvAqdj8PPjgLGPQsKRo6XPV1Pvy9YrCQ_okRCSFW8"/><div class="flex items-center gap-1.5"><span class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight">YT Downloader</span><span class="px-1.5 py-0.5 rounded-full bg-primary-container/20 text-primary font-label-code text-label-code uppercase tracking-wider font-semibold">v2.4</span></div></div><div class="flex items-center gap-space-xs"><div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high/80 text-secondary font-label-mono-sm text-label-mono-sm"><span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span><span>Local Engine</span></div><button aria-label="Quick Options" class="w-11 h-11 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">tune</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="px-gutter pb-space-xs"><span class="sr-only">Home</span></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface"><div class="flex flex-col w-full px-gutter py-space-sm space-y-space-lg">
+<!-- Main Conversion Console Hero -->
+<section class="flex flex-col space-y-space-md">
+<div class="space-y-1">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-label-mono-sm text-label-mono-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+<span>Ready to transcode</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-semibold tracking-tight">
+        Download your videos
+      </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Paste a video or playlist URL to get started.
+      </p>
+</div>
+<!-- URL Input Bento Box -->
+<div class="relative bg-surface-container rounded-xl p-space-md shadow-xl transition-all duration-300">
+<div class="space-y-space-sm">
+<!-- Interactive Input Field with embedded Paste CTA -->
+<div class="relative flex items-center bg-surface-container-lowest rounded-lg p-1.5 transition-colors focus-within:bg-surface-container-low">
+<div class="pl-2 pr-1 flex items-center text-outline">
+<span class="material-symbols-outlined text-[20px]">link</span>
+</div>
+<input class="w-full bg-transparent px-2 py-2 text-on-surface placeholder:text-outline font-body-md text-body-md focus:outline-none" id="url-input" inputmode="url" placeholder="https://www.youtube.com/watch?v=..." type="url"/>
+<button aria-label="Paste URL from clipboard" class="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-md bg-surface-container-high hover:bg-surface-container-highest text-primary font-label-code text-label-code transition-transform active:scale-95" id="paste-btn" type="button">
+<span class="material-symbols-outlined text-[16px]">content_paste</span>
+<span>Paste</span>
+</button>
+</div>
+<!-- Secondary Batch Control Switch -->
+<div class="flex items-center justify-between pt-1">
+<label class="flex items-center gap-2 cursor-pointer select-none">
+<div class="relative flex items-center">
+<input class="peer sr-only" id="batch-toggle" type="checkbox"/>
+<div class="w-8 h-4 bg-surface-container-highest peer-checked:bg-primary-container rounded-full transition-colors"></div>
+<div class="absolute left-0.5 top-0.5 w-3 h-3 bg-on-surface-variant peer-checked:bg-on-primary peer-checked:translate-x-4 rounded-full transition-transform"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+              Support multiple URLs
+              <span class="material-symbols-outlined text-[14px] text-outline">playlist_play</span>
+</span>
+</label>
+<span class="font-label-mono-sm text-label-mono-sm text-outline">yt-dlp v2024.11</span>
+</div>
+<!-- Primary Vibrant Action CTA -->
+<button class="w-full mt-2 flex items-center justify-center gap-2 py-3.5 px-4 rounded-lg bg-primary-container hover:bg-tertiary-container active:scale-[0.98] text-on-primary font-headline-md text-body-lg font-semibold tracking-wide transition-all shadow-md" id="analyze-btn" type="button">
+<span class="material-symbols-outlined text-[20px] transition-transform group-hover:rotate-12">auto_awesome</span>
+<span>Analyze Video</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Quick Download Format Target Cards -->
+<section class="space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-code text-label-code text-on-surface-variant uppercase tracking-wider">Format Presets</span>
+<span class="font-label-mono-sm text-label-mono-sm text-outline">Quick Select</span>
+</div>
+<div class="grid grid-cols-3 gap-2" id="preset-selector">
+<!-- Video Card (Selected by default) -->
+<button class="preset-card text-left p-2.5 rounded-lg bg-surface-container-high transition-all flex flex-col justify-between" data-format="video" type="button">
+<div class="flex items-center justify-between w-full mb-2">
+<div class="w-7 h-7 rounded-md bg-primary-container/20 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">movie</span>
+</div>
+<span class="font-label-code text-label-mono-sm px-1 rounded bg-primary-container/30 text-primary">4K</span>
+</div>
+<div>
+<div class="font-label-md text-label-md font-semibold text-on-surface truncate">Video</div>
+<div class="font-label-mono-sm text-label-mono-sm text-on-surface-variant truncate">MP4 / MKV</div>
+</div>
+</button>
+<!-- Audio Card -->
+<button class="preset-card text-left p-2.5 rounded-lg bg-surface-container transition-all flex flex-col justify-between" data-format="audio" type="button">
+<div class="flex items-center justify-between w-full mb-2">
+<div class="w-7 h-7 rounded-md bg-surface-container-highest text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">headphones</span>
+</div>
+<span class="font-label-code text-label-mono-sm px-1 rounded bg-surface-container-highest text-on-surface-variant">320k</span>
+</div>
+<div>
+<div class="font-label-md text-label-md font-semibold text-on-surface truncate">Audio</div>
+<div class="font-label-mono-sm text-label-mono-sm text-on-surface-variant truncate">MP3 / FLAC</div>
+</div>
+</button>
+<!-- Playlist Card -->
+<button class="preset-card text-left p-2.5 rounded-lg bg-surface-container transition-all flex flex-col justify-between" data-format="playlist" type="button">
+<div class="flex items-center justify-between w-full mb-2">
+<div class="w-7 h-7 rounded-md bg-surface-container-highest text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">queue_music</span>
+</div>
+<span class="font-label-code text-label-mono-sm px-1.5 rounded-full bg-secondary-container/20 text-secondary">Auto</span>
+</div>
+<div>
+<div class="font-label-md text-label-md font-semibold text-on-surface truncate">Playlist</div>
+<div class="font-label-mono-sm text-label-mono-sm text-on-surface-variant truncate">Batch Zip</div>
+</div>
+</button>
+</div>
+</section>
+<!-- Download Status Widget (Active Transcode) -->
+<section class="space-y-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<h2 class="font-label-code text-label-code uppercase tracking-wider text-on-surface font-semibold">Active Transcode (1)</h2>
+</div>
+<span class="font-label-mono-sm text-label-mono-sm text-secondary">H.264 / AAC</span>
+</div>
+<div class="relative bg-surface-container rounded-xl overflow-hidden shadow-lg p-3 space-y-3">
+<!-- Media Header Details -->
+<div class="flex gap-3">
+<!-- Thumbnail 16:9 ratio -->
+<div class="relative w-28 aspect-video rounded-lg overflow-hidden bg-surface-container-lowest shrink-0 shadow-inner">
+<img class="w-full h-full object-cover" data-alt="A modern cinematic aesthetic lo-fi bedroom workspace at dusk, glowing purple neons, headphone stand, rain droplets on window, cozy ambient lighting, high contrast photorealistic rendering with violet and deep dark tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDiW9T2QEDOraoDQnBS0LUpI9X6MapoJHFhymS3mD4QMPiHeSHBMbG3tyJZCI3sELT1Ipbrk2MO_kZCldOzG1sRzHXt9H2FeKdvvkpf_ylsx_nhcjB3sUv3SePukWt1TIv0aDnubCrnrqOg-b_ZeQ3YlxpPiMUSKH88OInPOcalAwOcarPkyofYX2gfDDmVxTFKP05YGMYHDFLLQIXvGzj1bAgy3c3TXK6s7bJLII"/>
+<div class="absolute bottom-1 right-1 px-1 rounded bg-surface-container-lowest/80 text-on-surface font-label-mono-sm text-[10px]">
+            1:24:18
+          </div>
+</div>
+<!-- Title & Metadata -->
+<div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+<div>
+<h3 class="font-headline-md text-body-md font-medium text-on-surface line-clamp-1 leading-snug">
+              Lo-Fi Chill Beats 2024 - Deep Focus Session
+            </h3>
+<div class="mt-0.5 flex items-center gap-1.5 flex-wrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-label-code text-[11px] font-semibold">
+                MP4 • 1080p60
+              </span>
+<span class="font-label-mono-sm text-label-mono-sm text-outline">428 MB</span>
+</div>
+</div>
+<!-- Micro controls -->
+<div class="flex items-center justify-end gap-1 mt-1">
+<button aria-label="Pause transcode" class="w-7 h-7 rounded-md bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">pause</span>
+</button>
+<button aria-label="Cancel transcode" class="w-7 h-7 rounded-md bg-surface-container-high hover:bg-error-container text-on-surface-variant hover:text-error flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Realtime Metric & Progress Bar -->
+<div class="space-y-1.5 pt-1">
+<div class="flex justify-between items-center font-label-mono-sm text-label-mono-sm">
+<span class="text-primary font-semibold">68%</span>
+<span class="text-on-surface-variant">12.4 MB/s • ETA 00:24</span>
+</div>
+<!-- Visual Progress Track -->
+<div class="w-full h-1.5 bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="h-full rounded-full bg-gradient-to-r from-primary-container via-primary to-secondary transition-all duration-300" style="width: 68%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Downloads History Section -->
+<section class="space-y-space-xs pb-space-md">
+<div class="flex items-center justify-between">
+<h2 class="font-label-code text-label-code uppercase tracking-wider text-on-surface-variant font-medium">Recent Downloads</h2>
+<a class="font-label-md text-label-md text-primary hover:underline flex items-center gap-0.5" href="#">
+<span>View all</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+<div class="space-y-2">
+<!-- Item 1: Complete Tech Video -->
+<div class="bg-surface-container rounded-xl p-3 flex items-center gap-3 transition-colors hover:bg-surface-container-high">
+<div class="relative w-16 aspect-video rounded-lg overflow-hidden bg-surface-container-lowest shrink-0 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Modern technical software programming UI dashboard on a sleek laptop display, clean IDE code layout, dark mode glowing minimalist background in deep obsidian and purple tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlMTAPyYXLJIbY4zqF4MRQ_lEPLb_pxjdjv0btf1ehjm4E0XISH0AVWy00vX5DxajkI3rtAQAD28T0r-jg7BdxaeO2OEkyp8xJBJZ96YTHuKx8Yi6dq1JqHTBvJiKLyaF9tCdlMArwaFcpTm_QH4FW3d12upNrik8PSvV6idqN60U_2UHrbQqURnOXMYjmBWGpDbD_DaRjcOaEHvRTCyz1YWX3XV3nfTMdrAG-l1Y"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-mono-sm text-[10px] font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              Done
+            </span>
+<span class="font-label-mono-sm text-label-mono-sm text-outline truncate">Today, 2:15 PM</span>
+</div>
+<h3 class="font-headline-md text-body-md font-medium text-on-surface truncate">
+            Next.js 15 Full Tutorial - Complete Guide
+          </h3>
+<p class="font-label-mono-sm text-label-mono-sm text-on-surface-variant truncate">
+            MP4 • 4K UHD • 1.2 GB
+          </p>
+</div>
+<button aria-label="Open downloaded file" class="shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">folder_open</span>
+</button>
+</div>
+<!-- Item 2: Music Track -->
+<div class="bg-surface-container rounded-xl p-3 flex items-center gap-3 transition-colors hover:bg-surface-container-high">
+<div class="relative w-16 aspect-video rounded-lg overflow-hidden bg-surface-container-lowest shrink-0 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Abstract cosmic space acoustic soundwaves and galactic interstellar dust nebula, moody violet hues, deep space dark background, clean cinematic artwork." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz7kgyhAEDO8jZs4kJm_wiOe2O30NPSsGTMbcJZlPSKbqi2VPper3W9Ui4CvNIqUVonmoCO69SAv_2PymjKJUxVZZrYZKEfhkfwDsXzvDo96dso18mQpZv0r3YS-CfTvaOdtEuyCMeqV9ljexHGOdb_qrPfxo5BjJQQwbM0d5CE0gM6kCb5VMkjaDKNA9UuLEFvZZIn-pfS-oiXPh2q2Ht1XNMgQ8Te4FGvTsXCnw"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-mono-sm text-[10px]">
+              MP3 Audio
+            </span>
+<span class="font-label-mono-sm text-label-mono-sm text-outline truncate">Yesterday</span>
+</div>
+<h3 class="font-headline-md text-body-md font-medium text-on-surface truncate">
+            Hans Zimmer - Interstellar Theme (Acoustic)
+          </h3>
+<p class="font-label-mono-sm text-label-mono-sm text-on-surface-variant truncate">
+            MP3 • 320kbps • 18 MB
+          </p>
+</div>
+<button aria-label="Open downloaded file" class="shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<script>
+  (function initDashboard() {
+    const pasteBtn = document.getElementById('paste-btn');
+    const urlInput = document.getElementById('url-input');
+    const presetCards = document.querySelectorAll('.preset-card');
+    const analyzeBtn = document.getElementById('analyze-btn');
+
+    if (pasteBtn && urlInput) {
+      pasteBtn.addEventListener('click', async () => {
+        try {
+          if (navigator.clipboard && navigator.clipboard.readText) {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+              urlInput.value = text;
+              urlInput.focus();
+            }
+          } else {
+            urlInput.value = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+          }
+        } catch {
+          urlInput.value = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+        }
+      });
+    }
+
+    presetCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        presetCards.forEach((c) => {
+          c.classList.remove('bg-surface-container-high');
+          c.classList.add('bg-surface-container');
+        });
+        card.classList.remove('bg-surface-container');
+        card.classList.add('bg-surface-container-high');
+      });
+    });
+
+    if (analyzeBtn) {
+      analyzeBtn.addEventListener('click', () => {
+        const val = urlInput ? urlInput.value.trim() : '';
+        if (!val) {
+          urlInput.placeholder = 'Please paste a valid YouTube URL first...';
+          urlInput.focus();
+        } else {
+          analyzeBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[20px] animate-spin">sync</span>
+            <span>Parsing Streams...</span>
+          `;
+          setTimeout(() => {
+            analyzeBtn.innerHTML = `
+              <span class="material-symbols-outlined text-[20px]">check_circle</span>
+              <span>Streams Found (7 Qualities)</span>
+            `;
+          }, 900);
+        }
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_16px_rgba(0,0,0,0.5)]" data-active-classes="text-primary font-semibold"><div class="flex justify-around items-center h-16 px-gutter"><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] transition-all text-primary font-semibold" data-path="home" href="#"><span class="material-symbols-outlined text-[22px]">download</span><span class="font-label-md text-label-md">Home</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] relative text-on-surface-variant hover:text-on-surface transition-all" data-path="downloads" href="#"><div class="relative flex items-center justify-center"><span class="material-symbols-outlined text-[22px]">sync</span><span class="absolute -top-1 -right-2 px-1 min-w-[14px] h-[14px] rounded-full bg-primary text-on-primary font-label-code text-[10px] leading-[14px] text-center font-bold">1</span></div><span class="font-label-md text-label-md">Downloads</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-all" data-path="history" href="#"><span class="material-symbols-outlined text-[22px]">history</span><span class="font-label-md text-label-md">History</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-all" data-path="settings" href="#"><span class="material-symbols-outlined text-[22px]">settings</span><span class="font-label-md text-label-md">Settings</span></a></div></nav></body></html>

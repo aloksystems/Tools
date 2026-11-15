@@ -1,0 +1,37 @@
+{
+  "name": "YT Downloader",
+  "short_name": "YT DL",
+  "description": "Download videos and audio from YouTube using yt-dlp",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#10131e",
+  "theme_color": "#10131e",
+  "icons": [
+    {
+      "src": "/static/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Downloads",
+      "url": "/downloads",
+      "description": "View active downloads"
+    },
+    {
+      "name": "History",
+      "url": "/history",
+      "description": "View download history"
+    }
+  ]
+}

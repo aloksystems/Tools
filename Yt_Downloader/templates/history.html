@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#10131e"/>
+<link rel="manifest" href="/static/manifest.webmanifest"/>
+<link rel="icon" href="/static/icons/icon.svg" type="image/svg+xml"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { darkMode: "class", theme: { extend: {
+  colors: {
+    primary: "#d0bcff", "primary-container": "#a078ff", "on-primary": "#3c0091", "on-primary-container": "#340080",
+    secondary: "#4edea3", "secondary-container": "#00a572", "on-secondary": "#003824",
+    background: "#10131e", surface: "#10131e", "on-surface": "#e0e1f1", "on-surface-variant": "#cbc3d7",
+    "surface-container": "#1c1f2b", "surface-container-high": "#272935", "surface-container-highest": "#313440",
+    "surface-container-lowest": "#0b0e18", outline: "#958ea0", error: "#ffb4ab"
+  },
+  borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+  spacing: { "space-xs": "0.25rem", "space-sm": "0.5rem", "space-md": "1rem", "space-lg": "1.5rem",
+    gutter: "1rem", "gutter-lg": "1.5rem" },
+  fontFamily: { "label-code": ["JetBrains Mono"], "body-md": ["Inter"], "headline-md": ["Geist"],
+    "label-md": ["Inter"], "label-mono-sm": ["JetBrains Mono"], "body-sm": ["Inter"] },
+  fontSize: { "label-code": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }],
+    "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+    "headline-md": ["20px", { lineHeight: "26px", letterSpacing: "-0.01em", fontWeight: "500" }],
+    "label-md": ["13px", { lineHeight: "16px", fontWeight: "500" }],
+    "label-mono-sm": ["11px", { lineHeight: "14px", fontWeight: "400" }] }
+} } }
+</script>
+<style>
+  html, body { width: 100vw; margin: 0; padding: 0; background-color: #10131e; color: #e0e1f1; }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom,0px); }
+  .pt-safe { padding-top: env(safe-area-inset-top,0px); }
+  ::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased flex flex-col min-h-screen">
+
+<header class="fixed top-0 w-full z-50 bg-surface-container-lowest/85 backdrop-blur-xl pt-safe shadow-[0_1px_12px_rgba(0,0,0,0.4)]">
+  <div class="h-16 px-gutter flex items-center justify-between">
+    <div class="flex items-center gap-space-sm">
+      <div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center">
+        <span class="material-symbols-outlined text-on-primary text-[20px]">history</span>
+      </div>
+      <span class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight">History</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="filter-status" class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">All</span>
+    </div>
+  </div>
+</header>
+
+<main class="flex-1 flex flex-col relative w-full pt-20 pb-28 bg-surface">
+  <div class="flex flex-col w-full px-gutter py-space-sm space-y-space-sm">
+    <div class="flex items-center gap-2 overflow-x-auto">
+      <button data-filter="" class="filter-btn px-3 py-1.5 rounded-full bg-primary-container text-on-primary font-label-code text-label-code">All</button>
+      <button data-filter="completed" class="filter-btn px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-code text-label-code">Completed</button>
+      <button data-filter="error" class="filter-btn px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-code text-label-code">Failed</button>
+      <button data-filter="cancelled" class="filter-btn px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-code text-label-code">Cancelled</button>
+    </div>
+    <div id="history-list" class="space-y-3">
+      <div class="text-on-surface-variant font-body-md text-body-md py-10 text-center" id="empty-state">
+        No downloads yet. Your finished downloads will appear here.
+      </div>
+    </div>
+  </div>
+</main>
+
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_16px_rgba(0,0,0,0.5)]">
+  <div class="flex justify-around items-center h-16 px-gutter">
+    <a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" href="/">
+      <span class="material-symbols-outlined text-[22px]">download</span><span class="font-label-md text-label-md">Home</span>
+    </a>
+    <a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" href="/downloads">
+      <span class="material-symbols-outlined text-[22px]">sync</span><span class="font-label-md text-label-md">Downloads</span>
+    </a>
+    <a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-primary font-semibold" href="/history">
+      <span class="material-symbols-outlined text-[22px]">history</span><span class="font-label-md text-label-md">History</span>
+    </a>
+    <a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface" href="/settings">
+      <span class="material-symbols-outlined text-[22px]">settings</span><span class="font-label-md text-label-md">Settings</span>
+    </a>
+  </div>
+</nav>
+
+<script>
+(function initHistory() {
+  const list = document.getElementById('history-list');
+  const empty = document.getElementById('empty-state');
+  let currentFilter = '';
+
+  function fmtBytes(b) {
+    if (!b) return '—';
+    const u = ['B','KB','MB','GB']; let i = 0; let v = b;
+    while (v >= 1024 && i < u.length - 1) { v /= 1024; i++; }
+    return v.toFixed(1) + ' ' + u[i];
+  }
+
+  function itemCard(t) {
+    const color = t.status === 'completed' ? 'text-secondary' : (t.status === 'error' ? 'text-error' : 'text-on-surface-variant');
+    return `
+      <div class="bg-surface-container rounded-xl p-3 shadow-lg flex items-start gap-3">
+        ${t.thumbnail ? `<img src="${t.thumbnail}" class="w-24 h-14 object-cover rounded-lg bg-surface-container-high flex-shrink-0" alt=""/>` : `<div class="w-24 h-14 rounded-lg bg-surface-container-high flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-on-surface-variant">movie</span></div>`}
+        <div class="flex-1 min-w-0">
+          <div class="font-label-md text-label-md font-semibold text-on-surface truncate">${t.title || t.url}</div>
+          <div class="font-label-mono-sm text-label-mono-sm text-on-surface-variant truncate">${t.channel || ''}</div>
+          <div class="flex items-center gap-2 mt-0.5">
+            <span class="font-label-mono-sm text-label-mono-sm ${color} capitalize">${t.status}</span>
+            ${t.filesize ? `<span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">${fmtBytes(parseFloat(t.filesize))}</span>` : ''}
+          </div>
+          ${t.error ? `<div class="font-body-sm text-body-sm text-error mt-1">${t.error}</div>` : ''}
+        </div>
+        ${t.status === 'completed' ? `
+          <div class="flex flex-col gap-1.5 shrink-0">
+            <button data-open="${t.filepath}" class="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-surface-container-highest text-primary font-label-code text-label-code">Open</button>
+            <button data-open-folder="${t.filepath}" class="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-surface-container-highest text-on-surface-variant font-label-code text-label-code">Folder</button>
+          </div>` : ''}
+      </div>`;
+  }
+
+  const openInExplorer = (path) => {
+    if (window.pywebview && window.pywebview.api) {
+      window.pywebview.api.open_file(path);
+    } else {
+      const a = document.createElement('a');
+      a.href = 'file:///' + path.replace(/\\/g, '/');
+      a.target = '_blank'; document.body.appendChild(a); a.click(); a.remove();
+    }
+  };
+
+  const openFolderInExplorer = (path) => {
+    if (window.pywebview && window.pywebview.api) {
+      window.pywebview.api.open_folder(path);
+    } else {
+      const a = document.createElement('a');
+      a.href = 'file:///' + path.replace(/\\/g, '/').replace(/\/[^/]+$/, '');
+      a.target = '_blank'; document.body.appendChild(a); a.click(); a.remove();
+    }
+  };
+
+  async function load() {
+    try {
+      const res = await fetch('/api/tasks' + (currentFilter ? '?status=' + currentFilter : ''));
+      const data = await res.json();
+      const tasks = (data.tasks || []).filter((t) => ['completed','error','cancelled'].includes(t.status));
+      if (!tasks.length) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+      empty.classList.add('hidden');
+      list.innerHTML = tasks.map(itemCard).join('');
+      list.querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => openInExplorer(b.dataset.open)));
+      list.querySelectorAll('[data-open-folder]').forEach((b) => b.addEventListener('click', () => openFolderInExplorer(b.dataset.openFolder)));
+    } catch (e) {
+      list.innerHTML = '<div class="text-error text-center py-8">Failed to load history</div>';
+    }
+  }
+
+  document.querySelectorAll('.filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach((b) => {
+        b.classList.remove('bg-primary-container','text-on-primary');
+        b.classList.add('bg-surface-container-high','text-on-surface-variant');
+      });
+      btn.classList.add('bg-primary-container','text-on-primary');
+      btn.classList.remove('bg-surface-container-high','text-on-surface-variant');
+      currentFilter = btn.dataset.filter;
+      load();
+    });
+  });
+
+  load();
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/static/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
