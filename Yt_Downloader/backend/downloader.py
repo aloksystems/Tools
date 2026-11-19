@@ -45,7 +45,7 @@ class DownloadErrorWithMessage(Exception):
 # player client keeps working in that case and returns at least a lower-res
 # stream, so we retry with it before giving up.
 _FORMAT_RESTRICTION_RE = re.compile(
-    r"Requested format is not available|page needs to be reloaded"
+    r"Requested format is not available|page needs to be reloaded|Sign in to confirm"
 )
 
 ANDROID_EXTRACTOR_ARGS = {"youtube": {"player_client": ["android", "ios"]}}
