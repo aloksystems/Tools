@@ -111,6 +111,10 @@ tailwind.config = { darkMode: "class", theme: { extend: {
           <code class="font-label-mono-sm text-label-mono-sm text-primary">cookies.txt</code> file exported from your browser
           (Netscape format — e.g. the yt-dlp browser extension). This authenticates downloads from this server.
         </p>
+        <div id="cookies-badge" class="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-outline-variant">
+          <span id="cookies-badge-dot" class="w-2.5 h-2.5 rounded-full shrink-0 bg-outline"></span>
+          <span id="cookies-badge-text" class="font-body-sm text-body-sm text-on-surface-variant">Checking…</span>
+        </div>
         <input id="cookies-file-input" type="file" accept=".txt,.cookies" class="block w-full text-on-surface-variant text-body-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-secondary-container file:text-on-secondary-container file:font-label-md file:cursor-pointer"/>
         <button id="cookies-upload-btn" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-secondary-container hover:bg-secondary text-on-secondary-container font-headline-md text-body-md font-semibold transition-all" type="button">
           <span class="material-symbols-outlined text-[20px]">cookie</span><span>Upload Cookies</span>
@@ -159,6 +163,7 @@ tailwind.config = { darkMode: "class", theme: { extend: {
     $('setting-subtitles').checked = !!s.subtitles;
     $('setting-thumbnail').checked = !!s.thumbnail;
     $('setting-server-url').value = (localStorage.getItem('ytdl_server_url') || '');
+    refreshCookiesStatus();
   }
 
   const cookiesStatus = $('cookies-status');
@@ -168,6 +173,33 @@ tailwind.config = { darkMode: "class", theme: { extend: {
     cookiesStatus.classList.toggle('text-error', !!isError);
     cookiesStatus.classList.toggle('text-secondary', !isError);
   }
+
+  const badgeDot = $('cookies-badge-dot');
+  const badgeText = $('cookies-badge-text');
+  function setBadge(state, label) {
+    badgeDot.className = 'w-2.5 h-2.5 rounded-full shrink-0 ' + state;
+    badgeText.textContent = label;
+  }
+  async function refreshCookiesStatus() {
+    setBadge('bg-outline', 'Checking…');
+    try {
+      const res = await fetch(apiUrl('/api/cookies/status'));
+      const data = await res.json();
+      if (!data.ok) throw new Error();
+      if (data.valid) {
+        setBadge('bg-secondary', 'Active — ' + data.count + ' cookie line(s) from ' + data.path.replace(/^.*[\\\/]/, ''));
+      } else if (data.exists) {
+        setBadge('bg-error', 'Uploaded but invalid/empty — re-export a real cookies.txt');
+      } else if (data.configured) {
+        setBadge('bg-error', 'Configured but file missing — re-upload (redeploys may wipe it)');
+      } else {
+        setBadge('bg-outline', 'None uploaded — YouTube may block downloads from this server');
+      }
+    } catch (e) {
+      setBadge('bg-outline', 'Could not check cookie status');
+    }
+  }
+
   $('cookies-upload-btn').addEventListener('click', async () => {
     const fileInput = $('cookies-file-input');
     if (!fileInput.files || !fileInput.files.length) {
@@ -182,6 +214,7 @@ tailwind.config = { darkMode: "class", theme: { extend: {
       if (!data.ok) throw new Error('Upload failed');
       cookiesNote('Cookies uploaded successfully.', false);
       setTimeout(() => cookiesStatus.classList.add('hidden'), 3000);
+      refreshCookiesStatus();
     } catch (e) {
       cookiesNote(e.message || 'Upload failed.', true);
     }

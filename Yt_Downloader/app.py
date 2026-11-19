@@ -153,6 +153,40 @@ def api_upload_cookies():
     return jsonify({"ok": True, "settings": settings.all()})
 
 
+def _cookie_file_status():
+    """Return a status dict for the configured cookies file."""
+    path = settings.get("cookies_file")
+    if not path:
+        return {"configured": False, "exists": False, "valid": False, "count": 0, "path": ""}
+    if not os.path.isfile(path):
+        return {"configured": True, "exists": False, "valid": False, "count": 0, "path": path}
+    count = 0
+    try:
+        with open(path, "r", encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                # Netscape cookie row: domain<TAB>flag<TAB>path<TAB>secure<TAB>expiry<TAB>name<TAB>value
+                # HttpOnly rows carry a '#HttpOnly_' prefix before the domain.
+                if line.startswith("#"):
+                    if not line.startswith("#HttpOnly_"):
+                        continue
+                    row = line[len("#HttpOnly_"):]
+                else:
+                    row = line
+                if len(row.split("\t")) >= 7:
+                    count += 1
+    except OSError:
+        return {"configured": True, "exists": True, "valid": False, "count": 0, "path": path}
+    return {"configured": True, "exists": True, "valid": count > 0, "count": count, "path": path}
+
+
+@app.get("/api/cookies/status")
+def api_cookies_status():
+    return jsonify({"ok": True, **_cookie_file_status()})
+
+
 @app.get("/api/health")
 def api_health():
     return jsonify({"ok": True, "status": "healthy"})
