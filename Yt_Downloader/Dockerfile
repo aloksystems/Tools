@@ -23,5 +23,6 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 5001
 
 # Single worker: the task registry is in-memory/thread-based (gunicorn sync w/ threads)
-# Shell form so $PORT from Railway is expanded at runtime.
-CMD sh -c "gunicorn app:app --workers 1 --threads 8 --bind 0.0.0.0:$${PORT:-5001} --timeout 180"
+# Exec form (no shell) with an explicit port - this avoids $PORT shell-expansion
+# pitfalls and matches the Railway domain target port (5001).
+CMD ["gunicorn", "app:app", "--workers", "1", "--threads", "8", "--bind", "0.0.0.0:5001", "--timeout", "180"]
