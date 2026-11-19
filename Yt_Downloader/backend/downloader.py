@@ -312,10 +312,16 @@ class DownloadManager:
 
 def build_ydl_opts_raw(options: Dict[str, Any]) -> Dict[str, Any]:
     """Minimal yt-dlp options for metadata-only extraction."""
-    return {
+    opts = {
         "noplaylist": not options.get("playlist", True),
         "quiet": True,
         "no_warnings": True,
         "skip_download": True,
         "extract_flat": "in_playlist",
     }
+    # Use the same cookie file as downloads so metadata analysis is not
+    # blocked by YouTube's bot check either.
+    cookies_file = options.get("cookies_file") or ""
+    if cookies_file and os.path.isfile(cookies_file):
+        opts["cookiefile"] = cookies_file
+    return opts

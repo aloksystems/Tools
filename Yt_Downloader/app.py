@@ -74,7 +74,7 @@ def api_analyze():
     if not url:
         return jsonify({"error": "URL is required"}), 400
     try:
-        info = manager.analyze(url)
+        info = manager.analyze(url, _download_options(data))
         return jsonify({"ok": True, "info": info})
     except DownloadErrorWithMessage as exc:
         return jsonify({"ok": False, "error": str(exc)}), 422
