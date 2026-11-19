@@ -19,6 +19,7 @@ DEFAULTS: Dict[str, Any] = {
     "theme": "dark",
     "ffmpeg_path": "",
     "proxy": "",
+    "cookies_file": "",
 }
 
 

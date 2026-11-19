@@ -72,6 +72,12 @@ def build_ydl_opts(task: Task, progress_hook: Any) -> Dict[str, Any]:
         "writethumbnail": options.get("thumbnail", True),
     }
 
+    # Optional cookie file (e.g. exported browser cookies) to defeat YouTube's
+    # "Sign in to confirm you're not a bot" check, especially from datacenter IPs.
+    cookies_file = options.get("cookies_file") or ""
+    if cookies_file and os.path.isfile(cookies_file):
+        base["cookiefile"] = cookies_file
+
     if is_audio:
         format_selector = "bestaudio/best"
         postprocessors.append(

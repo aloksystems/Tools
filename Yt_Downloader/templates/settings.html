@@ -103,6 +103,22 @@ tailwind.config = { darkMode: "class", theme: { extend: {
       </div>
     </section>
 
+    <section class="space-y-space-md">
+      <span class="font-label-code text-label-code text-on-surface-variant uppercase tracking-wider">YouTube Cookies</span>
+      <div class="bg-surface-container rounded-xl p-space-md space-y-4 shadow-lg">
+        <p class="font-body-sm text-body-sm text-on-surface-variant">
+          If YouTube shows <span class="text-error">"Sign in to confirm you're not a bot"</span>, upload a
+          <code class="font-label-mono-sm text-label-mono-sm text-primary">cookies.txt</code> file exported from your browser
+          (Netscape format — e.g. the yt-dlp browser extension). This authenticates downloads from this server.
+        </p>
+        <input id="cookies-file-input" type="file" accept=".txt,.cookies" class="block w-full text-on-surface-variant text-body-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-secondary-container file:text-on-secondary-container file:font-label-md file:cursor-pointer"/>
+        <button id="cookies-upload-btn" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-secondary-container hover:bg-secondary text-on-secondary-container font-headline-md text-body-md font-semibold transition-all" type="button">
+          <span class="material-symbols-outlined text-[20px]">cookie</span><span>Upload Cookies</span>
+        </button>
+        <p id="cookies-status" class="hidden text-center font-body-sm text-body-sm"></p>
+      </div>
+    </section>
+
     <button id="save-btn" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-primary hover:bg-tertiary-container active:scale-[0.98] text-on-primary font-headline-md text-body-lg font-semibold transition-all shadow-md" type="button">
       <span class="material-symbols-outlined text-[20px]">save</span><span>Save Settings</span>
     </button>
@@ -144,6 +160,32 @@ tailwind.config = { darkMode: "class", theme: { extend: {
     $('setting-thumbnail').checked = !!s.thumbnail;
     $('setting-server-url').value = (localStorage.getItem('ytdl_server_url') || '');
   }
+
+  const cookiesStatus = $('cookies-status');
+  function cookiesNote(msg, isError) {
+    cookiesStatus.textContent = msg;
+    cookiesStatus.classList.remove('hidden');
+    cookiesStatus.classList.toggle('text-error', !!isError);
+    cookiesStatus.classList.toggle('text-secondary', !isError);
+  }
+  $('cookies-upload-btn').addEventListener('click', async () => {
+    const fileInput = $('cookies-file-input');
+    if (!fileInput.files || !fileInput.files.length) {
+      cookiesNote('Please choose a cookies.txt file first.', true);
+      return;
+    }
+    const form = new FormData();
+    form.append('file', fileInput.files[0]);
+    try {
+      const res = await fetch(apiUrl('/api/cookies'), { method: 'POST', body: form });
+      const data = await res.json();
+      if (!data.ok) throw new Error('Upload failed');
+      cookiesNote('Cookies uploaded successfully.', false);
+      setTimeout(() => cookiesStatus.classList.add('hidden'), 3000);
+    } catch (e) {
+      cookiesNote(e.message || 'Upload failed.', true);
+    }
+  });
 
   $('save-btn').addEventListener('click', async () => {
     const payload = {

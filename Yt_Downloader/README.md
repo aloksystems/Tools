@@ -67,6 +67,7 @@ The APK is produced at `android\app\build\outputs\apk\debug\app-debug.apk`.
 - `GET|POST /api/settings` — read/update persisted settings (`data/settings.json`)
 - `GET /api/files` — list completed media files in the output directories (`{ files: [{ name, size, modified, dir, url }] }`)
 - `GET /api/files/download?path=<name>` — download a saved file as an attachment. Only files directly inside a known output directory are served; path traversal is rejected (400). Used by the "Saved on Device" tab for desktop, web, and Android (Capacitor) — the phone downloads the file straight to its device storage.
+- `POST /api/cookies` — upload a Netscape-format `cookies.txt` (multipart form field `file`). Stored to `data/cookies.txt` and wired into yt-dlp as `cookiefile`. Use this when YouTube returns **"Sign in to confirm you're not a bot"** (common from datacenter/hosted IPs). Upload from the **Settings → YouTube Cookies** section.
 
 #### Deploy on Railway
 

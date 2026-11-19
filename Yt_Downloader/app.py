@@ -17,6 +17,7 @@ from backend.settings import SettingsStore
 from backend.tasks import Status
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(HERE, "data")
 app = Flask(__name__)
 
 settings = SettingsStore()
@@ -36,6 +37,7 @@ def _download_options(data):
         "subtitles": bool(data.get("subtitles", settings.get("subtitles"))),
         "thumbnail": bool(data.get("thumbnail", settings.get("thumbnail"))),
         "playlist": bool(data.get("playlist", True)),
+        "cookies_file": settings.get("cookies_file"),
     }
 
 
@@ -136,6 +138,19 @@ def api_update_settings():
     data = request.get_json(silent=True) or {}
     values = {k: v for k, v in data.items() if v is not None}
     return jsonify({"ok": True, "settings": settings.update(values)})
+
+
+@app.post("/api/cookies")
+def api_upload_cookies():
+    """Accept an uploaded Netscape-format cookies.txt and store it for yt-dlp."""
+    uploaded = request.files.get("file")
+    if uploaded is None or not uploaded.filename:
+        abort(400, description="No file provided")
+    os.makedirs(DATA_DIR, exist_ok=True)
+    dest = os.path.join(DATA_DIR, "cookies.txt")
+    uploaded.save(dest)
+    settings.update({"cookies_file": dest})
+    return jsonify({"ok": True, "settings": settings.all()})
 
 
 @app.get("/api/health")
