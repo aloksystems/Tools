@@ -65,6 +65,29 @@ The APK is produced at `android\app\build\outputs\apk\debug\app-debug.apk`.
 - `GET /api/tasks?status=` — list tasks (queue, progress, history)
 - `POST /api/tasks/<id>/cancel` — cancel a running task
 - `GET|POST /api/settings` — read/update persisted settings (`data/settings.json`)
+- `GET /api/files` — list completed media files in the output directories (`{ files: [{ name, size, modified, dir, url }] }`)
+- `GET /api/files/download?path=<name>` — download a saved file as an attachment. Only files directly inside a known output directory are served; path traversal is rejected (400). Used by the "Saved on Device" tab for desktop, web, and Android (Capacitor) — the phone downloads the file straight to its device storage.
+
+#### Deploy on Railway
+
+The app ships with a Dockerfile so it runs out of the box on Railway (or Render/Fly.io/Koyeb).
+
+**Prerequisites for a public host:**
+- FFmpeg is installed in the image (`apt-get install ffmpeg`) — required for video merging/MP3 extraction.
+- `yt-dlp` is upgraded at build time to the latest release (YouTube changes often break stale versions).
+- The server must be reachable over the internet, so **HTTPS** is used. On the Android APK, set the Backend Server URL to the `https://...` Railway URL (cleartext is only allowed for your LAN).
+- **Note:** the task registry is in-memory, so the app must run with a **single worker** (the Dockerfile does this). Multi-worker deployments would have separate queues/history.
+
+**Railway steps:**
+1. Push this folder to a GitHub repo (e.g. `Yt_Downloader`).
+2. In Railway, create a **New Project → Deploy from GitHub repo** and select that repo.
+3. Railway auto-detects the `Dockerfile`. It will build and run `gunicorn` on `$PORT` (Railway sets it automatically).
+4. (Optional) Set a **Start Command** of `gunicorn app:app --workers 1 --threads 8 --bind 0.0.0.0:$PORT --timeout 180` if you prefer not to rely on the Dockerfile CMD.
+5. Open the generated **Public Domain** URL (e.g. `https://ytdownloader-production.up.railway.app`) and it will be live.
+6. Downloads are written to the container's `~/Downloads/YouTube` (or the configured output dir). Use the **Saved on Device** tab to grab them.
+7. To keep downloaded files across deploys, attach a **Volume** mounted at `/root/Downloads` (or your output dir) in the service settings.
+
+**Production file serving on a host:** the `/api/files` and `/api/files/download` endpoints work over HTTPS exactly as on your LAN. On the phone, set the Backend Server URL to the Railway public URL.
 
 #### Settings
 
@@ -175,6 +198,9 @@ Yt_Downloader/
 ├─ main.py              # Legacy customtkinter GUI
 ├─ main.spec            # PyInstaller build spec
 ├─ requirements.txt     # flask, yt-dlp, pywebview
+├─ requirements-server.txt # + gunicorn (for Railway/Render hosting)
+├─ Dockerfile            # containerized deployment (FFmpeg + gunicorn)
+├─ .dockerignore         # keeps build/runtime junk out of the image
 ├─ dist/                # Built artifacts (e.g., main.exe)
 └─ build/               # PyInstaller build cache
 ```

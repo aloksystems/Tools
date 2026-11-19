@@ -7,10 +7,11 @@ from __future__ import annotations
 
 import json
 import os
+import urllib.parse
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, abort, jsonify, render_template, request, send_file
 
-from backend.downloader import DownloadErrorWithMessage, DownloadManager
+from backend.downloader import DEFAULT_OUTPUT_DIR, DownloadErrorWithMessage, DownloadManager
 from backend.history import HistoryStore
 from backend.settings import SettingsStore
 from backend.tasks import Status
@@ -142,5 +143,88 @@ def api_health():
     return jsonify({"ok": True, "status": "healthy"})
 
 
+# ------------------------------------------------------- saved files (serving) --
+# Media extensions we recognize as completed downloads.
+SAVED_MEDIA_EXTS = (".mp4", ".mkv", ".webm", ".mp3", ".flac", ".m4a", ".mov", ".opus")
+
+
+def _saved_roots():
+    """Directories we are willing to list/serve files from."""
+    roots = []
+    default = DEFAULT_OUTPUT_DIR
+    configured = settings.get("default_output_dir")
+    for d in (default, configured):
+        if d and os.path.isdir(d):
+            roots.append(os.path.realpath(d))
+    # De-duplicate while preserving order.
+    seen = set()
+    unique = []
+    for r in roots:
+        if r not in seen:
+            seen.add(r)
+            unique.append(r)
+    return unique
+
+
+@app.get("/api/files")
+def api_files():
+    """List completed download files across the known output directories."""
+    files = []
+    for root in _saved_roots():
+        try:
+            for name in os.listdir(root):
+                full = os.path.join(root, name)
+                if not os.path.isfile(full):
+                    continue
+                if not name.lower().endswith(SAVED_MEDIA_EXTS):
+                    continue
+                stat = os.stat(full)
+                files.append(
+                    {
+                        "name": name,
+                        "size": stat.st_size,
+                        "modified": stat.st_mtime,
+                        "dir": os.path.basename(root),
+                        "url": apiUrl_for_download(name),
+                    }
+                )
+        except OSError:
+            continue
+    files.sort(key=lambda f: f["modified"], reverse=True)
+    return jsonify({"ok": True, "files": files})
+
+
+def apiUrl_for_download(name: str) -> str:
+    """Build the absolute (or relative) download URL for a saved file."""
+    encoded = urllib.parse.quote(name)
+    return f"{request.script_root}/api/files/download?path={encoded}"
+
+
+@app.get("/api/files/download")
+def api_file_download():
+    """Serve a saved media file as an attachment (device download).
+
+    Only files living directly inside a known output directory are served;
+    any path traversal is rejected.
+    """
+    name = request.args.get("path", "")
+    if not name or os.path.basename(name) != name:
+        abort(400, description="Invalid file path")
+    for root in _saved_roots():
+        candidate = os.path.realpath(os.path.join(root, name))
+        if candidate.startswith(root + os.sep) and os.path.isfile(candidate):
+            return send_file(
+                candidate,
+                as_attachment=True,
+                download_name=name,
+                conditional=True,
+            )
+    abort(404, description="File not found")
+
+
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5001, debug=False)
+    # Bind to all interfaces and honor $PORT (Railway/Render) for hosting.
+    port = int(os.environ.get("PORT", "5001"))
+    # Use a single process; the task registry is in-memory/thread-based.
+    # For production, run with gunicorn: gunicorn app:app --workers 1 --threads 8
+    app.run(host="0.0.0.0", port=port, debug=False)

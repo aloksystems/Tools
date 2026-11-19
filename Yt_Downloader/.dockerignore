@@ -1,0 +1,18 @@
+.venv/
+venv/
+node_modules/
+build/
+dist/
+*.pyc
+__pycache__/
+data/
+New folder/
+%s/
+scratch/
+temp/
+.idea/
+.vscode/
+*.log
+.git/
+Dockerfile
+.dockerignore
