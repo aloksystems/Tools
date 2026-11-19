@@ -94,7 +94,7 @@ def build_ydl_opts(task: Task, progress_hook: Any) -> Dict[str, Any]:
         else:
             height = quality.replace("p", "")
             format_selector = (
-                f"bestvideo[height<={height}]+bestaudio/best[height<={height}]"
+                f"bestvideo[height<={height}]+bestaudio/best[height<={height}]/best"
             )
         postprocessors.append({"key": "FFmpegMetadata"})
         if options.get("thumbnail", True):
