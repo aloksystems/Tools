@@ -69,6 +69,8 @@ The APK is produced at `android\app\build\outputs\apk\debug\app-debug.apk`.
 - `GET /api/files/download?path=<name>` — download a saved file as an attachment. Only files directly inside a known output directory are served; path traversal is rejected (400). Used by the "Saved on Device" tab for desktop, web, and Android (Capacitor) — the phone downloads the file straight to its device storage.
 - `POST /api/cookies` — upload a Netscape-format `cookies.txt` (multipart form field `file`). Stored to `data/cookies.txt` and wired into yt-dlp as `cookiefile`. Use this when YouTube returns **"Sign in to confirm you're not a bot"** (common from datacenter/hosted IPs). Upload from the **Settings → YouTube Cookies** section.
 
+**Cloud/datacenter IPs (e.g. Railway):** YouTube may serve a restricted format listing that surfaces as *"Requested format is not available"*. If no (or a fake) cookie is present, analyze/download automatically retry with the **Android player client**, which still yields a playable (up to ~360p) stream. A **real logged-in `cookies.txt`** restores full quality.
+
 #### Deploy on Railway
 
 The app ships with a Dockerfile so it runs out of the box on Railway (or Render/Fly.io/Koyeb).

@@ -40,6 +40,30 @@ class DownloadErrorWithMessage(Exception):
     pass
 
 
+# YouTube sometimes surfaces a restricted/empty format listing as this generic
+# error (notably when the requesting IP is a datacenter/cloud IP). The Android
+# player client keeps working in that case and returns at least a lower-res
+# stream, so we retry with it before giving up.
+_FORMAT_RESTRICTION_RE = re.compile(
+    r"Requested format is not available|page needs to be reloaded"
+)
+
+ANDROID_EXTRACTOR_ARGS = {"youtube": {"player_client": ["android", "ios"]}}
+
+
+def _with_android_fallback(opts: Dict[str, Any]) -> Dict[str, Any]:
+    """Return a copy of ``opts`` that uses the Android/ios player client."""
+    retry = dict(opts)
+    extractor_args = dict(opts.get("extractor_args") or {})
+    extractor_args.update(ANDROID_EXTRACTOR_ARGS)
+    retry["extractor_args"] = extractor_args
+    return retry
+
+
+def _is_format_restriction(exc: Exception) -> bool:
+    return bool(_FORMAT_RESTRICTION_RE.search(str(exc)))
+
+
 class CancelledException(Exception):
     """Raised from the progress hook to abort an active download."""
 
@@ -135,13 +159,18 @@ class DownloadManager:
     # --------------------------------------------------------------- analyze --
     def analyze(self, url: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Extract metadata for a URL without downloading (best effort)."""
-        opts = build_ydl_opts_raw(options or {})
-        try:
-            with YoutubeDL(opts) as ydl:
-                info = ydl.extract_info(url, download=False)
-                return self._normalize_info(info, url)
-        except DownloadError as exc:
-            raise DownloadErrorWithMessage(str(exc)) from exc
+        base = build_ydl_opts_raw(options or {})
+        last_error: Optional[DownloadError] = None
+        for opts in (base, _with_android_fallback(base)):
+            try:
+                with YoutubeDL(opts) as ydl:
+                    info = ydl.extract_info(url, download=False)
+                    return self._normalize_info(info, url)
+            except DownloadError as exc:
+                last_error = exc
+                if not _is_format_restriction(exc):
+                    break
+        raise DownloadErrorWithMessage(str(last_error)) from last_error
 
     def _normalize_info(self, info: Dict[str, Any], url: str) -> Dict[str, Any]:
         is_playlist = info.get("_type") == "playlist"
@@ -219,10 +248,23 @@ class DownloadManager:
     def _run(self, task: Task) -> None:
         task.set_status(Status.ANALYZING)
         try:
-            ydl_opts = build_ydl_opts(task, lambda d: self._progress_hook(d, task))
-            with YoutubeDL(ydl_opts) as ydl:
-                task.set_status(Status.DOWNLOADING)
-                ydl.download([task.url])
+            base_opts = build_ydl_opts(
+                task, lambda d: self._progress_hook(d, task)
+            )
+            last_error: Optional[DownloadError] = None
+            for opts in (base_opts, _with_android_fallback(base_opts)):
+                try:
+                    with YoutubeDL(opts) as ydl:
+                        task.set_status(Status.DOWNLOADING)
+                        ydl.download([task.url])
+                    last_error = None
+                    break
+                except DownloadError as exc:
+                    last_error = exc
+                    if not _is_format_restriction(exc):
+                        raise
+            if last_error is not None:
+                raise last_error
             self._resolve_final_file(task)
             task.set_status(Status.COMPLETED)
         except CancelledException:
