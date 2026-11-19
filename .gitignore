@@ -1,0 +1,25 @@
+# ---------- Node.js ----------
+node_modules/
+dist/
+build/
+
+# ---------- Rust / Tauri (universal-converter) ----------
+universal-converter/src-tauri/target/
+universal-converter/release/
+
+# ---------- Gradle / JDK (Yt_Downloader) ----------
+Yt_Downloader/.gradle-dist/
+.gradle/
+*.zip
+
+# ---------- Python ----------
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ---------- Misc / editor ----------
+.DS_Store
+Thumbs.db
+*.log
+*.tmp

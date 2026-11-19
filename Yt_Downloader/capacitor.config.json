@@ -1,0 +1,12 @@
+{
+  "appId": "com.ytdownloader.app",
+  "appName": "YT Downloader",
+  "webDir": "build/www",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

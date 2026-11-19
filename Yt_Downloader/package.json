@@ -1,0 +1,16 @@
+{
+  "name": "yt_downloader",
+  "version": "1.0.0",
+  "description": "Modern, fast, and easy-to-use desktop app to download YouTube videos, playlists, or audio with best quality using `yt-dlp` and a sleek `customtkinter` UI. Supports up to 8K/4320p, merges best video+audio, embeds metadata and thumbnails, and optionally downloads subtitles.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2"
+  }
+}

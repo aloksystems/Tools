@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#10131e"/>
 <link rel="manifest" href="/static/manifest.webmanifest"/>
 <link rel="icon" href="/static/icons/icon.svg" type="image/svg+xml"/>
+<script src="/static/js/api.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -154,7 +155,7 @@ tailwind.config = { darkMode: "class", theme: { extend: {
 
   async function load() {
     try {
-      const res = await fetch('/api/tasks');
+      const res = await fetch(apiUrl('/api/tasks'));
       const data = await res.json();
       const tasks = data.tasks || [];
       const running = tasks.filter((t) => ['queued','analyzing','downloading','processing'].includes(t.status));
@@ -164,7 +165,7 @@ tailwind.config = { darkMode: "class", theme: { extend: {
       list.innerHTML = tasks.map(taskCard).join('');
       list.querySelectorAll('[data-cancel]').forEach((btn) => {
         btn.addEventListener('click', async () => {
-          await fetch(`/api/tasks/${btn.dataset.cancel}/cancel`, { method: 'POST' });
+          await fetch(apiUrl(`/api/tasks/${btn.dataset.cancel}/cancel`), { method: 'POST' });
           load();
         });
       });

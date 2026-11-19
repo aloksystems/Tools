@@ -33,6 +33,30 @@ Requires the **Microsoft Edge WebView2 Runtime** (preinstalled on Win10/11). `ff
 
 The web app is a **Progressive Web App** (`static/manifest.webmanifest` + `static/sw.js`). Open `http://<host>:5001/` in Chrome on Android and choose **"Add to Home screen" / Install** — it installs as a standalone app with its own icon, works offline (cached shell), and reuses the same backend. The LV is fully responsive with bottom navigation for one-handed use.
 
+##### Native Android APK (Capacitor)
+
+A native Android APK is built with **Capacitor** (bundles the UI in a WebView shell). The API is **not** bundled — the app talks to the backend running on your PC via a configurable server URL.
+
+Build steps:
+
+```bash
+# 1. Export the static UI bundle (writes build/www, rewrites nav links to relative files)
+python scripts/export_static.py
+
+# 2. Sync web assets into the Android project
+npx cap copy android
+
+# 3. Build the debug APK (set JAVA_HOME to Android Studio's bundled JBR)
+cd android
+$env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
+$env:ANDROID_HOME="$env:LOCALAPPDATA\Android\Sdk"
+.\gradlew.bat assembleDebug
+```
+
+The APK is produced at `android\app\build\outputs\apk\debug\app-debug.apk`.
+
+**First run on the phone:** open **Settings → Connection**, set the **Backend Server URL** to your PC's address (e.g. `http://192.168.1.10:5001`), and tap Save. The backend must run on your PC with `python app.py` (default port 5001). The manifest allows cleartext HTTP so the phone can reach a non-TLS server on your LAN. Both devices must be on the same network.
+
 #### API
 
 - `POST /api/analyze` — extract metadata for a URL (`{ "url": "..." }`; playlists return `entries` list for per-video selection)

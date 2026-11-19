@@ -1,0 +1,38 @@
+{
+  "name": "MyFinance",
+  "short_name": "MyFinance",
+  "description": "Private, local-first personal finance tracker",
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#f6f8f7",
+  "theme_color": "#155a4d",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Add expense",
+      "url": "/?add=expense",
+      "description": "Quickly record an expense"
+    },
+    {
+      "name": "Add income",
+      "url": "/?add=income",
+      "description": "Quickly record income"
+    }
+  ]
+}
