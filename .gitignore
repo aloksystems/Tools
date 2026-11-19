@@ -18,6 +18,10 @@ __pycache__/
 .venv/
 venv/
 
+# ---------- Runtime state (Yt_Downloader) ----------
+Yt_Downloader/data/history.json
+Yt_Downloader/data/settings.json
+
 # ---------- Scratch / temp folders ----------
 New folder/
 %s/
