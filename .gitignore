@@ -18,6 +18,12 @@ __pycache__/
 .venv/
 venv/
 
+# ---------- Scratch / temp folders ----------
+New folder/
+%s/
+scratch/
+temp/
+
 # ---------- Misc / editor ----------
 .DS_Store
 Thumbs.db
