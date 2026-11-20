@@ -133,3 +133,7 @@ h1, h2 { margin: 0; color: #17211f; font-family: Manrope, sans-serif; letter-spa
 .category-card-top { display: flex; justify-content: space-between; align-items: start; }
 .category-card small { color: #9ba8a4; font-size: 11px; }
 .sync-status { margin: 4px 0 10px; color: #217764; font-size: 12px; }
+.month-nav { display: flex; align-items: center; gap: 6px; margin: 2px 0 6px; }
+.month-nav .icon-button { width: 24px; height: 24px; font-size: 16px; line-height: 1; }
+.budget-month-label { font-size: 12px; font-weight: 600; color: #31413d; }
+[data-theme="dark"] .budget-month-label { color: #cfe0d8; }

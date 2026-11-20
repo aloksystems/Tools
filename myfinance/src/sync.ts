@@ -10,20 +10,9 @@ import { getFirestoreDb } from './firebase'
  * - Each user's data lives in Firestore subcollections: users/{uid}/{table}.
  */
 
-type SyncableTable = keyof Pick<
-  FinanceDatabase,
-  'accounts' | 'categories' | 'transactions' | 'budgets' | 'recurringTransactions' | 'savingsGoals' | 'loans'
->
+type SyncableTable = keyof Pick<FinanceDatabase, 'categories' | 'transactions'>
 
-const TABLES: SyncableTable[] = [
-  'accounts',
-  'categories',
-  'transactions',
-  'budgets',
-  'recurringTransactions',
-  'savingsGoals',
-  'loans',
-]
+const TABLES: SyncableTable[] = ['categories', 'transactions']
 
 interface SyncableRecord {
   id: string
