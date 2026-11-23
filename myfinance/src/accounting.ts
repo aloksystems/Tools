@@ -69,3 +69,10 @@ export function outstandingPaise(debt: Debt, payments: DebtPayment[]): number {
 export function monthKey(date: string) {
   return date.slice(0, 7)
 }
+
+/** Formats an ISO date (YYYY-MM-DD) as DD/MM/YYYY. */
+export function formatDateDMY(date: string): string {
+  const [year, month, day] = date.slice(0, 10).split('-')
+  if (!year || !month || !day) return date
+  return `${day}/${month}/${year}`
+}

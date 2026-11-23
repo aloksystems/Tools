@@ -30,6 +30,19 @@ function isNewer(a?: SyncableRecord, b?: SyncableRecord): boolean {
   return (a.updatedAt ?? '') > (b.updatedAt ?? '')
 }
 
+/**
+ * Firestore rejects fields whose value is `undefined`. Optional fields (e.g.
+ * `note`, `description`) are `undefined` when not set, so strip them before
+ * writing a record to Firestore.
+ */
+function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown> {
+  const clean: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(record)) {
+    if (value !== undefined) clean[key] = value
+  }
+  return clean
+}
+
 async function pullTable(tableName: SyncableTable, uid: string) {
   const firestore = getFirestoreDb()
   if (!firestore) return
@@ -71,7 +84,7 @@ async function pushTable(tableName: SyncableTable, uid: string) {
       if (localRow.deleted) {
         await setDoc(doc(col, localRow.id), { deleted: true, updatedAt: localRow.updatedAt })
       } else {
-        await setDoc(doc(col, localRow.id), localRow)
+        await setDoc(doc(col, localRow.id), sanitizeRecord(localRow as unknown as Record<string, unknown>))
       }
     }
   }
@@ -170,7 +183,7 @@ export function watchLocalChanges(uid: string): () => void {
       const col = tableCollection(firestore, uid, tableName)
       const ref = doc(col, String(change.key))
       if (change.obj) {
-        void setDoc(ref, change.obj).catch(() => {})
+        void setDoc(ref, sanitizeRecord(change.obj as unknown as Record<string, unknown>)).catch(() => {})
       } else if (change.oldObj) {
         // Hard removal locally -> push a tombstone so other devices clear it too.
         void setDoc(ref, { deleted: true, updatedAt: change.oldObj.updatedAt }).catch(() => {})

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatRupees, monthKey, parseAmountToPaise } from './accounting'
+import { formatDateDMY, formatRupees, monthKey, parseAmountToPaise } from './accounting'
 
 describe('accounting amount helpers', () => {
   it('stores decimal rupees as integer paise', () => {
@@ -21,6 +21,13 @@ describe('accounting amount helpers', () => {
 
   it('rejects negative amounts', () => {
     expect(() => parseAmountToPaise('-10')).toThrow()
+  })
+})
+
+describe('formatDateDMY', () => {
+  it('converts ISO dates to DD/MM/YYYY', () => {
+    expect(formatDateDMY('2026-11-23')).toBe('23/11/2026')
+    expect(formatDateDMY('2025-01-02')).toBe('02/01/2025')
   })
 })
 
