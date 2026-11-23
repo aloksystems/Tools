@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "dexie": "^4.4.7",
+    "dexie-observable": "^4.0.1-beta.13",
     "firebase": "^13.4.0",
     "lucide-react": "^1.75.0",
     "react": "^19.3.1",

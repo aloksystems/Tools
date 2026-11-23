@@ -1,71 +1,39 @@
 ﻿import Dexie, { type Table } from 'dexie'
-import type { Category, Transaction } from './types'
-import { newId } from './types'
+import observable from 'dexie-observable'
+import type { Debt, DebtPayment, Transaction } from './types'
+
+// The observable add-on provides db.on('changes'), which we use to push local
+// writes to Firestore in real time. It must be registered before any Dexie
+// instance is created.
+Dexie.addons.push(observable as never)
 
 export class FinanceDatabase extends Dexie {
-  categories!: Table<Category, string>
   transactions!: Table<Transaction, string>
+  debts!: Table<Debt, string>
+  debtPayments!: Table<DebtPayment, string>
 
   constructor() {
     super('myfinance')
-    this.version(1).stores({
-      categories: 'id, updatedAt, deleted',
-      transactions: 'id, date, categoryId, updatedAt, deleted',
+    this.version(2).stores({
+      transactions: 'id, date, updatedAt, deleted',
+      debts: 'id, person, updatedAt, deleted',
+      debtPayments: 'id, debtId, date, updatedAt, deleted',
     })
   }
-}
-
-function nowIso() {
-  return new Date().toISOString()
 }
 
 export const db = new FinanceDatabase()
 
 /**
- * Opens the database, resetting any legacy schema left behind by older
- * pre-release builds. Upgrades that changed primary keys are unsupported by
- * Dexie, so an incompatible on-disk database is rebuilt cleanly instead.
+ * Opens the local database. IndexedDB already holds the current schema, so
+ * we simply open it. If for any reason the on-disk database cannot be opened
+ * (e.g. an incompatible legacy schema), it is rebuilt cleanly.
  */
 export async function openDatabase() {
   try {
-    let legacyVersion: number | undefined
-    if (typeof indexedDB !== 'undefined' && typeof indexedDB.databases === 'function') {
-      const databases = await indexedDB.databases()
-      const existing = databases.find((d) => d.name === 'myfinance')
-      legacyVersion = existing?.version
-    }
-    if (legacyVersion != null && legacyVersion !== db.verno) {
-      await db.delete()
-    }
     await db.open()
   } catch {
     await db.delete()
     await db.open()
   }
-}
-
-const defaultCategories: Category[] = [
-  ['Food & Dining', '#f97316'],
-  ['Groceries', '#22c55e'],
-  ['Transportation', '#3b82f6'],
-  ['Bills & Utilities', '#8b5cf6'],
-  ['Shopping', '#ec4899'],
-  ['Health', '#ef4444'],
-  ['Entertainment', '#eab308'],
-  ['Other', '#64748b'],
-].map(([name, color]) => ({ id: newId(), name, color, archived: false, deleted: false, updatedAt: nowIso() }))
-
-let currentSeed: Promise<void> | null = null
-
-export function seedDatabase(): Promise<void> {
-  if (!currentSeed) {
-    currentSeed = (async () => {
-      if ((await db.categories.count()) === 0) {
-        await db.categories.bulkAdd(defaultCategories)
-      }
-    })().finally(() => {
-      currentSeed = null
-    })
-  }
-  return currentSeed
 }

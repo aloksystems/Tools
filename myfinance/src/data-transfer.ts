@@ -1,19 +1,21 @@
 ﻿import { db } from './database'
-import type { Category, Transaction } from './types'
+import type { Debt, DebtPayment, Transaction } from './types'
 
 export interface BackupPayload {
-  version: 3
+  version: 4
   exportedAt: string
-  categories: Category[]
   transactions: Transaction[]
+  debts: Debt[]
+  debtPayments: DebtPayment[]
 }
 
 export async function createBackup(): Promise<BackupPayload> {
-  const [categories, transactions] = await Promise.all([
-    db.categories.toArray(),
+  const [transactions, debts, debtPayments] = await Promise.all([
     db.transactions.toArray(),
+    db.debts.toArray(),
+    db.debtPayments.toArray(),
   ])
-  return { version: 3, exportedAt: new Date().toISOString(), categories, transactions }
+  return { version: 4, exportedAt: new Date().toISOString(), transactions, debts, debtPayments }
 }
 
 function isArray(value: unknown): value is unknown[] {
@@ -21,18 +23,19 @@ function isArray(value: unknown): value is unknown[] {
 }
 
 export function validateBackup(value: unknown): asserts value is BackupPayload {
-  if (!value || typeof value !== 'object' || (value as { version?: unknown }).version !== 3) throw new Error('Unsupported backup format.')
+  if (!value || typeof value !== 'object' || (value as { version?: unknown }).version !== 4) throw new Error('Unsupported backup format.')
   const backup = value as Partial<BackupPayload>
-  if (![backup.categories, backup.transactions].every(isArray)) {
+  if (![backup.transactions, backup.debts, backup.debtPayments].every(isArray)) {
     throw new Error('Backup is missing one or more data collections.')
   }
 }
 
 export async function restoreBackup(backup: BackupPayload) {
   validateBackup(backup)
-  await db.transaction('rw', db.categories, db.transactions, async () => {
-    await Promise.all([db.categories.clear(), db.transactions.clear()])
-    await db.categories.bulkAdd(backup.categories)
+  await db.transaction('rw', db.transactions, db.debts, db.debtPayments, async () => {
+    await Promise.all([db.transactions.clear(), db.debts.clear(), db.debtPayments.clear()])
     await db.transactions.bulkAdd(backup.transactions)
+    await db.debts.bulkAdd(backup.debts)
+    await db.debtPayments.bulkAdd(backup.debtPayments)
   })
 }

@@ -1,4 +1,4 @@
-﻿import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
+﻿import { collection, getDocs, setDoc, doc, onSnapshot, deleteDoc, type Unsubscribe, type Firestore } from 'firebase/firestore'
 import { db, type FinanceDatabase } from './database'
 import { getFirestoreDb } from './firebase'
 
@@ -10,14 +10,18 @@ import { getFirestoreDb } from './firebase'
  * - Each user's data lives in Firestore subcollections: users/{uid}/{table}.
  */
 
-type SyncableTable = keyof Pick<FinanceDatabase, 'categories' | 'transactions'>
+type SyncableTable = keyof Pick<FinanceDatabase, 'transactions' | 'debts' | 'debtPayments'>
 
-const TABLES: SyncableTable[] = ['categories', 'transactions']
+const TABLES: SyncableTable[] = ['transactions', 'debts', 'debtPayments']
 
 interface SyncableRecord {
   id: string
   updatedAt: string
   deleted?: boolean
+}
+
+function tableCollection(firestore: Firestore, uid: string, tableName: SyncableTable) {
+  return collection(firestore, 'users', uid, tableName)
 }
 
 function isNewer(a?: SyncableRecord, b?: SyncableRecord): boolean {
@@ -94,5 +98,95 @@ export async function syncNow(uid: string) {
 export async function pushAllLocal(uid: string) {
   for (const tableName of TABLES) {
     await pushTable(tableName, uid)
+  }
+}
+
+/** True while we are writing remote data into the local database, so we skip echoing it back up. */
+let applyingRemote = false
+
+/**
+ * Subscribes to live Firestore changes for every table and merges them into the
+ * local IndexedDB (last-write-wins). `onChange` fires whenever remote data was
+ * applied so the UI can refresh. Returns an unsubscribe function.
+ */
+export function subscribeToRemote(uid: string, onChange?: () => void): Unsubscribe {
+  const firestore = getFirestoreDb()
+  if (!firestore) return () => {}
+  const unsubscribers = TABLES.map((tableName) => {
+    const col = tableCollection(firestore, uid, tableName)
+    return onSnapshot(
+      col,
+      async (snapshot) => {
+        for (const change of snapshot.docChanges()) {
+          const row = change.doc.data() as SyncableRecord
+          if (change.type === 'removed') {
+            await db[tableName].delete(row.id)
+            continue
+          }
+          const local = await db[tableName].get(row.id)
+          if (!isNewer(row, local)) continue
+          applyingRemote = true
+          try {
+            if (row.deleted) {
+              await db[tableName].delete(row.id)
+            } else {
+              await db[tableName].put(row as never)
+            }
+          } finally {
+            applyingRemote = false
+          }
+        }
+        if (onChange) onChange()
+      },
+      (error) => {
+        // Ignore transient real-time errors; manual sync still works.
+        console.error('Realtime sync error:', error)
+      },
+    )
+  })
+  return () => unsubscribers.forEach((unsub) => unsub())
+}
+
+interface LocalChange {
+  table: string
+  key: unknown
+  type: number
+  obj?: SyncableRecord
+  oldObj?: SyncableRecord
+}
+
+/**
+ * Watches local Dexie writes and pushes them to Firestore immediately, so
+ * changes made on this device appear live on every other device.
+ */
+export function watchLocalChanges(uid: string): () => void {
+  const firestore = getFirestoreDb()
+  if (!firestore) return () => {}
+  const listener = (changes: LocalChange[]) => {
+    if (applyingRemote) return
+    for (const change of changes) {
+      const tableName = change.table as SyncableTable
+      if (!TABLES.includes(tableName)) continue
+      const col = tableCollection(firestore, uid, tableName)
+      const ref = doc(col, String(change.key))
+      if (change.obj) {
+        void setDoc(ref, change.obj).catch(() => {})
+      } else if (change.oldObj) {
+        // Hard removal locally -> push a tombstone so other devices clear it too.
+        void setDoc(ref, { deleted: true, updatedAt: change.oldObj.updatedAt }).catch(() => {})
+      } else {
+        void deleteDoc(ref).catch(() => {})
+      }
+    }
+  }
+  // Dexie exposes the changes event through its event-set API; the typed
+  // overloads don't cover it, so we access the event object directly.
+  const changesEvent = db.on('changes') as unknown as {
+    subscribe(fn: (changes: LocalChange[]) => void): void
+    unsubscribe(fn: (changes: LocalChange[]) => void): void
+  }
+  changesEvent.subscribe(listener)
+  return () => {
+    changesEvent.unsubscribe(listener)
   }
 }

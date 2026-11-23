@@ -6,6 +6,7 @@ import {
   ChevronRight,
   CircleDollarSign,
   Download,
+  HandCoins,
   Menu,
   MonitorDown,
   Moon,
@@ -21,21 +22,21 @@ import {
 } from 'lucide-react'
 import { createUserWithEmailAndPassword, deleteUser, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, type User } from 'firebase/auth'
 import { collection, deleteDoc, getDocs } from 'firebase/firestore'
-import { addTransaction, deleteTransaction, formatRupees, monthKey, parseAmountToPaise, updateTransaction } from './accounting'
-import { db, seedDatabase } from './database'
+import { addDebt, addDebtPayment, addTransaction, deleteDebt, deleteDebtPayment, deleteTransaction, formatRupees, monthKey, outstandingPaise, parseAmountToPaise, updateDebt, updateTransaction } from './accounting'
+import { db } from './database'
 import { createBackup, restoreBackup, validateBackup } from './data-transfer'
 import { getFirebaseAuth, getFirestoreDb, initFirebase } from './firebase'
 import { applyTheme, loadSettings, saveSettings, type AppSettings } from './settings-store'
-import { pushAllLocal, syncNow } from './sync'
-import { newId, type Category, type Transaction } from './types'
+import { pushAllLocal, syncNow, subscribeToRemote, watchLocalChanges } from './sync'
+import { type Debt, type DebtPayment, type Transaction } from './types'
 import './App.css'
 
 const today = new Date().toISOString().slice(0, 10)
 const currentDateLabel = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 const currentMonth = today.slice(0, 7)
 
-type View = 'overview' | 'reports' | 'transactions' | 'categories'
-const VIEW_PATHS: Record<View, string> = { overview: '/', reports: '/reports', transactions: '/transactions', categories: '/categories' }
+type View = 'overview' | 'reports' | 'transactions' | 'debts'
+const VIEW_PATHS: Record<View, string> = { overview: '/', reports: '/reports', transactions: '/transactions', debts: '/debts' }
 function viewFromPath(path: string): View {
   for (const [view, viewPath] of Object.entries(VIEW_PATHS)) {
     if (viewPath !== '/' && path.startsWith(viewPath)) return view as View
@@ -49,12 +50,15 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 function App() {
-  const [categories, setCategories] = useState<Category[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [allTransactions, setAllTransactions] = useState<Transaction[]>([])
+  const [debts, setDebts] = useState<Debt[]>([])
+  const [debtPayments, setDebtPayments] = useState<DebtPayment[]>([])
   const [isAdding, setIsAdding] = useState(false)
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
-  const [isAddingCategory, setIsAddingCategory] = useState(false)
+  const [isAddingDebt, setIsAddingDebt] = useState(false)
+  const [editingDebt, setEditingDebt] = useState<Debt | null>(null)
+  const [payingDebt, setPayingDebt] = useState<Debt | null>(null)
   const [isDataModalOpen, setIsDataModalOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [settings, setSettings] = useState<AppSettings>(() => loadSettings())
@@ -80,23 +84,29 @@ function App() {
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
   const [syncStatus, setSyncStatus] = useState('')
+  const stopRealtimeRef = useRef<(() => void) | null>(null)
 
   useEffect(() => {
     initFirebase()
     const auth = getFirebaseAuth()
     if (!auth) return
+    const stopRealtime = () => { stopRealtimeRef.current?.(); stopRealtimeRef.current = null }
     const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
       setUser(nextUser)
+      stopRealtime()
       if (nextUser) {
         setSyncStatus('Syncing…')
         syncNow(nextUser.uid)
           .then(({ pushed }) => { setSyncStatus(`Synced ${pushed} areas`); return refresh() })
           .catch(() => setSyncStatus('Sync failed'))
+        const stopRemote = subscribeToRemote(nextUser.uid, () => { refresh().catch(() => undefined) })
+        const stopLocal = watchLocalChanges(nextUser.uid)
+        stopRealtimeRef.current = () => { stopRemote(); stopLocal() }
       } else {
         setSyncStatus('')
       }
     })
-    return () => unsubscribe()
+    return () => { unsubscribe(); stopRealtime() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -126,18 +136,20 @@ function App() {
   }
 
   const refresh = async () => {
-    const [nextCategories, nextTransactions] = await Promise.all([
-      db.categories.filter((category) => !category.archived).toArray(),
+    const [nextTransactions, nextDebts, nextPayments] = await Promise.all([
       db.transactions.filter((item) => !item.deleted).toArray(),
+      db.debts.filter((debt) => !debt.deleted).toArray(),
+      db.debtPayments.filter((payment) => !payment.deleted).toArray(),
     ])
-    setCategories(nextCategories)
     const sorted = [...nextTransactions].sort((a, b) => b.date.localeCompare(a.date))
     setAllTransactions(sorted)
     setTransactions(sorted.slice(0, 8))
+    setDebts([...nextDebts].sort((a, b) => b.date.localeCompare(a.date)))
+    setDebtPayments(nextPayments)
   }
 
   useEffect(() => {
-    seedDatabase().then(refresh).catch((cause) => setError(cause instanceof Error ? cause.message : 'Could not open local database.'))
+    refresh().catch((cause) => setError(cause instanceof Error ? cause.message : 'Could not open local database.'))
   }, [])
 
   useEffect(() => {
@@ -166,16 +178,9 @@ function App() {
 
   const resetData = async () => {
     if (!window.confirm('This will permanently delete all local financial data. Continue?')) return
-    await Promise.all([db.categories.clear(), db.transactions.clear()])
-    await seedDatabase()
+    await Promise.all([db.transactions.clear(), db.debts.clear(), db.debtPayments.clear()])
     await refresh()
     setIsSettingsOpen(false)
-  }
-
-  const archiveCategory = async (id?: string) => {
-    if (!id || !window.confirm('Archive this category? It stays on past transactions but is hidden from new entries.')) return
-    await db.categories.update(id, { archived: true, updatedAt: new Date().toISOString() })
-    await refresh()
   }
 
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -248,7 +253,7 @@ function App() {
     try {
       const firestore = getFirestoreDb()
       if (firestore) {
-        for (const table of ['categories', 'transactions']) {
+        for (const table of ['transactions', 'debts', 'debtPayments']) {
           const col = collection(firestore, 'users', user.uid, table)
           const snapshot = await getDocs(col)
           for (const entry of snapshot.docs) await deleteDoc(entry.ref)
@@ -280,6 +285,8 @@ function App() {
 
   const monthTransactions = useMemo(() => allTransactions.filter((item) => monthKey(item.date) === currentMonth), [allTransactions])
   const monthExpenses = monthTransactions.reduce((sum, item) => sum + item.amountPaise, 0)
+  const lentOutstanding = debts.filter((debt) => debt.direction === 'lent').reduce((sum, debt) => sum + outstandingPaise(debt, debtPayments), 0)
+  const owingOutstanding = debts.filter((debt) => debt.direction === 'owing').reduce((sum, debt) => sum + outstandingPaise(debt, debtPayments), 0)
 
   const submitTransaction = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -287,8 +294,8 @@ function App() {
     try {
       const values = {
         amountPaise: parseAmountToPaise(String(form.get('amount') ?? '')),
-        categoryId: String(form.get('categoryId') ?? ''),
-        description: String(form.get('description') ?? '').trim() || 'Untitled transaction',
+        item: String(form.get('item') ?? '').trim() || 'Untitled item',
+        description: String(form.get('description') ?? '').trim() || undefined,
         date: String(form.get('date') ?? today),
       }
       if (editingTransaction?.id) await updateTransaction(editingTransaction.id, values)
@@ -300,27 +307,37 @@ function App() {
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not save transaction.')
     }
-
   }
 
-  const submitCategory = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const form = new FormData(event.currentTarget)
+  const submitDebt = async (values: Omit<Debt, 'id' | 'createdAt' | 'updatedAt' | 'deleted'>, id?: string) => {
     try {
-      await db.categories.add({
-        id: newId(),
-        name: String(form.get('name') ?? '').trim() || 'New category',
-        color: String(form.get('color') ?? '#64748b'),
-        archived: false,
-        deleted: false,
-        updatedAt: new Date().toISOString(),
-      })
-      setIsAddingCategory(false)
+      if (id) await updateDebt(id, values)
+      else await addDebt(values)
+      setIsAddingDebt(false)
+      setEditingDebt(null)
       setError('')
       await refresh()
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not save category.')
+      setError(cause instanceof Error ? cause.message : 'Could not save debt.')
     }
+  }
+
+  const submitPayment = async (values: Omit<DebtPayment, 'id' | 'createdAt' | 'updatedAt' | 'deleted'>) => {
+    try {
+      await addDebtPayment(values)
+      setPayingDebt(null)
+      setError('')
+      await refresh()
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Could not save payment.')
+    }
+  }
+
+  const handleDeleteDebt = async (id?: string) => {
+    if (!id) return
+    await deleteDebt(id)
+    for (const payment of debtPayments) if (payment.debtId === id) await deleteDebtPayment(payment.id)
+    await refresh()
   }
 
   return (
@@ -330,12 +347,12 @@ function App() {
         <nav>
           <button className={`nav-item ${activeView === 'overview' ? 'active' : ''}`} onClick={() => navigate('overview')}><BarChart3 size={18} /> Overview</button>
           <button className={`nav-item ${activeView === 'transactions' ? 'active' : ''}`} onClick={() => navigate('transactions')}><Receipt size={18} /> Transactions</button>
+          <button className={`nav-item ${activeView === 'debts' ? 'active' : ''}`} onClick={() => navigate('debts')}><HandCoins size={18} /> Debts</button>
           <button className={`nav-item ${activeView === 'reports' ? 'active' : ''}`} onClick={() => navigate('reports')}><BarChart3 size={18} /> Reports</button>
         </nav>
         <div className="sidebar-bottom">
           {deferredPrompt && !appInstalled && <button className="nav-item" onClick={promptInstall}><MonitorDown size={18} /> Install app</button>}
           {appInstalled && <div className="installed-note"><Check size={15} /> Installed</div>}
-          <button className={`nav-item ${activeView === 'categories' ? 'active' : ''}`} onClick={() => navigate('categories')}><Settings size={18} /> Categories</button>
           <button className="nav-item" onClick={() => setIsDataModalOpen(true)}><Download size={18} /> Backup & import</button>
           <button className="nav-item" onClick={() => setIsSyncOpen(true)}><RefreshCcw size={18} /> Sync {user ? <span className="nav-badge">on</span> : null}</button>
           <div className="profile"><div className="avatar">AK</div><div><strong>My finances</strong><small>Local workspace</small></div></div>
@@ -347,18 +364,22 @@ function App() {
         {error && <div className="alert">{error}<button onClick={() => setError('')} aria-label="Dismiss error"><X size={16} /></button></div>}
         {activeView === 'overview' ? <><section className="hero-grid">
           <div className="balance-card"><div className="card-label">Total spent this month</div><div className="total-balance">{formatRupees(monthExpenses)}</div><div className="balance-meta"><span>Every expense you record, summed up.</span></div></div>
-          <div className="quick-card"><span className="card-label">Quick action</span><button onClick={() => { setEditingTransaction(null); setIsAdding(true) }}><span className="quick-icon expense"><ArrowUpRight size={18} /></span>Add expense <ChevronRight size={16} /></button></div>
+          <div className="metric-card"><span className="metric-icon green"><HandCoins size={16} /></span><small>You are owed</small><strong>{formatRupees(lentOutstanding)}</strong><small>Net lent outstanding</small></div>
+          <div className="metric-card"><span className="metric-icon red"><CircleDollarSign size={16} /></span><small>You owe</small><strong>{formatRupees(owingOutstanding)}</strong><small>Net borrowed outstanding</small></div>
+          <div className="quick-card"><span className="card-label">Quick action</span><button onClick={() => { setEditingTransaction(null); setIsAdding(true) }}><span className="quick-icon expense"><ArrowUpRight size={18} /></span>Add expense <ChevronRight size={16} /></button><button onClick={() => { setEditingDebt(null); setIsAddingDebt(true) }}><span className="quick-icon income"><HandCoins size={18} /></span>Add debt <ChevronRight size={16} /></button></div>
         </section>
         <section className="content-grid">
-          <div className="panel transactions-panel"><div className="panel-heading"><div><p className="eyebrow">Activity</p><h2>Recent transactions</h2></div><button className="text-button" onClick={() => navigate('transactions')}>View all <ChevronRight size={15} /></button></div>{transactions.length === 0 ? <EmptyState /> : <div className="transaction-list">{transactions.map((transaction) => { const category = categories.find((item) => item.id === transaction.categoryId); return <div className="transaction-row" key={transaction.id}><div className="transaction-icon expense"><Receipt size={17} /></div><div className="transaction-info"><strong>{transaction.description}</strong><small>{category?.name ?? 'Uncategorized'}</small></div><time>{new Date(`${transaction.date}T12:00:00`).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</time><strong className="amount">-{formatRupees(transaction.amountPaise)}</strong><button className="delete-button" onClick={() => { setEditingTransaction(transaction); setIsAdding(true) }} aria-label={`Edit ${transaction.description}`}><Settings size={15} /></button><button className="delete-button" onClick={() => transaction.id && deleteTransaction(transaction.id).then(refresh)} aria-label={`Delete ${transaction.description}`}><Trash2 size={15} /></button></div> })}</div>}<button className="add-transaction" onClick={() => { setEditingTransaction(null); setIsAdding(true) }}><Plus size={17} /> Add transaction</button></div>
+          <div className="panel transactions-panel"><div className="panel-heading"><div><p className="eyebrow">Activity</p><h2>Recent transactions</h2></div><button className="text-button" onClick={() => navigate('transactions')}>View all <ChevronRight size={15} /></button></div>{transactions.length === 0 ? <EmptyState /> : <div className="transaction-list">{transactions.map((transaction) => <div className="transaction-row" key={transaction.id}><div className="transaction-icon expense"><Receipt size={17} /></div><div className="transaction-info"><strong>{transaction.item}</strong><small>{transaction.description ?? 'Item purchase'}</small></div><time>{new Date(`${transaction.date}T12:00:00`).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</time><strong className="amount">-{formatRupees(transaction.amountPaise)}</strong><button className="delete-button" onClick={() => { setEditingTransaction(transaction); setIsAdding(true) }} aria-label={`Edit ${transaction.item}`}><Settings size={15} /></button><button className="delete-button" onClick={() => transaction.id && deleteTransaction(transaction.id).then(refresh)} aria-label={`Delete ${transaction.item}`}><Trash2 size={15} /></button></div>)}</div>}<button className="add-transaction" onClick={() => { setEditingTransaction(null); setIsAdding(true) }}><Plus size={17} /> Add transaction</button></div>
+          <div className="right-column"><div className="panel"><div className="panel-heading"><div><p className="eyebrow">Debts</p><h2>People</h2></div><button className="text-button" onClick={() => navigate('debts')}>View all <ChevronRight size={15} /></button></div>{debts.length === 0 ? <div className="empty-state"><HandCoins size={30} /><strong>No debts yet</strong><span>Add who owes you or who you owe.</span></div> : <div className="debt-list">{debts.slice(0, 5).map((debt) => { const outstanding = outstandingPaise(debt, debtPayments); return <div className="debt-row" key={debt.id}><div className="transaction-icon income"><HandCoins size={17} /></div><div className="transaction-info"><strong>{debt.person}</strong><small>{debt.direction === 'lent' ? 'Owes you' : 'You owe'} · {formatRupees(debt.amountPaise)}</small></div><strong className={debt.direction === 'lent' ? 'amount positive' : 'amount'}>{formatRupees(outstanding)}</strong></div> })}</div>}</div></div>
         </section></> : activeView === 'transactions'
-          ? <TransactionsView transactions={allTransactions} categories={categories} onEdit={(t) => { setEditingTransaction(t); setIsAdding(true) }} onDelete={(id) => { if (id == null) return; deleteTransaction(id).then(refresh) }} />
-          : activeView === 'categories'
-              ? <CategoriesView categories={categories} transactions={allTransactions} onAdd={() => setIsAddingCategory(true)} onArchive={archiveCategory} />
-                  : <ReportView transactions={allTransactions} categories={categories} />}
+          ? <TransactionsView transactions={allTransactions} onEdit={(t) => { setEditingTransaction(t); setIsAdding(true) }} onDelete={(id) => { if (id == null) return; deleteTransaction(id).then(refresh) }} />
+          : activeView === 'debts'
+              ? <DebtsView debts={debts} payments={debtPayments} onAdd={() => { setEditingDebt(null); setIsAddingDebt(true) }} onEdit={(debt) => { setEditingDebt(debt); setIsAddingDebt(true) }} onDelete={handleDeleteDebt} onPay={(debt) => setPayingDebt(debt)} />
+              : <ReportView transactions={allTransactions} />}
       </main>
-      {isAdding && <div className="modal-backdrop" onClick={() => { setIsAdding(false); setEditingTransaction(null) }}><div className="modal" onClick={(e) => e.stopPropagation()}><div className="modal-header"><div><p className="eyebrow">{editingTransaction ? 'Edit entry' : 'New entry'}</p><h2>{editingTransaction ? 'Edit transaction' : 'Add transaction'}</h2></div><button className="icon-button" onClick={() => { setIsAdding(false); setEditingTransaction(null) }} aria-label="Close"><X /></button></div><form onSubmit={submitTransaction}><label>Amount<input name="amount" inputMode="decimal" placeholder="0.00" defaultValue={editingTransaction ? (editingTransaction.amountPaise / 100).toFixed(2) : ''} autoFocus required /></label><label>Category<select name="categoryId" defaultValue={editingTransaction?.categoryId} required>{categories.map((category) => <option value={category.id} key={category.id}>{category.name}</option>)}</select></label><div className="form-grid"><label>Date<input name="date" type="date" defaultValue={editingTransaction?.date ?? today} required /></label><label>Description<input name="description" defaultValue={editingTransaction?.description ?? ''} placeholder="e.g. Morning coffee" /></label></div><button className="primary-button" type="submit">{editingTransaction ? 'Update transaction' : 'Save transaction'}</button></form></div></div>}
-      {isAddingCategory && <div className="modal-backdrop" onClick={() => setIsAddingCategory(false)}><div className="modal" onClick={(e) => e.stopPropagation()}><div className="modal-header"><div><p className="eyebrow">Customize</p><h2>Add category</h2></div><button className="icon-button" onClick={() => setIsAddingCategory(false)} aria-label="Close"><X /></button></div><form onSubmit={submitCategory}><label>Category name<input name="name" placeholder="e.g. Pet care" autoFocus required /></label><label>Color<input name="color" type="color" defaultValue="#64748b" /></label><button className="primary-button" type="submit">Save category</button></form></div></div>}
+      {isAdding && <div className="modal-backdrop" onClick={() => { setIsAdding(false); setEditingTransaction(null) }}><div className="modal" onClick={(e) => e.stopPropagation()}><div className="modal-header"><div><p className="eyebrow">{editingTransaction ? 'Edit entry' : 'New entry'}</p><h2>{editingTransaction ? 'Edit transaction' : 'Add transaction'}</h2></div><button className="icon-button" onClick={() => { setIsAdding(false); setEditingTransaction(null) }} aria-label="Close"><X /></button></div><form onSubmit={submitTransaction}><label>Item name<input name="item" placeholder="e.g. Pen, notebook" defaultValue={editingTransaction?.item} autoFocus required /></label><label>Amount<input name="amount" inputMode="decimal" placeholder="0.00" defaultValue={editingTransaction ? (editingTransaction.amountPaise / 100).toFixed(2) : ''} required /></label><div className="form-grid"><label>Date<input name="date" type="date" defaultValue={editingTransaction?.date ?? today} required /></label><label>Description (optional)<input name="description" defaultValue={editingTransaction?.description ?? ''} placeholder="e.g. blue ink pen" /></label></div><button className="primary-button" type="submit">{editingTransaction ? 'Update transaction' : 'Save transaction'}</button></form></div></div>}
+      {isAddingDebt && <DebtModal editing={editingDebt} onClose={() => { setIsAddingDebt(false); setEditingDebt(null) }} onSubmit={submitDebt} />}
+      {payingDebt && <PaymentModal debt={payingDebt} outstanding={outstandingPaise(payingDebt, debtPayments)} onClose={() => setPayingDebt(null)} onSubmit={submitPayment} />}
       {isDataModalOpen && <DataModal inputRef={backupInput} onClose={() => setIsDataModalOpen(false)} onRestored={refresh} />}
       {isSettingsOpen && <SettingsModal settings={settings} onChange={updateSettings} onReset={resetData} onClose={() => setIsSettingsOpen(false)} user={user} onPasswordReset={handlePasswordReset} onSendVerification={handleSendVerification} onDeleteAccount={handleDeleteAccount} />}
       {isSyncOpen && <SyncModal user={user} status={syncStatus} onClose={() => setIsSyncOpen(false)} onSignIn={handleSignIn} onSignUp={handleSignUp} onSignOut={handleSignOut} onSync={handleManualSync} />}
@@ -368,6 +389,39 @@ function App() {
 
 function EmptyState() {
   return <div className="empty-state"><Receipt size={30} /><strong>Your activity will appear here</strong><span>Add your first expense to get started.</span></div>
+}
+
+function DebtModal({ editing, onClose, onSubmit }: { editing: Debt | null; onClose: () => void; onSubmit: (values: Omit<Debt, 'id' | 'createdAt' | 'updatedAt' | 'deleted'>, id?: string) => Promise<void> }) {
+  const [direction, setDirection] = useState<'lent' | 'owing'>(editing?.direction ?? 'lent')
+  const [saving, setSaving] = useState(false)
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const form = new FormData(event.currentTarget)
+    const values = {
+      person: String(form.get('person') ?? '').trim() || 'Someone',
+      direction,
+      amountPaise: parseAmountToPaise(String(form.get('amount') ?? '')),
+      note: String(form.get('note') ?? '').trim() || undefined,
+      date: String(form.get('date') ?? today),
+    }
+    setSaving(true)
+    try { await onSubmit(values, editing?.id) } finally { setSaving(false) }
+  }
+  return <div className="modal-backdrop" onClick={onClose}><div className="modal" onClick={(e) => e.stopPropagation()}><div className="modal-header"><div><p className="eyebrow">{editing ? 'Edit entry' : 'New entry'}</p><h2>{editing ? 'Edit debt' : 'Add debt'}</h2></div><button className="icon-button" onClick={onClose} aria-label="Close"><X /></button></div><form onSubmit={submit}><div className="type-switcher"><button type="button" className={direction === 'lent' ? 'selected' : ''} onClick={() => setDirection('lent')}><HandCoins size={15} /> They owe me</button><button type="button" className={direction === 'owing' ? 'selected' : ''} onClick={() => setDirection('owing')}><CircleDollarSign size={15} /> I owe them</button></div><label>Person<input name="person" placeholder="e.g. Ramesh" defaultValue={editing?.person ?? ''} autoFocus required /></label><label>Amount<input name="amount" inputMode="decimal" placeholder="0.00" defaultValue={editing ? (editing.amountPaise / 100).toFixed(2) : ''} required /></label><div className="form-grid"><label>Date<input name="date" type="date" defaultValue={editing?.date ?? today} required /></label><label>Note (optional)<input name="note" defaultValue={editing?.note ?? ''} placeholder="Why?" /></label></div><button className="primary-button" type="submit" disabled={saving}>{editing ? 'Update debt' : 'Save debt'}</button></form></div></div>
+}
+
+function PaymentModal({ debt, outstanding, onClose, onSubmit }: { debt: Debt; outstanding: number; onClose: () => void; onSubmit: (values: Omit<DebtPayment, 'id' | 'createdAt' | 'updatedAt' | 'deleted'>) => Promise<void> }) {
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const form = new FormData(event.currentTarget)
+    const values = {
+      debtId: debt.id,
+      amountPaise: parseAmountToPaise(String(form.get('amount') ?? '')),
+      date: String(form.get('date') ?? today),
+    }
+    await onSubmit(values)
+  }
+  return <div className="modal-backdrop" onClick={onClose}><div className="modal" onClick={(e) => e.stopPropagation()}><div className="modal-header"><div><p className="eyebrow">Repayment</p><h2>Record payment</h2></div><button className="icon-button" onClick={onClose} aria-label="Close"><X /></button></div><form onSubmit={submit}><p className="report-subtitle">{debt.person} · {debt.direction === 'lent' ? 'owes you' : 'you owe'} {formatRupees(outstanding)} remaining</p><label>Amount<input name="amount" inputMode="decimal" placeholder="0.00" autoFocus required /></label><label>Date<input name="date" type="date" defaultValue={today} required /></label><button className="primary-button" type="submit">Save payment</button></form></div></div>
 }
 
 function DataModal({ inputRef, onClose, onRestored }: { inputRef: React.RefObject<HTMLInputElement | null>; onClose: () => void; onRestored: () => Promise<void> }) {
@@ -396,10 +450,10 @@ function DataModal({ inputRef, onClose, onRestored }: { inputRef: React.RefObjec
       event.target.value = ''
     }
   }
-  return <div className="modal-backdrop" onClick={onClose}><div className="modal" onClick={(e) => e.stopPropagation()}><div className="modal-header"><div><p className="eyebrow">Local data</p><h2>Backup & restore</h2></div><button className="icon-button" onClick={onClose} aria-label="Close"><X /></button></div><p className="budget-empty">Download every category and transaction as one validated JSON backup.</p><div className="data-actions"><button className="primary-button" onClick={downloadBackup}><Download size={15} /> Download backup</button><button className="secondary-button" onClick={() => inputRef.current?.click()}>Restore JSON backup</button><input ref={inputRef} type="file" accept="application/json,.json" hidden onChange={restore} /></div>{message && <div className="alert">{message}</div>}</div></div>
+  return <div className="modal-backdrop" onClick={onClose}><div className="modal" onClick={(e) => e.stopPropagation()}><div className="modal-header"><div><p className="eyebrow">Local data</p><h2>Backup & restore</h2></div><button className="icon-button" onClick={onClose} aria-label="Close"><X /></button></div><p className="budget-empty">Download every transaction and debt as one validated JSON backup.</p><div className="data-actions"><button className="primary-button" onClick={downloadBackup}><Download size={15} /> Download backup</button><button className="secondary-button" onClick={() => inputRef.current?.click()}>Restore JSON backup</button><input ref={inputRef} type="file" accept="application/json,.json" hidden onChange={restore} /></div>{message && <div className="alert">{message}</div>}</div></div>
 }
 
-function ReportView({ transactions, categories }: { transactions: Transaction[]; categories: Category[] }) {
+function ReportView({ transactions }: { transactions: Transaction[] }) {
   const [range, setRange] = useState<'month' | 'year' | 'all'>('month')
   const currentYear = today.slice(0, 4)
   const currentMonthNumber = today.slice(5, 7)
@@ -412,13 +466,18 @@ function ReportView({ transactions, categories }: { transactions: Transaction[];
       : transactionYear === currentYear
   })
   const expenseTotal = filtered.reduce((sum, item) => sum + item.amountPaise, 0)
-  const categoryTotals = categories
-    .map((category) => ({ ...category, total: filtered.filter((item) => item.categoryId === category.id).reduce((sum, item) => sum + item.amountPaise, 0) }))
-    .filter((category) => category.total > 0)
-    .sort((a, b) => b.total - a.total)
+  const itemTotals = useMemo(() => {
+    const totals = new Map<string, number>()
+    for (const item of filtered) {
+      const name = item.item.trim() || 'Untitled item'
+      totals.set(name, (totals.get(name) ?? 0) + item.amountPaise)
+    }
+    return [...totals.entries()].map(([name, total]) => ({ name, total })).sort((a, b) => b.total - a.total)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtered])
   const exportCsv = () => {
-    const rows = [['Date', 'Description', 'Category', 'Amount']]
-    filtered.forEach((item) => rows.push([item.date, item.description, categories.find((category) => category.id === item.categoryId)?.name ?? 'Uncategorized', (item.amountPaise / 100).toFixed(2)]))
+    const rows = [['Date', 'Item', 'Description', 'Amount']]
+    filtered.forEach((item) => rows.push([item.date, item.item, item.description ?? '', (item.amountPaise / 100).toFixed(2)]))
     const csv = rows.map((row) => row.map((value) => `"${value.replace(/"/g, '""')}"`).join(',')).join('\n')
     const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))
     const link = document.createElement('a')
@@ -430,19 +489,18 @@ function ReportView({ transactions, categories }: { transactions: Transaction[];
   return <section className="reports-view">
     <div className="report-toolbar"><div><p className="eyebrow">Analytics</p><h2>Financial reports</h2><p className="report-subtitle">A clear view of your spending activity.</p></div><div className="report-actions"><select value={range} onChange={(event) => setRange(event.target.value as typeof range)}><option value="month">This month</option><option value="year">This year</option><option value="all">All time</option></select><button className="export-button" onClick={exportCsv}><Download size={15} /> Export CSV</button></div></div>
     <div className="report-summary"><div className="report-card"><span>Total spent</span><strong className="negative">{formatRupees(expenseTotal)}</strong><small>{filtered.length} entries</small></div></div>
-    <div className="report-columns"><div className="panel"><div className="panel-heading"><div><p className="eyebrow">Breakdown</p><h2>Spending by category</h2></div></div>{categoryTotals.length === 0 ? <EmptyState /> : <div className="category-bars">{categoryTotals.map((category) => <div className="category-bar" key={category.id}><div><span>{category.name}</span><b>{formatRupees(category.total)}</b></div><div className="bar-track"><div style={{ width: `${(category.total / categoryTotals[0].total) * 100}%`, background: category.color }} /></div></div>)}</div>}</div><div className="panel"><div className="panel-heading"><div><p className="eyebrow">Ledger</p><h2>Report transactions</h2></div></div><div className="report-rows">{filtered.slice(0, 10).map((item) => <div className="report-row" key={item.id}><span>{item.date}</span><strong>{item.description}</strong><b className="negative">-{formatRupees(item.amountPaise)}</b></div>)}{filtered.length === 0 && <p className="budget-empty">No transactions in this period.</p>}</div></div></div>
+    <div className="report-columns"><div className="panel"><div className="panel-heading"><div><p className="eyebrow">Breakdown</p><h2>Spending by item</h2></div></div>{itemTotals.length === 0 ? <EmptyState /> : <div className="category-bars">{itemTotals.map((entry) => <div className="category-bar" key={entry.name}><div><span>{entry.name}</span><b>{formatRupees(entry.total)}</b></div><div className="bar-track"><div style={{ width: `${(entry.total / itemTotals[0].total) * 100}%`, background: '#2a8b74' }} /></div></div>)}</div>}</div><div className="panel"><div className="panel-heading"><div><p className="eyebrow">Ledger</p><h2>Report transactions</h2></div></div><div className="report-rows">{filtered.slice(0, 10).map((item) => <div className="report-row" key={item.id}><span>{item.date}</span><strong>{item.item}</strong><b className="negative">-{formatRupees(item.amountPaise)}</b></div>)}{filtered.length === 0 && <p className="budget-empty">No transactions in this period.</p>}</div></div></div>
   </section>
 }
 
-function TransactionsView({ transactions, categories, onEdit, onDelete }: { transactions: Transaction[]; categories: Category[]; onEdit: (t: Transaction) => void; onDelete: (id?: string) => void }) {
+function TransactionsView({ transactions, onEdit, onDelete }: { transactions: Transaction[]; onEdit: (t: Transaction) => void; onDelete: (id?: string) => void }) {
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState<'newest' | 'oldest' | 'amount'>('newest')
   const filtered = useMemo(() => {
     let rows = transactions.filter((t) => {
       if (query.trim()) {
         const q = query.trim().toLowerCase()
-        const categoryName = categories.find((c) => c.id === t.categoryId)?.name.toLowerCase() ?? ''
-        if (!t.description.toLowerCase().includes(q) && !categoryName.includes(q)) return false
+        if (!t.item.toLowerCase().includes(q) && !(t.description ?? '').toLowerCase().includes(q)) return false
       }
       return true
     })
@@ -450,18 +508,15 @@ function TransactionsView({ transactions, categories, onEdit, onDelete }: { tran
     else if (sort === 'oldest') rows = [...rows].sort((a, b) => a.date.localeCompare(b.date))
     else rows = [...rows].sort((a, b) => b.amountPaise - a.amountPaise)
     return rows
-  }, [transactions, query, sort, categories])
+  }, [transactions, query, sort])
   const total = filtered.reduce((sum, t) => sum + t.amountPaise, 0)
   return <section className="reports-view">
     <div className="report-toolbar"><div><p className="eyebrow">Ledger</p><h2>All transactions</h2><p className="report-subtitle">{filtered.length} entries · {formatRupees(total)} spent</p></div></div>
     <div className="history-toolbar">
-      <div className="search-box"><Search size={15} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search description or category" /></div>
+      <div className="search-box"><Search size={15} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search item or description" /></div>
       <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="amount">Highest amount</option></select>
     </div>
-    <div className="panel"><div className="report-rows">{filtered.length === 0 ? <EmptyState /> : filtered.map((item) => {
-      const category = categories.find((c) => c.id === item.categoryId)
-      return <div className="history-row" key={item.id}><div className="transaction-info"><strong>{item.description}</strong><small>{category?.name ?? 'Uncategorized'} · {item.date}</small></div><b className="negative">-{formatRupees(item.amountPaise)}</b><button className="row-action" onClick={() => onEdit(item)} aria-label="Edit"><Pencil size={14} /></button><button className="row-action danger" onClick={() => onDelete(item.id)} aria-label="Delete"><Trash2 size={14} /></button></div>
-    })}</div></div>
+    <div className="panel"><div className="report-rows">{filtered.length === 0 ? <EmptyState /> : filtered.map((item) => <div className="history-row" key={item.id}><div className="transaction-info"><strong>{item.item}</strong><small>{item.description ?? 'Item purchase'} · {item.date}</small></div><b className="negative">-{formatRupees(item.amountPaise)}</b><button className="row-action" onClick={() => onEdit(item)} aria-label="Edit"><Pencil size={14} /></button><button className="row-action danger" onClick={() => onDelete(item.id)} aria-label="Delete"><Trash2 size={14} /></button></div>)}</div></div>
   </section>
 }
 
@@ -473,20 +528,24 @@ function SettingsModal({ settings, onChange, onReset, onClose, user, onPasswordR
   </div></div>
 }
 
-function CategoriesView({ categories, transactions, onAdd, onArchive }: { categories: Category[]; transactions: Transaction[]; onAdd: () => void; onArchive: (id?: string) => void }) {
-  const usage = useMemo(() => {
-    const map = new Map<string, number>()
-    for (const t of transactions) if (t.categoryId) map.set(t.categoryId, (map.get(t.categoryId) ?? 0) + 1)
-    return map
-  }, [transactions])
-  if (categories.length === 0) return <section className="reports-view"><div className="report-toolbar"><div><p className="eyebrow">Customize</p><h2>Categories</h2><p className="report-subtitle">0 active categories</p></div><button className="primary-button add-button" onClick={onAdd}><Plus size={15} /> Add category</button></div><EmptyState /></section>
+function DebtsView({ debts, payments, onAdd, onEdit, onDelete, onPay }: { debts: Debt[]; payments: DebtPayment[]; onAdd: () => void; onEdit: (debt: Debt) => void; onDelete: (id?: string) => void; onPay: (debt: Debt) => void }) {
+  const lent = debts.filter((d) => d.direction === 'lent')
+  const owing = debts.filter((d) => d.direction === 'owing')
+  const lentTotal = lent.reduce((sum, d) => sum + outstandingPaise(d, payments), 0)
+  const owingTotal = owing.reduce((sum, d) => sum + outstandingPaise(d, payments), 0)
+  if (debts.length === 0) return <section className="reports-view"><div className="report-toolbar"><div><p className="eyebrow">People</p><h2>Debts</h2><p className="report-subtitle">Track money you owe or are owed.</p></div><button className="primary-button add-button" onClick={onAdd}><Plus size={15} /> Add debt</button></div><EmptyState /></section>
   return <section className="reports-view">
-    <div className="report-toolbar"><div><p className="eyebrow">Customize</p><h2>Categories</h2><p className="report-subtitle">{categories.length} active categories</p></div><button className="primary-button add-button" onClick={onAdd}><Plus size={15} /> Add category</button></div>
-    <div className="category-grid">{categories.map((category) => {
-      const count = usage.get(category.id) ?? 0
-      return <div className="panel category-card" key={category.id}><div className="category-card-top"><span className="account-color" style={{ background: category.color }}><Settings size={17} /></span><button className="row-action danger" onClick={() => onArchive(category.id)} aria-label="Archive category"><Trash2 size={14} /></button></div><strong>{category.name}</strong><small>{count === 0 ? 'Unused' : `${count} transaction${count === 1 ? '' : 's'}`}</small></div>
-    })}</div>
-    <p className="report-subtitle">Categories already used by past transactions are archived, never deleted, to keep your history intact.</p>
+    <div className="report-toolbar"><div><p className="eyebrow">People</p><h2>Debts</h2><p className="report-subtitle">Track money you owe or are owed.</p></div><button className="primary-button add-button" onClick={onAdd}><Plus size={15} /> Add debt</button></div>
+    <div className="report-summary"><div className="report-card"><span>They owe you</span><strong>{formatRupees(lentTotal)}</strong><small>{lent.length} people</small></div><div className="report-card"><span>You owe</span><strong className="negative">{formatRupees(owingTotal)}</strong><small>{owing.length} people</small></div></div>
+    <div className="panel"><div className="panel-heading"><div><p className="eyebrow">Ledger</p><h2>All debts</h2></div></div><div className="debt-list">{[...debts].sort((a, b) => b.date.localeCompare(a.date)).map((debt) => {
+      const outstanding = outstandingPaise(debt, payments)
+      const paid = debt.amountPaise - outstanding
+      const settled = outstanding <= 0
+      const partial = !settled && paid > 0
+      const status = settled ? 'paid' : partial ? 'partial' : 'unpaid'
+      const statusLabel = settled ? 'Paid' : partial ? 'Partially paid' : 'Unpaid'
+      return <div className="debt-row" key={debt.id}><div className="transaction-info"><strong>{debt.person}</strong><small>{debt.note ?? ''}{debt.note ? ' · ' : ''}{debt.date}</small></div><span className={`direction-badge ${debt.direction}`}>{debt.direction === 'lent' ? 'Owed to you' : 'You owe'}</span><div className="debt-amounts"><span className={`debt-status ${status}`}>{statusLabel}</span><small className={`paid-amount ${status}`}>Paid {formatRupees(paid)}</small><b className={settled ? 'settled' : debt.direction === 'lent' ? '' : 'negative'}>{formatRupees(outstanding)}</b></div><button className="row-action" onClick={() => onPay(debt)} aria-label="Record payment"><Check size={14} /></button><button className="row-action" onClick={() => onEdit(debt)} aria-label="Edit"><Pencil size={14} /></button><button className="row-action danger" onClick={() => onDelete(debt.id)} aria-label="Delete"><Trash2 size={14} /></button></div>
+    })}</div></div>
   </section>
 }
 

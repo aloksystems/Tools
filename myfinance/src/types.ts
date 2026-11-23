@@ -4,18 +4,34 @@ export interface SyncFields {
   deleted: boolean
 }
 
-export interface Category extends SyncFields {
-  id: string
-  name: string
-  color: string
-  archived: boolean
-}
-
 export interface Transaction extends SyncFields {
   id: string
   amountPaise: number
-  categoryId?: string
-  description: string
+  /** Name of the item or thing bought. */
+  item: string
+  /** Optional extra note. */
+  description?: string
+  date: string
+  createdAt: string
+}
+
+/** A debt between you and another person. */
+export interface Debt extends SyncFields {
+  id: string
+  person: string
+  /** 'owing' = you owe them (you borrowed); 'lent' = they owe you (you lent). */
+  direction: 'owing' | 'lent'
+  amountPaise: number
+  note?: string
+  date: string
+  createdAt: string
+}
+
+/** A repayment against a debt, reducing its outstanding balance. */
+export interface DebtPayment extends SyncFields {
+  id: string
+  debtId: string
+  amountPaise: number
   date: string
   createdAt: string
 }

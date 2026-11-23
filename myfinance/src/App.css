@@ -64,6 +64,34 @@ h1, h2 { margin: 0; color: #17211f; font-family: Manrope, sans-serif; letter-spa
 .row-action:hover { background: #eef4f1; color: #217764; }
 .row-action.danger:hover { background: #fdebe8; color: #dc7168; }
 .goal-heading .row-action { vertical-align: middle; margin-left: 4px; }
+.debt-list { display: flex; flex-direction: column; }
+.debt-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f3f2; }
+.debt-row .transaction-info { flex: 1; min-width: 0; }
+.debt-row .transaction-info small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.direction-badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.direction-badge.lent { color: #217764; background: #e5f4ee; }
+.direction-badge.owing { color: #b4552e; background: #fdf0e7; }
+.debt-amounts { display: grid; gap: 2px; text-align: right; }
+.debt-amounts b { font-size: 13px; min-width: 80px; text-align: right; }
+.debt-amounts small { color: #83928d; font-size: 11px; }
+.debt-status { justify-self: end; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.debt-status.paid { color: #217764; background: #e5f4ee; }
+.debt-status.partial { color: #9a6911; background: #fbf1dd; }
+.debt-status.unpaid { color: #c2544a; background: #fdebe8; }
+.paid-amount.paid { color: #278c6c; }
+.paid-amount.partial { color: #9a6911; }
+.paid-amount.unpaid { color: #cc5a50; }
+.settled { color: #278c6c; }
+[data-theme="dark"] .debt-row { border-bottom-color: #213029; }
+[data-theme="dark"] .direction-badge.lent { color: #6fd0b0; background: #1f332c; }
+[data-theme="dark"] .direction-badge.owing { color: #ef9a6e; background: #3a2a1f; }
+[data-theme="dark"] .debt-amounts small { color: #6f7f79; }
+[data-theme="dark"] .debt-status.paid { color: #6fd0b0; background: #1f332c; }
+[data-theme="dark"] .debt-status.partial { color: #e9b35f; background: #3a2d19; }
+[data-theme="dark"] .debt-status.unpaid { color: #f0a399; background: #331f1b; }
+[data-theme="dark"] .paid-amount.paid, [data-theme="dark"] .settled { color: #6fd0b0; }
+[data-theme="dark"] .paid-amount.partial { color: #e9b35f; }
+[data-theme="dark"] .paid-amount.unpaid { color: #f0a399; }
 .settings-section { margin-bottom: 20px; }
 .settings-section h3 { margin: 0 0 10px; font: 700 12px Manrope, sans-serif; color: #43544e; }
 .type-switcher.two { grid-template-columns: repeat(2, 1fr); }
