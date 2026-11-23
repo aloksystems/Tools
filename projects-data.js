@@ -312,7 +312,7 @@ const projectsData = [
     description:
       "A private, local-first personal finance tracker for managing expenses, income, budgets, savings goals, debts, and loans. Your financial data stays on your device.",
     tags: ["React", "TypeScript", "Finance", "Budgeting", "Privacy"],
-    demo: "https://aloksystems.github.io/Tools/myfinance/",
+    demo: "https://myfinance-seven-snowy.vercel.app/",
     icon: "₹",
     iconColor: "#155A4D",
     featured: true,
