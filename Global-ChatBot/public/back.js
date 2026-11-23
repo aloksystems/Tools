@@ -120,10 +120,10 @@
     footer.setAttribute("data-global-footer", "");
     footer.innerHTML =
       '<div class="global-tool-footer-inner">' +
-      '<a class="global-tool-footer-brand" href="/" aria-label="Alok Systems Tools home">' +
+      '<a class="global-tool-footer-brand" href="https://aloksystems.github.io/Tools/" aria-label="Alok Systems Tools home">' +
       '<span class="global-brand-mark" aria-hidden="true">A</span>' +
       '<span><strong>Alok Systems Tools</strong><small>© ' + new Date().getFullYear() + ' · Tools for everyday work.</small></span></a>' +
-      '<nav class="global-tool-footer-nav" aria-label="Footer navigation"><a href="/">Home</a><a href="/#tools">All tools</a><a href="/#about">About</a></nav>' +
+      '<nav class="global-tool-footer-nav" aria-label="Footer navigation"><a href="https://aloksystems.github.io/Tools/">Home</a><a href="https://aloksystems.github.io/Tools/#tools">All tools</a><a href="https://aloksystems.github.io/Tools/#about">About</a></nav>' +
       '</div>';
     document.body.appendChild(footer);
   }
@@ -138,7 +138,7 @@
     var a = document.createElement("a");
     a.className = "global-back-btn";
     a.setAttribute("data-global-back", "");
-    a.href = "/";
+    a.href = "https://aloksystems.github.io/Tools/";
     a.setAttribute("aria-label", "Back to all tools");
     a.innerHTML = '<span aria-hidden="true">\u2190</span> All Tools';
     a.addEventListener("click", function (e) {
@@ -152,7 +152,7 @@
         }
       } catch (err2) {}
       try {
-        window.location.href = "/";
+        window.location.href = "https://aloksystems.github.io/Tools/";
       } catch (err3) {}
     });
     document.body.appendChild(a);
@@ -190,12 +190,12 @@
     home.setAttribute("data-global-shell", "");
     home.innerHTML =
       '<div class="global-shell-inner">' +
-      '<a class="global-brand" href="/" aria-label="Alok Systems Tools home">' +
+      '<a class="global-brand" href="https://aloksystems.github.io/Tools/" aria-label="Alok Systems Tools home">' +
       '<span class="global-brand-mark" aria-hidden="true">A</span>' +
       '<span><strong>Alok Systems</strong><small>Tools</small></span>' +
       "</a>" +
       '<nav class="global-nav" aria-label="Primary navigation">' +
-      '<a href="/">Home</a><a href="/#tools">Tools</a><a href="/#about">About</a>' +
+      '<a href="https://aloksystems.github.io/Tools/">Home</a><a href="https://aloksystems.github.io/Tools/#tools">Tools</a><a href="https://aloksystems.github.io/Tools/#about">About</a>' +
       "</nav>" +
       '<div class="global-tool-actions" data-global-actions></div>' +
       '<button class="global-theme-toggle" type="button" aria-label="Toggle color theme">' +

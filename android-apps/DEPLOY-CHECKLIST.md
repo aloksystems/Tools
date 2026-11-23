@@ -19,7 +19,7 @@ Any static or PHP-capable host works. Requirements:
 
 ## 2. Replace the placeholder hostname (you)
 
-Swap `aloksystems.freedev.app` for your real domain in:
+Use `https://aloksystems.github.io/Tools/` as the public GitHub Pages domain in:
 
 - `sitemap.xml` (all `<loc>`)
 - `robots.txt` (`Sitemap:` line)

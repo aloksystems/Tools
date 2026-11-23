@@ -6,7 +6,7 @@ one-time view, download blocking, and hidden file names.
 
 ## How it works (static / local mode)
 
-- `index.html`, `style.css`, `script.js` — the live tool on `aloksystems.freedev.app`.
+- `index.html`, `style.css`, `script.js` — the live tool on `https://aloksystems.github.io/Tools/SnapShare/`.
   No build step, no external dependencies.
 - Files are stored as Blobs in IndexedDB, with the transfer metadata alongside them.
 - Share links look like `…/SnapShare/#/s/<id>`. They open the receiver view on the

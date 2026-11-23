@@ -1,11 +1,11 @@
-﻿const projectsData = [
+const projectsData = [
   {
     name: "Universal Converter",
     category: "Desktop App",
     description:
       "A privacy-first desktop converter that turns images, documents, audio, video and archives into other formats entirely offline — files never leave your PC. Built with Tauri and Rust for fast, native performance.",
     tags: ["Windows", "Desktop", "Offline", "Rust", "Tauri"],
-    demo: "https://aloksystems.freedev.app/Universal-Converter-Download/",
+    demo: "https://aloksystems.github.io/Tools/Universal-Converter-Download/",
     repo: "https://github.com/aloksystems/Tools/tree/main/universal-converter",
     icon: "⇄",
     iconColor: "#14B8A6",
@@ -19,7 +19,7 @@
     description:
       "A secure and lightweight temporary email service that lets users generate disposable email addresses instantly for OTPs, testing, signups, and privacy protection. Fast, clean, and easy to use with real-time inbox support.",
     tags: ["JavaScript", "Temp Mail", "Email"],
-    demo: "https://aloksystems.freedev.app/TempMail/",
+    demo: "https://aloksystems.github.io/Tools/TempMail/",
     icon: "@",
     iconColor: "#0EA5E9",
     pinned: true,
@@ -30,7 +30,7 @@
     description:
       "A comprehensive suite of browser-based PDF manipulation tools that allow you to convert, edit, protect, and optimize PDF documents. All processing happens locally in your browser — your files never leave your computer!",
     tags: ["JavaScript", "PDF", "Document Processing"],
-    demo: "https://aloksystems.freedev.app/PDF-Tools/",
+    demo: "https://aloksystems.github.io/Tools/PDF-Tools/",
     icon: "PDF",
     iconColor: "#EF4444",
     pinned: true,
@@ -42,7 +42,7 @@
     description:
       "Generate QR codes instantly for URLs, text, WiFi networks, and vCards. Fully customizable with color, size options and PNG/SVG download.",
     tags: ["JavaScript", "QR Code", "Utilities"],
-    demo: "https://aloksystems.freedev.app/QR-Generator/",
+    demo: "https://aloksystems.github.io/Tools/QR-Generator/",
     icon: "▣",
     iconColor: "#0D9488",
     pinned: true,
@@ -66,7 +66,7 @@
     description:
       "A paced writing assistant for handwritten assignments. Paste an assignment, choose how much text to see at once — word, phrase, or sentence — and follow a moving highlight as you write it out by hand at your own speed. Runs entirely in the browser with no uploads.",
     tags: ["Assignments", "Writing", "Productivity", "Study"],
-    demo: "https://aloksystems.freedev.app/Assignment-Writer/",
+    demo: "https://aloksystems.github.io/Tools/Assignment-Writer/",
     icon: "A",
     iconColor: "#14B8A6",
     pinned: true,
@@ -84,7 +84,7 @@
       "N-up Printing",
       "Productivity",
     ],
-    demo: "https://aloksystems.freedev.app/one-page-print/",
+    demo: "https://aloksystems.github.io/Tools/one-page-print/",
     icon: "≡",
     iconColor: "#3B82F6",
     pinned: true,
@@ -102,7 +102,7 @@
       "Productivity",
       "Task Management",
     ],
-    demo: "https://todo-murex-omega-74.vercel.app/",
+    demo: "https://todo-psi-six-74.vercel.app/",
     icon: "✓",
     iconColor: "#10B981",
     pinned: true,
@@ -114,7 +114,7 @@
     description:
       "Bundle photos and videos into a self-destructing share link with a password, an expiry timer and one-time view — everything stays in your browser.",
     tags: ["TypeScript", "Express", "Vite", "File Sharing", "Security"],
-    demo: "https://aloksystems.freedev.app/SnapShare/",
+    demo: "https://aloksystems.github.io/Tools/SnapShare/",
     icon: "S",
     iconColor: "#6366F1",
     pinned: true,
@@ -126,7 +126,7 @@
     description:
       "Calculate your exact age down to the second with a clean, instant interface. Supports multiple birth dates and provides years, months, and days breakdown.",
     tags: ["JavaScript", "Date", "Calculator"],
-    demo: "https://aloksystems.freedev.app/Age-Calculator/",
+    demo: "https://aloksystems.github.io/Tools/Age-Calculator/",
     icon: "A",
     iconColor: "#F97316",
   },
@@ -136,7 +136,7 @@
     description:
       "A privacy-first bulk document preparation tool for converting, resizing, and compressing photos, signatures, certificates, and PDFs for government and non-government forms. Process multiple files at once, customize requirements for each document, and download everything individually or as a ZIP — entirely in your browser.",
     tags: ["PDF", "Image", "Converter", "Compressor", "Documents"],
-    demo: "https://aloksystems.freedev.app/FormReady/",
+    demo: "https://aloksystems.github.io/Tools/FormReady/",
     icon: "F",
     iconColor: "#0D9488",
     pinned: true,
@@ -147,7 +147,7 @@
     description:
       "Convert between units of length, mass, temperature, and volume instantly. Accurate SI-based conversions with a clean interface.",
     tags: ["JavaScript", "Utilities", "Converter"],
-    demo: "https://aloksystems.freedev.app/Unit-Converter/",
+    demo: "https://aloksystems.github.io/Tools/Unit-Converter/",
     icon: "U",
     iconColor: "#6366F1",
   },
@@ -159,7 +159,7 @@
     description:
       "An interactive number counting application for learning and practicing number skills with engaging visual feedback.",
     tags: ["JavaScript", "Educational", "Interactive"],
-    demo: "https://aloksystems.freedev.app/Number-Count/",
+    demo: "https://aloksystems.github.io/Tools/Number-Count/",
     icon: "N",
     iconColor: "#F43F5E",
   },
@@ -171,7 +171,7 @@
     description:
       "Convert MP4 videos to MP3 audio directly in your browser. No files are uploaded to any server, ensuring your media stays private and secure.",
     tags: ["MP4", "MP3", "Converter", "FFmpeg"],
-    demo: "https://mp-4-to-mp-3-converter.vercel.app/",
+    demo: "https://aloksystems.github.io/Tools/",
     icon: "♪",
     iconColor: "#EF4444",
     pinned: true,
@@ -182,7 +182,7 @@
     description:
       "A privacy-friendly, browser-based image resizing tool that lets users resize images to exact pixel dimensions while maintaining aspect ratio when needed. All processing happens locally in the browser without uploading images to any server.",
     tags: ["JavaScript", "Image Processing", "Resizer"],
-    demo: "https://aloksystems.freedev.app/Image-Pixel-Resizer/",
+    demo: "https://aloksystems.github.io/Tools/Image-Pixel-Resizer/",
     icon: "P",
     iconColor: "#8B5CF6",
     featured: true,
@@ -193,7 +193,7 @@
     description:
       "A browser-based passport photo maker that allows users to create properly sized passport and ID photos, adjust dimensions, crop images, and generate printable photo sheets. All image processing happens locally in the browser without uploading photos to any server.",
     tags: ["JavaScript", "Image Processing", "Passport Photo"],
-    demo: "https://aloksystems.freedev.app/Passport-Size-Image-Maker/",
+    demo: "https://aloksystems.github.io/Tools/Passport-Size-Image-Maker/",
     icon: "ID",
     iconColor: "#14B8A6",
     featured: true,
@@ -204,7 +204,7 @@
     description:
       "A modern, client-side image compression tool that allows users to compress images without uploading them to any server. All processing happens directly in the browser for maximum privacy and security.",
     tags: ["JavaScript", "Image Processing", "Compression"],
-    demo: "https://aloksystems.freedev.app/Image-Compressor/",
+    demo: "https://aloksystems.github.io/Tools/Image-Compressor/",
     icon: "C",
     iconColor: "#F59E0B",
     featured: true,
@@ -215,7 +215,7 @@
     description:
       "A powerful, browser-based image conversion tool that allows users to convert images between multiple formats (PNG, JPG, WebP, AVIF) with customizable quality settings.",
     tags: ["JavaScript", "Image Processing", "Converter"],
-    demo: "https://aloksystems.freedev.app/Image-Converter/",
+    demo: "https://aloksystems.github.io/Tools/Image-Converter/",
     icon: "⌁",
     iconColor: "#6366F1",
   },
@@ -225,7 +225,7 @@
     description:
       "Convert images containing text into editable text using OCR technology powered by Tesseract.js. Supports drag-and-drop image uploading and a clean, modern UI.",
     tags: ["JavaScript", "OCR", "AI"],
-    demo: "https://aloksystems.freedev.app/Image-To-Text/",
+    demo: "https://aloksystems.github.io/Tools/Image-To-Text/",
     icon: "OCR",
     iconColor: "#0EA5E9",
     pinned: true,
@@ -236,7 +236,7 @@
     description:
       "Edit images with resize, rotate, crop, filters, and text overlays. Built with HTML, CSS, and JavaScript using the Canvas API and Cropper.js.",
     tags: ["JavaScript", "Image Processing", "Editing"],
-    demo: "https://aloksystems.freedev.app/Image-Editor/",
+    demo: "https://aloksystems.github.io/Tools/Image-Editor/",
     icon: "E",
     iconColor: "#EC4899",
   },
@@ -246,7 +246,7 @@
     description:
       "A powerful, client-side YouTube thumbnail downloader that allows users to extract and download thumbnails from any YouTube video in multiple resolutions without requiring any server-side processing.",
     tags: ["JavaScript", "YouTube API", "Downloader"],
-    demo: "https://aloksystems.freedev.app/Thumbnail-Downloader/",
+    demo: "https://aloksystems.github.io/Tools/Thumbnail-Downloader/",
     icon: "▶",
     iconColor: "#F97316",
   },
@@ -256,7 +256,7 @@
     description:
       "A fast, privacy-focused online tool for downloading YouTube videos directly in your browser. No files are uploaded to any server, ensuring your media stays private and secure.",
     tags: ["Python", "YouTube API", "Downloader"],
-    demo: "https://aloksystems.freedev.app/Yt_Downloader/",
+    demo: "https://aloksystems.github.io/Tools/Yt_Downloader/",
     icon: "▶▮",
     iconColor: "#EF4444",
     featured: true,
@@ -267,7 +267,7 @@
     description:
       "A browser-based image background removal tool that instantly removes the background from any image with AI-powered precision. No uploads required — all processing happens locally.",
     tags: ["JavaScript", "Image Processing", "AI"],
-    demo: "https://aloksystems.freedev.app/BG-Remove/",
+    demo: "https://aloksystems.github.io/Tools/BG-Remove/",
     icon: "⊗",
     iconColor: "#10B981",
   },
@@ -279,7 +279,7 @@
     description:
       "A modern web application for chatting with various AI models using the OpenRouter.ai API. The app allows users to select from multiple AI models and maintains chat history for each model.",
     tags: ["Python", "AI", "NLP"],
-    demo: "https://aloksystems.freedev.app/AI-ChatBot/",
+    demo: "https://aloksystems.github.io/Tools/AI-ChatBot/",
     icon: "AI",
     iconColor: "#8B5CF6",
     featured: true,
@@ -291,7 +291,7 @@
     description:
       "Real-time chat with a global room and private rooms. Sign in, reply, react, edit, and delete messages, with presence and typing indicators.",
     tags: ["JavaScript", "Firebase", "Realtime"],
-    demo: "https://aloksystems.freedev.app/Global-ChatBot/",
+    demo: "https://aloksystems.github.io/Tools/Global-ChatBot/",
     icon: "G",
     iconColor: "#14B8A6",
   },
@@ -303,7 +303,7 @@
     description:
       "Calculate milk delivery accounts, track schedules, account for missed deliveries, and generate reports for specific date ranges.",
     tags: ["JavaScript", "Agriculture", "Finance"],
-    demo: "https://aloksystems.freedev.app/Dairy-Management/",
+    demo: "https://aloksystems.github.io/Tools/Dairy-Management/",
     icon: "D",
     iconColor: "#F59E0B",
   },
@@ -313,7 +313,7 @@
     description:
       "Track work hours, manage productivity, analyze work patterns, and monitor earnings with a clean, responsive interface.",
     tags: ["JavaScript", "Productivity", "Time Tracking"],
-    demo: "https://aloksystems.freedev.app/Work-Hour/",
+    demo: "https://aloksystems.github.io/Tools/Work-Hour/",
     icon: "W",
     iconColor: "#3B82F6",
   },
@@ -323,7 +323,7 @@
     description:
       "A catalogue of Android apps from Alok Systems, with app details, release information, and APK downloads.",
     tags: ["Android", "APK", "Apps"],
-    demo: "https://aloksystems.freedev.app/android-apps/",
+    demo: "https://aloksystems.github.io/Tools/android-apps/",
     icon: "A",
     iconColor: "#3B82F6",
     pinned: true,

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://aloksystems.freedev.app/</loc></url>
-  <url><loc>https://aloksystems.freedev.app/android-apps/apps.html</loc></url>
-  <url><loc>https://aloksystems.freedev.app/android-apps/about.html</loc></url>
-  <url><loc>https://aloksystems.freedev.app/android-apps/contact.html</loc></url>
-  <url><loc>https://aloksystems.freedev.app/android-apps/privacy.html</loc></url>
-  <url><loc>https://aloksystems.freedev.app/android-apps/apps/driftlock.html</loc></url>
-  <url><loc>https://aloksystems.freedev.app/android-apps/apps/vaultix.html</loc></url>
-  <url><loc>https://aloksystems.freedev.app/android-apps/apps/fake-caller.html</loc></url>
-  <url><loc>https://aloksystems.freedev.app/android-apps/apps/apexclasses-app.html</loc></url>
+  <url><loc>https://aloksystems.github.io/Tools/</loc></url>
+  <url><loc>https://aloksystems.github.io/Tools/android-apps/apps.html</loc></url>
+  <url><loc>https://aloksystems.github.io/Tools/android-apps/about.html</loc></url>
+  <url><loc>https://aloksystems.github.io/Tools/android-apps/contact.html</loc></url>
+  <url><loc>https://aloksystems.github.io/Tools/android-apps/privacy.html</loc></url>
+  <url><loc>https://aloksystems.github.io/Tools/android-apps/apps/driftlock.html</loc></url>
+  <url><loc>https://aloksystems.github.io/Tools/android-apps/apps/vaultix.html</loc></url>
+  <url><loc>https://aloksystems.github.io/Tools/android-apps/apps/fake-caller.html</loc></url>
+  <url><loc>https://aloksystems.github.io/Tools/android-apps/apps/apexclasses-app.html</loc></url>
 </urlset>
