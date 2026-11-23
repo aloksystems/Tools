@@ -2,7 +2,9 @@
 
 ## About
 
-Live tools site: [https://aloksystems.github.io/Tools/](https://aloksystems.github.io/Tools/) — 35+ free browser tools and Android apps
+35+ free browser tools and Android apps for productivity, creativity, document work, media processing, finance, and everyday tasks. Everything is designed to be simple, fast, privacy-friendly, and useful without unnecessary sign-ups.
+
+[aloksystems.github.io/Tools/](https://aloksystems.github.io/Tools/)
 
 ## Table of Contents
 

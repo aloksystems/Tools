@@ -166,17 +166,6 @@ const projectsData = [
 
   // Media Tools
   {
-    name: "MP4 to MP3 Converter",
-    category: "Media Tools",
-    description:
-      "Convert MP4 videos to MP3 audio directly in your browser. No files are uploaded to any server, ensuring your media stays private and secure.",
-    tags: ["MP4", "MP3", "Converter", "FFmpeg"],
-    demo: "https://aloksystems.github.io/Tools/",
-    icon: "♪",
-    iconColor: "#EF4444",
-    pinned: true,
-  },
-  {
     name: "Image Pixel Resizer",
     category: "Media Tools",
     description:
@@ -316,6 +305,18 @@ const projectsData = [
     demo: "https://aloksystems.github.io/Tools/Work-Hour/",
     icon: "W",
     iconColor: "#3B82F6",
+  },
+  {
+    name: "MyFinance",
+    category: "Finance & Business",
+    description:
+      "A private, local-first personal finance tracker for managing expenses, income, budgets, savings goals, debts, and loans. Your financial data stays on your device.",
+    tags: ["React", "TypeScript", "Finance", "Budgeting", "Privacy"],
+    demo: "https://aloksystems.github.io/Tools/myfinance/",
+    icon: "₹",
+    iconColor: "#155A4D",
+    featured: true,
+    pinned: true,
   },
   {
     name: "Android Apps",
