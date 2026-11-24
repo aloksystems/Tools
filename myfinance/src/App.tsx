@@ -6,6 +6,8 @@ import {
   ChevronRight,
   CircleDollarSign,
   Download,
+  Eye,
+  EyeOff,
   HandCoins,
   Menu,
   MonitorDown,
@@ -69,6 +71,7 @@ function App() {
   const navigate = (view: View) => {
     window.history.pushState({}, '', VIEW_PATHS[view])
     setActiveView(view)
+    setMobileNav(false)
     window.scrollTo(0, 0)
   }
   useEffect(() => {
@@ -97,7 +100,7 @@ function App() {
       if (nextUser) {
         setSyncStatus('Syncing…')
         syncNow(nextUser.uid)
-          .then(({ pushed }) => { setSyncStatus(`Synced ${pushed} areas`); return refresh() })
+          .then(({ pushed }) => { setSyncStatus(`Synced ${pushed} areas · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`); return refresh() })
           .catch(() => setSyncStatus('Sync failed'))
         const stopRemote = subscribeToRemote(nextUser.uid, () => { refresh().catch(() => undefined) })
         const stopLocal = watchLocalChanges(nextUser.uid)
@@ -157,12 +160,23 @@ function App() {
   }, [settings.theme])
 
   useEffect(() => {
-    const refreshOnFocus = () => { refresh().catch(() => undefined) }
-    window.addEventListener('focus', refreshOnFocus)
-    const onVisibility = () => { if (!document.hidden) refreshOnFocus() }
+    let lastSyncAt = 0
+    const maybeSync = () => {
+      refresh().catch(() => undefined)
+      const current = getFirebaseAuth()?.currentUser
+      if (current && Date.now() - lastSyncAt > 30000) {
+        lastSyncAt = Date.now()
+        setSyncStatus('Syncing…')
+        syncNow(current.uid)
+          .then(({ pushed }) => setSyncStatus(`Synced ${pushed} areas · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`))
+          .catch(() => setSyncStatus('Sync failed'))
+      }
+    }
+    window.addEventListener('focus', maybeSync)
+    const onVisibility = () => { if (!document.hidden) maybeSync() }
     document.addEventListener('visibilitychange', onVisibility)
     return () => {
-      window.removeEventListener('focus', refreshOnFocus)
+      window.removeEventListener('focus', maybeSync)
       document.removeEventListener('visibilitychange', onVisibility)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -274,7 +288,7 @@ function App() {
     try {
       await pushAllLocal(auth.currentUser.uid)
       const { pushed } = await syncNow(auth.currentUser.uid)
-      setSyncStatus(`Synced ${pushed} areas`)
+      setSyncStatus(`Synced ${pushed} areas · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`)
       await refresh()
       setError('')
     } catch (cause) {
@@ -353,8 +367,8 @@ function App() {
         <div className="sidebar-bottom">
           {deferredPrompt && !appInstalled && <button className="nav-item" onClick={promptInstall}><MonitorDown size={18} /> Install app</button>}
           {appInstalled && <div className="installed-note"><Check size={15} /> Installed</div>}
-          <button className="nav-item" onClick={() => setIsDataModalOpen(true)}><Download size={18} /> Backup & import</button>
-          <button className="nav-item" onClick={() => setIsSyncOpen(true)}><RefreshCcw size={18} /> Sync {user ? <span className="nav-badge">on</span> : null}</button>
+          <button className="nav-item" onClick={() => { setIsDataModalOpen(true); setMobileNav(false) }}><Download size={18} /> Backup & import</button>
+          <button className="nav-item" onClick={() => { setIsSyncOpen(true); setMobileNav(false) }}><RefreshCcw size={18} /> Sync {user ? <span className="nav-badge">on</span> : null}</button>
           <div className="profile"><div className="avatar">AK</div><div><strong>My finances</strong><small>Local workspace</small></div></div>
         </div>
       </aside>
@@ -369,10 +383,10 @@ function App() {
           <div className="quick-card"><span className="card-label">Quick action</span><button onClick={() => { setEditingTransaction(null); setIsAdding(true) }}><span className="quick-icon expense"><ArrowUpRight size={18} /></span>Add expense <ChevronRight size={16} /></button><button onClick={() => { setEditingDebt(null); setIsAddingDebt(true) }}><span className="quick-icon income"><HandCoins size={18} /></span>Add debt <ChevronRight size={16} /></button></div>
         </section>
         <section className="content-grid">
-          <div className="panel transactions-panel"><div className="panel-heading"><div><p className="eyebrow">Activity</p><h2>Recent transactions</h2></div><button className="text-button" onClick={() => navigate('transactions')}>View all <ChevronRight size={15} /></button></div>{transactions.length === 0 ? <EmptyState /> : <div className="transaction-list">{transactions.map((transaction) => <div className="transaction-row" key={transaction.id}><div className="transaction-icon expense"><Receipt size={17} /></div><div className="transaction-info"><strong>{transaction.item}</strong><small>{transaction.description ?? 'Item purchase'}</small></div><time>{new Date(`${transaction.date}T12:00:00`).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</time><strong className="amount">-{formatRupees(transaction.amountPaise)}</strong><button className="delete-button" onClick={() => { setEditingTransaction(transaction); setIsAdding(true) }} aria-label={`Edit ${transaction.item}`}><Settings size={15} /></button><button className="delete-button" onClick={() => transaction.id && deleteTransaction(transaction.id).then(refresh)} aria-label={`Delete ${transaction.item}`}><Trash2 size={15} /></button></div>)}</div>}<button className="add-transaction" onClick={() => { setEditingTransaction(null); setIsAdding(true) }}><Plus size={17} /> Add transaction</button></div>
+          <div className="panel transactions-panel"><div className="panel-heading"><div><p className="eyebrow">Activity</p><h2>Recent transactions</h2></div><button className="text-button" onClick={() => navigate('transactions')}>View all <ChevronRight size={15} /></button></div>{transactions.length === 0 ? <EmptyState /> : <div className="transaction-list">{transactions.map((transaction) => <div className="transaction-row" key={transaction.id}><div className="transaction-icon expense"><Receipt size={17} /></div><div className="transaction-info"><strong>{transaction.item}</strong><small>{transaction.description ?? 'Item purchase'}</small></div><time>{new Date(`${transaction.date}T12:00:00`).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</time><strong className="amount">-{formatRupees(transaction.amountPaise)}</strong><button className="delete-button" onClick={() => { setEditingTransaction(transaction); setIsAdding(true) }} aria-label={`Edit ${transaction.item}`}><Pencil size={15} /></button><button className="delete-button" onClick={() => transaction.id && deleteTransaction(transaction.id).then(refresh)} aria-label={`Delete ${transaction.item}`}><Trash2 size={15} /></button></div>)}</div>}<button className="add-transaction" onClick={() => { setEditingTransaction(null); setIsAdding(true) }}><Plus size={17} /> Add transaction</button></div>
           <div className="right-column"><div className="panel"><div className="panel-heading"><div><p className="eyebrow">Debts</p><h2>People</h2></div><button className="text-button" onClick={() => navigate('debts')}>View all <ChevronRight size={15} /></button></div>{debts.length === 0 ? <div className="empty-state"><HandCoins size={30} /><strong>No debts yet</strong><span>Add who owes you or who you owe.</span></div> : <div className="debt-list">{debts.slice(0, 5).map((debt) => { const outstanding = outstandingPaise(debt, debtPayments); return <div className="debt-row" key={debt.id}><div className="transaction-icon income"><HandCoins size={17} /></div><div className="transaction-info"><strong>{debt.person}</strong><small>{debt.direction === 'lent' ? 'Owes you' : 'You owe'} · {formatRupees(debt.amountPaise)}</small></div><strong className={debt.direction === 'lent' ? 'amount positive' : 'amount'}>{formatRupees(outstanding)}</strong></div> })}</div>}</div></div>
         </section></> : activeView === 'transactions'
-          ? <TransactionsView transactions={allTransactions} onEdit={(t) => { setEditingTransaction(t); setIsAdding(true) }} onDelete={(id) => { if (id == null) return; deleteTransaction(id).then(refresh) }} />
+          ? <TransactionsView transactions={allTransactions} onEdit={(t) => { setEditingTransaction(t); setIsAdding(true) }} onDelete={(id) => { if (id == null) return; deleteTransaction(id).then(refresh) }} onAdd={() => { setEditingTransaction(null); setIsAdding(true) }} />
           : activeView === 'debts'
               ? <DebtsView debts={debts} payments={debtPayments} onAdd={() => { setEditingDebt(null); setIsAddingDebt(true) }} onEdit={(debt) => { setEditingDebt(debt); setIsAddingDebt(true) }} onDelete={handleDeleteDebt} onPay={(debt) => setPayingDebt(debt)} />
               : <ReportView transactions={allTransactions} />}
@@ -493,7 +507,7 @@ function ReportView({ transactions }: { transactions: Transaction[] }) {
   </section>
 }
 
-function TransactionsView({ transactions, onEdit, onDelete }: { transactions: Transaction[]; onEdit: (t: Transaction) => void; onDelete: (id?: string) => void }) {
+function TransactionsView({ transactions, onEdit, onDelete, onAdd }: { transactions: Transaction[]; onEdit: (t: Transaction) => void; onDelete: (id?: string) => void; onAdd: () => void }) {
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState<'newest' | 'oldest' | 'amount'>('newest')
   const filtered = useMemo(() => {
@@ -511,7 +525,7 @@ function TransactionsView({ transactions, onEdit, onDelete }: { transactions: Tr
   }, [transactions, query, sort])
   const total = filtered.reduce((sum, t) => sum + t.amountPaise, 0)
   return <section className="reports-view">
-    <div className="report-toolbar"><div><p className="eyebrow">Ledger</p><h2>All transactions</h2><p className="report-subtitle">{filtered.length} entries · {formatRupees(total)} spent</p></div></div>
+    <div className="report-toolbar"><div><p className="eyebrow">Ledger</p><h2>All transactions</h2><p className="report-subtitle">{filtered.length} entries · {formatRupees(total)} spent</p></div><div className="report-actions"><button className="primary-button add-button" onClick={onAdd}><Plus size={15} /> Add transaction</button></div></div>
     <div className="history-toolbar">
       <div className="search-box"><Search size={15} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search item or description" /></div>
       <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="amount">Highest amount</option></select>
@@ -544,9 +558,36 @@ function DebtsView({ debts, payments, onAdd, onEdit, onDelete, onPay }: { debts:
       const partial = !settled && paid > 0
       const status = settled ? 'paid' : partial ? 'partial' : 'unpaid'
       const statusLabel = settled ? 'Paid' : partial ? 'Partially paid' : 'Unpaid'
-      return <div className="debt-row" key={debt.id}><div className="transaction-info"><strong>{debt.person}</strong><small>{debt.note ?? ''}{debt.note ? ' · ' : ''}{formatDateDMY(debt.date)}</small></div><span className={`direction-badge ${debt.direction}`}>{debt.direction === 'lent' ? 'Owed to you' : 'You owe'}</span><div className="debt-amounts"><span className={`debt-status ${status}`}>{statusLabel}</span><small className={`paid-amount ${status}`}>Paid {formatRupees(paid)}</small><b className={settled ? 'settled' : debt.direction === 'lent' ? '' : 'negative'}>{formatRupees(outstanding)}</b></div><button className="row-action" onClick={() => onPay(debt)} aria-label="Record payment"><Check size={14} /></button><button className="row-action" onClick={() => onEdit(debt)} aria-label="Edit"><Pencil size={14} /></button><button className="row-action danger" onClick={() => onDelete(debt.id)} aria-label="Delete"><Trash2 size={14} /></button></div>
+      return <div className="debt-row" key={debt.id}>
+        <div className="debt-main">
+          <div className="transaction-info"><strong>{debt.person}</strong><small>{debt.note ? `${debt.note} · ` : ''}{formatDateDMY(debt.date)}</small></div>
+          <span className={`direction-badge ${debt.direction}`}>{debt.direction === 'lent' ? 'Owed to you' : 'You owe'}</span>
+        </div>
+        <div className="debt-amounts">
+          <span className={`debt-status ${status}`}>{statusLabel}</span>
+          {paid > 0 && <small className={`paid-amount ${status}`}>Paid {formatRupees(paid)}</small>}
+          <b className={settled ? 'settled' : debt.direction === 'lent' ? '' : 'negative'}>{formatRupees(outstanding)}</b>
+        </div>
+        <div className="debt-actions">
+          <button className="row-action" onClick={() => onPay(debt)} aria-label="Record payment"><Check size={14} /></button>
+          <button className="row-action" onClick={() => onEdit(debt)} aria-label="Edit"><Pencil size={14} /></button>
+          <button className="row-action danger" onClick={() => onDelete(debt.id)} aria-label="Delete"><Trash2 size={14} /></button>
+        </div>
+      </div>
     })}</div></div>
   </section>
+}
+
+function PasswordField({ name, placeholder }: { name: string; placeholder?: string }) {
+  const [visible, setVisible] = useState(false)
+  return (
+    <div className="password-field">
+      <input name={name} type={visible ? 'text' : 'password'} placeholder={placeholder} required />
+      <button type="button" className="password-toggle" onClick={() => setVisible((v) => !v)} aria-label={visible ? 'Hide password' : 'Show password'}>
+        {visible ? <EyeOff size={16} /> : <Eye size={16} />}
+      </button>
+    </div>
+  )
 }
 
 function SyncModal({ user, status, onClose, onSignIn, onSignUp, onSignOut, onSync }: {
@@ -560,8 +601,8 @@ function SyncModal({ user, status, onClose, onSignIn, onSignUp, onSignOut, onSyn
 }) {
   return <div className="modal-backdrop" onClick={onClose}><div className="modal" onClick={(e) => e.stopPropagation()}><div className="modal-header"><div><p className="eyebrow">Cloud</p><h2>Sync & backup</h2></div><button className="icon-button" onClick={onClose} aria-label="Close"><X /></button></div>
     {user ? <div className="settings-section"><h3>Signed in</h3><p className="report-subtitle">{user.email}</p><p className="sync-status">{status || 'Ready'}</p><div className="data-actions"><button className="primary-button" onClick={onSync}><RefreshCcw size={15} /> Sync now</button><button className="secondary-button" onClick={onSignOut}>Sign out</button></div></div>
-      : <><div className="settings-section"><h3>Sign in</h3><p className="report-subtitle">Sync your data across devices under your private Firebase account. The app keeps working fully offline either way.</p><form onSubmit={onSignIn}><input name="email" type="email" placeholder="Email" required /><input name="password" type="password" placeholder="Password" required /><button className="primary-button" type="submit">Sign in</button></form></div>
-        <div className="settings-section"><h3>New here?</h3><p className="report-subtitle">Create an account to enable cloud sync and backup.</p><form onSubmit={onSignUp}><input name="email" type="email" placeholder="Email" required /><input name="password" type="password" placeholder="Create a password" required /><button className="secondary-button" type="submit">Create account</button></form></div></>}
+      : <><div className="settings-section"><h3>Sign in</h3><p className="report-subtitle">Sync your data across devices under your private Firebase account. The app keeps working fully offline either way.</p><form onSubmit={onSignIn}><input name="email" type="email" placeholder="Email" required /><PasswordField name="password" placeholder="Password" /><button className="primary-button" type="submit">Sign in</button></form></div>
+        <div className="settings-section"><h3>New here?</h3><p className="report-subtitle">Create an account to enable cloud sync and backup.</p><form onSubmit={onSignUp}><input name="email" type="email" placeholder="Email" required /><PasswordField name="password" placeholder="Create a password" /><button className="secondary-button" type="submit">Create account</button></form></div></>}
   </div></div>
 }
 

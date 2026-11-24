@@ -31,6 +31,20 @@ function isNewer(a?: SyncableRecord, b?: SyncableRecord): boolean {
 }
 
 /**
+ * Records that were just written into the local database because of a remote
+ * change. Those writes produce Dexie 'changes' events too, and we must not
+ * echo them straight back to Firestore (that causes pointless write loops and
+ * spurious tombstones). We suppress echo-pushes for a short window per key.
+ */
+const suppressUntil = new Map<string, number>()
+function suppressEcho(table: string, id: string, ms = 4000) {
+  suppressUntil.set(`${table}:${id}`, Date.now() + ms)
+}
+function isEchoSuppressed(table: string, id: string): boolean {
+  return (suppressUntil.get(`${table}:${id}`) ?? 0) > Date.now()
+}
+
+/**
  * Firestore rejects fields whose value is `undefined`. Optional fields (e.g.
  * `note`, `description`) are `undefined` when not set, so strip them before
  * writing a record to Firestore.
@@ -133,11 +147,13 @@ export function subscribeToRemote(uid: string, onChange?: () => void): Unsubscri
         for (const change of snapshot.docChanges()) {
           const row = change.doc.data() as SyncableRecord
           if (change.type === 'removed') {
+            suppressEcho(tableName, row.id)
             await db[tableName].delete(row.id)
             continue
           }
           const local = await db[tableName].get(row.id)
           if (!isNewer(row, local)) continue
+          suppressEcho(tableName, row.id)
           applyingRemote = true
           try {
             if (row.deleted) {
@@ -180,8 +196,10 @@ export function watchLocalChanges(uid: string): () => void {
     for (const change of changes) {
       const tableName = change.table as SyncableTable
       if (!TABLES.includes(tableName)) continue
+      const id = String(change.key)
+      if (isEchoSuppressed(tableName, id)) continue
       const col = tableCollection(firestore, uid, tableName)
-      const ref = doc(col, String(change.key))
+      const ref = doc(col, id)
       if (change.obj) {
         void setDoc(ref, sanitizeRecord(change.obj as unknown as Record<string, unknown>)).catch(() => {})
       } else if (change.oldObj) {

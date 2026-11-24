@@ -65,16 +65,19 @@ h1, h2 { margin: 0; color: #17211f; font-family: Manrope, sans-serif; letter-spa
 .row-action.danger:hover { background: #fdebe8; color: #dc7168; }
 .goal-heading .row-action { vertical-align: middle; margin-left: 4px; }
 .debt-list { display: flex; flex-direction: column; }
-.debt-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f3f2; }
-.debt-row .transaction-info { flex: 1; min-width: 0; }
-.debt-row .transaction-info small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.direction-badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.debt-row { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid #f0f3f2; }
+.debt-main { display: flex; align-items: center; gap: 10px; flex: 1 1 auto; min-width: 0; }
+.debt-main .transaction-info { flex: 1 1 auto; min-width: 0; }
+.debt-main .transaction-info strong { font-size: 12px; }
+.debt-main .transaction-info small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.direction-badge { flex: 0 0 auto; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
 .direction-badge.lent { color: #217764; background: #e5f4ee; }
 .direction-badge.owing { color: #b4552e; background: #fdf0e7; }
-.debt-amounts { display: grid; gap: 2px; text-align: right; }
-.debt-amounts b { font-size: 13px; min-width: 80px; text-align: right; }
-.debt-amounts small { color: #83928d; font-size: 11px; }
+.debt-amounts { flex: 0 0 auto; display: grid; gap: 2px; text-align: right; }
+.debt-amounts b { font-size: 13px; min-width: 84px; text-align: right; }
+.debt-amounts small { color: #83928d; font-size: 11px; white-space: nowrap; }
 .debt-status { justify-self: end; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.debt-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 2px; }
 .debt-status.paid { color: #217764; background: #e5f4ee; }
 .debt-status.partial { color: #9a6911; background: #fbf1dd; }
 .debt-status.unpaid { color: #c2544a; background: #fdebe8; }
@@ -165,3 +168,31 @@ h1, h2 { margin: 0; color: #17211f; font-family: Manrope, sans-serif; letter-spa
 .month-nav .icon-button { width: 24px; height: 24px; font-size: 16px; line-height: 1; }
 .budget-month-label { font-size: 12px; font-weight: 600; color: #31413d; }
 [data-theme="dark"] .budget-month-label { color: #cfe0d8; }
+
+/* ---------- Password show/hide toggle ---------- */
+.password-field { position: relative; display: block; }
+.password-field input { padding-right: 40px; }
+.password-toggle { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 6px; color: #84938e; background: transparent; }
+.password-toggle:hover { color: #217764; background: #eef4f1; }
+[data-theme="dark"] .password-toggle:hover { background: #22332c; color: #6fd0b0; }
+
+/* ---------- Mobile refinements ---------- */
+@media (max-width: 720px) {
+  html, body { max-width: 100%; overflow-x: hidden; }
+  .main-content { min-width: 0; }
+  .report-toolbar { flex-wrap: wrap; }
+  .report-actions { width: 100%; }
+  .report-actions select { flex: 1; }
+  .modal-backdrop { padding: 12px; }
+  .modal { max-height: calc(100vh - 24px); overflow-y: auto; }
+
+  /* Debts: stack identity, amounts and actions cleanly */
+  .debt-row { flex-wrap: wrap; }
+  .debt-main { flex: 1 0 100%; }
+  .debt-amounts { flex: 1 1 auto; }
+  .debt-actions { flex: 0 0 auto; }
+}
+@media (max-width: 390px) {
+  .debt-main { gap: 8px; }
+  .debt-amounts b { min-width: 0; }
+}
